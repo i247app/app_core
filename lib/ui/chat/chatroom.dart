@@ -1,15 +1,11 @@
-import 'dart:async';
-import 'dart:ffi';
-
 import 'package:app_core/helper/session_data.dart';
-import 'package:app_core/helper/util.dart';
 import 'package:app_core/model/chat_member.dart';
 import 'package:app_core/model/chat_message.dart';
 import 'package:app_core/model/user.dart';
-import 'package:app_core/other/no_overscroll.dart';
+import 'package:app_core/header/other/no_overscroll.dart';
 import 'package:app_core/ui/chat/widget/chat_bubble.dart';
-import 'package:app_core/value/styles.dart';
-import 'package:app_core/widget/keyboard_killer.dart';
+import 'package:app_core/header/value/styles.dart';
+import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -69,13 +65,16 @@ class Chatroom extends StatefulWidget {
   final Function()? onAddGalleryImageClick;
   final Function()? onAddCameraImageClick;
   final Function(String) sendText;
+  final Color? chatBubbleColor;
 
-  const Chatroom(
-      {required this.controller,
-      this.onOtherPersonClick,
-      this.onAddGalleryImageClick,
-      this.onAddCameraImageClick,
-      required this.sendText});
+  const Chatroom({
+    required this.controller,
+    required this.sendText,
+    this.onOtherPersonClick,
+    this.onAddGalleryImageClick,
+    this.onAddCameraImageClick,
+    this.chatBubbleColor,
+  });
 
   @override
   _ChatroomState createState() => _ChatroomState();
@@ -154,6 +153,7 @@ class _ChatroomState extends State<Chatroom> with WidgetsBindingObserver {
             previousChat: next,
             nextChat: prev,
             onAvatarClick: this.widget.onOtherPersonClick ?? (_) {},
+            chatBubbleColor: this.widget.chatBubbleColor,
           );
         }
       },

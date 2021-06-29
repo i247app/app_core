@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/util.dart';
 import 'package:app_core/model/chat_message.dart';
-import 'package:app_core/value/styles.dart';
-import 'package:app_core/widget/image_viewer.dart';
-import 'package:app_core/widget/user_avatar.dart';
+import 'package:app_core/header/value/styles.dart';
+import 'package:app_core/ui/widget/image_viewer.dart';
+import 'package:app_core/ui/widget/user_avatar.dart';
 
 class ChatBubble extends StatelessWidget {
   static const Duration SHORT_TIME_CUTOFF = Duration(minutes: 2);
@@ -18,6 +18,7 @@ class ChatBubble extends StatelessWidget {
   final ChatMessage? previousChat;
   final ChatMessage? nextChat;
   final Function(String)? onAvatarClick;
+  final Color? chatBubbleColor;
 
   bool get isFirstOfSeries {
     if (this.previousChat == null ||
@@ -48,7 +49,7 @@ class ChatBubble extends StatelessWidget {
           LONG_TIME_CUTOFF;
 
   Color get chatBGColor =>
-      this.chat.isMe ? Styles.colorPrimary : Styles.extraExtraLightGrey;
+      this.chat.isMe ? (this.chatBubbleColor ?? Styles.colorPrimary) : Styles.extraExtraLightGrey;
 
   Color get chatTextColor => this.chat.isMe ? Styles.white : Styles.black;
 
@@ -80,6 +81,7 @@ class ChatBubble extends StatelessWidget {
     this.previousChat,
     this.nextChat,
     this.onAvatarClick,
+    this.chatBubbleColor,
   });
 
   void onImageClick(ctx) {
