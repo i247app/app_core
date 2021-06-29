@@ -11,6 +11,15 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Core
+  async: ^2.6.1
+  device_info: ^2.0.1 # any
+  package_info: ^2.0.0 # 1.2.5 # ^0.4.0+3
+  permission_handler: ^7.2.0 # ^8.0.0+1 # ^5.1.0+2 # ^4.1.0
+  timeago: ^3.1.0 # ^3.0.2 # ^2.0.26
+  intl: ^0.17.0
+  flutter_secure_storage: ^4.2.0 # 3.3.1+1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
