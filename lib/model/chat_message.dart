@@ -2,7 +2,7 @@ import 'package:app_core/helper/session_data.dart';
 import 'package:app_core/helper/util.dart';
 import 'package:app_core/model/user.dart';
 
-class ChatMessage {
+class AppCoreChatMessage {
   static const String CONTENT_TYPE_TEXT = "text";
   static const String CONTENT_TYPE_IMAGE = "image";
 
@@ -30,7 +30,7 @@ class ChatMessage {
 
   String? refID;
 
-  User? user;
+  AppCoreUser? user;
 
   // Helper
   String? localID;
@@ -42,5 +42,5 @@ class ChatMessage {
   static String generateLocalID() => Util.buildRandomString(8);
 
   // JSON
-  ChatMessage();
+  AppCoreChatMessage();
 }

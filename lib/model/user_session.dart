@@ -2,7 +2,7 @@ import 'package:app_core/helper/string_helper.dart';
 import 'package:app_core/model/user.dart';
 
 
-class UserSession {
+class AppCoreUserSession {
   static const String KTOKEN = "ktoken";
   static const String PUID = "puid";
   static const String USER_MODE = "userMode";
@@ -26,7 +26,7 @@ class UserSession {
 
   String? googleMapAPIKey;
 
-  User? user;
+  AppCoreUser? user;
 
   // AppNav? appNav = AppNav();
   //
@@ -36,5 +36,5 @@ class UserSession {
   bool get isOnlineMode => StringHelper.parseBoolean(this.onlineMode);
 
   // JSON
-  UserSession();
+  AppCoreUserSession();
 }

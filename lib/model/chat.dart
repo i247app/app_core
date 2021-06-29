@@ -3,7 +3,7 @@ import 'package:app_core/model/chat_member.dart';
 import 'package:app_core/model/chat_message.dart';
 import 'package:collection/collection.dart';
 
-class Chat {
+class AppCoreChat {
   String? chatID;
 
   String? chatName;
@@ -14,9 +14,9 @@ class Chat {
 
   String? previewMessage;
 
-  List<ChatMessage>? messages;
+  List<AppCoreChatMessage>? messages;
 
-  List<ChatMember>? members;
+  List<AppCoreChatMember>? members;
 
   DateTime? activeDate;
 
@@ -39,7 +39,7 @@ class Chat {
 
   String? get firstInitial {
     if (members != null) {
-      ChatMember? participant;
+      AppCoreChatMember? participant;
       if (!isGroup) {
         participant = (this.members ?? [])
             .firstWhereOrNull((r) => r.puid != SessionData.me?.puid);
@@ -57,5 +57,5 @@ class Chat {
     return '';
   }
 
-  Chat();
+  AppCoreChat();
 }

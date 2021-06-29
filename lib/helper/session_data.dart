@@ -7,7 +7,7 @@ abstract class SessionData {
   static String? _sessionToken;
   static String? _fcmToken;
   static String? _voipToken;
-  static UserSession? _userSession;
+  static AppCoreUserSession? _userSession;
 
   // // // // // system
   static bool get hasActiveSession =>
@@ -28,7 +28,7 @@ abstract class SessionData {
   }
 
   // // // // // user
-  static UserSession? get userSession => _userSession;
+  static AppCoreUserSession? get userSession => _userSession;
 
-  static User? get me => userSession?.user;
+  static AppCoreUser? get me => userSession?.user;
 }

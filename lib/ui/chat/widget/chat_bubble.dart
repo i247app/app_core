@@ -14,9 +14,9 @@ class ChatBubble extends StatelessWidget {
   static const double GUTTER_SIZE = 32;
   static const double BORDER_RADIUS = 16;
 
-  final ChatMessage chat;
-  final ChatMessage? previousChat;
-  final ChatMessage? nextChat;
+  final AppCoreChatMessage chat;
+  final AppCoreChatMessage? previousChat;
+  final AppCoreChatMessage? nextChat;
   final Function(String)? onAvatarClick;
   final Color? chatBubbleColor;
 
@@ -97,7 +97,7 @@ class ChatBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget content;
     switch (this.chat.messageType ?? "") {
-      case ChatMessage.CONTENT_TYPE_TEXT:
+      case AppCoreChatMessage.CONTENT_TYPE_TEXT:
         content = Container(
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
@@ -110,7 +110,7 @@ class ChatBubble extends StatelessWidget {
           ),
         );
         break;
-      case ChatMessage.CONTENT_TYPE_IMAGE:
+      case AppCoreChatMessage.CONTENT_TYPE_IMAGE:
         content = ClipRRect(
           borderRadius: BorderRadius.circular(BORDER_RADIUS),
           child: Container(

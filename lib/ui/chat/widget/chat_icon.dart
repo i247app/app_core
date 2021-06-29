@@ -38,11 +38,11 @@ class ChatIcon extends StatelessWidget {
     _ChatIconPosition(left: HALF_SIZE, top: HALF_SIZE)
   ];
 
-  final Chat chat;
+  final AppCoreChat chat;
 
   ChatIcon({required this.chat});
 
-  List<Widget> buildAvatarGroup(List<ChatMember> members) {
+  List<Widget> buildAvatarGroup(List<AppCoreChatMember> members) {
     List<Widget> avatars = [];
     List<_ChatIconPosition> positions = [];
     switch (members.length) {
@@ -58,7 +58,7 @@ class ChatIcon extends StatelessWidget {
     }
     for (var i = 0; i < members.length && i < 4; i++) {
       _ChatIconPosition position = positions[i];
-      ChatMember member = members[i];
+      AppCoreChatMember member = members[i];
       avatars.add(Positioned(
         top: position.top,
         left: position.left,
