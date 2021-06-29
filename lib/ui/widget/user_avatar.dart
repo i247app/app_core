@@ -4,7 +4,7 @@ import 'package:app_core/helper/session_data.dart';
 import 'package:app_core/helper/string_helper.dart';
 import 'package:app_core/model/chat.dart';
 import 'package:app_core/model/user.dart';
-import 'package:app_core/header/value/styles.dart';
+import 'package:app_core/header/styles.dart';
 
 class UserAvatar extends StatelessWidget {
   final String? initial;

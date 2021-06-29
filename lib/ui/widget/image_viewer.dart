@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:app_core/header/value/styles.dart';
+import 'package:app_core/header/styles.dart';
 
 enum _ImageViewerType { url, file }
 

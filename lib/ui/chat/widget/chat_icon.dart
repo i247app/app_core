@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:app_core/helper/session_data.dart';
 import 'package:app_core/model/chat.dart';
 import 'package:app_core/model/chat_member.dart';
-import 'package:app_core/header/value/styles.dart';
+import 'package:app_core/header/styles.dart';
 import 'package:app_core/ui/widget/user_avatar.dart';
 
 class _ChatIconPosition {
