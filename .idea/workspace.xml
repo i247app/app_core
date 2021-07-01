@@ -24,6 +24,7 @@
   <component name="ChangeListManager">
     <list default="true" id="68a1d5c8-2615-4450-9a6b-d624ee6dada9" name="Default Changelist" comment=".gitignore">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/util.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/util.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/ui/chat/chatroom.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/chat/chatroom.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -37,7 +38,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="huynh" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -54,7 +55,6 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="dart.analysis.tool.window.visible" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
@@ -98,7 +98,14 @@
       <option name="project" value="LOCAL" />
       <updated>1625098845233</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="ChatroomContext isInitializing isEnded">
+      <created>1625170836971</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1625170836971</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -117,7 +124,8 @@
     <MESSAGE value="stuff" />
     <MESSAGE value="nothing" />
     <MESSAGE value=".gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value=".gitignore" />
+    <MESSAGE value="ChatroomContext isInitializing isEnded" />
+    <option name="LAST_COMMIT_MESSAGE" value="ChatroomContext isInitializing isEnded" />
   </component>
   <component name="WindowStateProjectService">
     <state x="440" y="237" key="Vcs.Push.Dialog.v2" timestamp="1625098986150">
@@ -128,5 +136,9 @@
       <screen x="0" y="25" width="1680" height="951" />
     </state>
     <state x="641" y="418" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.25.1680.951@0.25.1680.951" timestamp="1625098795954" />
+    <state width="300" height="77" key="javadoc.popup.new" timestamp="1625171189852">
+      <screen x="0" y="25" width="1680" height="951" />
+    </state>
+    <state width="300" height="77" key="javadoc.popup.new/0.25.1680.951@0.25.1680.951" timestamp="1625171189852" />
   </component>
 </project>

@@ -84,9 +84,9 @@ class Chatroom extends StatefulWidget {
 class _ChatroomState extends State<Chatroom> with WidgetsBindingObserver {
   final messageCtrl = TextEditingController();
 
-  List<AppCoreChatMessage> get chatMessages => this.widget.chatMessages ?? [];
+  List<AppCoreChatMessage> get chatMessages => widget.chatMessages ?? [];
 
-  bool get isInitializing => this.widget.isInitializing ?? false;
+  bool get isInitializing => widget.isInitializing ?? false;
 
   bool get hasSaidHiToPapa => this
       .chatMessages
@@ -95,7 +95,7 @@ class _ChatroomState extends State<Chatroom> with WidgetsBindingObserver {
 
   bool get shouldSayHiToPapa => !this.hasSaidHiToPapa;
 
-  bool get isEnded => this.widget.isEnded ?? false;
+  bool get isEnded => widget.controller.value.isEnded;
 
   AppCoreUser? get refUser =>
       (widget.members ?? [])
@@ -108,7 +108,7 @@ class _ChatroomState extends State<Chatroom> with WidgetsBindingObserver {
     if (sanitized.isEmpty) return;
 
     messageCtrl.clear();
-    this.widget.sendText(sanitized);
+    widget.sendText(sanitized);
   }
 
   @override
@@ -123,8 +123,7 @@ class _ChatroomState extends State<Chatroom> with WidgetsBindingObserver {
         ),
         SizedBox(height: 14),
         IconButton(
-          onPressed: () =>
-              this.widget.sendText("Hi ${this.refUser?.firstName}!"),
+          onPressed: () => widget.sendText("Hi ${this.refUser?.firstName}!"),
           icon: Center(
             child: Text("👋", style: TextStyle(fontSize: 58)),
           ),
@@ -153,8 +152,8 @@ class _ChatroomState extends State<Chatroom> with WidgetsBindingObserver {
             this.chatMessages[i],
             previousChat: next,
             nextChat: prev,
-            onAvatarClick: this.widget.onOtherPersonClick ?? (_) {},
-            chatBubbleColor: this.widget.chatBubbleColor,
+            onAvatarClick: widget.onOtherPersonClick ?? (_) {},
+            chatBubbleColor: widget.chatBubbleColor,
           );
         }
       },
@@ -183,13 +182,13 @@ class _ChatroomState extends State<Chatroom> with WidgetsBindingObserver {
           );
 
     final addCameraButton = IconButton(
-      onPressed: this.widget.onAddCameraImageClick,
+      onPressed: widget.onAddCameraImageClick,
       icon: Icon(Icons.camera_alt),
       color: Styles.colorIcon,
     );
 
     final addImageButton = IconButton(
-      onPressed: this.widget.onAddGalleryImageClick,
+      onPressed: widget.onAddGalleryImageClick,
       icon: Icon(Icons.image_outlined),
       color: Styles.colorIcon,
     );

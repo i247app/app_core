@@ -118,13 +118,14 @@ abstract class Util {
     if (fone.length <= 4) {
       return fone.replaceAll(RegExp(r'.'), 'x');
     }
-    return fone.replaceAll(RegExp(r'.'), 'x').substring(0, fone.length - 4)+fone.substring(fone.length - 4);
+    return fone.replaceAll(RegExp(r'.'), 'x').substring(0, fone.length - 4) +
+        fone.substring(fone.length - 4);
   }
 
-  static String prettyFone({String foneCode = "", String number = ""}) {
+  static String prettyFone({required String foneCode, required String number}) {
     foneCode = foneCode.replaceAll("+", "");
     String prefix = StringHelper.isExist(foneCode) ? "+" + foneCode + " " : "";
-    return prefix + (number != null ? number : "");
+    return prefix + number;
   }
 
   // TODO VN - last, middle first else first middle last
@@ -158,7 +159,7 @@ abstract class Util {
     try {
       title = "";
 
-      if (!StringHelper.isEmpty(kunm)) title += "@${kunm}";
+      if (!StringHelper.isEmpty(kunm)) title += "@$kunm";
       if (!StringHelper.isEmpty(fnm))
         title += " " + StringHelper.capitalize(fnm ?? "");
       if (!StringHelper.isEmpty(mnm))
@@ -173,8 +174,7 @@ abstract class Util {
   }
 
   // Anna L H. - name with last initial
-  static String privacyName(
-      {String fnm = "", String mnm = "", String lnm = ""}) {
+  static String privacyName({String? fnm, String? mnm, String? lnm}) {
     String title = "";
 
     try {
@@ -193,16 +193,14 @@ abstract class Util {
     return title;
   }
 
-  static String ampDisplayName(
-      {String? bnm = "",
-      String fnm = "",
-      String mnm = "",
-      String lnm = "",
-      String? fone = ""}) {
-    return bnm ??
-        (Util.privacyName(fnm: fnm, mnm: mnm, lnm: lnm) != null
-            ? Util.privacyName(fnm: fnm, mnm: mnm, lnm: lnm)
-            : (fone ?? ""));
+  static String ampDisplayName({
+    String? bnm,
+    String fnm = "",
+    String mnm = "",
+    String lnm = "",
+    String? fone = "",
+  }) {
+    return bnm ?? (Util.privacyName(fnm: fnm, mnm: mnm, lnm: lnm));
   }
 
   static String absNumber(String v) {
@@ -327,7 +325,7 @@ abstract class Util {
 
       // Split at decimal
       String integerPart = "";
-      String fractionalPart = "";
+      String? fractionalPart;
       try {
         integerPart = amount.split('.')[0];
         fractionalPart = amount.split('.')[1];
@@ -490,7 +488,7 @@ abstract class Util {
             format = "hh:mm a";
         }
 
-        print("Util.prettyTime format ${format}");
+        print("Util.prettyTime format $format");
 
         if (date != null) {
           pretty = DateFormat(format).format(date);

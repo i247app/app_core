@@ -5,8 +5,6 @@ import 'package:app_core/model/user_session.dart';
 
 abstract class SessionData {
   static String? _sessionToken;
-  static String? _fcmToken;
-  static String? _voipToken;
   static AppCoreUserSession? _userSession;
 
   // // // // // system
