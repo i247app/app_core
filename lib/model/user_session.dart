@@ -1,7 +1,6 @@
 import 'package:app_core/helper/string_helper.dart';
 import 'package:app_core/model/user.dart';
 
-
 class AppCoreUserSession {
   static const String KTOKEN = "ktoken";
   static const String PUID = "puid";

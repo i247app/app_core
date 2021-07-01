@@ -55,7 +55,8 @@ class Chatroom extends StatefulWidget {
 
   List<AppCoreChatMember>? get members => this.controller.value.members;
 
-  List<AppCoreChatMessage>? get chatMessages => this.controller.value.chatMessages;
+  List<AppCoreChatMessage>? get chatMessages =>
+      this.controller.value.chatMessages;
 
   bool? get isInitializing => this.controller.value.isInitializing;
 
@@ -99,7 +100,8 @@ class _ChatroomState extends State<Chatroom> with WidgetsBindingObserver {
   AppCoreUser? get refUser =>
       (widget.members ?? [])
           .firstWhereOrNull((m) => m.puid != SessionData.me!.puid)
-          ?.toUser() ?? AppCoreUser();
+          ?.toUser() ??
+      AppCoreUser();
 
   void onSendTextClick() async {
     final String sanitized = messageCtrl.text.trim();

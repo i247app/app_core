@@ -48,8 +48,9 @@ class ChatBubble extends StatelessWidget {
       this.chat.messageDate!.difference(this.previousChat!.messageDate!).abs() >
           LONG_TIME_CUTOFF;
 
-  Color get chatBGColor =>
-      this.chat.isMe ? (this.chatBubbleColor ?? Styles.colorPrimary) : Styles.extraExtraLightGrey;
+  Color get chatBGColor => this.chat.isMe
+      ? (this.chatBubbleColor ?? Styles.colorPrimary)
+      : Styles.extraExtraLightGrey;
 
   Color get chatTextColor => this.chat.isMe ? Styles.white : Styles.black;
 

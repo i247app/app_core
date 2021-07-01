@@ -9,7 +9,7 @@ class KeyboardKiller extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
-      child: child,
+      child: this.child,
     );
   }
 }

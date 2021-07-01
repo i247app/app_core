@@ -8,5 +8,4 @@ export 'package:app_core/model/user_session.dart';
 
 export 'package:app_core/ui/chat/chatroom.dart';
 
-class AppCore {
-}
+class AppCore {}
