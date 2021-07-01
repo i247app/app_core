@@ -44,10 +44,32 @@ class ChatroomContext {
   });
 }
 
+class ChatroomAdapter {
+  final Function(String) sendText;
+  final Function(String)? onOtherPersonClick;
+  final Function()? onAddGalleryImageClick;
+  final Function()? onAddCameraImageClick;
+  final Color? chatBubbleColor;
+
+  ChatroomAdapter({
+    required this.sendText,
+    this.onOtherPersonClick,
+    this.onAddGalleryImageClick,
+    this.onAddCameraImageClick,
+    this.chatBubbleColor,
+  });
+}
+
 class Chatroom extends StatefulWidget {
   static const int MAX_MESSAGE_COUNT = 100;
 
   final ValueNotifier<ChatroomContext> controller;
+  final ChatroomAdapter adapter;
+
+  const Chatroom({
+    required this.controller,
+    required this.adapter,
+  });
 
   String? get chatID => this.controller.value.chatID;
 
@@ -61,21 +83,6 @@ class Chatroom extends StatefulWidget {
       this.controller.value.chatMessages;
 
   bool? get isInitializing => this.controller.value.isInitializing;
-
-  final Function(String)? onOtherPersonClick;
-  final Function()? onAddGalleryImageClick;
-  final Function()? onAddCameraImageClick;
-  final Function(String) sendText;
-  final Color? chatBubbleColor;
-
-  const Chatroom({
-    required this.controller,
-    required this.sendText,
-    this.onOtherPersonClick,
-    this.onAddGalleryImageClick,
-    this.onAddCameraImageClick,
-    this.chatBubbleColor,
-  });
 
   @override
   _ChatroomState createState() => _ChatroomState();
@@ -97,18 +104,16 @@ class _ChatroomState extends State<Chatroom> with WidgetsBindingObserver {
 
   bool get isEnded => widget.controller.value.isEnded;
 
-  AppCoreUser? get refUser =>
-      (widget.members ?? [])
-          .firstWhereOrNull((m) => m.puid != SessionData.me!.puid)
-          ?.toUser() ??
-      AppCoreUser();
+  AppCoreUser? get refUser => (widget.members ?? [])
+      .firstWhereOrNull((m) => m.puid != SessionData.me!.puid)
+      ?.toUser();
 
   void onSendTextClick() async {
     final String sanitized = messageCtrl.text.trim();
     if (sanitized.isEmpty) return;
 
     messageCtrl.clear();
-    widget.sendText(sanitized);
+    widget.adapter.sendText(sanitized);
   }
 
   @override
@@ -123,7 +128,8 @@ class _ChatroomState extends State<Chatroom> with WidgetsBindingObserver {
         ),
         SizedBox(height: 14),
         IconButton(
-          onPressed: () => widget.sendText("Hi ${this.refUser?.firstName}!"),
+          onPressed: () =>
+              widget.adapter.sendText("Hi ${this.refUser?.firstName}!"),
           icon: Center(
             child: Text("👋", style: TextStyle(fontSize: 58)),
           ),
@@ -152,8 +158,8 @@ class _ChatroomState extends State<Chatroom> with WidgetsBindingObserver {
             this.chatMessages[i],
             previousChat: next,
             nextChat: prev,
-            onAvatarClick: widget.onOtherPersonClick ?? (_) {},
-            chatBubbleColor: widget.chatBubbleColor,
+            onAvatarClick: widget.adapter.onOtherPersonClick ?? (_) {},
+            chatBubbleColor: widget.adapter.chatBubbleColor,
           );
         }
       },
@@ -182,13 +188,13 @@ class _ChatroomState extends State<Chatroom> with WidgetsBindingObserver {
           );
 
     final addCameraButton = IconButton(
-      onPressed: widget.onAddCameraImageClick,
+      onPressed: widget.adapter.onAddCameraImageClick,
       icon: Icon(Icons.camera_alt),
       color: Styles.colorIcon,
     );
 
     final addImageButton = IconButton(
-      onPressed: widget.onAddGalleryImageClick,
+      onPressed: widget.adapter.onAddGalleryImageClick,
       icon: Icon(Icons.image_outlined),
       color: Styles.colorIcon,
     );
