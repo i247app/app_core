@@ -1,7 +1,7 @@
 import 'package:app_core/model/user.dart';
 import 'package:app_core/helper/util.dart';
 
-class ChatMember {
+class AppCoreChatMember {
   String? chatID;
 
   String? puid;
@@ -37,19 +37,19 @@ class ChatMember {
   String get chatName =>
       this.firstName ?? this.kunm ?? "User ${this.puid ?? "?"}";
 
-  factory ChatMember.fromUser(User user) => ChatMember()
+  factory AppCoreChatMember.fromUser(AppCoreUser user) => AppCoreChatMember()
     ..puid = user.puid
     ..kunm = user.kunm
     ..firstName = user.firstName
     ..lastName = user.lastName
     ..middleName = user.middleName;
 
-  User toUser() => User()
+  AppCoreUser toUser() => AppCoreUser()
     ..puid = this.puid
     ..kunm = this.kunm
     ..firstName = this.firstName
     ..lastName = this.lastName
     ..middleName = this.middleName;
 
-  ChatMember();
+  AppCoreChatMember();
 }

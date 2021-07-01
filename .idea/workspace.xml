@@ -1,18 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="68a1d5c8-2615-4450-9a6b-d624ee6dada9" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/app_core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/app_core.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/header/other/fade_out_route.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/widget/other/fade_out_route.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/header/other/file_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/widget/other/file_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/header/other/no_overscroll.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/widget/other/no_overscroll.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/header/value/styles.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/header/styles.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/app_core.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app_core.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/pref_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/pref_helper.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/model/user_session.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/user_session.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/ui/chat/chatroom.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/chat/chatroom.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/ui/chat/widget/chat_bubble.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/chat/widget/chat_bubble.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/chat/widget/chat_icon.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/chat/widget/chat_icon.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/widget/dialog/open_settings_dialog.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/widget/dialog/open_settings_dialog.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/widget/image_viewer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/widget/image_viewer.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/widget/user_avatar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/widget/user_avatar.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ui/widget/keyboard_killer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/widget/keyboard_killer.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +55,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="dart.analysis.tool.window.visible" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
@@ -41,6 +66,7 @@
       <recent name="$PROJECT_DIR$/lib/ui" />
     </key>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -53,5 +79,17 @@
       <updated>1624962358318</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

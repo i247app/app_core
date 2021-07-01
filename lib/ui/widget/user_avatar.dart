@@ -12,12 +12,12 @@ class UserAvatar extends StatelessWidget {
 
   const UserAvatar({this.initial, this.imageURL});
 
-  factory UserAvatar.fromUser(User? user) => UserAvatar(
+  factory UserAvatar.fromUser(AppCoreUser? user) => UserAvatar(
         initial: user?.firstInitial,
         imageURL: user?.avatar,
       );
 
-  factory UserAvatar.fromChat(Chat? chat) => UserAvatar(
+  factory UserAvatar.fromChat(AppCoreChat? chat) => UserAvatar(
         initial: chat?.firstInitial,
         imageURL: (chat?.members ?? []).length < 2
             ? null

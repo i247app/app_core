@@ -56,7 +56,7 @@ abstract class PrefHelper {
 class _SecureStorageAdapter {
   static const String SS_PREFIX = "_ss_";
 
-  final plugin = new FlutterSecureStorage();
+  final plugin = FlutterSecureStorage();
 
   _SecureStorageAdapter() {
     setupPlugin();

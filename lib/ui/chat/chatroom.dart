@@ -14,13 +14,13 @@ class ChatroomContext {
   String? chatID;
   String? refApp;
   String? refID;
-  List<ChatMember>? members;
-  List<ChatMessage>? chatMessages;
+  List<AppCoreChatMember>? members;
+  List<AppCoreChatMessage>? chatMessages;
   bool? isInitializing;
   bool? isEnded;
 
   ChatroomContext.fromChatID(this.chatID)
-      : this.refApp = ChatMessage.APP_CONTENT_CHAT;
+      : this.refApp = AppCoreChatMessage.APP_CONTENT_CHAT;
 
   ChatroomContext.fromRefData({
     required this.refApp,
@@ -53,9 +53,10 @@ class Chatroom extends StatefulWidget {
 
   String? get refID => this.controller.value.refID;
 
-  List<ChatMember>? get members => this.controller.value.members;
+  List<AppCoreChatMember>? get members => this.controller.value.members;
 
-  List<ChatMessage>? get chatMessages => this.controller.value.chatMessages;
+  List<AppCoreChatMessage>? get chatMessages =>
+      this.controller.value.chatMessages;
 
   bool? get isInitializing => this.controller.value.isInitializing;
 
@@ -83,7 +84,7 @@ class Chatroom extends StatefulWidget {
 class _ChatroomState extends State<Chatroom> with WidgetsBindingObserver {
   final messageCtrl = TextEditingController();
 
-  List<ChatMessage> get chatMessages => this.widget.chatMessages ?? [];
+  List<AppCoreChatMessage> get chatMessages => this.widget.chatMessages ?? [];
 
   bool get isInitializing => this.widget.isInitializing ?? false;
 
@@ -96,11 +97,11 @@ class _ChatroomState extends State<Chatroom> with WidgetsBindingObserver {
 
   bool get isEnded => this.widget.isEnded ?? false;
 
-  User? get refUser =>
+  AppCoreUser? get refUser =>
       (widget.members ?? [])
           .firstWhereOrNull((m) => m.puid != SessionData.me!.puid)
           ?.toUser() ??
-      User();
+      AppCoreUser();
 
   void onSendTextClick() async {
     final String sanitized = messageCtrl.text.trim();

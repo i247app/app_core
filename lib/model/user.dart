@@ -1,6 +1,6 @@
 import 'package:app_core/helper/util.dart';
 
-class User {
+class AppCoreUser {
   String? puid;
 
   String? kunm;
@@ -62,5 +62,5 @@ class User {
   String get firstInitial => firstName?.substring(0, 1) ?? "";
 
   // JSON
-  User();
+  AppCoreUser();
 }
