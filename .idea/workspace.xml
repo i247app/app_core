@@ -22,31 +22,30 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="68a1d5c8-2615-4450-9a6b-d624ee6dada9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/app_core.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/app_core.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
+    <list default="true" id="68a1d5c8-2615-4450-9a6b-d624ee6dada9" name="Default Changelist" comment=".gitignore">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app_core.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app_core.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/pref_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/pref_helper.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/model/user_session.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/user_session.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/ui/chat/chatroom.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/chat/chatroom.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/chat/widget/chat_bubble.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/chat/widget/chat_bubble.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/widget/keyboard_killer.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/widget/keyboard_killer.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="huynh" />
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="huynh" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1ucQNbHZavJW2ULmzNn9fG6WMIg" />
+  <component name="ProjectLevelVcsManager">
+    <OptionsSetting value="false" id="Update" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -78,6 +77,28 @@
       <option name="presentableId" value="Default" />
       <updated>1624962358318</updated>
     </task>
+    <task id="LOCAL-00001" summary="stuff">
+      <created>1625098725477</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1625098725477</updated>
+    </task>
+    <task id="LOCAL-00002" summary="nothing">
+      <created>1625098773059</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1625098773059</updated>
+    </task>
+    <task id="LOCAL-00003" summary=".gitignore">
+      <created>1625098845233</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1625098845233</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -91,5 +112,21 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="stuff" />
+    <MESSAGE value="nothing" />
+    <MESSAGE value=".gitignore" />
+    <option name="LAST_COMMIT_MESSAGE" value=".gitignore" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="440" y="237" key="Vcs.Push.Dialog.v2" timestamp="1625098986150">
+      <screen x="0" y="25" width="1680" height="951" />
+    </state>
+    <state x="440" y="237" key="Vcs.Push.Dialog.v2/0.25.1680.951@0.25.1680.951" timestamp="1625098986150" />
+    <state x="641" y="418" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1625098795954">
+      <screen x="0" y="25" width="1680" height="951" />
+    </state>
+    <state x="641" y="418" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.25.1680.951@0.25.1680.951" timestamp="1625098795954" />
   </component>
 </project>

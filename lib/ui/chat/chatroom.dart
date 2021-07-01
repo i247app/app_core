@@ -16,19 +16,21 @@ class ChatroomContext {
   String? refID;
   List<AppCoreChatMember>? members;
   List<AppCoreChatMessage>? chatMessages;
-  bool? isInitializing;
-  bool? isEnded;
+  bool isInitializing;
+  bool isEnded;
 
   ChatroomContext.fromChatID(this.chatID)
-      : this.refApp = AppCoreChatMessage.APP_CONTENT_CHAT;
+      : this.refApp = AppCoreChatMessage.APP_CONTENT_CHAT,
+        this.isInitializing = false,
+        this.isEnded = false;
 
   ChatroomContext.fromRefData({
     required this.refApp,
     required this.refID,
     this.members,
     this.chatMessages,
-    this.isInitializing,
-    this.isEnded,
+    this.isInitializing = false,
+    this.isEnded = false,
   });
 
   ChatroomContext({
@@ -37,8 +39,8 @@ class ChatroomContext {
     this.refID,
     this.members,
     this.chatMessages,
-    this.isInitializing,
-    this.isEnded,
+    this.isInitializing = false,
+    this.isEnded = false,
   });
 }
 
@@ -59,8 +61,6 @@ class Chatroom extends StatefulWidget {
       this.controller.value.chatMessages;
 
   bool? get isInitializing => this.controller.value.isInitializing;
-
-  bool? get isEnded => this.controller.value.isEnded;
 
   final Function(String)? onOtherPersonClick;
   final Function()? onAddGalleryImageClick;
