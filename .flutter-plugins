@@ -1,6 +1,8 @@
 # This is a generated file; do not edit or check into version control.
 device_info=/Users/shironeko/flutter/.pub-cache/hosted/pub.dartlang.org/device_info-2.0.2/
+flutter_plugin_android_lifecycle=/Users/shironeko/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-2.0.2/
 flutter_secure_storage=/Users/shironeko/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_secure_storage-4.2.0/
 fluttertoast=/Users/shironeko/flutter/.pub-cache/hosted/pub.dartlang.org/fluttertoast-8.0.7/
+local_auth=/Users/shironeko/flutter/.pub-cache/hosted/pub.dartlang.org/local_auth-1.1.6/
 package_info=/Users/shironeko/flutter/.pub-cache/hosted/pub.dartlang.org/package_info-2.0.2/
 permission_handler=/Users/shironeko/flutter/.pub-cache/hosted/pub.dartlang.org/permission_handler-7.2.0/
