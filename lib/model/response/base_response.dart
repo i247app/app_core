@@ -15,7 +15,7 @@ DateTime? zzz_str2Date(String? z) =>
         : DateHelper.from20FSP(z, isUTC: true)!.toLocal();
 
 String? zzz_date2Str(DateTime? d) =>
-    d == null || d == "" ? null : DateHelper.to20FSP(d, toUTC: true);
+    d == null ? null : DateHelper.to20FSP(d, toUTC: true);
 
 abstract class BaseResponse {
   static const String KTOKEN = "ktoken";

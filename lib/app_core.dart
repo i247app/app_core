@@ -6,7 +6,6 @@ library app_core;
 // export 'package:app_core/model/app_core_user.dart';
 // export 'package:app_core/model/user_session.dart';
 export 'package:app_core/model/response/base_response.dart';
-export 'package:app_core/model/response/simple_response.dart';
 
 export 'package:app_core/network/tls_helper.dart';
 export 'package:app_core/helper/webrtc_helper.dart';

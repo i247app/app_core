@@ -9,9 +9,10 @@ import 'package:app_core/helper/session_data.dart';
 import 'package:app_core/helper/string_helper.dart';
 import 'package:app_core/helper/util.dart';
 import 'package:app_core/model/host_info.dart';
-import 'package:app_core/model/response/simple_response.dart';
+import 'package:app_core/model/response/base_response.dart';
 import 'package:app_core/network/socket_manager.dart';
 import 'package:flutter/material.dart';
+
 // import 'package:app_core/helper/location_helper.dart';
 // import 'package:app_core/helper/session_helper.dart';
 // import 'package:app_core/helper/toast_helper.dart';
@@ -138,10 +139,10 @@ abstract class TLSHelper {
     required int kstatus,
     required String message,
   }) {
-    final data = SimpleResponse()
-      ..kstatus = kstatus
-      ..kmessage = message;
-    return jsonEncode(data.toJson());
+    return jsonEncode({
+      BaseResponse.KSTATUS: kstatus,
+      BaseResponse.KMSG: message,
+    });
   }
 
   static List<int> zip(bytes) {
@@ -185,10 +186,14 @@ abstract class TLSHelper {
       ..._cachedDefaultReqData,
       "reqID": "$reqID",
       "ktoken": SessionData.getSessionToken(),
-      "pushToken": "", //await SessionData.getFCMToken(),
-      "voipToken": "", //await SessionData.getVoipToken(),
-      "tokenMode": "", //Util.getPushTokenMode(),
-      "latLng": "", //(LocationHelper.cachedPosition == null ? null : KLatLng.fromPosition(LocationHelper.cachedPosition!)),
+      "pushToken": "",
+      //await SessionData.getFCMToken(),
+      "voipToken": "",
+      //await SessionData.getVoipToken(),
+      "tokenMode": "",
+      //Util.getPushTokenMode(),
+      "latLng": "",
+      //(LocationHelper.cachedPosition == null ? null : KLatLng.fromPosition(LocationHelper.cachedPosition!)),
     };
 
     return data;
