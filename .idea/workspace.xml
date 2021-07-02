@@ -23,10 +23,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="68a1d5c8-2615-4450-9a6b-d624ee6dada9" name="Default Changelist" comment=".gitignore">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app_core/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app_core/app_core.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/app_core.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/app_core.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -154,9 +152,10 @@
       <screen x="0" y="25" width="1680" height="951" />
     </state>
     <state x="641" y="418" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.25.1680.951@0.25.1680.951" timestamp="1625098795954" />
-    <state x="532" y="257" width="615" height="490" key="find.popup" timestamp="1625213532662">
-      <screen x="0" y="25" width="1680" height="956" />
+    <state x="532" y="257" width="615" height="490" key="find.popup" timestamp="1625219000233">
+      <screen x="0" y="25" width="1680" height="955" />
     </state>
+    <state x="532" y="257" width="615" height="490" key="find.popup/0.25.1680.955@0.25.1680.955" timestamp="1625219000233" />
     <state x="532" y="257" width="615" height="490" key="find.popup/0.25.1680.956@0.25.1680.956" timestamp="1625213532662" />
     <state width="300" height="77" key="javadoc.popup.new" timestamp="1625171915695">
       <screen x="0" y="25" width="1680" height="951" />
