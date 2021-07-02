@@ -1,4 +1,5 @@
 import 'package:app_core/helper/string_helper.dart';
+import 'package:app_core/model/system_host_data.dart';
 import 'package:app_core/model/user.dart';
 
 class AppCoreUserSession {
@@ -30,6 +31,9 @@ class AppCoreUserSession {
   // AppNav? appNav = AppNav();
   //
   // SystemHostData? hostData;
+
+  // @JsonKey(name: HOST_DATA)
+  SystemHostData? hostData;
 
   // Methods
   bool get isOnlineMode => StringHelper.parseBoolean(this.onlineMode);

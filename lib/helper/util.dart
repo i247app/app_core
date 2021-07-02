@@ -13,6 +13,8 @@ import 'package:intl/intl.dart';
 import 'package:package_info/package_info.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import 'host_config.dart';
+
 abstract class Util {
   static Random _random = Random();
   static String? _buildVersion;
@@ -75,6 +77,10 @@ abstract class Util {
     return encoder.convert(data is String ? jsonDecode(data) : data);
   }
 
+  static bool get isDebug =>
+      !HostConfig.isReleaseMode &&
+          !HostConfig.isProductionHost(HostConfig.defaultHost);
+
   static Future<bool> isTabletDevice(BuildContext context) async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     return TabletDetector.isTablet(MediaQuery.of(context)) ||
@@ -122,8 +128,8 @@ abstract class Util {
         fone.substring(fone.length - 4);
   }
 
-  static String prettyFone({required String foneCode, required String number}) {
-    foneCode = foneCode.replaceAll("+", "");
+  static String prettyFone({String? foneCode, required String number}) {
+    foneCode = (foneCode ?? "").replaceAll("+", "");
     String prefix = StringHelper.isExist(foneCode) ? "+" + foneCode + " " : "";
     return prefix + number;
   }
@@ -531,6 +537,8 @@ abstract class Util {
 
   static String getOSCode() =>
       Platform.operatingSystem; //Platform.isIOS ? "ios" : "android";
+
+  static String getPushTokenMode() => isDebug ? "dvl" : "prd";
 
   static Future<String?> getBuildVersion() async {
     String? _buildVersion = Util._buildVersion;
