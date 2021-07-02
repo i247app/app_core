@@ -21,6 +21,7 @@ export 'package:app_core/helper/device_id_helper.dart';
 export 'package:app_core/helper/date_helper.dart';
 export 'package:app_core/helper/biometric_helper.dart';
 export 'package:app_core/helper/plugin_helper.dart';
+export 'package:app_core/helper/check_version_helper.dart';
 
 // export 'package:app_core/ui/chat/chatroom.dart';
 export 'package:app_core/ui/voip/simple_websocket.dart';
