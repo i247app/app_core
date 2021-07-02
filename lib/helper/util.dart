@@ -128,8 +128,8 @@ abstract class Util {
         fone.substring(fone.length - 4);
   }
 
-  static String prettyFone({required String foneCode, required String number}) {
-    foneCode = foneCode.replaceAll("+", "");
+  static String prettyFone({String? foneCode, required String number}) {
+    foneCode = (foneCode ?? "").replaceAll("+", "");
     String prefix = StringHelper.isExist(foneCode) ? "+" + foneCode + " " : "";
     return prefix + number;
   }
@@ -539,7 +539,7 @@ abstract class Util {
       Platform.operatingSystem; //Platform.isIOS ? "ios" : "android";
 
   static String getPushTokenMode() => isDebug ? "dvl" : "prd";
-  
+
   static Future<String?> getBuildVersion() async {
     String? _buildVersion = Util._buildVersion;
     try {
