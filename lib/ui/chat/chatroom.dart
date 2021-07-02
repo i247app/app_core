@@ -1,7 +1,7 @@
 import 'package:app_core/helper/session_data.dart';
-import 'package:app_core/model/chat_member.dart';
-import 'package:app_core/model/chat_message.dart';
-import 'package:app_core/model/user.dart';
+import 'package:app_core/model/app_core_chat_member.dart';
+import 'package:app_core/model/app_core_chat_message.dart';
+import 'package:app_core/model/app_core_user.dart';
 import 'package:app_core/ui/widget/other/no_overscroll.dart';
 import 'package:app_core/ui/chat/widget/chat_bubble.dart';
 import 'package:app_core/header/styles.dart';

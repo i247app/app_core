@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:app_core/helper/session_data.dart';
-import 'package:app_core/model/chat.dart';
-import 'package:app_core/model/chat_member.dart';
+import 'package:app_core/model/base_chat.dart';
+import 'package:app_core/model/app_core_chat_member.dart';
 import 'package:app_core/header/styles.dart';
 import 'package:app_core/ui/widget/user_avatar.dart';
 
@@ -38,7 +38,7 @@ class ChatIcon extends StatelessWidget {
     _ChatIconPosition(left: HALF_SIZE, top: HALF_SIZE)
   ];
 
-  final AppCoreChat chat;
+  final BaseChat chat;
 
   ChatIcon({required this.chat});
 

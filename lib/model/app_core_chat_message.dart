@@ -1,6 +1,6 @@
 import 'package:app_core/helper/session_data.dart';
 import 'package:app_core/helper/util.dart';
-import 'package:app_core/model/user.dart';
+import 'package:app_core/model/app_core_user.dart';
 
 class AppCoreChatMessage {
   static const String CONTENT_TYPE_TEXT = "text";

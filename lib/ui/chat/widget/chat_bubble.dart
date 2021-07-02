@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/util.dart';
-import 'package:app_core/model/chat_message.dart';
+import 'package:app_core/model/app_core_chat_message.dart';
 import 'package:app_core/header/styles.dart';
 import 'package:app_core/ui/widget/image_viewer.dart';
 import 'package:app_core/ui/widget/user_avatar.dart';

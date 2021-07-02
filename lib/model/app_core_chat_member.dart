@@ -1,4 +1,4 @@
-import 'package:app_core/model/user.dart';
+import 'package:app_core/model/app_core_user.dart';
 import 'package:app_core/helper/util.dart';
 
 class AppCoreChatMember {

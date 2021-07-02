@@ -1,7 +1,7 @@
 import 'package:app_core/helper/date_helper.dart';
 import 'package:app_core/helper/kcode.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/helper/validate_helper.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 int? zzz_atoi(String? z) => z == null ? null : int.parse(z);
 
@@ -10,7 +10,9 @@ String? zzz_itoa(int? num) => num?.toString() ?? null;
 int zzz_parseInt(String? z) => z == null || z == "" ? 0 : int.parse(z);
 
 DateTime? zzz_str2Date(String? z) =>
-    z == null || z == "" || DateHelper.from20FSP(z, isUTC: true) == null ? null : DateHelper.from20FSP(z, isUTC: true)!.toLocal();
+    z == null || z == "" || DateHelper.from20FSP(z, isUTC: true) == null
+        ? null
+        : DateHelper.from20FSP(z, isUTC: true)!.toLocal();
 
 String? zzz_date2Str(DateTime? d) =>
     d == null || d == "" ? null : DateHelper.to20FSP(d, toUTC: true);

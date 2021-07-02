@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/session_data.dart';
 import 'package:app_core/helper/string_helper.dart';
-import 'package:app_core/model/chat.dart';
-import 'package:app_core/model/user.dart';
+import 'package:app_core/model/base_chat.dart';
+import 'package:app_core/model/app_core_user.dart';
 import 'package:app_core/header/styles.dart';
 
 class UserAvatar extends StatelessWidget {
@@ -17,7 +17,7 @@ class UserAvatar extends StatelessWidget {
         imageURL: user?.avatar,
       );
 
-  factory UserAvatar.fromChat(AppCoreChat? chat) => UserAvatar(
+  factory UserAvatar.fromChat(BaseChat? chat) => UserAvatar(
         initial: chat?.firstInitial,
         imageURL: (chat?.members ?? []).length < 2
             ? null

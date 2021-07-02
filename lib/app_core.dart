@@ -1,9 +1,9 @@
 library app_core;
 
-// export 'package:app_core/model/chat.dart';
-// export 'package:app_core/model/chat_member.dart';
-// export 'package:app_core/model/chat_message.dart';
-// export 'package:app_core/model/user.dart';
+// export 'package:app_core/model/base_chat.dart';
+// export 'package:app_core/model/app_core_chat_member.dart';
+// export 'package:app_core/model/app_core_chat_message.dart';
+// export 'package:app_core/model/app_core_user.dart';
 // export 'package:app_core/model/user_session.dart';
 export 'package:app_core/model/response/base_response.dart';
 export 'package:app_core/model/response/simple_response.dart';
