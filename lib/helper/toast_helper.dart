@@ -9,6 +9,7 @@ abstract class ToastHelper {
     String message, {
     Color? textColor,
     Color? backgroundColor,
+    Toast? toastLength,
   }) {
     try {
       if (HostConfig.isReleaseMode) {
@@ -16,7 +17,7 @@ abstract class ToastHelper {
       } else {
         return Fluttertoast.showToast(
           msg: message,
-          toastLength: Toast.LENGTH_LONG,
+          toastLength: toastLength ?? Toast.LENGTH_LONG,
           gravity: ToastGravity.BOTTOM,
           textColor: textColor ?? Styles.extraDarkGrey,
           fontSize: 16.0,
