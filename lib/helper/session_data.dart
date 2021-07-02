@@ -1,7 +1,10 @@
 import 'package:app_core/helper/pref_helper.dart';
 import 'package:app_core/helper/string_helper.dart';
+import 'package:app_core/model/host_info.dart';
 import 'package:app_core/model/user.dart';
 import 'package:app_core/model/user_session.dart';
+
+import 'host_config.dart';
 
 abstract class SessionData {
   static String? _sessionToken;
@@ -29,4 +32,8 @@ abstract class SessionData {
   static AppCoreUserSession? get userSession => _userSession;
 
   static AppCoreUser? get me => userSession?.user;
+
+  static HostInfo get webRTCHostInfo =>
+      userSession?.hostData?.webRtcHostInfo ??
+          HostConfig.hostInfo.copyWith(port: 8086);
 }

@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:app_core/model/response/base_response.dart';
+import 'package:app_core/app_core.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'host_info.g.dart';
