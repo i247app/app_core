@@ -24,6 +24,7 @@ dependencies:
   local_auth: ^1.1.6
   new_version: ^0.2.0
   flutter_local_notifications: ^6.0.0
+  flutter_slidable: ^0.6.0
 
   # Location
   geolocator: ^7.0.3
