@@ -1,8 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/model/response/base_response.dart';
 
-part 'app_nav.g.dart';
-
 // ignore: non_constant_identifier_names
 int? zzz_tryatoi(dynamic? num) {
   try {
@@ -17,7 +15,7 @@ int? zzz_tryatoi(dynamic? num) {
 }
 
 @JsonSerializable()
-class AppCoreAppNav {
+abstract class AppCoreAppNav {
   static const String SPLASH_MODE = "splashMode";
 
   static const int OFF = -1;
@@ -29,8 +27,4 @@ class AppCoreAppNav {
 
   // JSON
   AppCoreAppNav();
-
-  factory AppCoreAppNav.fromJson(Map<String, dynamic> json) => _$AppCoreAppNavFromJson(json);
-
-  Map<String, dynamic> toJson() => _$AppCoreAppNavToJson(this);
 }

@@ -3,8 +3,6 @@ import 'dart:ui';
 import 'package:app_core/model/response/base_response.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'host_info.g.dart';
-
 @JsonSerializable()
 class AppCoreHostInfo {
   static const String HOSTNAME = "hostname";
@@ -46,9 +44,4 @@ class AppCoreHostInfo {
 
   // JSON
   AppCoreHostInfo();
-
-  factory AppCoreHostInfo.fromJson(Map<String, dynamic> json) =>
-      _$AppCoreHostInfoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$AppCoreHostInfoToJson(this);
 }

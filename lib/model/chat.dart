@@ -4,8 +4,6 @@ import 'package:app_core/model/chat_member.dart';
 import 'package:app_core/model/chat_message.dart';
 import 'package:app_core/model/response/base_response.dart';
 
-part 'chat.g.dart';
-
 @JsonSerializable()
 class AppCoreChat {
   static const String APP_CONTENT_CHAT = "chat";
@@ -61,8 +59,4 @@ class AppCoreChat {
 
   // JSON
   AppCoreChat();
-
-  factory AppCoreChat.fromJson(Map<String, dynamic> json) => _$AppCoreChatFromJson(json);
-
-  Map<String, dynamic> toJson() => _$AppCoreChatToJson(this);
 }

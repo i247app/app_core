@@ -1,8 +1,6 @@
 import 'package:app_core/helper/util.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'user.g.dart';
-
 @JsonSerializable()
 class AppCoreUser {
   @JsonKey(name: "puid")
@@ -82,8 +80,4 @@ class AppCoreUser {
 
   // JSON
   AppCoreUser();
-
-  factory AppCoreUser.fromJson(Map<String, dynamic> json) => _$AppCoreUserFromJson(json);
-
-  Map<String, dynamic> toJson() => _$AppCoreUserToJson(this);
 }

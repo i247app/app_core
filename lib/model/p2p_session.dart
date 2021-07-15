@@ -1,8 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/model/user.dart';
 
-part 'p2p_session.g.dart';
-
 @JsonSerializable()
 class AppCoreP2PSession {
   @JsonKey(name: "id")
@@ -34,9 +32,4 @@ class AppCoreP2PSession {
 
   // JSON
   AppCoreP2PSession();
-
-  factory AppCoreP2PSession.fromJson(Map<String, dynamic> json) =>
-      _$AppCoreP2PSessionFromJson(json);
-
-  Map<String, dynamic> toJson() => _$AppCoreP2PSessionToJson(this);
 }
