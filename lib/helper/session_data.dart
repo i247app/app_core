@@ -93,11 +93,11 @@ abstract class AppCoreSessionData {
 
   static AppCoreUser? get me => userSession?.user;
 
-  static AppNav? get appNav => userSession?.appNav;
+  static AppCoreAppNav? get appNav => userSession?.appNav;
 
   // splashy home screen - effect base_screen/bottomNavBar and home_portal
   static bool get isSplashMode =>
-      (userSession?.appNav?.splashMode ?? AppNav.ON) == AppNav.ON;
+      (userSession?.appNav?.splashMode ?? AppCoreAppNav.ON) == AppCoreAppNav.ON;
 
   static bool get isOnline => userSession?.isOnlineMode ?? false;
 

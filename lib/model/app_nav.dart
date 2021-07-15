@@ -16,7 +16,7 @@ int? zzz_tryatoi(dynamic? num) {
 }
 
 @JsonSerializable()
-class AppNav {
+class AppCoreAppNav {
   static const String SPLASH_MODE = "splashMode";
 
   static const int OFF = -1;
@@ -27,5 +27,5 @@ class AppNav {
   int? splashMode;
 
   // JSON
-  AppNav();
+  AppCoreAppNav();
 }

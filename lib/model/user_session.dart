@@ -34,7 +34,7 @@ class AppCoreUserSession {
   String? googleMapAPIKey;
 
   @JsonKey(name: APP_NAV)
-  AppNav? appNav = AppNav();
+  AppCoreAppNav? appNav = AppCoreAppNav();
 
   @JsonKey(name: USER)
   AppCoreUser? user;
