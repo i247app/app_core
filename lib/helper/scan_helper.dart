@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-enum ScanStatus {
+enum AppCoreScanStatus {
   ok,
   permissions_error,
   ios_simulator,
@@ -11,17 +11,17 @@ enum ScanStatus {
   unknown
 }
 
-class ScanResult {
+class AppCoreScanResult {
   String? data;
-  ScanStatus status;
+  AppCoreScanStatus status;
 
-  ScanResult({this.data, this.status = ScanStatus.unknown});
+  AppCoreScanResult({this.data, this.status = AppCoreScanStatus.unknown});
 }
 
-abstract class ScanHelper {
-  static Future<ScanResult> scan() async {
-    Future<ScanResult> result =
-        Future.value(ScanResult(status: ScanStatus.unknown));
+abstract class AppCoreScanHelper {
+  static Future<AppCoreScanResult> scan() async {
+    Future<AppCoreScanResult> result =
+        Future.value(AppCoreScanResult(status: AppCoreScanStatus.unknown));
 
     PermissionStatus permission = await Permission.camera.status;
 
@@ -37,16 +37,16 @@ abstract class ScanHelper {
         result = _scan();
       else if (permissionResult[Permission.camera] ==
           PermissionStatus.denied)
-        result = Future.value(ScanResult(status: ScanStatus.permissions_error));
+        result = Future.value(AppCoreScanResult(status: AppCoreScanStatus.permissions_error));
     }
     return result;
   }
 
-  static Future<ScanResult> _scan() async {
+  static Future<AppCoreScanResult> _scan() async {
     final data = await FlutterBarcodeScanner.scanBarcode(
         "#ff6666", "Cancel", false, ScanMode.QR);
-    return ScanResult(
+    return AppCoreScanResult(
         data: data == "-1" ? null : data,
-        status: data == "-1" ? ScanStatus.unknown : ScanStatus.ok);
+        status: data == "-1" ? AppCoreScanStatus.unknown : AppCoreScanStatus.ok);
   }
 }

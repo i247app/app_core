@@ -31,8 +31,8 @@ abstract class AppCoreREMHelper {
 
   /// Scan and attempt to pass result through REM
   static Future<void> scanREM() async {
-    ScanResult result = await ScanHelper.scan();
-    if (result.status == ScanStatus.ok && result.data != null && from(result.data!) != null)
+    AppCoreScanResult result = await AppCoreScanHelper.scan();
+    if (result.status == AppCoreScanStatus.ok && result.data != null && from(result.data!) != null)
       await from(result.data!)!.call(appCoreNavigatorKey.currentState!);
     else
       print(result.status);
