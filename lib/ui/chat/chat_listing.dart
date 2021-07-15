@@ -6,16 +6,11 @@ import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/local_notif_helper.dart';
 import 'package:app_core/helper/location_helper.dart';
 import 'package:app_core/helper/push_data_helper.dart';
-import 'package:app_core/helper/session_data.dart';
 import 'package:app_core/helper/util.dart';
 import 'package:app_core/model/chat.dart';
-import 'package:app_core/model/chat_member.dart';
 import 'package:app_core/model/push_data.dart';
-import 'package:app_core/model/user.dart';
-import 'package:app_core/ui/chat/chat_contacts.dart';
 import 'package:app_core/ui/chat/widget/chat_icon.dart';
-import 'package:app_core/header//styles.dart';
-import 'package:app_core/ui/widget/user_avatar.dart';
+import 'package:app_core/header/styles.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class AppCoreChatListing extends StatefulWidget {
@@ -104,7 +99,7 @@ class _AppCoreChatListingState extends State<AppCoreChatListing> {
       null,
     );
 
-    if (response.isSuccess) {
+    if (response) {
       // Then show a snackbar.
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('\'${chat.title}\' chat has been removed')));
