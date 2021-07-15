@@ -23,11 +23,13 @@ abstract class AppCoreChat {
   @JsonKey(name: "previewMessage")
   String? previewMessage;
 
-  @JsonKey(name: "chatMessages")
-  List<AppCoreChatMessage>? messages;
+  // @JsonKey(name: "chatMessages")
+  @JsonKey(ignore: true)
+  List<AppCoreChatMessage>? _messages;
 
-  @JsonKey(name: "members")
-  List<AppCoreChatMember>? members;
+  @JsonKey(ignore: true)
+  // @JsonKey(name: "members")
+  List<AppCoreChatMember>? _members;
 
   @JsonKey(name: "activeDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
   DateTime? activeDate;
@@ -40,17 +42,17 @@ abstract class AppCoreChat {
 
   /// Methods
   @JsonKey(ignore: true)
-  bool get isGroup => (this.members ?? []).length > 2;
+  bool get isGroup => (this._members ?? []).length > 2;
 
   @JsonKey(ignore: true)
   String get title {
-    if ((this.members ?? []).length > 2)
-      return this.chatName ?? (this.members ?? [])
+    if ((this._members ?? []).length > 2)
+      return this.chatName ?? (this._members ?? [])
           .where((m) => m.puid != AppCoreSessionData.me!.puid)
           .map((m) => "${m.chatName}")
           .join(", ");
-    if ((this.members ?? []).length == 2)
-      return (this.members ?? [])
+    if ((this._members ?? []).length == 2)
+      return (this._members ?? [])
           .where((m) => m.puid != AppCoreSessionData.me!.puid)
           .map((m) => "${m.displayName}")
           .join(", ");
