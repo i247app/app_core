@@ -23,8 +23,10 @@ class AppCoreChat {
   @JsonKey(name: "previewMessage")
   String? previewMessage;
 
+  @JsonKey(ignore: true)
   List<AppCoreChatMessage>? appCoreMessages;
 
+  @JsonKey(ignore: true)
   List<AppCoreChatMember>? appCoreMembers;
 
   @JsonKey(name: "activeDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
