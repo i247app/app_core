@@ -17,7 +17,7 @@ class AppCoreChatMessageContent {
 }
 
 @JsonSerializable()
-abstract class AppCoreChatMessage {
+class AppCoreChatMessage {
   @JsonKey(name: "messageID")
   String? messageID;
 
