@@ -18,9 +18,9 @@ int? zzz_tryatoi(dynamic? num) {
 abstract class AppCoreAppNav {
   static const String SPLASH_MODE = "splashMode";
 
-  static const int OFF = -1;
-  static const int ON = 0;
-  static const int READONLY = 1;
+  int OFF = -1;
+  int ON = 0;
+  int READONLY = 1;
 
   @JsonKey(name: SPLASH_MODE, toJson: zzz_itoa, fromJson: zzz_tryatoi)
   int? splashMode;
