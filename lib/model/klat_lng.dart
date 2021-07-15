@@ -32,8 +32,5 @@ class AppCoreKLatLng {
   @override
   String toString() => "${(lat ?? 0).toStringAsFixed(2)},${(lng ?? 0).toStringAsFixed(2)}";
 
-  // JSON
-  AppCoreKLatLng();
-
   AppCoreKLatLng.raw(this.lat, this.lng);
 }
