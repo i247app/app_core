@@ -24,7 +24,4 @@ abstract class AppCoreAppNav {
 
   @JsonKey(name: SPLASH_MODE, toJson: zzz_itoa, fromJson: zzz_tryatoi)
   int? splashMode;
-
-  // JSON
-  AppCoreAppNav();
 }
