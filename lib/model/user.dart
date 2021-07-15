@@ -1,8 +1,7 @@
 import 'package:app_core/helper/util.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-@JsonSerializable()
-class AppCoreUser {
+class KUser {
   @JsonKey(name: "puid")
   String? puid;
 
@@ -69,15 +68,12 @@ class AppCoreUser {
 
   // TODO - fix reward user (non-regis phone only)
   String? get fullName =>
-      AppCoreUtil.prettyName(
+      KUtil.prettyName(
           fnm: firstName ?? "", mnm: middleName ?? "", lnm: lastName ?? "") ??
       phone;
 
   String get prettyFone =>
-      AppCoreUtil.prettyFone(foneCode: this.phoneCode ?? "", number: phone ?? "");
+      KUtil.prettyFone(foneCode: this.phoneCode ?? "", number: phone ?? "");
 
   String get firstInitial => firstName?.substring(0, 1) ?? "";
-
-  // JSON
-  AppCoreUser();
 }

@@ -7,22 +7,22 @@ import 'package:app_core/helper/util.dart';
 import 'package:app_core/model/chat_message.dart';
 import 'package:app_core/ui/chat/service/chatroom_data.dart';
 
-class AppCoreChatroomController extends ValueNotifier<AppCoreChatroomData> {
+class KChatroomController extends ValueNotifier<KChatroomData> {
   static const int MAX_MESSAGE_COUNT = 100;
 
-  AppCoreChatMessage get messageTemplate => AppCoreChatMessage()
+  KChatMessage get messageTemplate => KChatMessage()
     ..chatID = this.value.chatID
-    ..localID = AppCoreChatMessage.generateLocalID()
-    ..puid = AppCoreSessionData.me?.puid
+    ..localID = KChatMessage.generateLocalID()
+    ..puid = KSessionData.me?.puid
     ..refApp = this.value.refApp
     ..refID = this.value.refID
     ..messageDate = DateTime.now();
 
-  AppCoreChatroomController(AppCoreChatroomData value) : super(value);
+  KChatroomController(KChatroomData value) : super(value);
 
   Future<String?> sendVideoCallEvent() async => sendMessage(
-        messageType: AppCoreChatMessageType.CONTENT_TYPE_VIDEO_CALL_EVENT,
-        text: "Video call ${AppCoreUtil.prettyDate(DateTime.now())}",
+        messageType: KChatMessage.CONTENT_TYPE_VIDEO_CALL_EVENT,
+        text: "Video call ${KUtil.prettyDate(DateTime.now())}",
       );
 
   Future<String?> sendText(String message) async {
@@ -30,19 +30,19 @@ class AppCoreChatroomController extends ValueNotifier<AppCoreChatroomData> {
     if (sanitized.isEmpty) return null;
 
     return sendMessage(
-      messageType: AppCoreChatMessageType.CONTENT_TYPE_TEXT,
+      messageType: KChatMessage.CONTENT_TYPE_TEXT,
       text: sanitized,
     );
   }
 
-  Future<String?> sendImage(AppCorePhotoResult result) async {
-    if (result.status != AppCorePhotoStatus.ok) return null;
+  Future<String?> sendImage(KPhotoResult result) async {
+    if (result.status != KPhotoStatus.ok) return null;
 
     return sendMessage(
-      messageType: AppCoreChatMessageType.CONTENT_TYPE_IMAGE,
+      messageType: KChatMessage.CONTENT_TYPE_IMAGE,
       imageData: result.photoFile == null
           ? null
-          : AppCoreUtil.fileToBase64(result.photoFile!),
+          : KUtil.fileToBase64(result.photoFile!),
     );
   }
 
@@ -112,7 +112,7 @@ class AppCoreChatroomController extends ValueNotifier<AppCoreChatroomData> {
   /// PRIVATE
   ///
 
-  Future<String?> _sendChatMessage(AppCoreChatMessage message) async {
+  Future<String?> _sendChatMessage(KChatMessage message) async {
     if (this.value.sendMessage == null) return Future.value();
 
     // Immediately update the messages for nice UI experience
@@ -121,7 +121,7 @@ class AppCoreChatroomController extends ValueNotifier<AppCoreChatroomData> {
     notifyListeners();
 
     print("CHAT CTRL - sending message by API");
-    final fut = AppCoreStringHelper.isExist(this.value.chatID)
+    final fut = KStringHelper.isExist(this.value.chatID)
         ? this.value.sendMessage!(message: message)
         : this.value.sendMessage!(
             message: message,
@@ -151,7 +151,7 @@ class AppCoreChatroomController extends ValueNotifier<AppCoreChatroomData> {
     return chatID;
   }
 
-  void _updateLocalChatMessage(String localID, AppCoreChatMessage trueMessage) {
+  void _updateLocalChatMessage(String localID, KChatMessage trueMessage) {
     for (int i = 0; i < (this.value.messages ?? []).length; i++) {
       if (this.value.messages![i].localID == localID) {
         // Set the local chat id so it can be matched up with data returned by

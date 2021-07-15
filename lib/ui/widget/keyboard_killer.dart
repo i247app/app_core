@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 
-class AppCoreKeyboardKiller extends StatelessWidget {
+class KeyboardKiller extends StatelessWidget {
   final Widget child;
 
-  AppCoreKeyboardKiller({required this.child});
+  KeyboardKiller({required this.child});
 
   @override
   Widget build(BuildContext context) {

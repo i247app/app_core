@@ -1,8 +1,7 @@
 import 'package:app_core/app_core.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-@JsonSerializable()
-class AppCorePushData {
+class KPushData {
   static const String PUSH_TYPE = "pushType";
   static const String APP = "app";
   static const String ID = "id";

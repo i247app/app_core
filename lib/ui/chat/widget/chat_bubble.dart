@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:app_core/app_core.dart';
-import 'package:app_core/header/assets.dart';
+import 'package:app_core/header/kassets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/util.dart';
 import 'package:app_core/model/chat_message.dart';
-import 'package:app_core/header/styles.dart';
+import 'package:app_core/header/kstyles.dart';
 import 'package:app_core/ui/widget/image_viewer.dart';
 import 'package:app_core/ui/widget/user_avatar.dart';
 
@@ -16,9 +16,9 @@ class AppCoreChatBubble extends StatelessWidget {
   static const double GUTTER_SIZE = 32;
   static const double BORDER_RADIUS = 16;
 
-  final AppCoreChatMessage chat;
-  final AppCoreChatMessage? previousChat;
-  final AppCoreChatMessage? nextChat;
+  final KChatMessage chat;
+  final KChatMessage? previousChat;
+  final KChatMessage? nextChat;
   final Function(String)? onAvatarClick;
 
   bool get isFirstOfSeries {
@@ -50,9 +50,9 @@ class AppCoreChatBubble extends StatelessWidget {
           LONG_TIME_CUTOFF;
 
   Color get chatBGColor =>
-      this.chat.isMe ? Styles.colorPrimary : Styles.extraExtraLightGrey;
+      this.chat.isMe ? KStyles.colorPrimary : KStyles.extraExtraLightGrey;
 
-  Color get chatTextColor => this.chat.isMe ? Styles.white : Styles.black;
+  Color get chatTextColor => this.chat.isMe ? KStyles.white : KStyles.black;
 
   /// Kinda complex rule-set for determining chat bubble border radius
   BorderRadiusGeometry get chatBorderRadius {
@@ -88,7 +88,7 @@ class AppCoreChatBubble extends StatelessWidget {
     Navigator.of(ctx).push(
       MaterialPageRoute(
         builder: (c) =>
-            Scaffold(body: AppCoreImageViewer(imageURL: this.chat.message)),
+            Scaffold(body: KImageViewer(imageURL: this.chat.message)),
       ),
     );
   }
@@ -97,7 +97,7 @@ class AppCoreChatBubble extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
           borderRadius: this.chatBorderRadius,
-          color: this.chat.isLocal ? Styles.blueFaded : this.chatBGColor,
+          color: this.chat.isLocal ? KStyles.blueFaded : this.chatBGColor,
         ),
         child: child,
       );
@@ -106,7 +106,7 @@ class AppCoreChatBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final content;
     switch (this.chat.messageType ?? "") {
-      case AppCoreChatMessageType.CONTENT_TYPE_TEXT:
+      case KChatMessage.CONTENT_TYPE_TEXT:
         content = wrapWithChatBubble(
           Text(
             this.chat.message ?? "",
@@ -114,7 +114,7 @@ class AppCoreChatBubble extends StatelessWidget {
           ),
         );
         break;
-      case AppCoreChatMessageType.CONTENT_TYPE_IMAGE:
+      case KChatMessage.CONTENT_TYPE_IMAGE:
         content = ClipRRect(
           borderRadius: BorderRadius.circular(BORDER_RADIUS),
           child: Container(
@@ -127,7 +127,7 @@ class AppCoreChatBubble extends StatelessWidget {
                 : InkWell(
                     onTap: () => onImageClick(context),
                     child: FadeInImage(
-                      placeholder: AssetImage(Assets.IMG_TRANSPARENCY),
+                      placeholder: AssetImage(KAssets.IMG_TRANSPARENCY),
                       image: this.chat.imageData != null
                           ? MemoryImage(base64Decode(this.chat.imageData!))
                               as ImageProvider<Object>
@@ -139,7 +139,7 @@ class AppCoreChatBubble extends StatelessWidget {
           ),
         );
         break;
-      case AppCoreChatMessageType.CONTENT_TYPE_VIDEO_CALL_EVENT:
+      case KChatMessage.CONTENT_TYPE_VIDEO_CALL_EVENT:
         content = wrapWithChatBubble(
           Column(
             mainAxisSize: MainAxisSize.min,
@@ -160,8 +160,8 @@ class AppCoreChatBubble extends StatelessWidget {
               ),
               SizedBox(height: 4),
               Text(
-                "${AppCoreUtil.prettyDate(this.chat.messageDate, showTime: true)}",
-                style: Styles.detailText
+                "${KUtil.prettyDate(this.chat.messageDate, showTime: true)}",
+                style: KStyles.detailText
                     .copyWith(color: this.chatTextColor)
                     .apply(),
               ),
@@ -173,11 +173,11 @@ class AppCoreChatBubble extends StatelessWidget {
         content = Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.error, color: Styles.colorError),
+            Icon(Icons.error, color: KStyles.colorError),
             SizedBox(width: 4),
             Text(
               "An error occurred",
-              style: TextStyle(color: Styles.colorError),
+              style: TextStyle(color: KStyles.colorError),
             ),
           ],
         );
@@ -190,7 +190,7 @@ class AppCoreChatBubble extends StatelessWidget {
         child: Container(
           width: GUTTER_SIZE,
           height: GUTTER_SIZE,
-          child: AppCoreUserAvatar.fromUser(this.chat.appCoreUser),
+          child: KUserAvatar.fromUser(this.chat.appCoreUser),
         ),
       ),
     );
@@ -228,8 +228,8 @@ class AppCoreChatBubble extends StatelessWidget {
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Text(
-                    AppCoreUtil.timeAgo(this.chat.messageDate),
-                    style: Styles.detailText,
+                    KUtil.timeAgo(this.chat.messageDate),
+                    style: KStyles.detailText,
                   ),
                 ),
               ),

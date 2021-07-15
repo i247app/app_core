@@ -4,8 +4,7 @@ import 'package:app_core/model/system_host_data.dart';
 import 'package:app_core/model/user.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-@JsonSerializable()
-class AppCoreUserSession {
+class KUserSession {
   static const String KTOKEN = "ktoken";
   static const String PUID = "puid";
   static const String USER_MODE = "userMode";
@@ -34,18 +33,18 @@ class AppCoreUserSession {
   String? googleMapAPIKey;
 
   @JsonKey(ignore: true)
-  AppCoreAppNav? appCoreAppNav;
+  KAppNav? appCoreAppNav;
 
   @JsonKey(ignore: true)
-  AppCoreUser? appCoreUser;
+  KUser? appCoreUser;
 
   @JsonKey(ignore: true)
-  AppCoreSystemHostData? appCoreHostData;
+  KSystemHostData? appCoreHostData;
 
   // Methods
   @JsonKey(ignore: true)
-  bool get isOnlineMode => AppCoreStringHelper.parseBoolean(this.onlineMode);
+  bool get isOnlineMode => KStringHelper.parseBoolean(this.onlineMode);
 
   // JSON
-  AppCoreUserSession();
+  KUserSession();
 }

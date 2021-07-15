@@ -1,36 +1,36 @@
 import 'dart:io';
 
-class AppCoreKLocale {
+class KLocale {
   final String language;
   final String country;
 
-  const AppCoreKLocale({required this.language, required this.country});
+  const KLocale({required this.language, required this.country});
 }
 
-abstract class AppCoreLocaleHelper {
+abstract class LocaleHelper {
   static const String LANGUAGE_EN = "en";
   static const String LANGUAGE_VI = "vi";
 
   static const String COUNTRY_US = "us";
   static const String COUNTRY_VN = "vn";
 
-  static AppCoreKLocale get defaultLocale => AppCoreKLocale(
-    language: LANGUAGE_EN,
-    country: COUNTRY_US,
-  );
+  static KLocale get defaultLocale => KLocale(
+        language: LANGUAGE_EN,
+        country: COUNTRY_US,
+      );
 
   static String get localeName => Platform.localeName;
 
-  static AppCoreKLocale get currentLocale => _getLocale();
+  static KLocale get currentLocale => _getLocale();
 
-  static AppCoreKLocale _getLocale() {
+  static KLocale _getLocale() {
     String lang = LANGUAGE_EN;
     String ctry = COUNTRY_US;
 
-    AppCoreKLocale locale = defaultLocale;
+    KLocale locale = defaultLocale;
     try {
       List<String> zz =
-      Platform.localeName.split('_').map((e) => e.toLowerCase()).toList();
+          Platform.localeName.split('_').map((e) => e.toLowerCase()).toList();
 
       if (zz.length == 1)
         lang = zz[0];
@@ -39,7 +39,7 @@ abstract class AppCoreLocaleHelper {
         ctry = zz[1];
       }
 
-      locale = AppCoreKLocale(language: lang, country: ctry);
+      locale = KLocale(language: lang, country: ctry);
     } catch (e) {
       print(e.toString());
       locale = defaultLocale;

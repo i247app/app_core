@@ -4,24 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/file_helper.dart';
 import 'package:app_core/helper/toast_helper.dart';
-import 'package:app_core/header/styles.dart';
+import 'package:app_core/header/kstyles.dart';
 
 enum _ImageViewerType { url, file }
 
-class AppCoreImageViewer extends StatefulWidget {
+class KImageViewer extends StatefulWidget {
   final String? imageURL;
   final File? imageFile;
 
-  const AppCoreImageViewer({
+  const KImageViewer({
     this.imageURL,
     this.imageFile,
   });
 
   @override
-  State<StatefulWidget> createState() => _AppCoreImageViewerState();
+  State<StatefulWidget> createState() => _KImageViewerState();
 }
 
-class _AppCoreImageViewerState extends State<AppCoreImageViewer> {
+class _KImageViewerState extends State<KImageViewer> {
   ImageProvider? imageProvider;
 
   _ImageViewerType get imageType {
@@ -49,11 +49,12 @@ class _AppCoreImageViewerState extends State<AppCoreImageViewer> {
 
   void onSaveClick() async {
     if (widget.imageURL != null) {
-      final isSuccess = await AppCoreFileHelper.downloadImageFromURL(widget.imageURL!);
+      final isSuccess =
+          await KFileHelper.downloadImageFromURL(widget.imageURL!);
       if (isSuccess)
-        AppCoreToastHelper.success("Image saved!");
+        KToastHelper.success("Image saved!");
       else
-        AppCoreToastHelper.error("Failed to save image.");
+        KToastHelper.error("Failed to save image.");
     }
   }
 
@@ -62,18 +63,18 @@ class _AppCoreImageViewerState extends State<AppCoreImageViewer> {
     final backButton = IconButton(
       onPressed: () => Navigator.of(context).pop(),
       icon: CircleAvatar(
-          backgroundColor: Styles.extraDarkGrey,
+          backgroundColor: KStyles.extraDarkGrey,
           child: Icon(
             Icons.close,
-            color: Styles.colorButtonText,
+            color: KStyles.colorButtonText,
           )),
     );
 
     final saveButton = IconButton(
       onPressed: onSaveClick,
       icon: CircleAvatar(
-        backgroundColor: Styles.extraDarkGrey,
-        child: Icon(Icons.save, color: Styles.colorButtonText),
+        backgroundColor: KStyles.extraDarkGrey,
+        child: Icon(Icons.save, color: KStyles.colorButtonText),
       ),
     );
 
@@ -93,7 +94,7 @@ class _AppCoreImageViewerState extends State<AppCoreImageViewer> {
           );
 
     final imageViewer = Container(
-      color: Styles.black,
+      color: KStyles.black,
       child: InteractiveViewer(
         panEnabled: false,
         minScale: 0.5,

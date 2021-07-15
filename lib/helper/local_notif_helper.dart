@@ -10,22 +10,23 @@ import 'package:app_core/helper/util.dart';
 import 'package:app_core/model/full_notification.dart';
 import 'package:app_core/model/notif_data.dart';
 import 'package:app_core/model/push_data.dart';
+import 'package:app_core/rem/mgr/rem_manager.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-abstract class AppCoreLocalNotifHelper {
+abstract class KLocalNotifHelper {
   static const bool BLOCKED_BANNERS_AS_TOAST = false;
 
   static FlutterLocalNotificationsPlugin? _flutterLocalNotificationsPlugin;
 
   // TODO replace with smarter system
   static final Map<String, int> _blockedBannersDepth = {
-    AppCorePushData.APP_GIG_NOTIFY: 1,
-    AppCorePushData.APP_GIG_ASSIGN: 1,
-    AppCorePushData.APP_GIG_BOOK: 1,
-    AppCorePushData.APP_SESSION_NOTIFY: 1,
-    AppCorePushData.APP_PUSH_PING_NOTIFY: 1,
-    AppCorePushData.APP_P2P_CALL_NOTIFY: 1,
-    AppCorePushData.APP_CONFETTI_NOTIFY: 1,
+    KPushData.APP_GIG_NOTIFY: 1,
+    KPushData.APP_GIG_ASSIGN: 1,
+    KPushData.APP_GIG_BOOK: 1,
+    KPushData.APP_SESSION_NOTIFY: 1,
+    KPushData.APP_PUSH_PING_NOTIFY: 1,
+    KPushData.APP_P2P_CALL_NOTIFY: 1,
+    KPushData.APP_CONFETTI_NOTIFY: 1,
   };
 
   static void blockBanner(String app) {
@@ -50,7 +51,7 @@ abstract class AppCoreLocalNotifHelper {
   static void _logBlockDepth(String app) => print(
       "LocalNotifHelper :: banner block depth - ${_blockedBannersDepth[app]}");
 
-  static Future<void> setupLocalNotifications() async {
+  static Future<void> setupLocalNotifications(REMManager dispatcher) async {
     print("fcm_helper => setupLocalNotifications fired");
 
     _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -63,18 +64,22 @@ abstract class AppCoreLocalNotifHelper {
       onSelectNotification: (payload) async {
         if (payload != null &&
             // Removes a bug where app repeatedly triggers this method on launch
-            AppCoreSessionData.hasActiveSession)
-          AppCoreREMHelper.from(payload, "LocalNotifHelper.setupLocalNotifications")
-              ?.call(appCoreNavigatorKey.currentState!);
+            KSessionData.hasActiveSession)
+          REMHelper.from(
+            dispatcher,
+            payload,
+            "LocalNotifHelper.setupLocalNotifications",
+          )?.call(kNavigatorKey.currentState!);
       },
     );
   }
 
   static void showNotification(
-      AppCoreFullNotification? msg, {
+    KFullNotification? msg, {
+    REMManager? remDispatcher,
     bool obeyBlacklist = false,
   }) async {
-    AppCoreNotifData? notif = msg?.appCoreNotification;
+    KNotifData? notif = msg?.appCoreNotification;
     String? app = msg?.app;
     if (notif == null || app == null) return;
 
@@ -82,8 +87,8 @@ abstract class AppCoreLocalNotifHelper {
     _logBlockDepth(app);
     if (isBannerBlocked(app) && obeyBlacklist == true) {
       print("LocalNotifHelper - blocked banner for app '$app'");
-      if (!AppCoreHostConfig.isReleaseMode && BLOCKED_BANNERS_AS_TOAST)
-        AppCoreToastHelper.show("data app $app");
+      if (!KHostConfig.isReleaseMode && BLOCKED_BANNERS_AS_TOAST)
+        KToastHelper.show("data app $app");
       return;
     }
 
@@ -107,11 +112,11 @@ abstract class AppCoreLocalNotifHelper {
     final platform = NotificationDetails(android: android, iOS: iOS);
 
     print(
-        "LocalNotifHelper.showNotification - showing ${AppCoreUtil.prettyJSON(notif)}");
+        "LocalNotifHelper.showNotification - showing ${KUtil.prettyJSON(notif)}");
 
-    if (AppCoreStringHelper.isExist(notif.title ?? "")) {
-      if (_flutterLocalNotificationsPlugin == null)
-        await setupLocalNotifications();
+    if (KStringHelper.isExist(notif.title ?? "")) {
+      if (_flutterLocalNotificationsPlugin == null && remDispatcher != null)
+        await setupLocalNotifications(remDispatcher);
 
       await _flutterLocalNotificationsPlugin!.show(
         0,

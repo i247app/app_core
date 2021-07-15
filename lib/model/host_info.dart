@@ -3,8 +3,7 @@ import 'dart:ui';
 import 'package:app_core/model/response/base_response.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-@JsonSerializable()
-class AppCoreHostInfo {
+class KHostInfo {
   static const String HOSTNAME = "hostname";
   static const String PORT = "port";
 
@@ -23,7 +22,7 @@ class AppCoreHostInfo {
     }
   }
 
-  factory AppCoreHostInfo.raw(String hostname, int port) => AppCoreHostInfo()
+  factory KHostInfo.raw(String hostname, int port) => KHostInfo()
     ..hostname = hostname
     ..port = port;
 
@@ -37,11 +36,11 @@ class AppCoreHostInfo {
   @override
   bool operator ==(Object other) => this.hashCode == other.hashCode;
 
-  AppCoreHostInfo copyWith({String? hostname, int? port}) => AppCoreHostInfo.raw(
+  KHostInfo copyWith({String? hostname, int? port}) => KHostInfo.raw(
         hostname ?? this.hostname,
         port ?? this.port,
       );
 
   // JSON
-  AppCoreHostInfo();
+  KHostInfo();
 }

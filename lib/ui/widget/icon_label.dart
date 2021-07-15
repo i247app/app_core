@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:app_core/header/styles.dart';
+import 'package:app_core/header/kstyles.dart';
 
-class AppCoreIconLabel extends StatelessWidget {
+class KIconLabel extends StatelessWidget {
   final String? asset;
   final IconData? icon;
   final String text;
@@ -13,7 +13,7 @@ class AppCoreIconLabel extends StatelessWidget {
   final double assetSize;
   final bool isFlexible;
 
-  AppCoreIconLabel({
+  KIconLabel({
     required this.text,
     this.asset,
     this.icon,
@@ -44,7 +44,7 @@ class AppCoreIconLabel extends StatelessWidget {
             height: this.assetSize,
             padding: EdgeInsets.all(2),
             decoration: BoxDecoration(
-              color: Styles.white,
+              color: KStyles.white,
               borderRadius: BorderRadius.circular(30),
             ),
             child: rawIcon,

@@ -1,13 +1,13 @@
-import 'package:app_core/helper/kcode.dart';
+import 'package:app_core/helper/kcore_code.dart';
 
-abstract class AppCoreValidateHelper {
+abstract class KValidateHelper {
   static String messageFromCode(int? status) {
     switch (status) {
-      case AppCoreKCode.SUCCESS:
+      case KCoreCode.SUCCESS:
         return "Success";
       case 600:
         return "App Fail";
-      case AppCoreKCode.ERROR:
+      case KCoreCode.ERROR:
         return "An error occurred";
       case 622:
         return "Email already exists";

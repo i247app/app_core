@@ -4,10 +4,10 @@ import 'dart:convert';
 import 'package:app_core/helper/host_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-abstract class AppCorePrefHelper {
+abstract class KPrefHelper {
   static const String TAG = 'SecureStorageHelper';
 
-  static bool get isDebugMode => !AppCoreHostConfig.isReleaseMode;
+  static bool get isDebugMode => !KHostConfig.isReleaseMode;
 
   static const String KTOKEN = 'session_token';
   static const String PUSH_TOKEN = 'push_token';

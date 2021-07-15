@@ -1,8 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-@JsonSerializable()
-class AppCoreNotifData {
+class KNotifData {
   static const String TITLE = "title";
   static const String BODY = "body";
 
@@ -13,11 +12,11 @@ class AppCoreNotifData {
   String? body;
 
   /// From
-  factory AppCoreNotifData.fromFCMRemoteNotification(
+  factory KNotifData.fromFCMRemoteNotification(
           RemoteNotification? notification) =>
-      AppCoreNotifData()
+      KNotifData()
         ..title = notification?.title ?? ""
         ..body = notification?.body ?? "";
 
-  AppCoreNotifData();
+  KNotifData();
 }

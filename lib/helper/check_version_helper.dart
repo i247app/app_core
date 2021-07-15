@@ -3,24 +3,24 @@ import 'package:new_version/new_version.dart';
 
 import 'host_config.dart';
 
-abstract class AppCoreCheckVersionHelper {
-  static final ckVersion = NewVersion();
+abstract class CheckVersionHelper {
   static const bool BLOCKED_BANNERS_AS_TOAST = false;
+
+  static final _ckVersion = NewVersion();
 
   static Future<void> checkVersion(
       BuildContext context, bool isAlwaysDialog) async {
-    final status = await ckVersion.getVersionStatus();
-    if (!AppCoreHostConfig.isReleaseMode && status != null) {
+    final status = await _ckVersion.getVersionStatus();
+    if (!KHostConfig.isReleaseMode && status != null) {
       print("version ${status.localVersion} store ${status.storeVersion}");
     }
 
     if (status != null && status.canUpdate) {
-      ckVersion.showUpdateDialog(
+      _ckVersion.showUpdateDialog(
         context: context,
         versionStatus: status,
         dialogTitle: 'App Updates Available',
-        dialogText:
-            'Update to version ${status.storeVersion}',
+        dialogText: 'Update to version ${status.storeVersion}',
         updateButtonText: 'Update',
         dismissButtonText: 'Later',
       );

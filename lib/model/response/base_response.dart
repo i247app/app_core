@@ -1,5 +1,5 @@
 import 'package:app_core/helper/date_helper.dart';
-import 'package:app_core/helper/kcode.dart';
+import 'package:app_core/helper/kcore_code.dart';
 import 'package:app_core/helper/validate_helper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -10,12 +10,12 @@ String? zzz_itoa(int? num) => num?.toString() ?? null;
 int zzz_parseInt(String? z) => z == null || z == "" ? 0 : int.parse(z);
 
 DateTime? zzz_str2Date(String? z) =>
-    z == null || z == "" || AppCoreDateHelper.from20FSP(z, isUTC: true) == null
+    z == null || z == "" || DateHelper.from20FSP(z, isUTC: true) == null
         ? null
-        : AppCoreDateHelper.from20FSP(z, isUTC: true)!.toLocal();
+        : DateHelper.from20FSP(z, isUTC: true)!.toLocal();
 
 String? zzz_date2Str(DateTime? d) =>
-    d == null ? null : AppCoreDateHelper.to20FSP(d, toUTC: true);
+    d == null ? null : DateHelper.to20FSP(d, toUTC: true);
 
 abstract class AppCoreBaseResponse {
   static const String KTOKEN = "ktoken";
@@ -33,10 +33,10 @@ abstract class AppCoreBaseResponse {
   String? ktoken;
 
   @JsonKey(ignore: true)
-  bool get isSuccess => this.kstatus == AppCoreKCode.SUCCESS;
+  bool get isSuccess => this.kstatus == KCoreCode.SUCCESS;
 
   @JsonKey(ignore: true)
-  bool get isNoData => this.kstatus == AppCoreKCode.NO_DATA;
+  bool get isNoData => this.kstatus == KCoreCode.NO_DATA;
 
   @JsonKey(ignore: true)
   bool get isError => !this.isSuccess; // NOTE - includes 'isNoData'
@@ -45,5 +45,5 @@ abstract class AppCoreBaseResponse {
   bool get isStrictError => this.isError && !this.isNoData;
 
   @JsonKey(ignore: true)
-  String get prettyMessage => AppCoreValidateHelper.messageFromCode(this.kstatus);
+  String get prettyMessage => KValidateHelper.messageFromCode(this.kstatus);
 }

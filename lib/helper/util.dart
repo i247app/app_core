@@ -14,16 +14,16 @@ import 'package:intl/intl.dart';
 import 'package:package_info/package_info.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-abstract class AppCoreUtil {
+abstract class KUtil {
   static Random _random = Random();
   static String? _buildVersion;
   static String? _buildNumber;
 
-  static String get buildVersion => AppCoreUtil._buildVersion ?? "";
+  static String get buildVersion => KUtil._buildVersion ?? "";
 
-  static String get buildNumber => AppCoreUtil._buildNumber ?? "";
+  static String get buildNumber => KUtil._buildNumber ?? "";
 
-  static Future<String> getDeviceID() async => AppCoreDeviceIDHelper.deviceID;
+  static Future<String> getDeviceID() async => DeviceIDHelper.deviceID;
 
   static Future<String> getDeviceBrand() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -56,7 +56,7 @@ abstract class AppCoreUtil {
 
   static Future<bool> isEmulator() async => isPhysicalDevice().then((b) => !b);
 
-  static String localeName() => AppCoreLocaleHelper.localeName;
+  static String localeName() => LocaleHelper.localeName;
 
   static String getPlatformCode() => Platform.operatingSystem;
 
@@ -77,12 +77,12 @@ abstract class AppCoreUtil {
   }
 
   static bool get isDebug =>
-      !AppCoreHostConfig.isReleaseMode &&
-      !AppCoreHostConfig.isProductionHost(AppCoreHostConfig.defaultHost);
+      !KHostConfig.isReleaseMode &&
+      !KHostConfig.isProductionHost(KHostConfig.defaultHost);
 
   static Future<bool> isTabletDevice(BuildContext context) async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    return AppCoreTabletDetector.isTablet(MediaQuery.of(context)) ||
+    return KTabletDetector.isTablet(MediaQuery.of(context)) ||
         (Platform.isIOS &&
             (await deviceInfo.iosInfo).name.toLowerCase().contains("ipad"));
   }
@@ -123,13 +123,14 @@ abstract class AppCoreUtil {
     if (fone.length <= 4) {
       return fone.replaceAll(RegExp(r'.'), 'x');
     }
-    return fone.replaceAll(RegExp(r'.'), 'x').substring(0, fone.length - 4)+fone.substring(fone.length - 4);
+    return fone.replaceAll(RegExp(r'.'), 'x').substring(0, fone.length - 4) +
+        fone.substring(fone.length - 4);
   }
 
   static String prettyFone({String foneCode = "", String number = ""}) {
     foneCode = foneCode.replaceAll("+", "");
-    String prefix = AppCoreStringHelper.isExist(foneCode) ? "+" + foneCode + " " : "";
-    return prefix + (number != null ? number : "");
+    String prefix = KStringHelper.isExist(foneCode) ? "+" + foneCode + " " : "";
+    return prefix + number;
   }
 
   // TODO VN - last, middle first else first middle last
@@ -138,12 +139,12 @@ abstract class AppCoreUtil {
     String? title;
 
     try {
-      title = AppCoreStringHelper.capitalize(fnm ?? "");
+      title = KStringHelper.capitalize(fnm ?? "");
 
-      if (!AppCoreStringHelper.isEmpty(mnm))
-        title += " " + AppCoreStringHelper.capitalize(mnm ?? "");
-      if (!AppCoreStringHelper.isEmpty(lnm))
-        title += " " + AppCoreStringHelper.capitalize(lnm ?? "");
+      if (!KStringHelper.isEmpty(mnm))
+        title += " " + KStringHelper.capitalize(mnm ?? "");
+      if (!KStringHelper.isEmpty(lnm))
+        title += " " + KStringHelper.capitalize(lnm ?? "");
     } catch (e) {
       title = null;
     }
@@ -163,13 +164,13 @@ abstract class AppCoreUtil {
     try {
       title = "";
 
-      if (!AppCoreStringHelper.isEmpty(kunm)) title += "@${kunm}";
-      if (!AppCoreStringHelper.isEmpty(fnm))
-        title += " " + AppCoreStringHelper.capitalize(fnm ?? "");
-      if (!AppCoreStringHelper.isEmpty(mnm))
-        title += " " + AppCoreStringHelper.capitalize(mnm ?? "");
-      if (!AppCoreStringHelper.isEmpty(lnm))
-        title += " " + AppCoreStringHelper.capitalize(lnm ?? "");
+      if (!KStringHelper.isEmpty(kunm)) title += "@$kunm";
+      if (!KStringHelper.isEmpty(fnm))
+        title += " " + KStringHelper.capitalize(fnm ?? "");
+      if (!KStringHelper.isEmpty(mnm))
+        title += " " + KStringHelper.capitalize(mnm ?? "");
+      if (!KStringHelper.isEmpty(lnm))
+        title += " " + KStringHelper.capitalize(lnm ?? "");
     } catch (e) {
       title = null;
     }
@@ -178,18 +179,19 @@ abstract class AppCoreUtil {
   }
 
   // Anna L H. - name with last initial
-  static String privacyName(
-      {String fnm = "", String mnm = "", String lnm = ""}) {
+  static String privacyName({
+    String fnm = "",
+    String mnm = "",
+    String lnm = "",
+  }) {
     String title = "";
-
     try {
-      title = fnm != null ? fnm : "";
+      title = fnm;
+      if (!KStringHelper.isEmpty(mnm))
+        title += " " + KStringHelper.toInitials(name: mnm);
 
-      if (!AppCoreStringHelper.isEmpty(mnm))
-        title += " " + AppCoreStringHelper.toInitials(name: mnm);
-
-      if (!AppCoreStringHelper.isEmpty(lnm))
-        title += " " + AppCoreStringHelper.toInitials(name: lnm);
+      if (!KStringHelper.isEmpty(lnm))
+        title += " " + KStringHelper.toInitials(name: lnm);
     } catch (e) {
       title = "";
       print(e);
@@ -198,15 +200,16 @@ abstract class AppCoreUtil {
     return title;
   }
 
-  static String ampDisplayName(
-      {String? bnm = "",
-      String fnm = "",
-      String mnm = "",
-      String lnm = "",
-      String? fone = ""}) {
+  static String ampDisplayName({
+    String? bnm = "",
+    String fnm = "",
+    String mnm = "",
+    String lnm = "",
+    String? fone = "",
+  }) {
     return bnm ??
-        (AppCoreUtil.privacyName(fnm: fnm, mnm: mnm, lnm: lnm) != null
-            ? AppCoreUtil.privacyName(fnm: fnm, mnm: mnm, lnm: lnm)
+        (KUtil.privacyName(fnm: fnm, mnm: mnm, lnm: lnm).isNotEmpty
+            ? KUtil.privacyName(fnm: fnm, mnm: mnm, lnm: lnm)
             : (fone ?? ""));
   }
 
@@ -352,7 +355,7 @@ abstract class AppCoreUtil {
       if (isNegative) z = "-" + z;
 
       // Append fractional part if exists
-      if (fractionalPart != null) z = z + "." + fractionalPart;
+      if (fractionalPart.isNotEmpty) z = z + "." + fractionalPart;
     } catch (e) {
       z = amount ?? "";
     }
@@ -370,11 +373,11 @@ abstract class AppCoreUtil {
       DateTime? date;
       switch (rawDate.runtimeType) {
         case DateTime:
-          date = AppCoreDateHelper.copy(rawDate);
+          date = DateHelper.copy(rawDate);
           break;
         case String:
         default:
-          date = AppCoreDateHelper.from20FSP(rawDate.toString());
+          date = DateHelper.from20FSP(rawDate.toString());
           break;
       }
 
@@ -407,11 +410,11 @@ abstract class AppCoreUtil {
       DateTime? date;
       switch (rawDate.runtimeType) {
         case DateTime:
-          date = AppCoreDateHelper.copy(rawDate);
+          date = DateHelper.copy(rawDate);
           break;
         case String:
         default:
-          date = AppCoreDateHelper.from20FSP(rawDate.toString(), isUTC: false);
+          date = DateHelper.from20FSP(rawDate.toString(), isUTC: false);
           break;
       }
 
@@ -464,11 +467,11 @@ abstract class AppCoreUtil {
       DateTime? date;
       switch (rawDate.runtimeType) {
         case DateTime:
-          date = AppCoreDateHelper.copy(rawDate);
+          date = DateHelper.copy(rawDate);
           break;
         case String:
         default:
-          date = AppCoreDateHelper.from20FSP(rawDate.toString());
+          date = DateHelper.from20FSP(rawDate.toString());
           break;
       }
 
@@ -495,7 +498,7 @@ abstract class AppCoreUtil {
             format = "hh:mm a";
         }
 
-        print("Util.prettyTime format ${format}");
+        print("Util.prettyTime format $format");
 
         if (date != null) {
           pretty = DateFormat(format).format(date);
@@ -542,12 +545,12 @@ abstract class AppCoreUtil {
   static String getPushTokenMode() => isDebug ? "dvl" : "prd";
 
   static Future<String?> getBuildVersion() async {
-    String? _buildVersion = AppCoreUtil._buildVersion;
+    String? _buildVersion = KUtil._buildVersion;
     try {
       if (_buildVersion == null) {
-        AppCoreUtil._buildVersion = await PackageInfo.fromPlatform()
+        KUtil._buildVersion = await PackageInfo.fromPlatform()
             .then((packageInfo) => packageInfo.version);
-        _buildVersion = AppCoreUtil._buildVersion;
+        _buildVersion = KUtil._buildVersion;
       }
     } catch (e) {
       _buildVersion = null;
@@ -556,12 +559,12 @@ abstract class AppCoreUtil {
   }
 
   static Future<String?> getBuildNumber() async {
-    String? _buildNumber = AppCoreUtil._buildNumber;
+    String? _buildNumber = KUtil._buildNumber;
     try {
       if (_buildNumber == null) {
-        AppCoreUtil._buildNumber = await PackageInfo.fromPlatform()
+        KUtil._buildNumber = await PackageInfo.fromPlatform()
             .then((packageInfo) => packageInfo.buildNumber);
-        _buildNumber = AppCoreUtil._buildNumber;
+        _buildNumber = KUtil._buildNumber;
       }
     } catch (e) {
       _buildNumber = null;
@@ -576,6 +579,6 @@ abstract class AppCoreUtil {
 
   static String buildRandomString(int length) =>
       List<int>.generate(length, (i) => i + 1)
-          .map((e) => String.fromCharCode(AppCoreUtil.getRandom().nextInt(57) + 65))
+          .map((e) => String.fromCharCode(KUtil.getRandom().nextInt(57) + 65))
           .join();
 }

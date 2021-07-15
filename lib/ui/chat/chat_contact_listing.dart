@@ -6,41 +6,40 @@ import 'package:app_core/helper/session_data.dart';
 import 'package:app_core/helper/string_helper.dart';
 import 'package:app_core/helper/util.dart';
 import 'package:app_core/model/user.dart';
-import 'package:app_core/header/assets.dart';
-import 'package:app_core/header/styles.dart';
+import 'package:app_core/header/kassets.dart';
+import 'package:app_core/header/kstyles.dart';
 import 'package:app_core/ui/widget/contact_name_view.dart';
 import 'package:app_core/ui/widget/icon_label.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/user_avatar.dart';
 
-class AppCoreChatContactListing extends StatefulWidget {
+class KChatContactListing extends StatefulWidget {
   final Function(String? searchText) searchUsers;
 
-  AppCoreChatContactListing(this.searchUsers);
+  KChatContactListing(this.searchUsers);
 
   @override
-  _AppCoreChatContactListingState createState() =>
-      _AppCoreChatContactListingState();
+  _KChatContactListingState createState() => _KChatContactListingState();
 }
 
-class _AppCoreChatContactListingState extends State<AppCoreChatContactListing> {
+class _KChatContactListingState extends State<KChatContactListing> {
   static const Duration SEARCH_DELAY = Duration(milliseconds: 250);
 
   final TextEditingController searchFieldController = TextEditingController();
 
-  List<AppCoreUser>? userLists;
+  List<KUser>? userLists;
   String? currentSearchText;
   Timer? timer;
 
   bool isSearching = false;
   FocusNode focusNode = FocusNode();
   int searchReqID = -1;
-  List<AppCoreUser> selectedUsers = [];
+  List<KUser> selectedUsers = [];
 
   void searchUsers(String searchText) async {
     final myReqID = ++this.searchReqID;
 
-    List<AppCoreUser>? searchedUsers = [];
+    List<KUser>? searchedUsers = [];
     if (searchText.isEmpty) {
       searchedUsers = null;
     } else {
@@ -61,8 +60,8 @@ class _AppCoreChatContactListingState extends State<AppCoreChatContactListing> {
     this.timer = Timer(SEARCH_DELAY, () => searchUsers(searchText));
   }
 
-  void onSearchResultClick(AppCoreUser user) {
-    if (AppCoreStringHelper.isEmpty(user.puid)) return;
+  void onSearchResultClick(KUser user) {
+    if (KStringHelper.isEmpty(user.puid)) return;
 
     if (this.selectedUsers.where((su) => su.puid == user.puid).isEmpty) {
       setState(() {
@@ -95,7 +94,7 @@ class _AppCoreChatContactListingState extends State<AppCoreChatContactListing> {
         child: Text(
           "Nothing found!",
           textAlign: TextAlign.center,
-          style: Styles.normalText,
+          style: KStyles.normalText,
         ),
       );
     else
@@ -103,9 +102,9 @@ class _AppCoreChatContactListingState extends State<AppCoreChatContactListing> {
         padding: EdgeInsets.all(4),
         itemCount: (this.userLists ?? []).length,
         itemBuilder: (_, i) {
-          AppCoreUser user = (this.userLists ?? [])[i];
+          KUser user = (this.userLists ?? [])[i];
 
-          if (user.puid == AppCoreSessionData.me?.puid) {
+          if (user.puid == KSessionData.me?.puid) {
             return Container();
           }
 
@@ -114,14 +113,14 @@ class _AppCoreChatContactListingState extends State<AppCoreChatContactListing> {
             onClick: onSearchResultClick,
             icon: Container(
               width: 50,
-              child: AppCoreUserAvatar.fromUser(user),
+              child: KUserAvatar.fromUser(user),
             ),
           );
         },
         separatorBuilder: (_, __) => Container(
           width: double.infinity,
           height: 1,
-          color: Styles.colorDivider,
+          color: KStyles.colorDivider,
         ),
       );
 
@@ -137,20 +136,20 @@ class _AppCoreChatContactListingState extends State<AppCoreChatContactListing> {
           Row(
             children: [
               BackButton(),
-              Text("Choose Users", style: Styles.largeText),
+              Text("Choose Users", style: KStyles.largeText),
               Spacer(),
               doneButton,
             ],
           ),
           SizedBox(height: 8),
           searchInput,
-          Divider(height: 1, color: Styles.colorDivider),
+          Divider(height: 1, color: KStyles.colorDivider),
           Expanded(child: userListing),
         ],
       ),
     );
 
-    return AppCoreKeyboardKiller(child: Scaffold(body: body));
+    return KeyboardKiller(child: Scaffold(body: body));
   }
 }
 
@@ -160,8 +159,8 @@ class _SearchField extends StatelessWidget {
   final FocusNode focusNode;
   final TextEditingController searchFieldController;
   final VoidCallback onTap;
-  final Function(AppCoreUser) onSelectedUserTap;
-  final List<AppCoreUser> selectedUsers;
+  final Function(KUser) onSelectedUserTap;
+  final List<KUser> selectedUsers;
 
   _SearchField({
     required this.onChanged,
@@ -186,7 +185,7 @@ class _SearchField extends StatelessWidget {
       showCursor: true,
       onTap: this.onTap,
       readOnly: this.readOnly,
-      style: Styles.normalText,
+      style: KStyles.normalText,
       decoration: InputDecoration(
         hintText: "Type a name or phone number",
         counterText: "",
@@ -203,18 +202,18 @@ class _SearchField extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Styles.colorPrimary.withOpacity(0.1),
+                  color: KStyles.colorPrimary.withOpacity(0.1),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       su.fullName ?? su.contactName ?? "",
-                      style: Styles.normalText
+                      style: KStyles.normalText
                           .copyWith(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(width: 6),
-                    Icon(Icons.close, size: 20, color: Styles.grey),
+                    Icon(Icons.close, size: 20, color: KStyles.grey),
                   ],
                 ),
               ),
@@ -240,9 +239,9 @@ class _SearchField extends StatelessWidget {
 }
 
 class _ResultItem extends StatelessWidget {
-  final AppCoreUser user;
+  final KUser user;
   final Widget icon;
-  final Function(AppCoreUser user) onClick;
+  final Function(KUser user) onClick;
   final Color? backgroundColor;
 
   _ResultItem({
@@ -258,11 +257,11 @@ class _ResultItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        AppCoreContactNameView.fromUser(this.user),
+        KContactNameView.fromUser(this.user),
         SizedBox(height: 4),
-        AppCoreIconLabel(
-          asset: Assets.IMG_PHONE,
-          text: AppCoreUtil.maskedFone(AppCoreUtil.prettyFone(
+        KIconLabel(
+          asset: KAssets.IMG_PHONE,
+          text: KUtil.maskedFone(KUtil.prettyFone(
             foneCode: this.user.phoneCode ?? "",
             number: this.user.phone ?? "",
           )),

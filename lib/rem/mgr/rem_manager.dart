@@ -1,19 +1,19 @@
 import 'package:app_core/rem/rem.dart';
 
-abstract class AppCoreREMManager {
-  AppCoreREMAction? dispatch(String path, Map<String, dynamic> data);
+abstract class REMManager {
+  REMAction? dispatch(String path, Map<String, dynamic> data);
 
-  AppCoreREMPath processPath(String path) {
-    AppCoreREMPath paths;
+  REMPath processPath(String path) {
+    REMPath paths;
     try {
       List<String> tokens = path.split(".");
-      paths = AppCoreREMPath(
+      paths = REMPath(
         tokens[0],
         tokens.length > 1 ? (tokens.join(".")) : "",
       );
     } catch (e) {
       print(e.toString());
-      paths = AppCoreREMPath("", "");
+      paths = REMPath("", "");
     }
     return paths;
   }

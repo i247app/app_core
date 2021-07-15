@@ -10,9 +10,8 @@ import 'package:app_core/ui/chat/service/chatroom_controller.dart';
 import 'package:app_core/ui/chat/service/chatroom_data.dart';
 import 'package:app_core/ui/chat/widget/chat_bubble.dart';
 import 'package:app_core/ui/chat/widget/user_profile_view.dart';
-import 'package:app_core/header/styles.dart';
+import 'package:app_core/header/kstyles.dart';
 import 'package:app_core/helper/local_notif_helper.dart';
-import 'package:app_core/helper/location_helper.dart';
 import 'package:app_core/helper/push_data_helper.dart';
 import 'package:app_core/model/push_data.dart';
 import 'package:app_core/header/no_overscroll.dart';
@@ -20,51 +19,46 @@ import 'package:app_core/ui/widget/dialog/open_settings_dialog.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:collection/collection.dart';
 
-class AppCoreChatroom extends StatefulWidget {
-  final AppCoreChatroomController controller;
+class KChatroom extends StatefulWidget {
+  final KChatroomController controller;
   final bool isReadOnly;
   final Function({String? puid})? getUsers;
 
-  const AppCoreChatroom(
+  const KChatroom(
     this.controller, {
     this.isReadOnly = false,
     this.getUsers,
   });
 
   @override
-  _AppCoreChatroomState createState() => _AppCoreChatroomState();
+  _KChatroomState createState() => _KChatroomState();
 }
 
-class _AppCoreChatroomState extends State<AppCoreChatroom>
-    with WidgetsBindingObserver {
+class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
   final messageCtrl = TextEditingController();
 
   late StreamSubscription pushDataStreamSub;
 
-  AppCoreChatroomData get chatData => widget.controller.value;
+  KChatroomData get chatData => widget.controller.value;
 
-  List<AppCoreChatMessage> get chatMessages => this.chatData.messages ?? [];
+  List<KChatMessage> get chatMessages => this.chatData.messages ?? [];
 
-  bool get hasSaidHiToPapa => chatMessages
-      .where((cm) => cm.puid == AppCoreSessionData.me?.puid)
-      .isNotEmpty;
+  bool get hasSaidHiToPapa =>
+      chatMessages.where((cm) => cm.puid == KSessionData.me?.puid).isNotEmpty;
 
   bool get shouldSayHiToPapa => !this.hasSaidHiToPapa;
 
-  AppCoreUser? get refUser => (this.chatData.members ?? [])
-      .firstWhereOrNull((m) => m.puid != AppCoreSessionData.me!.puid)
+  KUser? get refUser => (this.chatData.members ?? [])
+      .firstWhereOrNull((m) => m.puid != KSessionData.me!.puid)
       ?.toUser();
 
   @override
   void initState() {
     super.initState();
 
-    requestPermissions(); // need perms before any api call
+    KLocalNotifHelper.blockBanner(KPushData.APP_CHAT_NOTIFY);
 
-    AppCoreLocalNotifHelper.blockBanner(AppCorePushData.APP_CHAT_NOTIFY);
-
-    this.pushDataStreamSub =
-        AppCorePushDataHelper.stream.listen(pushDataListener);
+    this.pushDataStreamSub = KPushDataHelper.stream.listen(pushDataListener);
 
     // widget.controller
     //     .addListener(() => widget.loadChat.call(widget.controller));
@@ -76,7 +70,7 @@ class _AppCoreChatroomState extends State<AppCoreChatroom>
 
   @override
   void dispose() {
-    AppCoreLocalNotifHelper.unblockBanner(AppCorePushData.APP_CHAT_NOTIFY);
+    KLocalNotifHelper.unblockBanner(KPushData.APP_CHAT_NOTIFY);
     this.pushDataStreamSub.cancel();
     WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
@@ -87,45 +81,33 @@ class _AppCoreChatroomState extends State<AppCoreChatroom>
     if (state == AppLifecycleState.resumed) widget.controller.loadChat();
   }
 
-  static Future<void> requestPermissions() async {
-    // local and push ask for iOS
-    try {
-      await AppCoreLocalNotifHelper.setupLocalNotifications();
-    } catch (e) {}
-
-    // setup location permission ask
-    try {
-      await AppCoreLocationHelper.askForPermission();
-    } catch (e) {}
-  }
-
-  void pushDataListener(AppCorePushData pushData) {
+  void pushDataListener(KPushData pushData) {
     switch (pushData.app) {
-      case AppCorePushData.APP_CHAT_NOTIFY:
+      case KPushData.APP_CHAT_NOTIFY:
         widget.controller.loadChat();
         break;
     }
   }
 
   void onAddGalleryImageClick() async {
-    final result = await AppCorePhotoHelper.gallery();
-    if (result.status == AppCorePhotoStatus.permission_error)
+    final result = await PhotoHelper.gallery();
+    if (result.status == KPhotoStatus.permission_error)
       showDialog(
         context: context,
         builder: (ctx) =>
-            AppCoreOpenSettingsDialog(body: "Photo permissions are required"),
+            KOpenSettingsDialog(body: "Photo permissions are required"),
       );
     else
       widget.controller.sendImage(result);
   }
 
   void onAddCameraImageClick() async {
-    final result = await AppCorePhotoHelper.camera();
-    if (result.status == AppCorePhotoStatus.permission_error)
+    final result = await PhotoHelper.camera();
+    if (result.status == KPhotoStatus.permission_error)
       showDialog(
         context: context,
         builder: (ctx) =>
-            AppCoreOpenSettingsDialog(body: "Camera permissions are required"),
+            KOpenSettingsDialog(body: "Camera permissions are required"),
       );
     else
       widget.controller.sendImage(result);
@@ -157,7 +139,7 @@ class _AppCoreChatroomState extends State<AppCoreChatroom>
             children: [
               Text(
                 "Say hi to ${this.refUser?.firstName}",
-                style: Styles.largeXLText,
+                style: KStyles.largeXLText,
               ),
               SizedBox(height: 14),
               IconButton(
@@ -207,7 +189,7 @@ class _AppCoreChatroomState extends State<AppCoreChatroom>
               padding: EdgeInsets.all(10),
               child: Text(
                 "Session has ended",
-                style: Styles.detailText,
+                style: KStyles.detailText,
               ),
             ),
           SizedBox(height: 4),
@@ -218,19 +200,19 @@ class _AppCoreChatroomState extends State<AppCoreChatroom>
     final addCameraButton = IconButton(
       onPressed: onAddCameraImageClick,
       icon: Icon(Icons.camera_alt),
-      color: Styles.colorIcon,
+      color: KStyles.colorIcon,
     );
 
     final addImageButton = IconButton(
       onPressed: onAddGalleryImageClick,
       icon: Icon(Icons.image_outlined),
-      color: Styles.colorIcon,
+      color: KStyles.colorIcon,
     );
 
     final sendMessageButton = IconButton(
       onPressed: onSendTextClick,
       icon: Icon(Icons.send),
-      color: Styles.colorIcon,
+      color: KStyles.colorIcon,
     );
 
     final messageInputBox = SafeArea(
@@ -276,7 +258,7 @@ class _AppCoreChatroomState extends State<AppCoreChatroom>
       children: [
         Expanded(child: chatBody),
         if (!widget.isReadOnly) ...[
-          Divider(height: 1, color: Styles.colorDivider),
+          Divider(height: 1, color: KStyles.colorDivider),
           Container(
             padding: EdgeInsets.all(2),
             child: messageInputBox,
@@ -285,6 +267,6 @@ class _AppCoreChatroomState extends State<AppCoreChatroom>
       ],
     );
 
-    return AppCoreKeyboardKiller(child: body);
+    return KeyboardKiller(child: body);
   }
 }

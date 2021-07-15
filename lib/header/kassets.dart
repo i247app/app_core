@@ -1,4 +1,4 @@
-abstract class Assets {
+abstract class KAssets {
   static const String ASSET_BASE = "assets";
   static const String IMG_BASE = "$ASSET_BASE/img";
 

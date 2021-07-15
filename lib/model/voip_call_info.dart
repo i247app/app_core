@@ -1,7 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-@JsonSerializable()
-class AppCoreVoipCallInfo {
+class KVoipCallInfo {
   @JsonKey(name: "uuid")
   String? uuid;
 
@@ -9,5 +8,5 @@ class AppCoreVoipCallInfo {
   String? callID;
 
   // JSON
-  AppCoreVoipCallInfo();
+  KVoipCallInfo();
 }

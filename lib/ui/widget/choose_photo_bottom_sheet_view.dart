@@ -2,22 +2,21 @@ import 'package:app_core/helper/photo_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-
-class ChoosePhotoBottomSheetView extends StatefulWidget {
+class KChoosePhotoBottomSheetView extends StatefulWidget {
   @override
-  _ChoosePhotoBottomSheetViewState createState() =>
-      _ChoosePhotoBottomSheetViewState();
+  _KChoosePhotoBottomSheetViewState createState() =>
+      _KChoosePhotoBottomSheetViewState();
 }
 
-class _ChoosePhotoBottomSheetViewState
-    extends State<ChoosePhotoBottomSheetView> {
+class _KChoosePhotoBottomSheetViewState
+    extends State<KChoosePhotoBottomSheetView> {
   void onCameraClick() async {
-    final result = await AppCorePhotoHelper.camera();
+    final result = await PhotoHelper.camera();
     Navigator.of(context).pop(result);
   }
 
   void onGalleryClick() async {
-    final result = await AppCorePhotoHelper.gallery();
+    final result = await PhotoHelper.gallery();
     Navigator.of(context).pop(result);
   }
 

@@ -2,7 +2,7 @@ import 'dart:math' as Math;
 
 import 'package:flutter/widgets.dart';
 
-abstract class AppCoreTabletDetector {
+abstract class KTabletDetector {
   static bool isTablet(MediaQueryData query) {
     final size = query.size;
     final diagonal =

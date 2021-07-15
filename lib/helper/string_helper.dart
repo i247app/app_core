@@ -1,4 +1,4 @@
-abstract class AppCoreStringHelper {
+abstract class KStringHelper {
   static const String TRUE = "T";
   static const String FALSE = "F";
 
@@ -97,7 +97,7 @@ abstract class AppCoreStringHelper {
 
   static String toInitials({String? name, bool isFirstOnly = false}) {
     if (isFirstOnly) {
-      return AppCoreStringHelper.isEmpty(name ?? '')
+      return KStringHelper.isEmpty(name ?? '')
           ? "?"
           : name!.substring(0, 1).toUpperCase();
     } else {

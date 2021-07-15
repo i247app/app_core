@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-enum AppCoreScanStatus {
+enum KScanStatus {
   ok,
   permissions_error,
   ios_simulator,
@@ -11,17 +11,17 @@ enum AppCoreScanStatus {
   unknown
 }
 
-class AppCoreScanResult {
+class KScanResult {
   String? data;
-  AppCoreScanStatus status;
+  KScanStatus status;
 
-  AppCoreScanResult({this.data, this.status = AppCoreScanStatus.unknown});
+  KScanResult({this.data, this.status = KScanStatus.unknown});
 }
 
-abstract class AppCoreScanHelper {
-  static Future<AppCoreScanResult> scan() async {
-    Future<AppCoreScanResult> result =
-        Future.value(AppCoreScanResult(status: AppCoreScanStatus.unknown));
+abstract class KScanHelper {
+  static Future<KScanResult> scan() async {
+    Future<KScanResult> result =
+        Future.value(KScanResult(status: KScanStatus.unknown));
 
     PermissionStatus permission = await Permission.camera.status;
 
@@ -35,18 +35,19 @@ abstract class AppCoreScanHelper {
 
       if (permissionResult[Permission.camera] == PermissionStatus.granted)
         result = _scan();
-      else if (permissionResult[Permission.camera] ==
-          PermissionStatus.denied)
-        result = Future.value(AppCoreScanResult(status: AppCoreScanStatus.permissions_error));
+      else if (permissionResult[Permission.camera] == PermissionStatus.denied)
+        result =
+            Future.value(KScanResult(status: KScanStatus.permissions_error));
     }
     return result;
   }
 
-  static Future<AppCoreScanResult> _scan() async {
+  /// PRIVATE
+  static Future<KScanResult> _scan() async {
     final data = await FlutterBarcodeScanner.scanBarcode(
         "#ff6666", "Cancel", false, ScanMode.QR);
-    return AppCoreScanResult(
+    return KScanResult(
         data: data == "-1" ? null : data,
-        status: data == "-1" ? AppCoreScanStatus.unknown : AppCoreScanStatus.ok);
+        status: data == "-1" ? KScanStatus.unknown : KScanStatus.ok);
   }
 }

@@ -2,8 +2,7 @@ import 'package:app_core/model/user.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/helper/util.dart';
 
-@JsonSerializable(includeIfNull: false)
-class AppCoreChatMember {
+class KChatMember {
   @JsonKey(name: "chatID")
   String? chatID;
 
@@ -52,7 +51,7 @@ class AppCoreChatMember {
 
   @JsonKey(ignore: true)
   String get displayName =>
-      AppCoreUtil.prettyName(fnm: firstName, mnm: middleName, lnm: lastName) ??
+      KUtil.prettyName(fnm: firstName, mnm: middleName, lnm: lastName) ??
       this.phone ??
       "";
 
@@ -60,7 +59,7 @@ class AppCoreChatMember {
   String get chatName =>
       this.firstName ?? this.kunm ?? "User ${this.puid ?? "?"}";
 
-  AppCoreUser toUser() => AppCoreUser()
+  KUser toUser() => KUser()
     ..puid = this.puid
     ..kunm = this.kunm
     ..firstName = this.firstName

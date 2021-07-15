@@ -4,20 +4,17 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:app_core/helper/host_config.dart';
-import 'package:app_core/helper/kcode.dart';
-import 'package:app_core/helper/location_helper.dart';
+import 'package:app_core/helper/kcore_code.dart';
 import 'package:app_core/helper/session_data.dart';
 import 'package:app_core/helper/string_helper.dart';
 import 'package:app_core/helper/toast_helper.dart';
 import 'package:app_core/helper/util.dart';
 import 'package:app_core/model/host_info.dart';
-import 'package:app_core/model/klat_lng.dart';
-import 'package:app_core/model/response/base_response.dart';
 import 'package:app_core/network/socket_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-abstract class AppCoreTLSHelper {
+abstract class TLSHelper {
   static const int KSTATUS_UNKNOWN_ERROR = -1;
   static const int KSTATUS_SOCKET_ERROR = -2;
   static const int KSTATUS_JSON_ERROR = -3;
@@ -35,15 +32,15 @@ abstract class AppCoreTLSHelper {
 
   static Future<Map<String, dynamic>> send(
     Map<String, dynamic> inputData, {
-    AppCoreHostInfo? hostInfo,
+    KHostInfo? hostInfo,
     bool isAuthed = true,
   }) async {
     final int reqID = _reqCount++;
     final String apiName = "${inputData['svc']}:${inputData['req']}";
 
-    hostInfo ??= AppCoreHostConfig.hostInfo;
+    hostInfo ??= KHostConfig.hostInfo;
 
-    AppCoreSocketResource? socketResource;
+    KSocketResource? socketResource;
     Map? decodedAnswer;
     String? answer;
     try {
@@ -58,7 +55,7 @@ abstract class AppCoreTLSHelper {
       final String json = jsonEncode(data);
 
       // Write to socket and get the response
-      socketResource = await SocketManager.getSocket(hostInfo);
+      socketResource = await KSocketManager.getSocket(hostInfo);
       final List<int> raw =
           await writeToSocket(socketResource, utf8.encode(json));
       answer = utf8.decode(raw);
@@ -99,7 +96,8 @@ abstract class AppCoreTLSHelper {
     } finally {
       // Try to close the socket no matter what
       try {
-        if (socketResource != null) SocketManager.releaseSocket(socketResource);
+        if (socketResource != null)
+          KSocketManager.releaseSocket(socketResource);
       } catch (e) {}
     }
 
@@ -113,21 +111,21 @@ abstract class AppCoreTLSHelper {
 
     // Store response token if local one is different
     final result = decodedAnswer ?? jsonDecode(answer);
-    if (AppCoreStringHelper.isExist(result["ktoken"]) &&
-        AppCoreSessionData.getSessionToken() != result["ktoken"] &&
+    if (KStringHelper.isExist(result["ktoken"]) &&
+        KSessionData.getSessionToken() != result["ktoken"] &&
         ((inputData['req'] == 'login' &&
-            AppCoreStringHelper.isExist(AppCoreSessionData.getSessionToken())) ||
-            (AppCoreStringHelper.isEmpty(AppCoreSessionData.getSessionToken())))) {
-      AppCoreSessionData.setSessionToken(result["ktoken"]);
+                KStringHelper.isExist(KSessionData.getSessionToken())) ||
+            (KStringHelper.isEmpty(KSessionData.getSessionToken())))) {
+      KSessionData.setSessionToken(result["ktoken"]);
     }
 
     // Replace stack with Splash in case of BAD SESSION response
     try {
-      if (result["kstatus"] == "${AppCoreKCode.BAD_SESSION}" &&
-          AppCoreSessionData.hasActiveSession) {
-        AppCoreSessionData.wipeSession();
+      if (result["kstatus"] == "${KCoreCode.BAD_SESSION}" &&
+          KSessionData.hasActiveSession) {
+        KSessionData.wipeSession();
         // AppCoreSessionHelper.hardReload();
-        AppCoreToastHelper.show("Session terminated");
+        KToastHelper.show("Session terminated");
       }
     } catch (e) {}
 
@@ -159,18 +157,18 @@ abstract class AppCoreTLSHelper {
 
   static Future<Map<String, dynamic>> getDefaultRequestData(int reqID) async {
     final staticDataBuilders = {
-      "versionName": () async => await AppCoreUtil.getBuildVersion(),
-      "versionCode": () async => await AppCoreUtil.getBuildNumber(),
-      "version": () async => await AppCoreUtil.getBuildVersion(),
-      "build": () async => await AppCoreUtil.getBuildNumber(),
-      "platform": () async => AppCoreUtil.getPlatformCode(),
+      "versionName": () async => await KUtil.getBuildVersion(),
+      "versionCode": () async => await KUtil.getBuildNumber(),
+      "version": () async => await KUtil.getBuildVersion(),
+      "build": () async => await KUtil.getBuildNumber(),
+      "platform": () async => KUtil.getPlatformCode(),
       "svrVersion": () async => "x.x.x",
-      "manufacturer": () async => await AppCoreUtil.getDeviceBrand(),
-      "model": () async => await AppCoreUtil.getDeviceModel(),
-      "deviceName": () async => await AppCoreUtil.getDeviceName(),
-      "deviceNumber": () async => await AppCoreUtil.getDeviceID(),
-      "locale": () async => AppCoreUtil.localeName(),
-      "domain": () async => await AppCoreUtil.getPackageName(),
+      "manufacturer": () async => await KUtil.getDeviceBrand(),
+      "model": () async => await KUtil.getDeviceModel(),
+      "deviceName": () async => await KUtil.getDeviceName(),
+      "deviceNumber": () async => await KUtil.getDeviceID(),
+      "locale": () async => KUtil.localeName(),
+      "domain": () async => await KUtil.getPackageName(),
     };
 
     // Build the _cachedDefaultReqData
@@ -185,10 +183,10 @@ abstract class AppCoreTLSHelper {
     final data = {
       ..._cachedDefaultReqData,
       "reqID": "$reqID",
-      "ktoken": AppCoreSessionData.getSessionToken(),
+      "ktoken": KSessionData.getSessionToken(),
       // "pushToken": await AppCoreSessionData.getFCMToken(),
       // "voipToken": await AppCoreSessionData.getVoipToken(),
-      "tokenMode": AppCoreUtil.getPushTokenMode(),
+      "tokenMode": KUtil.getPushTokenMode(),
       // "latLng": (AppCoreLocationHelper.cachedPosition == null
       //     ? null
       //     : AppCoreKLatLng.fromPosition(AppCoreLocationHelper.cachedPosition!)),
@@ -222,16 +220,16 @@ abstract class AppCoreTLSHelper {
 
   static void _log(int reqID, String tag, String apiName, String message,
       {bool ignoreBlacklist = false}) {
-    if (!AppCoreHostConfig.isReleaseMode) {
+    if (!KHostConfig.isReleaseMode) {
       String displayMessage = logBlacklist.contains(apiName) && !ignoreBlacklist
           ? compactLog(message)
-          : AppCoreUtil.prettyJSON(message);
+          : KUtil.prettyJSON(message);
       debugPrint('[$reqID] $tag $apiName - $displayMessage');
     }
   }
 
   static Future<List<int>> writeToSocket(
-      AppCoreSocketResource socketResource,
+    KSocketResource socketResource,
     List<int> data,
   ) async {
     final List<int> body = zip(data);

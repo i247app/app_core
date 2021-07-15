@@ -4,7 +4,7 @@ import 'package:http/http.dart' as HTTP;
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 
-abstract class AppCoreFileHelper {
+abstract class KFileHelper {
   static Future<bool> downloadImageFromURL(String url) async =>
       await GallerySaver.saveImage(url) ?? false;
 

@@ -8,7 +8,7 @@ import 'package:app_core/ui/chat/widget/gig_user_label.dart';
 class AppCoreUserProfileView extends StatefulWidget {
   static const double ICON_SIZE = 80;
 
-  final AppCoreUser? user;
+  final KUser? user;
   final String? puid;
   final Function({ String? puid })? getUsers;
 
@@ -19,7 +19,7 @@ class AppCoreUserProfileView extends StatefulWidget {
 }
 
 class _AppCoreUserProfileViewState extends State<AppCoreUserProfileView> {
-  final Completer<AppCoreUser> completer = Completer();
+  final Completer<KUser> completer = Completer();
 
   @override
   void initState() {
@@ -28,7 +28,7 @@ class _AppCoreUserProfileViewState extends State<AppCoreUserProfileView> {
   }
 
   void setupUser() async {
-    AppCoreUser? val;
+    KUser? val;
     try {
       if (this.widget.getUsers == null) return;
 
@@ -46,7 +46,7 @@ class _AppCoreUserProfileViewState extends State<AppCoreUserProfileView> {
       future: this.completer.future,
       builder: (ctx, snapshot) {
         if (snapshot.hasData) {
-          return _ConcreteUserProfileView(snapshot.data as AppCoreUser);
+          return _ConcreteUserProfileView(snapshot.data as KUser);
         } else {
           return Scaffold(body: Container());
         }
@@ -56,7 +56,7 @@ class _AppCoreUserProfileViewState extends State<AppCoreUserProfileView> {
 }
 
 class _ConcreteUserProfileView extends StatelessWidget {
-  final AppCoreUser user;
+  final KUser user;
 
   const _ConcreteUserProfileView(this.user);
 
@@ -65,7 +65,7 @@ class _ConcreteUserProfileView extends StatelessWidget {
     final userInfo = IgnorePointer(
       child: Container(
         height: 80,
-        child: AppCoreGigUserLabel(this.user),
+        child: KGigUserLabel(this.user),
       ),
     );
 

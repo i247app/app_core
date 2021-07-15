@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
-// import 'package:app_core/helper/globals.dart';
 import 'package:app_core/helper/globals.dart';
 import 'package:app_core/helper/pref_helper.dart';
 import 'package:app_core/model/klat_lng.dart';
@@ -11,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-abstract class AppCoreLocationHelper {
+abstract class KLocationHelper {
   static Position? _theCachedPosition;
   static Completer<bool>? _dialogCompleter;
 
@@ -41,8 +40,8 @@ abstract class AppCoreLocationHelper {
         future = true;
       } else {
         future = await showDialog(
-          context: appCoreNavigatorKey.currentContext!,
-          builder: (ctx) => AppCoreLocationPermissionInfoDialog(),
+          context: kNavigatorKey.currentContext!,
+          builder: (ctx) => KLocationPermissionInfoDialog(),
         );
       }
       _dialogCompleter!.complete(future ?? false);
@@ -60,7 +59,7 @@ abstract class AppCoreLocationHelper {
       return null;
   }
 
-  static Future<AppCoreKLatLng?> getKLatLng(
+  static Future<KLatLng?> getKLatLng(
       {bool askForPermissions: true}) async {
     Position? position;
     if (askForPermissions || (await hasPermission())) {
@@ -71,19 +70,19 @@ abstract class AppCoreLocationHelper {
       position = await Geolocator.getCurrentPosition();
     }
     _setCachedPosition(position);
-    return position == null ? null : AppCoreKLatLng.fromPosition(position);
+    return position == null ? null : KLatLng.fromPosition(position);
   }
 
   static void _setCachedPosition(Position? position) {
     if (position != null) {
-      AppCorePrefHelper.put(
-          AppCorePrefHelper.CACHED_POSITION, position.toJson());
+      KPrefHelper.put(
+          KPrefHelper.CACHED_POSITION, position.toJson());
       _theCachedPosition = position;
     }
   }
 
   // Calculate distance in meters between two KLatLng
-  static double calculateDistance(AppCoreKLatLng ll1, AppCoreKLatLng ll2) {
+  static double calculateDistance(KLatLng ll1, KLatLng ll2) {
     final lat1 = ll1.lat ?? 0;
     final lon1 = ll1.lng ?? 0;
     final lat2 = ll2.lat ?? 0;
@@ -98,16 +97,16 @@ abstract class AppCoreLocationHelper {
   }
 
   // Calculate center point between many different points
-  static AppCoreKLatLng computeCentroid(Iterable<AppCoreKLatLng> points) {
+  static KLatLng computeCentroid(Iterable<KLatLng> points) {
     double latitude = 0;
     double longitude = 0;
     int n = points.length;
 
-    for (AppCoreKLatLng point in points) {
+    for (KLatLng point in points) {
       latitude += point.lat ?? 0;
       longitude += point.lng ?? 0;
     }
 
-    return AppCoreKLatLng.raw(latitude / n, longitude / n);
+    return KLatLng.raw(latitude / n, longitude / n);
   }
 }

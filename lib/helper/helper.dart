@@ -3,7 +3,7 @@ export 'check_version_helper.dart';
 export 'date_helper.dart';
 export 'device_id_helper.dart';
 export 'host_config.dart';
-export 'kcode.dart';
+export 'kcore_code.dart';
 export 'locale_helper.dart';
 export 'plugin_helper.dart';
 export 'pref_helper.dart';

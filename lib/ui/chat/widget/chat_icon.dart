@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:app_core/helper/session_data.dart';
 import 'package:app_core/model/chat.dart';
 import 'package:app_core/model/chat_member.dart';
-import 'package:app_core/header//styles.dart';
+import 'package:app_core/header//kstyles.dart';
 import 'package:app_core/ui/widget/user_avatar.dart';
 
 class _ChatIconPosition {
@@ -38,11 +38,11 @@ class AppCoreChatIcon extends StatelessWidget {
     _ChatIconPosition(left: HALF_SIZE, top: HALF_SIZE)
   ];
 
-  final AppCoreChat chat;
+  final KChat chat;
 
   AppCoreChatIcon({required this.chat});
 
-  List<Widget> buildAvatarGroup(List<AppCoreChatMember> members) {
+  List<Widget> buildAvatarGroup(List<KChatMember> members) {
     List<Widget> avatars = [];
     List<_ChatIconPosition> positions = [];
     switch (members.length) {
@@ -58,7 +58,7 @@ class AppCoreChatIcon extends StatelessWidget {
     }
     for (var i = 0; i < members.length && i < 4; i++) {
       _ChatIconPosition position = positions[i];
-      AppCoreChatMember member = members[i];
+      KChatMember member = members[i];
       avatars.add(Positioned(
         top: position.top,
         left: position.left,
@@ -69,7 +69,7 @@ class AppCoreChatIcon extends StatelessWidget {
                 padding: EdgeInsets.all(2),
                 child: Icon(
                   Icons.group_add_outlined,
-                  color: Styles.colorPrimary,
+                  color: KStyles.colorPrimary,
                 ),
               )
             : ClipOval(
@@ -77,7 +77,7 @@ class AppCoreChatIcon extends StatelessWidget {
                   padding: EdgeInsets.all(1),
                   width: members.length == 2 ? CROSS_SIZE : HALF_SIZE,
                   height: members.length == 2 ? CROSS_SIZE : HALF_SIZE,
-                  child: AppCoreUserAvatar(
+                  child: KUserAvatar(
                     initial: member.firstInitial,
                     imageURL: member.avatar,
                   ),
@@ -100,7 +100,7 @@ class AppCoreChatIcon extends StatelessWidget {
               children: buildAvatarGroup(this
                   .chat
                   .appCoreMembers!
-                  .where((member) => member.puid != AppCoreSessionData.me?.puid)
+                  .where((member) => member.puid != KSessionData.me?.puid)
                   .toList()),
             ),
           )
@@ -108,7 +108,7 @@ class AppCoreChatIcon extends StatelessWidget {
             child: Container(
               width: DEFAULT_SIZE,
               height: DEFAULT_SIZE,
-              child: AppCoreUserAvatar.fromChat(this.chat),
+              child: KUserAvatar.fromChat(this.chat),
             ),
           );
   }

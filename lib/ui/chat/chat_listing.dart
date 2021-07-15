@@ -3,33 +3,31 @@ import 'dart:async';
 import 'package:app_core/app_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:app_core/helper/local_notif_helper.dart';
-import 'package:app_core/helper/location_helper.dart';
 import 'package:app_core/helper/push_data_helper.dart';
 import 'package:app_core/helper/util.dart';
 import 'package:app_core/model/chat.dart';
 import 'package:app_core/model/push_data.dart';
 import 'package:app_core/ui/chat/widget/chat_icon.dart';
-import 'package:app_core/header/styles.dart';
+import 'package:app_core/header/kstyles.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class AppCoreChatListing extends StatefulWidget {
-  Function()? loadChats;
-  Function(String chatID, String? refApp, String? refID)? removeChat;
-  Function(AppCoreChat chat)? onChatClick;
+class KChatListing extends StatefulWidget {
+  final Function()? loadChats;
+  final Function(String chatID, String? refApp, String? refID)? removeChat;
+  final Function(KChat chat)? onChatClick;
 
-  AppCoreChatListing({
+  KChatListing({
     this.loadChats,
     this.removeChat,
     this.onChatClick,
   });
 
   @override
-  _AppCoreChatListingState createState() => _AppCoreChatListingState();
+  _KChatListingState createState() => _KChatListingState();
 }
 
-class _AppCoreChatListingState extends State<AppCoreChatListing> {
-  static List<AppCoreChat>? _chats;
+class _KChatListingState extends State<KChatListing> {
+  static List<KChat>? _chats;
   final SlidableController slideCtrl = SlidableController();
 
   late StreamSubscription streamSub;
@@ -40,9 +38,7 @@ class _AppCoreChatListingState extends State<AppCoreChatListing> {
   void initState() {
     super.initState();
 
-    requestPermissions();
-
-    this.streamSub = AppCorePushDataHelper.stream.listen(pushDataListener);
+    this.streamSub = KPushDataHelper.stream.listen(pushDataListener);
 
     loadChats();
   }
@@ -53,31 +49,9 @@ class _AppCoreChatListingState extends State<AppCoreChatListing> {
     super.dispose();
   }
 
-  static Future<void> requestPermissions() async {
-    // ios
-    // try {
-    //   await AppTrackingTransparency.requestTrackingAuthorization();
-    // } catch (e) {}
-
-    // local and push ask for iOS
-    try {
-      await AppCoreLocalNotifHelper.setupLocalNotifications();
-    } catch (e) {}
-
-    // setup location permission ask
-    try {
-      await AppCoreLocationHelper.askForPermission();
-    } catch (e) {}
-
-    // audio and video - prep for receiving calls
-    // try {
-    //   await WebRTCHelper.askForPermissions();
-    // } catch (e) {}
-  }
-
-  void pushDataListener(AppCorePushData data) {
+  void pushDataListener(KPushData data) {
     switch (data.app) {
-      case AppCorePushData.APP_CHAT_NOTIFY:
+      case KPushData.APP_CHAT_NOTIFY:
         loadChats();
         break;
     }
@@ -86,16 +60,17 @@ class _AppCoreChatListingState extends State<AppCoreChatListing> {
   void loadChats() async {
     if (this.widget.loadChats == null) return;
 
-    List<AppCoreChat>? chats = await this.widget.loadChats!();
+    List<KChat>? chats = await this.widget.loadChats!();
     if (mounted) setState(() => _chats = chats ?? []);
   }
 
-  void onRemoveChat(int chatIndex, AppCoreChat chat) async {
-    if (chat.chatID == null || _chats == null || this.widget.removeChat == null) return;
+  void onRemoveChat(int chatIndex, KChat chat) async {
+    if (chat.chatID == null || _chats == null || this.widget.removeChat == null)
+      return;
 
     final response = await this.widget.removeChat!(
       chat.chatID!,
-      AppCoreChat.APP_CONTENT_CHAT,
+      KChat.APP_CONTENT_CHAT,
       null,
     );
 
@@ -130,7 +105,9 @@ class _AppCoreChatListingState extends State<AppCoreChatListing> {
           actionExtentRatio: 0.25,
           child: _AppCoreChatListEntry(
             chat,
-            onClick: this.widget.onChatClick == null ? (_) {} : this.widget.onChatClick!,
+            onClick: this.widget.onChatClick == null
+                ? (_) {}
+                : this.widget.onChatClick!,
           ),
           dismissal: SlidableDismissal(
             child: SlidableDrawerDismissal(),
@@ -157,7 +134,7 @@ class _AppCoreChatListingState extends State<AppCoreChatListing> {
 
     final content = Column(
       children: [
-        Divider(height: 1, color: Styles.colorDivider),
+        Divider(height: 1, color: KStyles.colorDivider),
         Expanded(
           child: this.isReady
               ? ((_chats ?? []).isEmpty ? emptyInbox : chatListing)
@@ -171,8 +148,8 @@ class _AppCoreChatListingState extends State<AppCoreChatListing> {
 }
 
 class _AppCoreChatListEntry extends StatelessWidget {
-  final AppCoreChat chat;
-  final Function(AppCoreChat) onClick;
+  final KChat chat;
+  final Function(KChat) onClick;
 
   const _AppCoreChatListEntry(this.chat, {required this.onClick});
 
@@ -184,8 +161,8 @@ class _AppCoreChatListEntry extends StatelessWidget {
       children: [
         Text(
           this.chat.title,
-          style: Styles.normalText
-              .copyWith(color: Styles.black, fontWeight: FontWeight.normal),
+          style: KStyles.normalText
+              .copyWith(color: KStyles.black, fontWeight: FontWeight.normal),
           overflow: TextOverflow.ellipsis,
         ),
         SizedBox(height: 6),
@@ -195,7 +172,7 @@ class _AppCoreChatListEntry extends StatelessWidget {
             Flexible(
               child: Text(
                 this.chat.previewMessage ?? "-",
-                style: Styles.detailText.copyWith(color: Styles.chatGrey),
+                style: KStyles.detailText.copyWith(color: KStyles.chatGrey),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -215,8 +192,8 @@ class _AppCoreChatListEntry extends StatelessWidget {
           Expanded(child: content),
           SizedBox(width: 16),
           Text(
-            AppCoreUtil.timeAgo(this.chat.activeDate ?? ""),
-            style: TextStyle(color: Styles.darkGrey),
+            KUtil.timeAgo(this.chat.activeDate ?? ""),
+            style: TextStyle(color: KStyles.darkGrey),
           ),
         ]),
       ),

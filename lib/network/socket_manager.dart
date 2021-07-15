@@ -3,31 +3,31 @@ import 'dart:io';
 import 'package:app_core/helper/host_config.dart';
 import 'package:app_core/model/host_info.dart';
 
-class AppCoreSocketResource {
-  static int count = 0;
+class KSocketResource {
+  static int _count = 0;
 
-  final int socketID = count++;
+  final int socketID = _count++;
   final SecureSocket socket;
   final Stream<List<int>> stream;
 
-  AppCoreHostInfo get hostInfo => AppCoreHostInfo.raw(
+  KHostInfo get hostInfo => KHostInfo.raw(
         this.socket.address.host,
         this.socket.remotePort,
       );
 
-  AppCoreSocketResource(this.socket, this.stream);
+  KSocketResource(this.socket, this.stream);
 
   Future close() => this.socket.close();
 
-  factory AppCoreSocketResource.fromSocket(SecureSocket socket) =>
-      AppCoreSocketResource(socket, socket.asBroadcastStream());
+  factory KSocketResource.fromSocket(SecureSocket socket) =>
+      KSocketResource(socket, socket.asBroadcastStream());
 }
 
-abstract class SocketManager {
-  static Map<AppCoreHostInfo, List<AppCoreSocketResource>> _sockets = {};
+abstract class KSocketManager {
+  static Map<KHostInfo, List<KSocketResource>> _sockets = {};
 
-  static Future<AppCoreSocketResource> getSocket([AppCoreHostInfo? hostInfo]) async {
-    hostInfo ??= AppCoreHostConfig.hostInfo;
+  static Future<KSocketResource> getSocket([KHostInfo? hostInfo]) async {
+    hostInfo ??= KHostConfig.hostInfo;
 
     // Create map entry if needed
     if (!_sockets.containsKey(hostInfo)) _sockets[hostInfo] = [];
@@ -40,17 +40,17 @@ abstract class SocketManager {
     return _sockets[hostInfo]!.removeLast();
   }
 
-  static void releaseSocket(AppCoreSocketResource socket) {
+  static void releaseSocket(KSocketResource socket) {
     socket.close();
     // _sockets[socket.hostInfo]!.add(socket);
   }
 
-  static Future<AppCoreSocketResource> _createSocket(AppCoreHostInfo hostInfo) async {
+  static Future<KSocketResource> _createSocket(KHostInfo hostInfo) async {
     // print("creating socket for $hostInfo");
     return SecureSocket.connect(
       hostInfo.hostname,
       hostInfo.port,
       onBadCertificate: (_) => true,
-    ).then((ss) => AppCoreSocketResource.fromSocket(ss));
+    ).then((ss) => KSocketResource.fromSocket(ss));
   }
 }

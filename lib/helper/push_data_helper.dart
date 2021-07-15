@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:app_core/model/push_data.dart';
 
-abstract class AppCorePushDataHelper {
-  static final StreamController<AppCorePushData> _streamController =
+abstract class KPushDataHelper {
+  static final StreamController<KPushData> _streamController =
       StreamController.broadcast();
 
-  static Stream<AppCorePushData> get stream =>
+  static Stream<KPushData> get stream =>
       _streamController.stream.asBroadcastStream();
 
-  static void broadcast(AppCorePushData pushData) => _streamController.add(pushData);
+  static void broadcast(KPushData pushData) => _streamController.add(pushData);
 }

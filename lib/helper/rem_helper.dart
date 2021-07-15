@@ -2,20 +2,20 @@ import 'dart:convert';
 
 import 'package:app_core/helper/globals.dart';
 import 'package:app_core/helper/scan_helper.dart';
-import 'package:app_core/rem/mgr/rem_dispatcher.dart';
+import 'package:app_core/rem/mgr/rem_manager.dart';
 import 'package:app_core/rem/rem.dart';
 
-abstract class AppCoreREMHelper {
+abstract class REMHelper {
   /// Run string through REM
-  static AppCoreREMAction? from(String remData, [String? tag]) {
-    AppCoreREMAction? action;
+  static REMAction? from(REMManager dispatcher, String remData, [String? tag]) {
+    REMAction? action;
 
     try {
       Map<String, dynamic> data = json.decode(remData);
-      String path = data[AppCoreREM.APP] ?? data['act'] ?? data['qr'];
+      String path = data[REM.APP] ?? data['act'] ?? data['qr'];
 
       print("REM - $remData");
-      action = AppCoreREMDispatcher().dispatch(path, data);
+      action = dispatcher.dispatch(path, data);
     } catch (e) {
       print(e.toString());
     }
@@ -29,10 +29,12 @@ abstract class AppCoreREMHelper {
   }
 
   /// Scan and attempt to pass result through REM
-  static Future<void> scanREM() async {
-    AppCoreScanResult result = await AppCoreScanHelper.scan();
-    if (result.status == AppCoreScanStatus.ok && result.data != null && from(result.data!) != null)
-      await from(result.data!)!.call(appCoreNavigatorKey.currentState!);
+  static Future<void> scanREM(REMManager dispatcher) async {
+    KScanResult result = await KScanHelper.scan();
+    if (result.status == KScanStatus.ok &&
+        result.data != null &&
+        from(dispatcher, result.data!) != null)
+      await from(dispatcher, result.data!)!.call(kNavigatorKey.currentState!);
     else
       print(result.status);
   }

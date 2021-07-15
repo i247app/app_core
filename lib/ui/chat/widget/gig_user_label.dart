@@ -1,40 +1,36 @@
-import 'package:app_core/helper/throttle_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/string_helper.dart';
 import 'package:app_core/model/user.dart';
 import 'package:app_core/ui/chat/widget/user_profile_view.dart';
-import 'package:app_core/header/styles.dart';
-
+import 'package:app_core/header/kstyles.dart';
 import 'package:app_core/ui/widget/user_avatar.dart';
 
-class AppCoreGigUserLabel extends StatelessWidget {
-  final AppCoreUser user;
+class KGigUserLabel extends StatelessWidget {
+  final KUser user;
 
-  AppCoreGigUserLabel(this.user);
+  KGigUserLabel(this.user);
 
-  factory AppCoreGigUserLabel.build({
+  factory KGigUserLabel.build({
     required String name,
     required String image,
     required String rating,
     required String title,
     required String puid,
   }) =>
-      AppCoreGigUserLabel(AppCoreUser()
+      KGigUserLabel(KUser()
         ..puid = puid
         ..firstName = name
         ..avatarURL = image);
 
-  String? get title {
-    return "@${user.kunm}";
-  }
+  String? get title => "@${user.kunm}";
 
   void onClick(context) => Navigator.of(context).push(MaterialPageRoute(
       builder: (ctx) => AppCoreUserProfileView(user: this.user)));
 
   @override
   Widget build(BuildContext context) {
-    final image = AppCoreUserAvatar(
+    final image = KUserAvatar(
       initial: this.user.firstName,
       imageURL: this.user.avatarURL,
     );
@@ -47,14 +43,14 @@ class AppCoreGigUserLabel extends StatelessWidget {
         softWrap: false,
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: Styles.fontSizeNormal,
+          fontSize: KStyles.fontSizeNormal,
         ),
       ),
     );
 
     final titleView = Text(
       this.title ?? "",
-      style: TextStyle(fontSize: Styles.fontSizeSmall),
+      style: TextStyle(fontSize: KStyles.fontSizeSmall),
     );
 
     // final ratingField = ReviewField.readOnly(this.user.userRating ?? "");
@@ -71,7 +67,7 @@ class AppCoreGigUserLabel extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Flexible(child: nameView),
-              if (AppCoreStringHelper.isExist(this.title)) ...[
+              if (KStringHelper.isExist(this.title)) ...[
                 Flexible(
                   child: FittedBox(
                     fit: BoxFit.contain,

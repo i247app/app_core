@@ -1,8 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/model/user.dart';
 
-@JsonSerializable()
-class AppCoreP2PSession {
+class KP2PSession {
   @JsonKey(name: "id")
   String? id;
 
@@ -25,11 +24,11 @@ class AppCoreP2PSession {
   String? adminAvatarURL;
 
   /// Methods
-  factory AppCoreP2PSession.fromUser(AppCoreUser user) => AppCoreP2PSession()
+  factory KP2PSession.fromUser(KUser user) => KP2PSession()
     ..adminPUID = user.puid
     ..adminName = user.fullName
     ..adminAvatarURL = user.avatarURL;
 
   // JSON
-  AppCoreP2PSession();
+  KP2PSession();
 }

@@ -30,7 +30,7 @@ class _ThemeColors {
 
 // set _brightness to set default dark/light
 // _brightness > brightnessTheme > themeColor > palette
-abstract class Styles {
+abstract class KStyles {
   static const Brightness DEFAULT_BRIGHTNESS = Brightness.light;
 
   /// Theme Brightness
@@ -40,7 +40,7 @@ abstract class Styles {
 
   static void setBrightnessTheme(Brightness brightness) {
     _brightness = brightness;
-    AppCoreRebuildHelper.forceRebuild();
+    KRebuildHelper.forceRebuild();
   }
 
   static void toggleBrightnessTheme() => setBrightnessTheme(
@@ -73,8 +73,8 @@ abstract class Styles {
         no: Colors.red,
         themeData: ThemeData(
           primarySwatch: Colors.blue, // TODO make this a custom color
-          primaryColor: Styles.white,
-          backgroundColor: Styles.white,
+          primaryColor: KStyles.white,
+          backgroundColor: KStyles.white,
           brightness: Brightness.light,
         ),
       );
@@ -169,7 +169,7 @@ abstract class Styles {
 
   static TextStyle get detailText => defaultText.copyWith(
         fontSize: fontSizeSmall,
-        color: Styles.brightnessTheme == Brightness.light
+        color: KStyles.brightnessTheme == Brightness.light
             ? grey
             : extraExtraLightGrey,
       );

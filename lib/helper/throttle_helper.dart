@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-abstract class AppCoreThrottleHelper {
+abstract class KThrottleHelper {
   static const Duration DEFAULT_DURATION = Duration(milliseconds: 500);
   static const String DEFAULT_THROTTLE_ID = "_default";
 

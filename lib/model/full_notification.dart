@@ -2,13 +2,12 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/model/notif_data.dart';
 import 'package:app_core/model/push_data.dart';
 
-@JsonSerializable()
-class AppCoreFullNotification {
+class KFullNotification {
   @JsonKey(ignore: true)
-  AppCoreNotifData? appCoreNotification;
+  KNotifData? appCoreNotification;
 
   @JsonKey(ignore: true)
-  AppCorePushData? appCoreData;
+  KPushData? appCoreData;
 
   @JsonKey(ignore: true)
   String? get app => this.appCoreData?.app;

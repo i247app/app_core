@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-abstract class AppCoreDateHelper {
+abstract class DateHelper {
   static const String AM = "AM";
   static const String PM = "PM";
 
@@ -77,7 +77,7 @@ abstract class AppCoreDateHelper {
       String vToString =
           year + month + monthDate + hour + min + sec + "." + meSec;
       vToString = vToString.replaceAll(RegExp(r"[a-zA-Z]"), "");
-      print("vToString : ${vToString}");
+      // print("vToString : $vToString");
       return vToString;
     } catch (e) {
       print(e.toString());

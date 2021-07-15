@@ -1,22 +1,23 @@
 import 'package:app_core/model/chat_member.dart';
 import 'package:app_core/model/chat_message.dart';
 
-class AppCoreChatroomData {
+class KChatroomData {
   String? chatID;
   String? chatTitle;
   String? refApp;
   String? refID;
-  List<AppCoreChatMember>? members;
-  List<AppCoreChatMessage>? messages;
-  Function({ String? chatID, String? refApp, String? refID })? getChat;
-  Function({ required AppCoreChatMessage message, List<String>? refPUIDs })? sendMessage;
+  List<KChatMember>? members;
+  List<KChatMessage>? messages;
+  Function({String? chatID, String? refApp, String? refID})? getChat;
+  Function({required KChatMessage message, List<String>? refPUIDs})?
+      sendMessage;
 
   // true until chats have loaded for the first time
   bool get isInitializing => this.messages == null;
 
-  AppCoreChatroomData.fromChatID(String chatID) : this.chatID = chatID;
+  KChatroomData.fromChatID(String chatID) : this.chatID = chatID;
 
-  AppCoreChatroomData.fromRefData({
+  KChatroomData.fromRefData({
     required this.refApp,
     required this.refID,
     this.chatID,
@@ -26,7 +27,7 @@ class AppCoreChatroomData {
     this.sendMessage,
   });
 
-  AppCoreChatroomData({
+  KChatroomData({
     this.chatID,
     this.chatTitle,
     this.refApp,
