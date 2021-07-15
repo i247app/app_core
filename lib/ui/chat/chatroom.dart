@@ -61,7 +61,7 @@ class _AppCoreChatroomState extends State<AppCoreChatroom>
 
     requestPermissions(); // need perms before any api call
 
-    LocalNotifHelper.blockBanner(AppCorePushData.APP_CHAT_NOTIFY);
+    AppCoreLocalNotifHelper.blockBanner(AppCorePushData.APP_CHAT_NOTIFY);
 
     this.pushDataStreamSub =
         AppCorePushDataHelper.stream.listen(pushDataListener);
@@ -76,7 +76,7 @@ class _AppCoreChatroomState extends State<AppCoreChatroom>
 
   @override
   void dispose() {
-    LocalNotifHelper.unblockBanner(AppCorePushData.APP_CHAT_NOTIFY);
+    AppCoreLocalNotifHelper.unblockBanner(AppCorePushData.APP_CHAT_NOTIFY);
     this.pushDataStreamSub.cancel();
     WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
@@ -90,7 +90,7 @@ class _AppCoreChatroomState extends State<AppCoreChatroom>
   static Future<void> requestPermissions() async {
     // local and push ask for iOS
     try {
-      await LocalNotifHelper.setupLocalNotifications();
+      await AppCoreLocalNotifHelper.setupLocalNotifications();
     } catch (e) {}
 
     // setup location permission ask

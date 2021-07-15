@@ -12,7 +12,7 @@ import 'package:app_core/model/notif_data.dart';
 import 'package:app_core/model/push_data.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-abstract class LocalNotifHelper {
+abstract class AppCoreLocalNotifHelper {
   static const bool BLOCKED_BANNERS_AS_TOAST = false;
 
   static FlutterLocalNotificationsPlugin? _flutterLocalNotificationsPlugin;
