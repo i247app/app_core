@@ -1,6 +1,5 @@
 import 'package:app_core/rem/mgr/rem_manager.dart';
 import 'package:app_core/rem/rem.dart';
-import 'package:app_core/ui/chat/chat_screen.dart';
 import 'package:flutter/material.dart';
 
 class AppCoreREMChatManager extends AppCoreREMManager {
