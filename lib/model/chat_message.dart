@@ -49,7 +49,7 @@ class AppCoreChatMessage {
   String? refID;
 
   @JsonKey(ignore: true)
-  AppCoreUser? _user;
+  AppCoreUser? appCoreUser;
 
   // Helper
   @JsonKey(ignore: true)

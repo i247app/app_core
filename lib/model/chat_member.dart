@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/helper/util.dart';
 
 @JsonSerializable(includeIfNull: false)
-abstract class AppCoreChatMember {
+class AppCoreChatMember {
   @JsonKey(name: "chatID")
   String? chatID;
 

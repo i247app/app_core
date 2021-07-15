@@ -3,9 +3,10 @@ import 'dart:io';
 import 'dart:math';
 
 // import 'package:app_core/helper/globals.dart';
+import 'package:app_core/helper/globals.dart';
 import 'package:app_core/helper/pref_helper.dart';
 import 'package:app_core/model/klat_lng.dart';
-// import 'package:app_core/widget/dialog/location_permission_info_dialog.dart';
+import 'package:app_core/ui/widget/dialog/location_permission_info_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -39,10 +40,10 @@ abstract class AppCoreLocationHelper {
       if (Platform.isIOS) {
         future = true;
       } else {
-        // future = await showDialog(
-        //   context: chaoNavigatorKey.currentContext!,
-        //   builder: (ctx) => LocationPermissionInfoDialog(),
-        // );
+        future = await showDialog(
+          context: appCoreNavigatorKey.currentContext!,
+          builder: (ctx) => AppCoreLocationPermissionInfoDialog(),
+        );
       }
       _dialogCompleter!.complete(future ?? false);
     }
@@ -53,13 +54,14 @@ abstract class AppCoreLocationHelper {
       await Permission.location.request();
       return Permission.location.status;
     }
-      // return Geolocator.requestPermission()
-      //     .then((_) => Permission.location.status);
+    // return Geolocator.requestPermission()
+    //     .then((_) => Permission.location.status);
     else
       return null;
   }
 
-  static Future<AppCoreKLatLng?> getKLatLng({bool askForPermissions: true}) async {
+  static Future<AppCoreKLatLng?> getKLatLng(
+      {bool askForPermissions: true}) async {
     Position? position;
     if (askForPermissions || (await hasPermission())) {
       if (askForPermissions && !(await hasPermission())) {
@@ -74,7 +76,8 @@ abstract class AppCoreLocationHelper {
 
   static void _setCachedPosition(Position? position) {
     if (position != null) {
-      AppCorePrefHelper.put(AppCorePrefHelper.CACHED_POSITION, position.toJson());
+      AppCorePrefHelper.put(
+          AppCorePrefHelper.CACHED_POSITION, position.toJson());
       _theCachedPosition = position;
     }
   }

@@ -23,6 +23,7 @@ dependencies:
   fluttertoast: ^8.0.7
   local_auth: ^1.1.6
   new_version: ^0.2.0
+  flutter_local_notifications: ^6.0.0
 
   # Location
   geolocator: ^7.0.3
@@ -32,6 +33,16 @@ dependencies:
 
   # Photo picker
   image_picker: ^0.7.5+2
+
+  # QR code scan
+  flutter_barcode_scanner: ^2.0.0
+
+  # Firebase
+  firebase_core: ^1.2.0
+  firebase_messaging: ^10.0.0
+
+  gallery_saver: 2.1.0
+  path_provider: ^2.0.1
 
 dev_dependencies:
   flutter_test:
