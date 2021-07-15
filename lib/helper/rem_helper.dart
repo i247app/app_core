@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:app_core/helper/globals.dart';
-import 'package:app_core/helper/globals.dart';
 import 'package:app_core/helper/scan_helper.dart';
 import 'package:app_core/rem/mgr/rem_dispatcher.dart';
 import 'package:app_core/rem/rem.dart';

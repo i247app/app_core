@@ -28,7 +28,7 @@ abstract class AppCoreDeviceIDHelper {
   }
 
   static Future<String> _getFallbackID() async {
-    String id = await AppCorePrefHelper.get(PREFS_KEY);
+    String? id = await AppCorePrefHelper.get(PREFS_KEY);
     if (id == null) {
       id = base64Encode(
           List<int>.generate(32, (i) => AppCoreUtil.getRandom().nextInt(256)));

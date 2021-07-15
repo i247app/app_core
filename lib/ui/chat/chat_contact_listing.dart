@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/session_data.dart';
 import 'package:app_core/helper/string_helper.dart';
-import 'package:app_core/helper/throttle_helper.dart';
 import 'package:app_core/helper/util.dart';
 import 'package:app_core/model/user.dart';
 import 'package:app_core/header/assets.dart';
@@ -15,14 +14,13 @@ import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/user_avatar.dart';
 
 class AppCoreChatContactListing extends StatefulWidget {
-  Function(String? searchText)? searchUsers;
+  final Function(String? searchText) searchUsers;
 
-  AppCoreChatContactListing({
-    this.searchUsers,
-  });
+  AppCoreChatContactListing(this.searchUsers);
 
   @override
-  _AppCoreChatContactListingState createState() => _AppCoreChatContactListingState();
+  _AppCoreChatContactListingState createState() =>
+      _AppCoreChatContactListingState();
 }
 
 class _AppCoreChatContactListingState extends State<AppCoreChatContactListing> {
@@ -40,8 +38,6 @@ class _AppCoreChatContactListingState extends State<AppCoreChatContactListing> {
   List<AppCoreUser> selectedUsers = [];
 
   void searchUsers(String searchText) async {
-    if (this.widget.searchUsers == null) return;
-
     final myReqID = ++this.searchReqID;
 
     List<AppCoreUser>? searchedUsers = [];
@@ -49,7 +45,7 @@ class _AppCoreChatContactListingState extends State<AppCoreChatContactListing> {
       searchedUsers = null;
     } else {
       setState(() => this.isSearching = true);
-      final users = await this.widget.searchUsers!(searchText);
+      final users = await this.widget.searchUsers(searchText);
       setState(() => this.isSearching = false);
 
       searchedUsers = users;

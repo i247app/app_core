@@ -91,8 +91,6 @@ abstract class AppCoreDateHelper {
     DateTime? initialDate,
     DateTime? lastDate,
   }) async {
-    initialDate ?? firstDate;
-
     // Get the date
     final DateTime? date = await showDatePicker(
       context: context,
@@ -118,9 +116,6 @@ abstract class AppCoreDateHelper {
     );
   }
 
-  static String? getMeridiem(DateTime date) => date == null
-      ? null
-      : date.hour >= 12 && date.hour < 24
-          ? PM
-          : AM;
+  static String? getMeridiem(DateTime date) =>
+      date.hour >= 12 && date.hour < 24 ? PM : AM;
 }
