@@ -5,7 +5,7 @@ import 'package:app_core/helper/pref_helper.dart';
 import 'package:app_core/helper/util.dart';
 import 'package:device_info/device_info.dart';
 
-abstract class DeviceIDHelper {
+abstract class KDeviceIDHelper {
   static const String PREFS_KEY = "backup_device_id";
 
   static Future<String> get deviceID async {

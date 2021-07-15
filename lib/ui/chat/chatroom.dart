@@ -90,7 +90,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
   }
 
   void onAddGalleryImageClick() async {
-    final result = await PhotoHelper.gallery();
+    final result = await KPhotoHelper.gallery();
     if (result.status == KPhotoStatus.permission_error)
       showDialog(
         context: context,
@@ -102,7 +102,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
   }
 
   void onAddCameraImageClick() async {
-    final result = await PhotoHelper.camera();
+    final result = await KPhotoHelper.camera();
     if (result.status == KPhotoStatus.permission_error)
       showDialog(
         context: context,
@@ -126,7 +126,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
 
     this.widget.getUsers!(puid: puid).then((r) => Navigator.of(context).push(
         MaterialPageRoute(
-            builder: (ctx) => AppCoreUserProfileView(user: r.user))));
+            builder: (ctx) => UserProfileView(user: r.user))));
   }
 
   @override
@@ -167,7 +167,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
           final next = i == this.chatMessages.length - 1
               ? null
               : this.chatMessages[i + 1];
-          return AppCoreChatBubble(
+          return KChatBubble(
             this.chatMessages[i],
             previousChat: next,
             nextChat: prev,

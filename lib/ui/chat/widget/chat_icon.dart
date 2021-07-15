@@ -12,7 +12,7 @@ class _ChatIconPosition {
   _ChatIconPosition({required this.left, required this.top});
 }
 
-class AppCoreChatIcon extends StatelessWidget {
+class KChatIcon extends StatelessWidget {
   static const double DEFAULT_SIZE = 60;
   static const double HALF_SIZE = DEFAULT_SIZE / 2;
   static const double CROSS_SIZE = DEFAULT_SIZE * 0.58;
@@ -40,7 +40,7 @@ class AppCoreChatIcon extends StatelessWidget {
 
   final KChat chat;
 
-  AppCoreChatIcon({required this.chat});
+  KChatIcon({required this.chat});
 
   List<Widget> buildAvatarGroup(List<KChatMember> members) {
     List<Widget> avatars = [];

@@ -1,9 +1,8 @@
+import 'package:app_core/helper/host_config.dart';
 import 'package:flutter/material.dart';
 import 'package:new_version/new_version.dart';
 
-import 'host_config.dart';
-
-abstract class CheckVersionHelper {
+abstract class KCheckVersionHelper {
   static const bool BLOCKED_BANNERS_AS_TOAST = false;
 
   static final _ckVersion = NewVersion();

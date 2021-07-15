@@ -103,7 +103,7 @@ class _KChatListingState extends State<KChatListing> {
           controller: slideCtrl,
           actionPane: SlidableDrawerActionPane(),
           actionExtentRatio: 0.25,
-          child: _AppCoreChatListEntry(
+          child: _ChatListEntry(
             chat,
             onClick: this.widget.onChatClick == null
                 ? (_) {}
@@ -147,11 +147,11 @@ class _KChatListingState extends State<KChatListing> {
   }
 }
 
-class _AppCoreChatListEntry extends StatelessWidget {
+class _ChatListEntry extends StatelessWidget {
   final KChat chat;
   final Function(KChat) onClick;
 
-  const _AppCoreChatListEntry(this.chat, {required this.onClick});
+  const _ChatListEntry(this.chat, {required this.onClick});
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +187,7 @@ class _AppCoreChatListEntry extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(10),
         child: Row(children: <Widget>[
-          AppCoreChatIcon(chat: this.chat),
+          KChatIcon(chat: this.chat),
           SizedBox(width: 16),
           Expanded(child: content),
           SizedBox(width: 16),

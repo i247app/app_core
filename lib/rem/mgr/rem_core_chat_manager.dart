@@ -1,7 +1,9 @@
 import 'package:app_core/rem/mgr/rem_manager.dart';
 import 'package:app_core/rem/rem.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
-class KREMChatManager extends REMManager {
+class REMCoreChatManager extends REMManager {
   static const String NOTIFY = "chat.notify";
 
   @override
@@ -31,20 +33,20 @@ class KREMChatManager extends REMManager {
     REMAction? action;
     switch (refApp ?? "") {
       case "chat":
-        // if (chatID != null) action = _onNormalChatNotify(chatID);
+        if (chatID != null) action = _onNormalChatNotify(chatID);
         break;
     }
     return action;
   }
 
-// CHAT chats
-// AppCoreREMAction _onNormalChatNotify(String chatID) {
-//   return (NavigatorState nav) async {
-//     final screen = ChatScreen(chatID: chatID);
-//     nav.pushAndRemoveUntil(
-//       MaterialPageRoute(builder: (ctx) => screen),
-//       (r) => r.isFirst,
-//     );
-//   };
-// }
+  REMAction? _onNormalChatNotify(String chatID) {
+    return null;
+    // return (NavigatorState nav) async {
+    //   final screen = KChatScreen(chatID: chatID);
+    //   nav.pushAndRemoveUntil(
+    //     MaterialPageRoute(builder: (ctx) => screen),
+    //     (r) => r.isFirst,
+    //   );
+    // };
+  }
 }

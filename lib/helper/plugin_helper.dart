@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
-abstract class PluginHelper {
+abstract class KPluginHelper {
   static const MethodChannel _channel = MethodChannel('chaoapp.com/default');
 
   static Future createAndroidNotificationChannel() async {

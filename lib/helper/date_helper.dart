@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-abstract class DateHelper {
+abstract class KDateHelper {
   static const String AM = "AM";
   static const String PM = "PM";
 

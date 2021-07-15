@@ -50,7 +50,7 @@ abstract class KSessionData {
       KHostConfig.hostInfo.copyWith(port: 8086);
 
   /// Setup the session data
-  static void setup(AppCoreSessionInitData data) {
+  static void setup(KSessionInitData data) {
     if (data.initSessionToken != null) {
       KSessionData.setSessionToken(data.initSessionToken);
       KSessionData.setUserSession(data.initUserSession);

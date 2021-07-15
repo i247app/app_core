@@ -14,7 +14,7 @@ class KPhotoResult {
   KPhotoResult({this.photoFile, required this.status});
 }
 
-abstract class PhotoHelper {
+abstract class KPhotoHelper {
   static Future<KPhotoResult> chooser(BuildContext context) async {
     final result = await showModalBottomSheet(
       context: context,

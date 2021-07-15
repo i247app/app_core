@@ -124,7 +124,6 @@ abstract class TLSHelper {
       if (result["kstatus"] == "${KCoreCode.BAD_SESSION}" &&
           KSessionData.hasActiveSession) {
         KSessionData.wipeSession();
-        // AppCoreSessionHelper.hardReload();
         KToastHelper.show("Session terminated");
       }
     } catch (e) {}
@@ -136,10 +135,6 @@ abstract class TLSHelper {
     required int kstatus,
     required String message,
   }) {
-    // final data = AppCoreBaseResponse()
-    //   ..kstatus = kstatus
-    //   ..kmessage = message;
-    // return jsonEncode(data.toJson());
     return "";
   }
 
@@ -184,12 +179,7 @@ abstract class TLSHelper {
       ..._cachedDefaultReqData,
       "reqID": "$reqID",
       "ktoken": KSessionData.getSessionToken(),
-      // "pushToken": await AppCoreSessionData.getFCMToken(),
-      // "voipToken": await AppCoreSessionData.getVoipToken(),
       "tokenMode": KUtil.getPushTokenMode(),
-      // "latLng": (AppCoreLocationHelper.cachedPosition == null
-      //     ? null
-      //     : AppCoreKLatLng.fromPosition(AppCoreLocationHelper.cachedPosition!)),
     };
 
     return {...data, "metadata": data};

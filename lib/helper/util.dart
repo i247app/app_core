@@ -23,7 +23,7 @@ abstract class KUtil {
 
   static String get buildNumber => KUtil._buildNumber ?? "";
 
-  static Future<String> getDeviceID() async => DeviceIDHelper.deviceID;
+  static Future<String> getDeviceID() async => KDeviceIDHelper.deviceID;
 
   static Future<String> getDeviceBrand() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -56,7 +56,7 @@ abstract class KUtil {
 
   static Future<bool> isEmulator() async => isPhysicalDevice().then((b) => !b);
 
-  static String localeName() => LocaleHelper.localeName;
+  static String localeName() => KLocaleHelper.localeName;
 
   static String getPlatformCode() => Platform.operatingSystem;
 
@@ -373,11 +373,11 @@ abstract class KUtil {
       DateTime? date;
       switch (rawDate.runtimeType) {
         case DateTime:
-          date = DateHelper.copy(rawDate);
+          date = KDateHelper.copy(rawDate);
           break;
         case String:
         default:
-          date = DateHelper.from20FSP(rawDate.toString());
+          date = KDateHelper.from20FSP(rawDate.toString());
           break;
       }
 
@@ -410,11 +410,11 @@ abstract class KUtil {
       DateTime? date;
       switch (rawDate.runtimeType) {
         case DateTime:
-          date = DateHelper.copy(rawDate);
+          date = KDateHelper.copy(rawDate);
           break;
         case String:
         default:
-          date = DateHelper.from20FSP(rawDate.toString(), isUTC: false);
+          date = KDateHelper.from20FSP(rawDate.toString(), isUTC: false);
           break;
       }
 
@@ -467,11 +467,11 @@ abstract class KUtil {
       DateTime? date;
       switch (rawDate.runtimeType) {
         case DateTime:
-          date = DateHelper.copy(rawDate);
+          date = KDateHelper.copy(rawDate);
           break;
         case String:
         default:
-          date = DateHelper.from20FSP(rawDate.toString());
+          date = KDateHelper.from20FSP(rawDate.toString());
           break;
       }
 

@@ -10,7 +10,7 @@ import 'package:app_core/header/kstyles.dart';
 import 'package:app_core/ui/widget/image_viewer.dart';
 import 'package:app_core/ui/widget/user_avatar.dart';
 
-class AppCoreChatBubble extends StatelessWidget {
+class KChatBubble extends StatelessWidget {
   static const Duration SHORT_TIME_CUTOFF = Duration(minutes: 2);
   static const Duration LONG_TIME_CUTOFF = Duration(minutes: 10);
   static const double GUTTER_SIZE = 32;
@@ -77,7 +77,7 @@ class AppCoreChatBubble extends StatelessWidget {
     return br;
   }
 
-  const AppCoreChatBubble(
+  const KChatBubble(
     this.chat, {
     this.previousChat,
     this.nextChat,

@@ -10,14 +10,14 @@ String? zzz_itoa(int? num) => num?.toString() ?? null;
 int zzz_parseInt(String? z) => z == null || z == "" ? 0 : int.parse(z);
 
 DateTime? zzz_str2Date(String? z) =>
-    z == null || z == "" || DateHelper.from20FSP(z, isUTC: true) == null
+    z == null || z == "" || KDateHelper.from20FSP(z, isUTC: true) == null
         ? null
-        : DateHelper.from20FSP(z, isUTC: true)!.toLocal();
+        : KDateHelper.from20FSP(z, isUTC: true)!.toLocal();
 
 String? zzz_date2Str(DateTime? d) =>
-    d == null ? null : DateHelper.to20FSP(d, toUTC: true);
+    d == null ? null : KDateHelper.to20FSP(d, toUTC: true);
 
-abstract class AppCoreBaseResponse {
+abstract class BaseResponse {
   static const String KTOKEN = "ktoken";
   static const String KSTATUS = "kstatus";
   static const String ERRNO = "errno";

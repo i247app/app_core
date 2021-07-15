@@ -7,7 +7,7 @@ class KLocale {
   const KLocale({required this.language, required this.country});
 }
 
-abstract class LocaleHelper {
+abstract class KLocaleHelper {
   static const String LANGUAGE_EN = "en";
   static const String LANGUAGE_VI = "vi";
 

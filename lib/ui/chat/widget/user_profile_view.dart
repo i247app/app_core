@@ -5,20 +5,20 @@ import 'package:flutter/widgets.dart';
 import 'package:app_core/model/user.dart';
 import 'package:app_core/ui/chat/widget/gig_user_label.dart';
 
-class AppCoreUserProfileView extends StatefulWidget {
+class UserProfileView extends StatefulWidget {
   static const double ICON_SIZE = 80;
 
   final KUser? user;
   final String? puid;
-  final Function({ String? puid })? getUsers;
+  final Function({String? puid})? getUsers;
 
-  const AppCoreUserProfileView({this.user, this.puid, this.getUsers});
+  const UserProfileView({this.user, this.puid, this.getUsers});
 
   @override
-  State<StatefulWidget> createState() => _AppCoreUserProfileViewState();
+  State<StatefulWidget> createState() => _UserProfileViewState();
 }
 
-class _AppCoreUserProfileViewState extends State<AppCoreUserProfileView> {
+class _UserProfileViewState extends State<UserProfileView> {
   final Completer<KUser> completer = Completer();
 
   @override

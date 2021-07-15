@@ -11,12 +11,12 @@ class KChoosePhotoBottomSheetView extends StatefulWidget {
 class _KChoosePhotoBottomSheetViewState
     extends State<KChoosePhotoBottomSheetView> {
   void onCameraClick() async {
-    final result = await PhotoHelper.camera();
+    final result = await KPhotoHelper.camera();
     Navigator.of(context).pop(result);
   }
 
   void onGalleryClick() async {
-    final result = await PhotoHelper.gallery();
+    final result = await KPhotoHelper.gallery();
     Navigator.of(context).pop(result);
   }
 
