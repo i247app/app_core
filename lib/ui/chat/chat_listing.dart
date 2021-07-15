@@ -86,7 +86,7 @@ class _AppCoreChatListingState extends State<AppCoreChatListing> {
   void loadChats() async {
     if (this.widget.loadChats == null) return;
 
-    List<AppCoreChat> chats = await this.widget.loadChats!();
+    List<AppCoreChat>? chats = await this.widget.loadChats!();
     if (mounted) setState(() => _chats = chats ?? []);
   }
 
