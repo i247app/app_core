@@ -189,9 +189,9 @@ abstract class AppCoreTLSHelper {
       // "pushToken": await AppCoreSessionData.getFCMToken(),
       // "voipToken": await AppCoreSessionData.getVoipToken(),
       "tokenMode": AppCoreUtil.getPushTokenMode(),
-      "latLng": (AppCoreLocationHelper.cachedPosition == null
-          ? null
-          : AppCoreKLatLng.fromPosition(AppCoreLocationHelper.cachedPosition!)),
+      // "latLng": (AppCoreLocationHelper.cachedPosition == null
+      //     ? null
+      //     : AppCoreKLatLng.fromPosition(AppCoreLocationHelper.cachedPosition!)),
     };
 
     return {...data, "metadata": data};
