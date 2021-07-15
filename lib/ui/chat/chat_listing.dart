@@ -130,7 +130,7 @@ class _AppCoreChatListingState extends State<AppCoreChatListing> {
           actionExtentRatio: 0.25,
           child: _AppCoreChatListEntry(
             chat,
-            onClick: this.widget.onChatClick == null ? () {} : this.widget.onChatClick!(chat),
+            onClick: this.widget.onChatClick == null ? () {} : () => this.widget.onChatClick!(chat),
           ),
           dismissal: SlidableDismissal(
             child: SlidableDrawerDismissal(),
