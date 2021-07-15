@@ -49,7 +49,7 @@ abstract class AppCoreSessionData {
 
   // TODO = think about port hard coded to 8086
   static AppCoreHostInfo get webRTCHostInfo =>
-      userSession?.hostData?.webRtcHostInfo ??
+      userSession?.appCoreHostData?.appCoreWebRtcHostInfo ??
           AppCoreHostConfig.hostInfo.copyWith(port: 8086);
 
   /// Setup the session data
@@ -60,7 +60,7 @@ abstract class AppCoreSessionData {
       AppCorePrefHelper.put(AppCorePrefHelper.KTOKEN, data.initSessionToken);
       // PrefHelper.put("puid", data.initUserSession?.user?.puid);
       // PrefHelper.put("firstName", data.initUserSession?.user?.firstName);
-      AppCorePrefHelper.put(AppCorePrefHelper.CACHED_USER, data.initUserSession?.user);
+      AppCorePrefHelper.put(AppCorePrefHelper.CACHED_USER, data.initUserSession?.appCoreUser);
     }
   }
 
@@ -91,13 +91,13 @@ abstract class AppCoreSessionData {
 
   static AppCoreUserSession? get userSession => _userSession;
 
-  static AppCoreUser? get me => userSession?.user;
+  static AppCoreUser? get me => userSession?.appCoreUser;
 
-  static AppCoreAppNav? get appNav => userSession?.appNav;
+  static AppCoreAppNav? get appNav => userSession?.appCoreAppNav;
 
   // splashy home screen - effect base_screen/bottomNavBar and home_portal
   static bool get isSplashMode =>
-      (userSession?.appNav?.splashMode ?? AppCoreAppNavStatus.ON) == AppCoreAppNavStatus.ON;
+      (userSession?.appCoreAppNav?.splashMode ?? AppCoreAppNavStatus.ON) == AppCoreAppNavStatus.ON;
 
   static bool get isOnline => userSession?.isOnlineMode ?? false;
 

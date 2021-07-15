@@ -74,7 +74,7 @@ abstract class AppCoreLocalNotifHelper {
       AppCoreFullNotification? msg, {
     bool obeyBlacklist = false,
   }) async {
-    AppCoreNotifData? notif = msg?.notification;
+    AppCoreNotifData? notif = msg?.appCoreNotification;
     String? app = msg?.app;
     if (notif == null || app == null) return;
 
@@ -118,7 +118,7 @@ abstract class AppCoreLocalNotifHelper {
         notif.title,
         notif.body,
         platform,
-        payload: jsonEncode(msg?.data ?? {}),
+        payload: jsonEncode(msg?.appCoreData ?? {}),
       );
 
       print("LocalNotifHelper - DISPLAYING NOTIFICATION BANNER");

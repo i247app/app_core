@@ -33,14 +33,14 @@ class AppCoreUserSession {
   @JsonKey(name: GOOGLE_MAP_API_KEY)
   String? googleMapAPIKey;
 
-  @JsonKey(name: APP_NAV)
-  AppCoreAppNav? appNav;
+  @JsonKey(ignore: true)
+  AppCoreAppNav? appCoreAppNav;
 
-  @JsonKey(name: USER)
-  AppCoreUser? user;
+  @JsonKey(ignore: true)
+  AppCoreUser? appCoreUser;
 
-  @JsonKey(name: HOST_DATA)
-  AppCoreSystemHostData? hostData;
+  @JsonKey(ignore: true)
+  AppCoreSystemHostData? appCoreHostData;
 
   // Methods
   @JsonKey(ignore: true)
