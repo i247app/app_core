@@ -108,8 +108,8 @@ class _AppCoreChatroomState extends State<AppCoreChatroom>
   }
 
   void onAddGalleryImageClick() async {
-    final result = await PhotoHelper.gallery();
-    if (result.status == PhotoStatus.permission_error)
+    final result = await AppCorePhotoHelper.gallery();
+    if (result.status == AppCorePhotoStatus.permission_error)
       showDialog(
         context: context,
         builder: (ctx) =>
@@ -120,8 +120,8 @@ class _AppCoreChatroomState extends State<AppCoreChatroom>
   }
 
   void onAddCameraImageClick() async {
-    final result = await PhotoHelper.camera();
-    if (result.status == PhotoStatus.permission_error)
+    final result = await AppCorePhotoHelper.camera();
+    if (result.status == AppCorePhotoStatus.permission_error)
       showDialog(
         context: context,
         builder: (ctx) =>

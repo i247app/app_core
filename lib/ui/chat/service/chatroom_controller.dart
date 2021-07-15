@@ -35,8 +35,8 @@ class AppCoreChatroomController extends ValueNotifier<AppCoreChatroomData> {
     );
   }
 
-  Future<String?> sendImage(PhotoResult result) async {
-    if (result.status != PhotoStatus.ok) return null;
+  Future<String?> sendImage(AppCorePhotoResult result) async {
+    if (result.status != AppCorePhotoStatus.ok) return null;
 
     return sendMessage(
       messageType: AppCoreChatMessageType.CONTENT_TYPE_IMAGE,

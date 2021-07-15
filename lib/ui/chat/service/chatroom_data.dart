@@ -9,7 +9,7 @@ class AppCoreChatroomData {
   List<AppCoreChatMember>? members;
   List<AppCoreChatMessage>? messages;
   Function({ String? chatID, String? refApp, String? refID })? getChat;
-  Function({ AppCoreChatMessage? message, List<String>? refPUIDs })? sendMessage;
+  Function({ required AppCoreChatMessage? message, List<String>? refPUIDs })? sendMessage;
 
   // true until chats have loaded for the first time
   bool get isInitializing => this.messages == null;
