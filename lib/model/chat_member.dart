@@ -3,7 +3,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/helper/util.dart';
 
 @JsonSerializable(includeIfNull: false)
-class AppCoreChatMember {
+abstract class AppCoreChatMember {
   @JsonKey(name: "chatID")
   String? chatID;
 
@@ -67,14 +67,4 @@ class AppCoreChatMember {
     ..lastName = this.lastName
     ..middleName = this.middleName
     ..avatarURL = this.avatar;
-
-  factory AppCoreChatMember.fromUser(AppCoreUser user) => AppCoreChatMember()
-    ..puid = user.puid
-    ..kunm = user.kunm
-    ..firstName = user.firstName
-    ..lastName = user.lastName
-    ..middleName = user.middleName;
-
-  // JSON
-  AppCoreChatMember();
 }

@@ -4,16 +4,20 @@ import 'package:app_core/helper/util.dart';
 import 'package:app_core/model/response/base_response.dart';
 import 'package:app_core/model/user.dart';
 
-@JsonSerializable()
-class AppCoreChatMessage {
+class AppCoreChatMessageType {
   static const String CONTENT_TYPE_TEXT = "text";
   static const String CONTENT_TYPE_IMAGE = "image";
   static const String CONTENT_TYPE_VIDEO_CALL_EVENT = "video.call.event";
+}
 
+class AppCoreChatMessageContent {
   static const String APP_CONTENT_CHAT = "chat";
   static const String APP_CONTENT_GIG = "gig";
   static const String APP_CONTENT_CUSUP = "cusup";
+}
 
+@JsonSerializable()
+abstract class AppCoreChatMessage {
   @JsonKey(name: "messageID")
   String? messageID;
 
@@ -58,7 +62,4 @@ class AppCoreChatMessage {
   bool get isMe => this.puid == AppCoreSessionData.me?.puid;
 
   static String generateLocalID() => AppCoreUtil.buildRandomString(8);
-
-  // JSON
-  AppCoreChatMessage();
 }

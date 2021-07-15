@@ -5,7 +5,7 @@ import 'package:app_core/model/chat_message.dart';
 import 'package:app_core/model/response/base_response.dart';
 
 @JsonSerializable()
-class AppCoreChat {
+abstract class AppCoreChat {
   static const String APP_CONTENT_CHAT = "chat";
 
   @JsonKey(name: "chatID")
@@ -56,7 +56,4 @@ class AppCoreChat {
           .join(", ");
     return '';
   }
-
-  // JSON
-  AppCoreChat();
 }
