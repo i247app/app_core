@@ -2,6 +2,8 @@ import 'package:app_core/model/user.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/helper/util.dart';
 
+part 'chat_member.g.dart';
+
 @JsonSerializable(includeIfNull: false)
 class AppCoreChatMember {
   @JsonKey(name: "chatID")
@@ -77,4 +79,9 @@ class AppCoreChatMember {
 
   // JSON
   AppCoreChatMember();
+
+  factory AppCoreChatMember.fromJson(Map<String, dynamic> json) =>
+      _$AppCoreChatMemberFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AppCoreChatMemberToJson(this);
 }

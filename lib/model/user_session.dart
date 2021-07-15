@@ -4,6 +4,8 @@ import 'package:app_core/model/system_host_data.dart';
 import 'package:app_core/model/user.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+part 'user_session.g.dart';
+
 @JsonSerializable()
 class AppCoreUserSession {
   static const String KTOKEN = "ktoken";
@@ -48,4 +50,9 @@ class AppCoreUserSession {
 
   // JSON
   AppCoreUserSession();
+
+  factory AppCoreUserSession.fromJson(Map<String, dynamic> json) =>
+      _$AppCoreUserSessionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AppCoreUserSessionToJson(this);
 }
