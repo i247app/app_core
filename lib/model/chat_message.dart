@@ -48,9 +48,8 @@ abstract class AppCoreChatMessage {
   @JsonKey(name: "refID")
   String? refID;
 
-  // @JsonKey(name: "user")
-  @JsonKey(ignore: true)
-  AppCoreUser? _user;
+  @JsonKey(name: "user")
+  AppCoreUser? user;
 
   // Helper
   @JsonKey(ignore: true)
