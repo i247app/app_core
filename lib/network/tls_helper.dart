@@ -5,20 +5,19 @@ import 'dart:typed_data';
 
 import 'package:app_core/helper/host_config.dart';
 import 'package:app_core/helper/kcode.dart';
+import 'package:app_core/helper/location_helper.dart';
 import 'package:app_core/helper/session_data.dart';
 import 'package:app_core/helper/string_helper.dart';
+import 'package:app_core/helper/toast_helper.dart';
 import 'package:app_core/helper/util.dart';
 import 'package:app_core/model/host_info.dart';
+import 'package:app_core/model/klat_lng.dart';
 import 'package:app_core/model/response/base_response.dart';
 import 'package:app_core/network/socket_manager.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-// import 'package:app_core/helper/location_helper.dart';
-// import 'package:app_core/helper/session_helper.dart';
-// import 'package:app_core/helper/toast_helper.dart';
-// import 'package:app_core/model/klat_lng.dart';
-
-abstract class TLSHelper {
+abstract class AppCoreTLSHelper {
   static const int KSTATUS_UNKNOWN_ERROR = -1;
   static const int KSTATUS_SOCKET_ERROR = -2;
   static const int KSTATUS_JSON_ERROR = -3;
@@ -36,15 +35,15 @@ abstract class TLSHelper {
 
   static Future<Map<String, dynamic>> send(
     Map<String, dynamic> inputData, {
-    HostInfo? hostInfo,
+    AppCoreHostInfo? hostInfo,
     bool isAuthed = true,
   }) async {
     final int reqID = _reqCount++;
     final String apiName = "${inputData['svc']}:${inputData['req']}";
 
-    hostInfo ??= HostConfig.hostInfo;
+    hostInfo ??= AppCoreHostConfig.hostInfo;
 
-    SocketResource? socketResource;
+    AppCoreSocketResource? socketResource;
     Map? decodedAnswer;
     String? answer;
     try {
@@ -114,21 +113,21 @@ abstract class TLSHelper {
 
     // Store response token if local one is different
     final result = decodedAnswer ?? jsonDecode(answer);
-    if (StringHelper.isExist(result["ktoken"]) &&
-        SessionData.getSessionToken() != result["ktoken"] &&
+    if (AppCoreStringHelper.isExist(result["ktoken"]) &&
+        AppCoreSessionData.getSessionToken() != result["ktoken"] &&
         ((inputData['req'] == 'login' &&
-                StringHelper.isExist(SessionData.getSessionToken())) ||
-            (StringHelper.isEmpty(SessionData.getSessionToken())))) {
-      SessionData.setSessionToken(result["ktoken"]);
+            AppCoreStringHelper.isExist(AppCoreSessionData.getSessionToken())) ||
+            (AppCoreStringHelper.isEmpty(AppCoreSessionData.getSessionToken())))) {
+      AppCoreSessionData.setSessionToken(result["ktoken"]);
     }
 
     // Replace stack with Splash in case of BAD SESSION response
     try {
-      if (result["kstatus"] == "${KCode.BAD_SESSION}" &&
-          SessionData.hasActiveSession) {
-        // SessionData.wipeSession();
-        // SessionHelper.hardReload();
-        // ToastHelper.show("Session terminated");
+      if (result["kstatus"] == "${AppCoreKCode.BAD_SESSION}" &&
+          AppCoreSessionData.hasActiveSession) {
+        AppCoreSessionData.wipeSession();
+        // AppCoreSessionHelper.hardReload();
+        AppCoreToastHelper.show("Session terminated");
       }
     } catch (e) {}
 
@@ -139,10 +138,11 @@ abstract class TLSHelper {
     required int kstatus,
     required String message,
   }) {
-    return jsonEncode({
-      BaseResponse.KSTATUS: kstatus,
-      BaseResponse.KMSG: message,
-    });
+    // final data = AppCoreBaseResponse()
+    //   ..kstatus = kstatus
+    //   ..kmessage = message;
+    // return jsonEncode(data.toJson());
+    return "";
   }
 
   static List<int> zip(bytes) {
@@ -159,18 +159,18 @@ abstract class TLSHelper {
 
   static Future<Map<String, dynamic>> getDefaultRequestData(int reqID) async {
     final staticDataBuilders = {
-      "versionName": () async => await Util.getBuildVersion(),
-      "versionCode": () async => await Util.getBuildNumber(),
-      "version": () async => await Util.getBuildVersion(),
-      "build": () async => await Util.getBuildNumber(),
-      "platform": () async => Util.getPlatformCode(),
+      "versionName": () async => await AppCoreUtil.getBuildVersion(),
+      "versionCode": () async => await AppCoreUtil.getBuildNumber(),
+      "version": () async => await AppCoreUtil.getBuildVersion(),
+      "build": () async => await AppCoreUtil.getBuildNumber(),
+      "platform": () async => AppCoreUtil.getPlatformCode(),
       "svrVersion": () async => "x.x.x",
-      "manufacturer": () async => await Util.getDeviceBrand(),
-      "model": () async => await Util.getDeviceModel(),
-      "deviceName": () async => await Util.getDeviceName(),
-      "deviceNumber": () async => await Util.getDeviceID(),
-      "locale": () async => Util.localeName(),
-      "domain": () async => await Util.getPackageName(),
+      "manufacturer": () async => await AppCoreUtil.getDeviceBrand(),
+      "model": () async => await AppCoreUtil.getDeviceModel(),
+      "deviceName": () async => await AppCoreUtil.getDeviceName(),
+      "deviceNumber": () async => await AppCoreUtil.getDeviceID(),
+      "locale": () async => AppCoreUtil.localeName(),
+      "domain": () async => await AppCoreUtil.getPackageName(),
     };
 
     // Build the _cachedDefaultReqData
@@ -185,18 +185,16 @@ abstract class TLSHelper {
     final data = {
       ..._cachedDefaultReqData,
       "reqID": "$reqID",
-      "ktoken": SessionData.getSessionToken(),
-      "pushToken": "",
-      //await SessionData.getFCMToken(),
-      "voipToken": "",
-      //await SessionData.getVoipToken(),
-      "tokenMode": "",
-      //Util.getPushTokenMode(),
-      "latLng": "",
-      //(LocationHelper.cachedPosition == null ? null : KLatLng.fromPosition(LocationHelper.cachedPosition!)),
+      "ktoken": AppCoreSessionData.getSessionToken(),
+      // "pushToken": await AppCoreSessionData.getFCMToken(),
+      // "voipToken": await AppCoreSessionData.getVoipToken(),
+      "tokenMode": AppCoreUtil.getPushTokenMode(),
+      "latLng": (AppCoreLocationHelper.cachedPosition == null
+          ? null
+          : AppCoreKLatLng.fromPosition(AppCoreLocationHelper.cachedPosition!)),
     };
 
-    return data;
+    return {...data, "metadata": data};
   }
 
   static List<int> getHeaderLengthBytes(int value) {
@@ -224,16 +222,16 @@ abstract class TLSHelper {
 
   static void _log(int reqID, String tag, String apiName, String message,
       {bool ignoreBlacklist = false}) {
-    if (!HostConfig.isReleaseMode) {
+    if (!AppCoreHostConfig.isReleaseMode) {
       String displayMessage = logBlacklist.contains(apiName) && !ignoreBlacklist
           ? compactLog(message)
-          : Util.prettyJSON(message);
+          : AppCoreUtil.prettyJSON(message);
       debugPrint('[$reqID] $tag $apiName - $displayMessage');
     }
   }
 
   static Future<List<int>> writeToSocket(
-    SocketResource socketResource,
+      AppCoreSocketResource socketResource,
     List<int> data,
   ) async {
     final List<int> body = zip(data);

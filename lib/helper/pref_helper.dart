@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:app_core/helper/host_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-abstract class PrefHelper {
+abstract class AppCorePrefHelper {
   static const String TAG = 'SecureStorageHelper';
+
+  static bool get isDebugMode => !AppCoreHostConfig.isReleaseMode;
 
   static const String KTOKEN = 'session_token';
   static const String PUSH_TOKEN = 'push_token';
@@ -16,22 +19,23 @@ abstract class PrefHelper {
   static const String HAS_SHOWN_LOCATION_PICKER_INFO =
       'has_shown_location_picker_info';
   static const String PENDING_REM_ACTION = 'pending_rem_action';
+  static const String CACHED_USER = 'cached_user';
 
-  static _SecureStorageAdapter? _secureStorageAdapter;
+  static _PrefAdapter? _prefAdapter;
+
+  static _PrefAdapter get _instance => _prefAdapter ??= _PrefAdapter();
 
   static Future<String> put(String key, dynamic value) async {
-    final _SecureStorageAdapter storage = _getInstance();
-
-    String original = await storage.get(key);
-    await storage.put(key, jsonEncode(value));
+    String original = await _instance.get(key);
+    await _instance.put(key, jsonEncode(value));
+    if (isDebugMode) print('$TAG PUT $key = $value');
 
     return original;
   }
 
   static Future<dynamic> get(String key, {defaultResult}) async {
-    final _SecureStorageAdapter storage = _getInstance();
-
-    dynamic result = (await storage.get(key)) ?? defaultResult;
+    dynamic result = (await _instance.get(key)) ?? defaultResult;
+    if (isDebugMode) print('$TAG GET $key -> $result');
     try {
       result = jsonDecode(result);
     } catch (e) {}
@@ -39,30 +43,21 @@ abstract class PrefHelper {
   }
 
   static Future<String> remove(String key) async {
-    final _SecureStorageAdapter storage = _getInstance();
-
-    String original = await storage.get(key);
-    await storage.remove(key);
+    String original = await _instance.get(key);
+    await _instance.remove(key);
+    if (isDebugMode) print('$TAG REMOVE $key');
     try {
       original = jsonDecode(original);
     } catch (e) {}
     return original;
   }
-
-  static _getInstance() => _secureStorageAdapter ??= _SecureStorageAdapter();
 }
 
 /// Helper class to intelligently switch between plugins
-class _SecureStorageAdapter {
+class _PrefAdapter {
   static const String SS_PREFIX = "_ss_";
 
-  final plugin = FlutterSecureStorage();
-
-  _SecureStorageAdapter() {
-    setupPlugin();
-  }
-
-  void setupPlugin() async {}
+  final plugin = new FlutterSecureStorage();
 
   Future put(String key, dynamic value) async {
     await plugin.write(key: "$SS_PREFIX/$key", value: value);

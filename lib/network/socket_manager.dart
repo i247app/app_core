@@ -3,31 +3,31 @@ import 'dart:io';
 import 'package:app_core/helper/host_config.dart';
 import 'package:app_core/model/host_info.dart';
 
-class SocketResource {
+class AppCoreSocketResource {
   static int count = 0;
 
   final int socketID = count++;
   final SecureSocket socket;
   final Stream<List<int>> stream;
 
-  HostInfo get hostInfo => HostInfo.raw(
+  AppCoreHostInfo get hostInfo => AppCoreHostInfo.raw(
         this.socket.address.host,
         this.socket.remotePort,
       );
 
-  SocketResource(this.socket, this.stream);
+  AppCoreSocketResource(this.socket, this.stream);
 
   Future close() => this.socket.close();
 
-  factory SocketResource.fromSocket(SecureSocket socket) =>
-      SocketResource(socket, socket.asBroadcastStream());
+  factory AppCoreSocketResource.fromSocket(SecureSocket socket) =>
+      AppCoreSocketResource(socket, socket.asBroadcastStream());
 }
 
 abstract class SocketManager {
-  static Map<HostInfo, List<SocketResource>> _sockets = {};
+  static Map<AppCoreHostInfo, List<AppCoreSocketResource>> _sockets = {};
 
-  static Future<SocketResource> getSocket([HostInfo? hostInfo]) async {
-    hostInfo ??= HostConfig.hostInfo;
+  static Future<AppCoreSocketResource> getSocket([AppCoreHostInfo? hostInfo]) async {
+    hostInfo ??= AppCoreHostConfig.hostInfo;
 
     // Create map entry if needed
     if (!_sockets.containsKey(hostInfo)) _sockets[hostInfo] = [];
@@ -40,17 +40,17 @@ abstract class SocketManager {
     return _sockets[hostInfo]!.removeLast();
   }
 
-  static void releaseSocket(SocketResource socket) {
+  static void releaseSocket(AppCoreSocketResource socket) {
     socket.close();
     // _sockets[socket.hostInfo]!.add(socket);
   }
 
-  static Future<SocketResource> _createSocket(HostInfo hostInfo) async {
+  static Future<AppCoreSocketResource> _createSocket(AppCoreHostInfo hostInfo) async {
     // print("creating socket for $hostInfo");
     return SecureSocket.connect(
       hostInfo.hostname,
       hostInfo.port,
       onBadCertificate: (_) => true,
-    ).then((ss) => SocketResource.fromSocket(ss));
+    ).then((ss) => AppCoreSocketResource.fromSocket(ss));
   }
 }

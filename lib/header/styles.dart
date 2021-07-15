@@ -40,7 +40,7 @@ abstract class Styles {
 
   static void setBrightnessTheme(Brightness brightness) {
     _brightness = brightness;
-    RebuildHelper.forceRebuild();
+    AppCoreRebuildHelper.forceRebuild();
   }
 
   static void toggleBrightnessTheme() => setBrightnessTheme(

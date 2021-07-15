@@ -1,0 +1,110 @@
+import 'dart:async';
+import 'dart:io';
+import 'dart:math';
+
+// import 'package:app_core/helper/globals.dart';
+import 'package:app_core/helper/pref_helper.dart';
+import 'package:app_core/model/klat_lng.dart';
+// import 'package:app_core/widget/dialog/location_permission_info_dialog.dart';
+import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+abstract class AppCoreLocationHelper {
+  static Position? _theCachedPosition;
+  static Completer<bool>? _dialogCompleter;
+
+  static Position? get cachedPosition {
+    hasPermission().then((bool yes) {
+      if (yes) {
+        Geolocator.getCurrentPosition().then((pos) => _theCachedPosition = pos);
+      }
+    });
+    return _theCachedPosition;
+  }
+
+  static Future<bool> hasPermission() async =>
+      Geolocator.checkPermission().then((lp) => [
+            LocationPermission.always,
+            LocationPermission.whileInUse
+          ].contains(lp));
+
+  static Future<PermissionStatus?> askForPermission() async {
+    if (await hasPermission()) return PermissionStatus.granted;
+
+    if (_dialogCompleter == null ||
+        !((await _dialogCompleter?.future) ?? false)) {
+      _dialogCompleter = Completer<bool>();
+      bool? future;
+      if (Platform.isIOS) {
+        future = true;
+      } else {
+        // future = await showDialog(
+        //   context: chaoNavigatorKey.currentContext!,
+        //   builder: (ctx) => LocationPermissionInfoDialog(),
+        // );
+      }
+      _dialogCompleter!.complete(future ?? false);
+    }
+    bool dialogAcknowledged =
+        await _dialogCompleter!.future.then((b) => b) ?? false;
+
+    if (dialogAcknowledged) {
+      await Permission.location.request();
+      return Permission.location.status;
+    }
+      // return Geolocator.requestPermission()
+      //     .then((_) => Permission.location.status);
+    else
+      return null;
+  }
+
+  static Future<AppCoreKLatLng?> getKLatLng({bool askForPermissions: true}) async {
+    Position? position;
+    if (askForPermissions || (await hasPermission())) {
+      if (askForPermissions && !(await hasPermission())) {
+        final result = await askForPermission();
+        if (result != PermissionStatus.granted) return null;
+      }
+      position = await Geolocator.getCurrentPosition();
+    }
+    _setCachedPosition(position);
+    return position == null ? null : AppCoreKLatLng.fromPosition(position);
+  }
+
+  static void _setCachedPosition(Position? position) {
+    if (position != null) {
+      AppCorePrefHelper.put(AppCorePrefHelper.CACHED_POSITION, position.toJson());
+      _theCachedPosition = position;
+    }
+  }
+
+  // Calculate distance in meters between two KLatLng
+  static double calculateDistance(AppCoreKLatLng ll1, AppCoreKLatLng ll2) {
+    final lat1 = ll1.lat ?? 0;
+    final lon1 = ll1.lng ?? 0;
+    final lat2 = ll2.lat ?? 0;
+    final lon2 = ll2.lng ?? 0;
+
+    final p = 0.017453292519943295;
+    final c = cos;
+    final a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+    return 12742 * asin(sqrt(a)) * 1000;
+  }
+
+  // Calculate center point between many different points
+  static AppCoreKLatLng computeCentroid(Iterable<AppCoreKLatLng> points) {
+    double latitude = 0;
+    double longitude = 0;
+    int n = points.length;
+
+    for (AppCoreKLatLng point in points) {
+      latitude += point.lat ?? 0;
+      longitude += point.lng ?? 0;
+    }
+
+    return AppCoreKLatLng.raw(latitude / n, longitude / n);
+  }
+}

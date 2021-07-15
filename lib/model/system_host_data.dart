@@ -1,20 +1,13 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/model/host_info.dart';
-
-part 'system_host_data.g.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
-class SystemHostData {
+class AppCoreSystemHostData {
   static const String WEB_RTC_HOST = "webRTCHostInfo";
 
   @JsonKey(name: WEB_RTC_HOST)
-  HostInfo? webRtcHostInfo;
+  AppCoreHostInfo? webRtcHostInfo;
 
   // JSON
-  SystemHostData();
-
-  factory SystemHostData.fromJson(Map<String, dynamic> json) =>
-      _$SystemHostDataFromJson(json);
-
-  Map<String, dynamic> toJson() => _$SystemHostDataToJson(this);
+  AppCoreSystemHostData();
 }

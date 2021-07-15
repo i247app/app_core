@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:local_auth/local_auth.dart';
 import 'package:app_core/helper/plugin_helper.dart';
 
-abstract class BiometricHelper {
+abstract class AppCoreBiometricHelper {
   static final LocalAuthentication localAuth = LocalAuthentication();
 
   static Future<bool> isAvailable() async {
@@ -15,7 +15,7 @@ abstract class BiometricHelper {
   static Future<bool> authenticate(String reason) async {
     if (Platform.isAndroid) {
       try {
-        final response = await PluginHelper.biometricAuth(reason);
+        final response = await AppCorePluginHelper.biometricAuth(reason);
         if (response == null)
           return localAuth.authenticate(
             localizedReason: reason,

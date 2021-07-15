@@ -1,14 +1,14 @@
 import 'dart:async';
 
-enum RebuildHelperSignal { rebuild }
+enum AppCoreRebuildHelperSignal { rebuild }
 
-abstract class RebuildHelper {
-  static final StreamController<RebuildHelperSignal> _streamController =
+abstract class AppCoreRebuildHelper {
+  static final StreamController<AppCoreRebuildHelperSignal> _streamController =
       StreamController.broadcast();
 
-  static Stream<RebuildHelperSignal> get stream =>
+  static Stream<AppCoreRebuildHelperSignal> get stream =>
       _streamController.stream.asBroadcastStream();
 
   static void forceRebuild() =>
-      _streamController.add(RebuildHelperSignal.rebuild);
+      _streamController.add(AppCoreRebuildHelperSignal.rebuild);
 }

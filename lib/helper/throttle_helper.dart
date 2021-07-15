@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 
-abstract class ThrottleHelper {
-  static const DEFAULT_DURATION = Duration(milliseconds: 1500);
-  static const DEFAULT_THROTTLE_ID = "_default";
+abstract class AppCoreThrottleHelper {
+  static const Duration DEFAULT_DURATION = Duration(milliseconds: 500);
+  static const String DEFAULT_THROTTLE_ID = "_default";
 
   static final Map<dynamic, DateTime> _throttleHistory = {};
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-abstract class DateHelper {
+abstract class AppCoreDateHelper {
   static const String AM = "AM";
   static const String PM = "PM";
 
@@ -77,7 +77,7 @@ abstract class DateHelper {
       String vToString =
           year + month + monthDate + hour + min + sec + "." + meSec;
       vToString = vToString.replaceAll(RegExp(r"[a-zA-Z]"), "");
-      print("vToString : $vToString");
+      print("vToString : ${vToString}");
       return vToString;
     } catch (e) {
       print(e.toString());
@@ -91,7 +91,7 @@ abstract class DateHelper {
     DateTime? initialDate,
     DateTime? lastDate,
   }) async {
-    // initialDate ?? firstDate;
+    initialDate ?? firstDate;
 
     // Get the date
     final DateTime? date = await showDatePicker(
@@ -118,6 +118,9 @@ abstract class DateHelper {
     );
   }
 
-  static String getMeridiem(DateTime date) =>
-      date.hour >= 12 && date.hour < 24 ? PM : AM;
+  static String? getMeridiem(DateTime date) => date == null
+      ? null
+      : date.hour >= 12 && date.hour < 24
+          ? PM
+          : AM;
 }

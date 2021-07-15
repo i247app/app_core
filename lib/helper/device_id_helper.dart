@@ -5,7 +5,7 @@ import 'package:app_core/helper/pref_helper.dart';
 import 'package:app_core/helper/util.dart';
 import 'package:device_info/device_info.dart';
 
-abstract class DeviceIDHelper {
+abstract class AppCoreDeviceIDHelper {
   static const String PREFS_KEY = "backup_device_id";
 
   static Future<String> get deviceID async {
@@ -28,11 +28,11 @@ abstract class DeviceIDHelper {
   }
 
   static Future<String> _getFallbackID() async {
-    String? id = await PrefHelper.get(PREFS_KEY);
+    String id = await AppCorePrefHelper.get(PREFS_KEY);
     if (id == null) {
       id = base64Encode(
-          List<int>.generate(32, (i) => Util.getRandom().nextInt(256)));
-      PrefHelper.put(PREFS_KEY, id);
+          List<int>.generate(32, (i) => AppCoreUtil.getRandom().nextInt(256)));
+      AppCorePrefHelper.put(PREFS_KEY, id);
     }
     return id;
   }

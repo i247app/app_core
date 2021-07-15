@@ -1,33 +1,25 @@
-import 'package:app_core/helper/host_config.dart';
 import 'package:app_core/header/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-abstract class ToastHelper {
+abstract class AppCoreToastHelper {
   /// Display a toast with standardized appearance
-  static Future<bool?> show(
-    String message, {
+  static show(
+    String msg, {
     Color? textColor,
     Color? backgroundColor,
     Toast? toastLength,
   }) {
-    try {
-      if (HostConfig.isReleaseMode) {
-        return Future.value(false);
-      } else {
-        return Fluttertoast.showToast(
-          msg: message,
-          toastLength: toastLength ?? Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          textColor: textColor ?? Styles.extraDarkGrey,
-          fontSize: 16.0,
-          backgroundColor:
-              backgroundColor ?? Styles.extraLightGrey.withAlpha(0xBB),
-        );
-      }
-    } catch (e) {
-      return Future.value(false);
-    }
+    Fluttertoast.showToast(
+      msg: msg,
+      toastLength: toastLength ?? Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      textColor: textColor ?? Styles.extraDarkGrey,
+      fontSize: 16.0,
+      backgroundColor:
+      backgroundColor ?? Styles.extraLightGrey.withAlpha(0xBB),
+    );
   }
 
   /// Display generic error message

@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:app_core/helper/date_helper.dart';
 import 'package:app_core/helper/device_id_helper.dart';
+import 'package:app_core/helper/host_config.dart';
 import 'package:app_core/helper/locale_helper.dart';
 import 'package:app_core/helper/string_helper.dart';
 import 'package:app_core/helper/tablet_detector.dart';
@@ -13,18 +14,16 @@ import 'package:intl/intl.dart';
 import 'package:package_info/package_info.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
-import 'host_config.dart';
-
-abstract class Util {
+abstract class AppCoreUtil {
   static Random _random = Random();
   static String? _buildVersion;
   static String? _buildNumber;
 
-  static String get buildVersion => Util._buildVersion ?? "";
+  static String get buildVersion => AppCoreUtil._buildVersion ?? "";
 
-  static String get buildNumber => Util._buildNumber ?? "";
+  static String get buildNumber => AppCoreUtil._buildNumber ?? "";
 
-  static Future<String> getDeviceID() async => DeviceIDHelper.deviceID;
+  static Future<String> getDeviceID() async => AppCoreDeviceIDHelper.deviceID;
 
   static Future<String> getDeviceBrand() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -57,7 +56,7 @@ abstract class Util {
 
   static Future<bool> isEmulator() async => isPhysicalDevice().then((b) => !b);
 
-  static String localeName() => LocaleHelper.localeName;
+  static String localeName() => AppCoreLocaleHelper.localeName;
 
   static String getPlatformCode() => Platform.operatingSystem;
 
@@ -78,12 +77,12 @@ abstract class Util {
   }
 
   static bool get isDebug =>
-      !HostConfig.isReleaseMode &&
-          !HostConfig.isProductionHost(HostConfig.defaultHost);
+      !AppCoreHostConfig.isReleaseMode &&
+      !AppCoreHostConfig.isProductionHost(AppCoreHostConfig.defaultHost);
 
   static Future<bool> isTabletDevice(BuildContext context) async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    return TabletDetector.isTablet(MediaQuery.of(context)) ||
+    return AppCoreTabletDetector.isTablet(MediaQuery.of(context)) ||
         (Platform.isIOS &&
             (await deviceInfo.iosInfo).name.toLowerCase().contains("ipad"));
   }
@@ -124,28 +123,27 @@ abstract class Util {
     if (fone.length <= 4) {
       return fone.replaceAll(RegExp(r'.'), 'x');
     }
-    return fone.replaceAll(RegExp(r'.'), 'x').substring(0, fone.length - 4) +
-        fone.substring(fone.length - 4);
+    return fone.replaceAll(RegExp(r'.'), 'x').substring(0, fone.length - 4)+fone.substring(fone.length - 4);
   }
 
-  static String prettyFone({String? foneCode, required String number}) {
-    foneCode = (foneCode ?? "").replaceAll("+", "");
-    String prefix = StringHelper.isExist(foneCode) ? "+" + foneCode + " " : "";
-    return prefix + number;
+  static String prettyFone({String foneCode = "", String number = ""}) {
+    foneCode = foneCode.replaceAll("+", "");
+    String prefix = AppCoreStringHelper.isExist(foneCode) ? "+" + foneCode + " " : "";
+    return prefix + (number != null ? number : "");
   }
 
   // TODO VN - last, middle first else first middle last
-  static String? prettyName(
-      {String fnm = "", String mnm = "", String lnm = ""}) {
+  static String? prettyName({String? fnm, String? mnm, String? lnm}) {
+    if (fnm == null && mnm == null && lnm == null) return null;
     String? title;
 
     try {
-      title = StringHelper.capitalize(fnm);
+      title = AppCoreStringHelper.capitalize(fnm ?? "");
 
-      if (!StringHelper.isEmpty(mnm))
-        title += " " + StringHelper.capitalize(mnm);
-      if (!StringHelper.isEmpty(lnm))
-        title += " " + StringHelper.capitalize(lnm);
+      if (!AppCoreStringHelper.isEmpty(mnm))
+        title += " " + AppCoreStringHelper.capitalize(mnm ?? "");
+      if (!AppCoreStringHelper.isEmpty(lnm))
+        title += " " + AppCoreStringHelper.capitalize(lnm ?? "");
     } catch (e) {
       title = null;
     }
@@ -165,13 +163,13 @@ abstract class Util {
     try {
       title = "";
 
-      if (!StringHelper.isEmpty(kunm)) title += "@$kunm";
-      if (!StringHelper.isEmpty(fnm))
-        title += " " + StringHelper.capitalize(fnm ?? "");
-      if (!StringHelper.isEmpty(mnm))
-        title += " " + StringHelper.capitalize(mnm ?? "");
-      if (!StringHelper.isEmpty(lnm))
-        title += " " + StringHelper.capitalize(lnm ?? "");
+      if (!AppCoreStringHelper.isEmpty(kunm)) title += "@${kunm}";
+      if (!AppCoreStringHelper.isEmpty(fnm))
+        title += " " + AppCoreStringHelper.capitalize(fnm ?? "");
+      if (!AppCoreStringHelper.isEmpty(mnm))
+        title += " " + AppCoreStringHelper.capitalize(mnm ?? "");
+      if (!AppCoreStringHelper.isEmpty(lnm))
+        title += " " + AppCoreStringHelper.capitalize(lnm ?? "");
     } catch (e) {
       title = null;
     }
@@ -180,17 +178,18 @@ abstract class Util {
   }
 
   // Anna L H. - name with last initial
-  static String privacyName({String? fnm, String? mnm, String? lnm}) {
+  static String privacyName(
+      {String fnm = "", String mnm = "", String lnm = ""}) {
     String title = "";
 
     try {
       title = fnm != null ? fnm : "";
 
-      if (!StringHelper.isEmpty(mnm))
-        title += " " + StringHelper.toInitials(name: mnm);
+      if (!AppCoreStringHelper.isEmpty(mnm))
+        title += " " + AppCoreStringHelper.toInitials(name: mnm);
 
-      if (!StringHelper.isEmpty(lnm))
-        title += " " + StringHelper.toInitials(name: lnm);
+      if (!AppCoreStringHelper.isEmpty(lnm))
+        title += " " + AppCoreStringHelper.toInitials(name: lnm);
     } catch (e) {
       title = "";
       print(e);
@@ -199,14 +198,16 @@ abstract class Util {
     return title;
   }
 
-  static String ampDisplayName({
-    String? bnm,
-    String fnm = "",
-    String mnm = "",
-    String lnm = "",
-    String? fone = "",
-  }) {
-    return bnm ?? (Util.privacyName(fnm: fnm, mnm: mnm, lnm: lnm));
+  static String ampDisplayName(
+      {String? bnm = "",
+      String fnm = "",
+      String mnm = "",
+      String lnm = "",
+      String? fone = ""}) {
+    return bnm ??
+        (AppCoreUtil.privacyName(fnm: fnm, mnm: mnm, lnm: lnm) != null
+            ? AppCoreUtil.privacyName(fnm: fnm, mnm: mnm, lnm: lnm)
+            : (fone ?? ""));
   }
 
   static String absNumber(String v) {
@@ -331,7 +332,7 @@ abstract class Util {
 
       // Split at decimal
       String integerPart = "";
-      String? fractionalPart;
+      String fractionalPart = "";
       try {
         integerPart = amount.split('.')[0];
         fractionalPart = amount.split('.')[1];
@@ -369,11 +370,11 @@ abstract class Util {
       DateTime? date;
       switch (rawDate.runtimeType) {
         case DateTime:
-          date = DateHelper.copy(rawDate);
+          date = AppCoreDateHelper.copy(rawDate);
           break;
         case String:
         default:
-          date = DateHelper.from20FSP(rawDate.toString());
+          date = AppCoreDateHelper.from20FSP(rawDate.toString());
           break;
       }
 
@@ -406,11 +407,11 @@ abstract class Util {
       DateTime? date;
       switch (rawDate.runtimeType) {
         case DateTime:
-          date = DateHelper.copy(rawDate);
+          date = AppCoreDateHelper.copy(rawDate);
           break;
         case String:
         default:
-          date = DateHelper.from20FSP(rawDate.toString(), isUTC: false);
+          date = AppCoreDateHelper.from20FSP(rawDate.toString(), isUTC: false);
           break;
       }
 
@@ -463,11 +464,11 @@ abstract class Util {
       DateTime? date;
       switch (rawDate.runtimeType) {
         case DateTime:
-          date = DateHelper.copy(rawDate);
+          date = AppCoreDateHelper.copy(rawDate);
           break;
         case String:
         default:
-          date = DateHelper.from20FSP(rawDate.toString());
+          date = AppCoreDateHelper.from20FSP(rawDate.toString());
           break;
       }
 
@@ -494,7 +495,7 @@ abstract class Util {
             format = "hh:mm a";
         }
 
-        print("Util.prettyTime format $format");
+        print("Util.prettyTime format ${format}");
 
         if (date != null) {
           pretty = DateFormat(format).format(date);
@@ -541,12 +542,12 @@ abstract class Util {
   static String getPushTokenMode() => isDebug ? "dvl" : "prd";
 
   static Future<String?> getBuildVersion() async {
-    String? _buildVersion = Util._buildVersion;
+    String? _buildVersion = AppCoreUtil._buildVersion;
     try {
       if (_buildVersion == null) {
-        Util._buildVersion = await PackageInfo.fromPlatform()
+        AppCoreUtil._buildVersion = await PackageInfo.fromPlatform()
             .then((packageInfo) => packageInfo.version);
-        _buildVersion = Util._buildVersion;
+        _buildVersion = AppCoreUtil._buildVersion;
       }
     } catch (e) {
       _buildVersion = null;
@@ -555,12 +556,12 @@ abstract class Util {
   }
 
   static Future<String?> getBuildNumber() async {
-    String? _buildNumber = Util._buildNumber;
+    String? _buildNumber = AppCoreUtil._buildNumber;
     try {
       if (_buildNumber == null) {
-        Util._buildNumber = await PackageInfo.fromPlatform()
+        AppCoreUtil._buildNumber = await PackageInfo.fromPlatform()
             .then((packageInfo) => packageInfo.buildNumber);
-        _buildNumber = Util._buildNumber;
+        _buildNumber = AppCoreUtil._buildNumber;
       }
     } catch (e) {
       _buildNumber = null;
@@ -575,6 +576,6 @@ abstract class Util {
 
   static String buildRandomString(int length) =>
       List<int>.generate(length, (i) => i + 1)
-          .map((e) => String.fromCharCode(Util.getRandom().nextInt(57) + 65))
+          .map((e) => String.fromCharCode(AppCoreUtil.getRandom().nextInt(57) + 65))
           .join();
 }

@@ -1,12 +1,10 @@
 import 'dart:ui';
 
-import 'package:app_core/app_core.dart';
+import 'package:app_core/model/response/base_response.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'host_info.g.dart';
-
 @JsonSerializable()
-class HostInfo {
+class AppCoreHostInfo {
   static const String HOSTNAME = "hostname";
   static const String PORT = "port";
 
@@ -25,7 +23,7 @@ class HostInfo {
     }
   }
 
-  factory HostInfo.raw(String hostname, int port) => HostInfo()
+  factory AppCoreHostInfo.raw(String hostname, int port) => AppCoreHostInfo()
     ..hostname = hostname
     ..port = port;
 
@@ -39,16 +37,11 @@ class HostInfo {
   @override
   bool operator ==(Object other) => this.hashCode == other.hashCode;
 
-  HostInfo copyWith({String? hostname, int? port}) => HostInfo.raw(
+  AppCoreHostInfo copyWith({String? hostname, int? port}) => AppCoreHostInfo.raw(
         hostname ?? this.hostname,
         port ?? this.port,
       );
 
   // JSON
-  HostInfo();
-
-  factory HostInfo.fromJson(Map<String, dynamic> json) =>
-      _$HostInfoFromJson(json);
-
-  Map<String, dynamic> toJson() => _$HostInfoToJson(this);
+  AppCoreHostInfo();
 }

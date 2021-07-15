@@ -10,14 +10,14 @@ String? zzz_itoa(int? num) => num?.toString() ?? null;
 int zzz_parseInt(String? z) => z == null || z == "" ? 0 : int.parse(z);
 
 DateTime? zzz_str2Date(String? z) =>
-    z == null || z == "" || DateHelper.from20FSP(z, isUTC: true) == null
+    z == null || z == "" || AppCoreDateHelper.from20FSP(z, isUTC: true) == null
         ? null
-        : DateHelper.from20FSP(z, isUTC: true)!.toLocal();
+        : AppCoreDateHelper.from20FSP(z, isUTC: true)!.toLocal();
 
 String? zzz_date2Str(DateTime? d) =>
-    d == null ? null : DateHelper.to20FSP(d, toUTC: true);
+    d == null ? null : AppCoreDateHelper.to20FSP(d, toUTC: true);
 
-abstract class BaseResponse {
+abstract class AppCoreBaseResponse {
   static const String KTOKEN = "ktoken";
   static const String KSTATUS = "kstatus";
   static const String ERRNO = "errno";
@@ -33,10 +33,10 @@ abstract class BaseResponse {
   String? ktoken;
 
   @JsonKey(ignore: true)
-  bool get isSuccess => this.kstatus == KCode.SUCCESS;
+  bool get isSuccess => this.kstatus == AppCoreKCode.SUCCESS;
 
   @JsonKey(ignore: true)
-  bool get isNoData => this.kstatus == KCode.NO_DATA;
+  bool get isNoData => this.kstatus == AppCoreKCode.NO_DATA;
 
   @JsonKey(ignore: true)
   bool get isError => !this.isSuccess; // NOTE - includes 'isNoData'
@@ -45,5 +45,5 @@ abstract class BaseResponse {
   bool get isStrictError => this.isError && !this.isNoData;
 
   @JsonKey(ignore: true)
-  String get prettyMessage => ValidateHelper.messageFromCode(this.kstatus);
+  String get prettyMessage => AppCoreValidateHelper.messageFromCode(this.kstatus);
 }

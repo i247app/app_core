@@ -1,4 +1,4 @@
-abstract class KCode {
+abstract class AppCoreKCode {
   static const int SUCCESS = 100;
   static const int NO_DATA = 202;
   static const int REQUIRE_2FA = 205;

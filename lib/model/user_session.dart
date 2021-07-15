@@ -1,7 +1,10 @@
 import 'package:app_core/helper/string_helper.dart';
+import 'package:app_core/model/app_nav.dart';
 import 'package:app_core/model/system_host_data.dart';
-import 'package:app_core/model/app_core_user.dart';
+import 'package:app_core/model/user.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+@JsonSerializable()
 class AppCoreUserSession {
   static const String KTOKEN = "ktoken";
   static const String PUID = "puid";
@@ -18,25 +21,30 @@ class AppCoreUserSession {
   static const String MODE_USER = "USER";
   static const String MODE_TUTOR = "TUTOR";
 
+  @JsonKey(name: KTOKEN)
   String? ktoken;
 
+  @JsonKey(name: PUID)
   String? puid;
 
+  @JsonKey(name: ONLINE_MODE)
   String? onlineMode;
 
+  @JsonKey(name: GOOGLE_MAP_API_KEY)
   String? googleMapAPIKey;
 
+  @JsonKey(name: APP_NAV)
+  AppNav? appNav = AppNav();
+
+  @JsonKey(name: USER)
   AppCoreUser? user;
 
-  // AppNav? appNav = AppNav();
-  //
-  // SystemHostData? hostData;
-
-  // @JsonKey(name: HOST_DATA)
-  SystemHostData? hostData;
+  @JsonKey(name: HOST_DATA)
+  AppCoreSystemHostData? hostData;
 
   // Methods
-  bool get isOnlineMode => StringHelper.parseBoolean(this.onlineMode);
+  @JsonKey(ignore: true)
+  bool get isOnlineMode => AppCoreStringHelper.parseBoolean(this.onlineMode);
 
   // JSON
   AppCoreUserSession();

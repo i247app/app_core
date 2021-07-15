@@ -1,4 +1,4 @@
-abstract class StringHelper {
+abstract class AppCoreStringHelper {
   static const String TRUE = "T";
   static const String FALSE = "F";
 
@@ -97,7 +97,7 @@ abstract class StringHelper {
 
   static String toInitials({String? name, bool isFirstOnly = false}) {
     if (isFirstOnly) {
-      return StringHelper.isEmpty(name ?? '')
+      return AppCoreStringHelper.isEmpty(name ?? '')
           ? "?"
           : name!.substring(0, 1).toUpperCase();
     } else {
