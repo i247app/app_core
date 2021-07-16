@@ -5,7 +5,7 @@ import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/kchat_message.dart';
-import 'package:app_core/ui/chat/service/chatroom_data.dart';
+import 'package:app_core/ui/chat/service/kchatroom_data.dart';
 
 class KChatroomController extends ValueNotifier<KChatroomData> {
   static const int MAX_MESSAGE_COUNT = 100;

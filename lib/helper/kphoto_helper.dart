@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:app_core/ui/widget/choose_photo_bottom_sheet_view.dart';
+import 'package:app_core/ui/widget/kchoose_photo_bottom_sheet_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';

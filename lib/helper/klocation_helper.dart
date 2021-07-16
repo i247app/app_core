@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:app_core/helper/kglobals.dart';
 import 'package:app_core/helper/kpref_helper.dart';
 import 'package:app_core/model/klat_lng.dart';
-import 'package:app_core/ui/widget/dialog/location_permission_info_dialog.dart';
+import 'package:app_core/ui/widget/dialog/klocation_permission_info_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';

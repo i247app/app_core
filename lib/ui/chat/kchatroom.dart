@@ -6,17 +6,17 @@ import 'package:app_core/helper/kphoto_helper.dart';
 import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/model/kchat_message.dart';
 import 'package:app_core/model/kuser.dart';
-import 'package:app_core/ui/chat/service/chatroom_controller.dart';
-import 'package:app_core/ui/chat/service/chatroom_data.dart';
-import 'package:app_core/ui/chat/widget/chat_bubble.dart';
-import 'package:app_core/ui/chat/widget/user_profile_view.dart';
+import 'package:app_core/ui/chat/service/kchatroom_controller.dart';
+import 'package:app_core/ui/chat/service/kchatroom_data.dart';
+import 'package:app_core/ui/chat/widget/kchat_bubble.dart';
+import 'package:app_core/ui/chat/widget/kuser_profile_view.dart';
 import 'package:app_core/header/kstyles.dart';
 import 'package:app_core/helper/klocal_notif_helper.dart';
 import 'package:app_core/helper/kpush_data_helper.dart';
 import 'package:app_core/model/kpush_data.dart';
 import 'package:app_core/header/no_overscroll.dart';
-import 'package:app_core/ui/widget/dialog/open_settings_dialog.dart';
-import 'package:app_core/ui/widget/keyboard_killer.dart';
+import 'package:app_core/ui/widget/dialog/kopen_settings_dialog.dart';
+import 'package:app_core/ui/widget/kkeyboard_killer.dart';
 import 'package:collection/collection.dart';
 
 class KChatroom extends StatefulWidget {

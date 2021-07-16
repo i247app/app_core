@@ -10,7 +10,7 @@ import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/helper/ktoast_helper.dart';
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/khost_info.dart';
-import 'package:app_core/network/socket_manager.dart';
+import 'package:app_core/network/ksocket_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 

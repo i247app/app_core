@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/model/kuser.dart';
-import 'package:app_core/ui/chat/widget/gig_user_label.dart';
+import 'package:app_core/ui/chat/widget/kgig_user_label.dart';
 
 class UserProfileView extends StatefulWidget {
   static const double ICON_SIZE = 80;

@@ -7,8 +7,8 @@ import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/kchat_message.dart';
 import 'package:app_core/header/kstyles.dart';
-import 'package:app_core/ui/widget/image_viewer.dart';
-import 'package:app_core/ui/widget/user_avatar.dart';
+import 'package:app_core/ui/widget/kimage_viewer.dart';
+import 'package:app_core/ui/widget/kuser_avatar.dart';
 
 class KChatBubble extends StatelessWidget {
   static const Duration SHORT_TIME_CUTOFF = Duration(minutes: 2);

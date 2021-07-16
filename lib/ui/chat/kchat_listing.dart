@@ -7,7 +7,7 @@ import 'package:app_core/helper/kpush_data_helper.dart';
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/kchat.dart';
 import 'package:app_core/model/kpush_data.dart';
-import 'package:app_core/ui/chat/widget/chat_icon.dart';
+import 'package:app_core/ui/chat/widget/kchat_icon.dart';
 import 'package:app_core/header/kstyles.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 

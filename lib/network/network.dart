@@ -1,2 +1,2 @@
-export 'socket_manager.dart';
+export 'ksocket_manager.dart';
 export 'tls_helper.dart';
