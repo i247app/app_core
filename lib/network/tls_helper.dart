@@ -9,7 +9,7 @@ import 'package:app_core/helper/session_data.dart';
 import 'package:app_core/helper/string_helper.dart';
 import 'package:app_core/helper/toast_helper.dart';
 import 'package:app_core/helper/util.dart';
-import 'package:app_core/model/host_info.dart';
+import 'package:app_core/model/khost_info.dart';
 import 'package:app_core/network/socket_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

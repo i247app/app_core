@@ -1,8 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/helper/session_data.dart';
 import 'package:app_core/helper/util.dart';
-import 'package:app_core/model/response/base_response.dart';
-import 'package:app_core/model/user.dart';
+import 'package:app_core/model/response/kbase_response.dart';
+import 'package:app_core/model/kuser.dart';
 
 class KChatMessage {
   static const String CONTENT_TYPE_TEXT = "text";

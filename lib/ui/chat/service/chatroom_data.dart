@@ -1,5 +1,5 @@
-import 'package:app_core/model/chat_member.dart';
-import 'package:app_core/model/chat_message.dart';
+import 'package:app_core/model/kchat_member.dart';
+import 'package:app_core/model/kchat_message.dart';
 
 class KChatroomData {
   String? chatID;

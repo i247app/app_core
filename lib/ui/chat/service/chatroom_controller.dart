@@ -4,7 +4,7 @@ import 'package:app_core/helper/photo_helper.dart';
 import 'package:app_core/helper/session_data.dart';
 import 'package:app_core/helper/string_helper.dart';
 import 'package:app_core/helper/util.dart';
-import 'package:app_core/model/chat_message.dart';
+import 'package:app_core/model/kchat_message.dart';
 import 'package:app_core/ui/chat/service/chatroom_data.dart';
 
 class KChatroomController extends ValueNotifier<KChatroomData> {

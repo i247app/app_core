@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:app_core/model/push_data.dart';
+import 'package:app_core/model/kpush_data.dart';
 
 abstract class KPushDataHelper {
   static final StreamController<KPushData> _streamController =

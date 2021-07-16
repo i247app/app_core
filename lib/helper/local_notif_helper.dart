@@ -7,9 +7,9 @@ import 'package:app_core/helper/session_data.dart';
 import 'package:app_core/helper/string_helper.dart';
 import 'package:app_core/helper/toast_helper.dart';
 import 'package:app_core/helper/util.dart';
-import 'package:app_core/model/full_notification.dart';
-import 'package:app_core/model/notif_data.dart';
-import 'package:app_core/model/push_data.dart';
+import 'package:app_core/model/kfull_notification.dart';
+import 'package:app_core/model/knotif_data.dart';
+import 'package:app_core/model/kpush_data.dart';
 import 'package:app_core/rem/mgr/rem_manager.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 

@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/session_data.dart';
 import 'package:app_core/helper/string_helper.dart';
 import 'package:app_core/helper/util.dart';
-import 'package:app_core/model/user.dart';
+import 'package:app_core/model/kuser.dart';
 import 'package:app_core/header/kassets.dart';
 import 'package:app_core/header/kstyles.dart';
 import 'package:app_core/ui/widget/contact_name_view.dart';

@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:app_core/model/response/base_response.dart';
+import 'package:app_core/model/response/kbase_response.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 class KHostInfo {

@@ -1,10 +1,10 @@
 import 'package:app_core/helper/host_config.dart';
 import 'package:app_core/helper/pref_helper.dart';
 import 'package:app_core/helper/string_helper.dart';
-import 'package:app_core/model/app_nav.dart';
-import 'package:app_core/model/host_info.dart';
-import 'package:app_core/model/user.dart';
-import 'package:app_core/model/user_session.dart';
+import 'package:app_core/model/kapp_nav.dart';
+import 'package:app_core/model/khost_info.dart';
+import 'package:app_core/model/kuser.dart';
+import 'package:app_core/model/kuser_session.dart';
 import 'package:app_core/header/session_init_data.dart';
 
 abstract class KSessionData {

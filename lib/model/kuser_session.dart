@@ -1,7 +1,7 @@
 import 'package:app_core/helper/string_helper.dart';
-import 'package:app_core/model/app_nav.dart';
-import 'package:app_core/model/system_host_data.dart';
-import 'package:app_core/model/user.dart';
+import 'package:app_core/model/kapp_nav.dart';
+import 'package:app_core/model/ksystem_host_data.dart';
+import 'package:app_core/model/kuser.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 class KUserSession {

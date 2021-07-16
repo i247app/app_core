@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:app_core/model/user.dart';
+import 'package:app_core/model/kuser.dart';
 
 class KP2PSession {
   @JsonKey(name: "id")

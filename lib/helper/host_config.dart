@@ -1,4 +1,4 @@
-import 'package:app_core/model/host_info.dart';
+import 'package:app_core/model/khost_info.dart';
 import 'package:flutter/foundation.dart' as system;
 
 abstract class KHostConfig {

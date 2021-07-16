@@ -1,5 +1,5 @@
 import 'package:app_core/helper/util.dart';
-import 'package:app_core/model/user.dart';
+import 'package:app_core/model/kuser.dart';
 import 'package:app_core/header/kstyles.dart';
 import 'package:flutter/material.dart';
 

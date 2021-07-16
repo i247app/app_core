@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:app_core/model/response/base_response.dart';
+import 'package:app_core/model/response/kbase_response.dart';
 
 // ignore: non_constant_identifier_names
 int? zzz_tryatoi(dynamic num) {

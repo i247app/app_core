@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:app_core/helper/host_config.dart';
-import 'package:app_core/model/host_info.dart';
+import 'package:app_core/model/khost_info.dart';
 
 class KSocketResource {
   static int _count = 0;
