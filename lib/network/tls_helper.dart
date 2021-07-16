@@ -10,6 +10,7 @@ import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/helper/ktoast_helper.dart';
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/khost_info.dart';
+import 'package:app_core/model/response/simple_response.dart';
 import 'package:app_core/network/ksocket_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -135,7 +136,10 @@ abstract class TLSHelper {
     required int kstatus,
     required String message,
   }) {
-    return "";
+    final data = SimpleResponse()
+      ..kstatus = kstatus
+      ..kmessage = message;
+    return jsonEncode(data.toJson());
   }
 
   static List<int> zip(bytes) {

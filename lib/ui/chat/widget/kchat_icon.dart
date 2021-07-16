@@ -90,7 +90,7 @@ class KChatIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool multiAvatar = this.chat.appCoreMembers!.length > 2;
+    bool multiAvatar = this.chat.kMembers!.length > 2;
 
     return multiAvatar
         ? SizedBox(
@@ -99,7 +99,7 @@ class KChatIcon extends StatelessWidget {
             child: Stack(
               children: buildAvatarGroup(this
                   .chat
-                  .appCoreMembers!
+                  .kMembers!
                   .where((member) => member.puid != KSessionData.me?.puid)
                   .toList()),
             ),

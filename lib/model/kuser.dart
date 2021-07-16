@@ -1,6 +1,9 @@
 import 'package:app_core/helper/kutil.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+part 'kuser.g.dart';
+
+@JsonSerializable()
 class KUser {
   @JsonKey(name: "puid")
   String? puid;
@@ -76,4 +79,10 @@ class KUser {
       KUtil.prettyFone(foneCode: this.phoneCode ?? "", number: phone ?? "");
 
   String get firstInitial => firstName?.substring(0, 1) ?? "";
+
+  KUser();
+
+  factory KUser.fromJson(Map<String, dynamic> json) => _$KUserFromJson(json);
+
+  Map<String, dynamic> toJson() => _$KUserToJson(this);
 }

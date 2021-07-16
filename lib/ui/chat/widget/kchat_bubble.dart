@@ -152,7 +152,7 @@ class KChatBubble extends StatelessWidget {
                   SizedBox(width: 10),
                   Flexible(
                     child: Text(
-                      "Video call from ${this.chat.appCoreUser?.firstName ?? "user"}",
+                      "Video call from ${this.chat.kUser?.firstName ?? "user"}",
                       style: TextStyle(fontSize: 17, color: this.chatTextColor),
                     ),
                   ),
@@ -190,7 +190,7 @@ class KChatBubble extends StatelessWidget {
         child: Container(
           width: GUTTER_SIZE,
           height: GUTTER_SIZE,
-          child: KUserAvatar.fromUser(this.chat.appCoreUser),
+          child: KUserAvatar.fromUser(this.chat.kUser),
         ),
       ),
     );

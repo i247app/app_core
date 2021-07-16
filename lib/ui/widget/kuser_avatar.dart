@@ -33,9 +33,9 @@ class KUserAvatar extends StatelessWidget {
   factory KUserAvatar.fromChat(KChat? chat, {Image? imagePlaceHolder}) =>
       KUserAvatar(
         initial: chat?.chatName,
-        imageURL: (chat?.appCoreMembers ?? []).length < 2
+        imageURL: (chat?.kMembers ?? []).length < 2
             ? null
-            : chat?.appCoreMembers
+            : chat?.kMembers
                 ?.where((member) => member.puid != KSessionData.me?.puid)
                 .first
                 .avatar,

@@ -2,6 +2,9 @@ import 'package:app_core/model/kuser.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/helper/kutil.dart';
 
+part 'kchat_member.g.dart';
+
+@JsonSerializable()
 class KChatMember {
   @JsonKey(name: "chatID")
   String? chatID;
@@ -66,4 +69,18 @@ class KChatMember {
     ..lastName = this.lastName
     ..middleName = this.middleName
     ..avatarURL = this.avatar;
+
+  factory KChatMember.fromUser(KUser user) => KChatMember()
+    ..puid = user.puid
+    ..kunm = user.kunm
+    ..firstName = user.firstName
+    ..lastName = user.lastName
+    ..middleName = user.middleName;
+
+  KChatMember();
+
+  factory KChatMember.fromJson(Map<String, dynamic> json) =>
+      _$KChatMemberFromJson(json);
+
+  Map<String, dynamic> toJson() => _$KChatMemberToJson(this);
 }

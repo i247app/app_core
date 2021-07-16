@@ -64,8 +64,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
     //     .addListener(() => widget.loadChat.call(widget.controller));
     widget.controller.addListener(() => setState(() {}));
     WidgetsBinding.instance?.addObserver(this);
-
-    widget.controller.loadChat();
+    // widget.controller.loadChat();
   }
 
   @override

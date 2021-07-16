@@ -1,9 +1,12 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/helper/kutil.dart';
-import 'package:app_core/model/response/kbase_response.dart';
+import 'package:app_core/model/response/base_response.dart';
 import 'package:app_core/model/kuser.dart';
 
+part 'kchat_message.g.dart';
+
+@JsonSerializable()
 class KChatMessage {
   static const String CONTENT_TYPE_TEXT = "text";
   static const String CONTENT_TYPE_IMAGE = "image";
@@ -43,8 +46,8 @@ class KChatMessage {
   @JsonKey(name: "refID")
   String? refID;
 
-  @JsonKey(ignore: true)
-  KUser? appCoreUser;
+  @JsonKey(name: "user")
+  KUser? kUser;
 
   // Helper
   @JsonKey(ignore: true)
@@ -57,4 +60,11 @@ class KChatMessage {
   bool get isMe => this.puid == KSessionData.me?.puid;
 
   static String generateLocalID() => KUtil.buildRandomString(8);
+
+  KChatMessage();
+
+  factory KChatMessage.fromJson(Map<String, dynamic> json) =>
+      _$KChatMessageFromJson(json);
+
+  Map<String, dynamic> toJson() => _$KChatMessageToJson(this);
 }

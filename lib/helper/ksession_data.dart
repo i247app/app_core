@@ -8,26 +8,26 @@ import 'package:app_core/model/kuser_session.dart';
 import 'package:app_core/header/ksession_init_data.dart';
 
 abstract class KSessionData {
-  static String? _sessionToken;
+  static String? kSessionToken;
   static String? _fcmToken;
   static String? _voipToken;
-  static KUserSession? _userSession;
+  static KUserSession? kUserSession;
 
   // // // // // system
   static bool get hasActiveSession =>
       KStringHelper.isExist(getSessionToken() ?? "");
 
-  static String? getSessionToken() => _sessionToken;
+  static String? getSessionToken() => kSessionToken;
 
   static void setSessionToken(String? sessionToken) {
     if (KStringHelper.isExist(sessionToken ?? "")) {
-      KSessionData._sessionToken = sessionToken;
+      KSessionData.kSessionToken = sessionToken;
       KPrefHelper.put(KPrefHelper.KTOKEN, sessionToken);
     }
   }
 
   static void clearSessionToken() {
-    KSessionData._sessionToken = null;
+    KSessionData.kSessionToken = null;
     KPrefHelper.remove(KPrefHelper.KTOKEN);
   }
 
@@ -82,12 +82,12 @@ abstract class KSessionData {
   }
 
   // // // // // user
-  static KUserSession? getUserSession() => _userSession;
+  static KUserSession? getUserSession() => kUserSession;
 
   static void setUserSession(KUserSession? userSession) =>
-      userSession == null ? null : KSessionData._userSession = userSession;
+      userSession == null ? null : kUserSession = userSession;
 
-  static KUserSession? get userSession => _userSession;
+  static KUserSession? get userSession => kUserSession;
 
   static KUser? get me => userSession?.appCoreUser;
 
@@ -100,5 +100,5 @@ abstract class KSessionData {
 
   static bool get isOnline => userSession?.isOnlineMode ?? false;
 
-  static bool get isGuest => _userSession == null;
+  static bool get isGuest => userSession == null;
 }

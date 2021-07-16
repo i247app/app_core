@@ -1,4 +1,5 @@
-export 'response/kbase_response.dart';
+export 'response/base_response.dart';
+export 'response/simple_response.dart';
 export 'kapp_nav.dart';
 export 'kchat.dart';
 export 'kchat_member.dart';

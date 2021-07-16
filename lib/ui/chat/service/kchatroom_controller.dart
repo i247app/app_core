@@ -58,22 +58,22 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
 
   void loadChat() async {
     if (this.value.getChat != null) {
-      final chat = await this.value.getChat!(
+      KChat? chat = await this.value.getChat!(
         chatID: this.value.chatID,
         refApp: this.value.refApp,
         refID: this.value.refID,
       );
 
-      this.value.members = chat?.members;
+      this.value.members = chat?.kMembers;
       this.value.messages ??= [];
       notifyListeners();
 
-      if (chat == null || chat?.messages == null) return;
+      if (chat == null || chat.kMessages == null) return;
 
       // Merge algorithm
       final List<String> msgIdsForDeletion = [];
       for (var it1 = this.value.messages!.iterator; it1.moveNext();) {
-        for (var it2 = chat!.messages!.iterator; it2.moveNext();) {
+        for (var it2 = chat.kMessages!.iterator; it2.moveNext();) {
           // If chat array contains a chat with same messageID as incoming
           // chat from server, delete the local version
           if (it1.current.messageID == it2.current.messageID
@@ -88,7 +88,7 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
           .messages!
           .removeWhere((e) => msgIdsForDeletion.contains(e.messageID));
 
-      this.value.messages!.addAll(chat!.messages!);
+      this.value.messages!.addAll(chat.kMessages!);
 
       // Truncate chats to MAX MESSAGE LENGTH
       if (this.value.messages!.length > MAX_MESSAGE_COUNT)
@@ -128,6 +128,8 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
             refPUIDs: this.value.members?.map((m) => m.puid!).toList(),
           );
     final response = await fut;
+
+    if (response == null) return null;
 
     String? chatID;
     if (response.isError) {
