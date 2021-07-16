@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/geocoding.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+@JsonSerializable()
 class KLatLng {
   static const String LAT = "lat";
   static const String LNG = "lng";
@@ -36,4 +37,9 @@ class KLatLng {
   KLatLng();
 
   KLatLng.raw(this.lat, this.lng);
+
+  factory KLatLng.fromJson(Map<String, dynamic> json) =>
+      _$KLatLngFromJson(json);
+
+  Map<String, dynamic> toJson() => _$KLatLngToJson(this);
 }
