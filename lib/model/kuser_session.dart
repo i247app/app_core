@@ -1,4 +1,4 @@
-import 'package:app_core/helper/string_helper.dart';
+import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/model/kapp_nav.dart';
 import 'package:app_core/model/ksystem_host_data.dart';
 import 'package:app_core/model/kuser.dart';

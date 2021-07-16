@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:app_core/helper/rebuild_helper.dart';
+import 'package:app_core/helper/krebuild_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

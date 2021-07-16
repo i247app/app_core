@@ -1,4 +1,4 @@
-import 'package:app_core/helper/util.dart';
+import 'package:app_core/helper/kutil.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 class KUser {

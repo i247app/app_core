@@ -1,6 +1,6 @@
 import 'package:app_core/model/kuser.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:app_core/helper/util.dart';
+import 'package:app_core/helper/kutil.dart';
 
 class KChatMember {
   @JsonKey(name: "chatID")

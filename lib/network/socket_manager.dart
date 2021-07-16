@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:app_core/helper/host_config.dart';
+import 'package:app_core/helper/khost_config.dart';
 import 'package:app_core/model/khost_info.dart';
 
 class KSocketResource {

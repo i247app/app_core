@@ -1,4 +1,4 @@
-import 'package:app_core/helper/session_data.dart';
+import 'package:app_core/helper/ksession_data.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/model/kchat_member.dart';
 import 'package:app_core/model/kchat_message.dart';

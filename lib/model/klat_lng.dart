@@ -1,4 +1,4 @@
-import 'package:app_core/helper/string_helper.dart';
+import 'package:app_core/helper/kstring_helper.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/geocoding.dart';
