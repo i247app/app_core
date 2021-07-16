@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:app_core/helper/file_helper.dart';
-import 'package:app_core/helper/toast_helper.dart';
+import 'package:app_core/helper/kfile_helper.dart';
+import 'package:app_core/helper/ktoast_helper.dart';
 import 'package:app_core/header/kstyles.dart';
 
 enum _ImageViewerType { url, file }

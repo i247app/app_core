@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:app_core/helper/globals.dart';
-import 'package:app_core/helper/pref_helper.dart';
+import 'package:app_core/helper/kglobals.dart';
+import 'package:app_core/helper/kpref_helper.dart';
 import 'package:app_core/model/klat_lng.dart';
 import 'package:app_core/ui/widget/dialog/location_permission_info_dialog.dart';
 import 'package:flutter/material.dart';

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:app_core/helper/host_config.dart';
+import 'package:app_core/helper/khost_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 abstract class KPrefHelper {

@@ -1,4 +1,4 @@
-import 'package:app_core/helper/host_config.dart';
+import 'package:app_core/helper/khost_config.dart';
 import 'package:flutter/material.dart';
 import 'package:new_version/new_version.dart';
 

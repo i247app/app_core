@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:app_core/helper/pref_helper.dart';
-import 'package:app_core/helper/util.dart';
+import 'package:app_core/helper/kpref_helper.dart';
+import 'package:app_core/helper/kutil.dart';
 import 'package:device_info/device_info.dart';
 
 abstract class KDeviceIDHelper {
