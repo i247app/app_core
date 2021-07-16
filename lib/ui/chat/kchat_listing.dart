@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/ui/chat/service/kchat_listing_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/kpush_data_helper.dart';
@@ -12,13 +13,10 @@ import 'package:app_core/header/kstyles.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class KChatListing extends StatefulWidget {
-  final Function()? loadChats;
-  final Function(String chatID, String? refApp, String? refID)? removeChat;
+  final KChatListingController controller;
   final Function(KChat chat)? onChatClick;
 
-  KChatListing({
-    this.loadChats,
-    this.removeChat,
+  KChatListing(this.controller, {
     this.onChatClick,
   });
 
@@ -27,12 +25,13 @@ class KChatListing extends StatefulWidget {
 }
 
 class _KChatListingState extends State<KChatListing> {
-  static List<KChat>? _chats;
   final SlidableController slideCtrl = SlidableController();
 
   late StreamSubscription streamSub;
 
-  bool get isReady => _chats != null;
+  List<KChat>? get chats => widget.controller.value.chats;
+
+  bool get isReady => chats != null;
 
   @override
   void initState() {
@@ -40,11 +39,14 @@ class _KChatListingState extends State<KChatListing> {
 
     this.streamSub = KPushDataHelper.stream.listen(pushDataListener);
 
-    loadChats();
+    this.widget.controller.addListener(chatListingListener);
+
+    this.widget.controller.loadChats();
   }
 
   @override
   void dispose() {
+    // this.widget.controller.removeListener(chatListingListener);
     this.streamSub.cancel();
     super.dispose();
   }
@@ -52,51 +54,25 @@ class _KChatListingState extends State<KChatListing> {
   void pushDataListener(KPushData data) {
     switch (data.app) {
       case KPushData.APP_CHAT_NOTIFY:
-        loadChats();
+        this.widget.controller.loadChats();
         break;
     }
   }
 
-  void loadChats() async {
-    if (this.widget.loadChats == null) return;
-
-    List<KChat>? chats = await this.widget.loadChats!();
-    if (mounted) setState(() => _chats = chats ?? []);
-  }
-
-  void onRemoveChat(int chatIndex, KChat chat) async {
-    if (chat.chatID == null || _chats == null || this.widget.removeChat == null)
-      return;
-
-    final response = await this.widget.removeChat!(
-      chat.chatID!,
-      KChat.APP_CONTENT_CHAT,
-      null,
-    );
-
-    if (response) {
-      // Then show a snackbar.
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('\'${chat.title}\' chat has been removed')));
-      setState(() {
-        _chats!.removeAt(chatIndex);
-      });
-    }
-
-    setState(() {
-      _chats!.removeAt(chatIndex);
-    });
+  void chatListingListener() {
+    print("chat list udapte");
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     final chatListing = ListView.builder(
       padding: EdgeInsets.only(top: 10, bottom: 100),
-      itemCount: (_chats ?? []).length,
+      itemCount: (chats ?? []).length,
       shrinkWrap: true,
       primary: false,
       itemBuilder: (_, i) {
-        final chat = _chats![i];
+        final chat = chats![i];
 
         return Slidable(
           key: Key(chat.chatID ?? ""),
@@ -111,14 +87,14 @@ class _KChatListingState extends State<KChatListing> {
           ),
           dismissal: SlidableDismissal(
             child: SlidableDrawerDismissal(),
-            onDismissed: (actionType) => this.onRemoveChat(i, chat),
+            onDismissed: (actionType) => this.widget.controller.removeChat(i, chat),
           ),
           secondaryActions: <Widget>[
             IconSlideAction(
               caption: 'Delete',
               color: Colors.red,
               icon: Icons.delete,
-              onTap: () => this.onRemoveChat(i, chat),
+              onTap: () => this.widget.controller.removeChat(i, chat),
             ),
           ],
         );
@@ -137,7 +113,7 @@ class _KChatListingState extends State<KChatListing> {
         Divider(height: 1, color: KStyles.colorDivider),
         Expanded(
           child: this.isReady
-              ? ((_chats ?? []).isEmpty ? emptyInbox : chatListing)
+              ? ((chats ?? []).isEmpty ? emptyInbox : chatListing)
               : Container(),
         ),
       ],

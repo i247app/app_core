@@ -64,7 +64,9 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
         refID: this.value.refID,
       );
 
-      this.value.members = chat?.kMembers;
+      if (chat != null && chat.kMembers != null && chat.kMembers!.length > 0) {
+        this.value.members = chat.kMembers;
+      }
       this.value.messages ??= [];
       notifyListeners();
 
