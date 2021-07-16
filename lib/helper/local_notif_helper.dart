@@ -65,7 +65,7 @@ abstract class KLocalNotifHelper {
         if (payload != null &&
             // Removes a bug where app repeatedly triggers this method on launch
             KSessionData.hasActiveSession)
-          REMHelper.from(
+          REMCoreHelper.from(
             dispatcher,
             payload,
             "LocalNotifHelper.setupLocalNotifications",

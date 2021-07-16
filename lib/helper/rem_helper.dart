@@ -5,7 +5,7 @@ import 'package:app_core/helper/scan_helper.dart';
 import 'package:app_core/rem/mgr/rem_manager.dart';
 import 'package:app_core/rem/rem.dart';
 
-abstract class REMHelper {
+abstract class REMCoreHelper {
   /// Run string through REM
   static REMAction? from(REMManager dispatcher, String remData, [String? tag]) {
     REMAction? action;
