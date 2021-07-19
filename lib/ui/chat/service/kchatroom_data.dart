@@ -1,5 +1,6 @@
 import 'package:app_core/model/kchat_member.dart';
 import 'package:app_core/model/kchat_message.dart';
+import 'package:app_core/model/response/get_chat_response.dart';
 
 class KChatroomData {
   String? chatID;
@@ -8,12 +9,10 @@ class KChatroomData {
   String? refID;
   List<KChatMember>? members;
   List<KChatMessage>? messages;
-  Function({String? chatID, String? refApp, String? refID})? getChat;
-  Function({required KChatMessage message, List<String>? refPUIDs})?
-      sendMessage;
+  GetChatResponse? response;
 
   // true until chats have loaded for the first time
-  bool get isInitializing => this.messages == null;
+  bool get isInitializing => this.response == null;
 
   KChatroomData.fromChatID(String chatID) : this.chatID = chatID;
 
@@ -23,8 +22,6 @@ class KChatroomData {
     this.chatID,
     this.members,
     this.messages,
-    this.getChat,
-    this.sendMessage,
   });
 
   KChatroomData({
@@ -34,7 +31,5 @@ class KChatroomData {
     this.refID,
     this.members,
     this.messages,
-    this.getChat,
-    this.sendMessage,
   });
 }

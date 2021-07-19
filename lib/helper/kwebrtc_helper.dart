@@ -48,9 +48,6 @@ abstract class KWebRTCHelper {
                       uuid,
                       autoPickup: autoPickup,
                       videoLogo: videoLogo,
-                      chatroomData: KChatroomData()
-                        ..getChat = getChat
-                        ..sendMessage = sendMessage,
                     )));
           },
           throttleID: "tutoring_chat_answer_p2p_call",

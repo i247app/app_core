@@ -1,8 +1,8 @@
 import 'package:app_core/app_core.dart';
+import 'package:app_core/helper/kserver_handler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/kphoto_helper.dart';
 import 'package:app_core/helper/ksession_data.dart';
-import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/kchat_message.dart';
 import 'package:app_core/ui/chat/service/kchatroom_data.dart';
@@ -10,15 +10,37 @@ import 'package:app_core/ui/chat/service/kchatroom_data.dart';
 class KChatroomController extends ValueNotifier<KChatroomData> {
   static const int MAX_MESSAGE_COUNT = 100;
 
+  final String? _chatID;
+  final String? _refApp;
+  final String? _refID;
+  final List<KChatMember>? _members;
+
+  String? get _smartChatID => this._chatID ?? this.value.chatID;
+
+  String? get _smartRefApp => this._refApp ?? this.value.refApp;
+
+  String? get _smartRefID => this._refID ?? this.value.refID;
+
+  List<KChatMember>? get _smartMembers => this._members ?? this.value.members;
+
   KChatMessage get messageTemplate => KChatMessage()
-    ..chatID = this.value.chatID
+    ..chatID = this._smartChatID
     ..localID = KChatMessage.generateLocalID()
     ..puid = KSessionData.me?.puid
-    ..refApp = this.value.refApp
-    ..refID = this.value.refID
+    ..refApp = this._smartRefApp
+    ..refID = this._smartRefID
     ..messageDate = DateTime.now();
 
-  KChatroomController(KChatroomData value) : super(value);
+  KChatroomController({
+    String? chatID,
+    String? refApp,
+    String? refID,
+    List<KChatMember>? members,
+  })  : this._chatID = chatID,
+        this._refApp = refApp,
+        this._refID = refID,
+        this._members = members,
+        super(KChatroomData());
 
   Future<String?> sendVideoCallEvent() async => sendMessage(
         messageType: KChatMessage.CONTENT_TYPE_VIDEO_CALL_EVENT,
@@ -57,55 +79,64 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
         ..message = text);
 
   void loadChat() async {
-    if (this.value.getChat != null) {
-      KChat? chat = await this.value.getChat!(
-        chatID: this.value.chatID,
-        refApp: this.value.refApp,
-        refID: this.value.refID,
-      );
+    final response = await KServerHandler.getChat(
+      chatID: this._smartChatID,
+      refApp: this._smartRefApp,
+      refID: this._smartRefID,
+    );
+    this.value.response = response;
+    this.value.messages ??= [];
+    notifyListeners();
 
-      if (chat != null && chat.kMembers != null && chat.kMembers!.length > 0) {
-        this.value.members = chat.kMembers;
-      }
-      this.value.messages ??= [];
-      notifyListeners();
+    if (response.isError || response.chat?.kMessages == null) return;
 
-      if (chat == null || chat.kMessages == null) return;
-
-      // Merge algorithm
-      final List<String> msgIdsForDeletion = [];
-      for (var it1 = this.value.messages!.iterator; it1.moveNext();) {
-        for (var it2 = chat.kMessages!.iterator; it2.moveNext();) {
-          // If chat array contains a chat with same messageID as incoming
-          // chat from server, delete the local version
-          if (it1.current.messageID == it2.current.messageID
-              // && it1.current.localID != null
-              ) {
-            msgIdsForDeletion.add(it1.current.messageID ?? "");
-          }
+    // Merge algorithm
+    final List<String> msgIdsForDeletion = [];
+    for (var it1 = this.value.messages!.iterator; it1.moveNext();) {
+      for (var it2 = response.chat!.kMessages!.iterator; it2.moveNext();) {
+        // If chat array contains a chat with same messageID as incoming
+        // chat from server, delete the local version
+        if (it1.current.messageID == it2.current.messageID
+            // && it1.current.localID != null
+            ) {
+          msgIdsForDeletion.add(it1.current.messageID ?? "");
         }
       }
-      this
+    }
+    this
+        .value
+        .messages!
+        .removeWhere((e) => msgIdsForDeletion.contains(e.messageID));
+
+    this.value.messages!.addAll(response.chat!.kMessages!);
+
+    // Truncate chats to MAX MESSAGE LENGTH
+    if (this.value.messages!.length > MAX_MESSAGE_COUNT)
+      this.value.messages = this
           .value
           .messages!
-          .removeWhere((e) => msgIdsForDeletion.contains(e.messageID));
+          .sublist(this.value.messages!.length - MAX_MESSAGE_COUNT);
 
-      this.value.messages!.addAll(chat.kMessages!);
+    // Sort by create date
+    this.value.messages!.sort((a, b) {
+      final lhs = b;
+      final rhs = a;
+      return lhs.messageDate!.compareTo(rhs.messageDate!);
+    });
 
-      // Truncate chats to MAX MESSAGE LENGTH
-      if (this.value.messages!.length > MAX_MESSAGE_COUNT)
-        this.value.messages = this
-            .value
-            .messages!
-            .sublist(this.value.messages!.length - MAX_MESSAGE_COUNT);
+    notifyListeners();
+  }
 
-      // Sort by create date
-      this.value.messages!.sort((a, b) {
-        final lhs = b;
-        final rhs = a;
-        return lhs.messageDate!.compareTo(rhs.messageDate!);
-      });
+  void addMembers(List<String> memberPUIDs) async {
+    final response = await KServerHandler.addChatMembers(
+      chatID: this._smartChatID!,
+      refPUIDs: memberPUIDs,
+      refApp: this._smartRefApp,
+      refID: this._smartRefID,
+    );
 
+    if (response.isSuccess) {
+      this.value.members?.addAll(response.members!);
       notifyListeners();
     }
   }
@@ -113,49 +144,42 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
   ///
   /// PRIVATE
   ///
-
   Future<String?> _sendChatMessage(KChatMessage message) async {
-    if (this.value.sendMessage == null) return Future.value();
-
     // Immediately update the messages for nice UI experience
-    print("CHAT CTRL - inserting message locally localID:${message.localID}");
+    // print("CHAT CTRL - inserting message locally localID:${message.localID}");
     this.value.messages?.insert(0, message);
     notifyListeners();
 
-    print("CHAT CTRL - sending message by API");
-    final fut = KStringHelper.isExist(this.value.chatID)
-        ? this.value.sendMessage!(message: message)
-        : this.value.sendMessage!(
-            message: message,
-            refPUIDs: this.value.members?.map((m) => m.puid!).toList(),
+    // print("CHAT CTRL - sending message by API");
+    final fut = (this.value.chatID ?? "").isNotEmpty
+        ? KServerHandler.sendMessage(message)
+        : KServerHandler.sendMessage(
+            message,
+            refPUIDs: this._smartMembers?.map((m) => m.puid!).toList(),
           );
     final response = await fut;
 
-    if (response == null) return null;
-
     String? chatID;
     if (response.isError) {
-      print("CHAT CTRL - ERROR, removing local msg");
+      // print("CHAT CTRL - ERROR, removing local msg");
       this.value.messages?.removeWhere((c) => c.localID == message.localID);
       notifyListeners();
       return Future.value(null);
     } else if (response.isSuccess) {
-      print("CHAT CTRL - SUCCESS, updating local chatID");
+      // print("CHAT CTRL - SUCCESS, updating local chatID");
       chatID = response.chatMessage?.chatID;
       if (chatID != null) this.value.chatID = response.chatMessage?.chatID;
     }
 
     // Set chat id so it can be matched up with server data later on
-    print("CHAT CTRL - update local msg with true messageID");
-    _updateLocalChatMessage(message.localID!, response.chatMessage!);
+    // print("CHAT CTRL - update local msg with true messageID");
+    _reconcileLocalChatMessage(message.localID!, response.chatMessage!);
     notifyListeners();
-
-    // print("this.value.messages.first;
 
     return chatID;
   }
 
-  void _updateLocalChatMessage(String localID, KChatMessage trueMessage) {
+  void _reconcileLocalChatMessage(String localID, KChatMessage trueMessage) {
     for (int i = 0; i < (this.value.messages ?? []).length; i++) {
       if (this.value.messages![i].localID == localID) {
         // Set the local chat id so it can be matched up with data returned by

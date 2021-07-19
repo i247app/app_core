@@ -20,7 +20,6 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:app_core/app_core.dart';
-import 'package:vector_math/vector_math_64.dart' as prefix;
 
 enum _CallPerspective { sender, receiver }
 enum _CallState { ws_error, init, waiting, in_progress, ended }
@@ -32,7 +31,7 @@ class KVOIPCall extends StatefulWidget {
   final List<String>? invitePUIDs;
   final String? callID;
   final String? uuid;
-  final KChatroomData? chatData;
+  final KChatroomController? chatroomCtrl;
   final String? videoLogo;
   final Function(List<String> refPUIDs, String callID, String uuid)? notify;
   final Function({String? puid})? getUsers;
@@ -44,25 +43,25 @@ class KVOIPCall extends StatefulWidget {
     this.callID,
     this.uuid,
     this.autoPickup = false,
-    this.chatData,
+    this.chatroomCtrl,
     this.videoLogo,
     this.notify,
     this.getUsers,
   });
 
-  KVOIPCall.asSender(KUser refUser,
-      {List<String>? invitePUIDs,
-      KChatroomData? chatroomData,
-      String? videoLogo,
-      Function({String? puid})? getUsers,
-      required this.notify})
-      : this.refUser = refUser,
+  KVOIPCall.asSender(
+    KUser refUser, {
+    required this.notify,
+    List<String>? invitePUIDs,
+    this.chatroomCtrl,
+    String? videoLogo,
+    Function({String? puid})? getUsers,
+  })  : this.refUser = refUser,
         this.invitePUIDs = invitePUIDs,
         this.perspective = _CallPerspective.sender,
         this.autoPickup = false,
         this.uuid = Uuid().v4(),
         this.callID = null,
-        this.chatData = chatroomData,
         this.getUsers = getUsers,
         this.videoLogo = videoLogo;
 
@@ -71,7 +70,7 @@ class KVOIPCall extends StatefulWidget {
     String uuid, {
     this.autoPickup = false,
     this.videoLogo,
-    KChatroomData? chatroomData,
+    this.chatroomCtrl,
     Function({String? puid})? getUsers,
   })  : this.refUser = null,
         this.invitePUIDs = null,
@@ -79,7 +78,6 @@ class KVOIPCall extends StatefulWidget {
         this.callID = callID,
         this.uuid = uuid,
         this.getUsers = getUsers,
-        this.chatData = chatroomData,
         this.notify = null;
 
   @override
@@ -97,7 +95,7 @@ class _KVOIPCallState extends State<KVOIPCall>
   final Map<String, RTCVideoRenderer> remoteRenderers = {};
 
   late KChatroomController? chatCtrl =
-      widget.chatData == null ? null : KChatroomController(widget.chatData!);
+      widget.chatroomCtrl == null ? null : widget.chatroomCtrl!;
   late _CallState callState = widget.perspective == _CallPerspective.sender
       ? _CallState.waiting
       : _CallState.init;
@@ -126,13 +124,13 @@ class _KVOIPCallState extends State<KVOIPCall>
   bool get isChatEnabled => this.chatCtrl != null;
 
   String? get chatID =>
-      widget.chatData?.chatID ?? this.commManager?.session?.chatID;
+      widget.chatroomCtrl?.value.chatID ?? this.commManager?.session?.chatID;
 
   String? get refApp =>
-      widget.chatData?.refApp ?? this.commManager?.session?.refApp;
+      widget.chatroomCtrl?.value.refApp ?? this.commManager?.session?.refApp;
 
   String? get refID =>
-      widget.chatData?.refID ?? this.commManager?.session?.refID;
+      widget.chatroomCtrl?.value.refID ?? this.commManager?.session?.refID;
 
   String? get refAvatarURL => widget.perspective == _CallPerspective.sender
       ? widget.refUser?.avatarURL
@@ -467,12 +465,10 @@ class _KVOIPCallState extends State<KVOIPCall>
         setState(() => this.callState = _CallState.waiting);
         if (this.commManager?.session != null) {
           setState(() {
-            this.chatCtrl = KChatroomController(KChatroomData.fromRefData(
+            this.chatCtrl = KChatroomController(
               chatID: this.commManager!.session!.chatID,
               refApp: this.commManager!.session!.refApp,
               refID: this.commManager!.session!.refID,
-              getChat: this.widget.chatData?.getChat,
-              sendMessage: this.widget.chatData?.sendMessage,
               members: [
                 KChatMember.fromUser(KUser()
                   ..firstName = this.commManager!.session!.adminName
@@ -480,7 +476,7 @@ class _KVOIPCallState extends State<KVOIPCall>
                   ..avatarURL = this.commManager!.session!.adminAvatarURL),
                 KChatMember.fromUser(KSessionData.me!),
               ],
-            ));
+            );
           });
         }
         break;

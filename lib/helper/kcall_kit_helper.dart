@@ -99,9 +99,7 @@ class KCallKitHelper {
           callInfo.uuid!,
           autoPickup: true,
           videoLogo: this.videoLogo,
-          chatroomData: KChatroomData()
-            ..getChat = this.getChat
-            ..sendMessage = this.sendMessage,
+          chatroomCtrl: KChatroomController(),
         ),
       ));
     }
