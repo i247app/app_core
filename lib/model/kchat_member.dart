@@ -60,7 +60,7 @@ class KChatMember {
 
   @JsonKey(ignore: true)
   String get chatName =>
-      this.firstName ?? this.kunm ?? "User ${this.puid ?? "?"}";
+      this.firstName ?? this.kunm ?? "KUser ${this.puid ?? "?"}";
 
   KUser toUser() => KUser()
     ..puid = this.puid

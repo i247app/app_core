@@ -65,7 +65,7 @@ abstract class KLocalNotifHelper {
         if (payload != null &&
             // Removes a bug where app repeatedly triggers this method on launch
             KSessionData.hasActiveSession)
-          REMCoreHelper.from(
+          KREMHelper.from(
             dispatcher,
             payload,
             "LocalNotifHelper.setupLocalNotifications",
@@ -92,7 +92,7 @@ abstract class KLocalNotifHelper {
       return;
     }
 
-    print("FCMHelper._showNotification attempt to display banner");
+    print("KFCMHelper._showNotification attempt to display banner");
     final android = AndroidNotificationDetails(
       "91512",
       "chao",

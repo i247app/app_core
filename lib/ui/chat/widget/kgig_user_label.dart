@@ -25,8 +25,8 @@ class KGigUserLabel extends StatelessWidget {
 
   String? get title => "@${user.kunm}";
 
-  void onClick(context) => Navigator.of(context).push(MaterialPageRoute(
-      builder: (ctx) => UserProfileView(user: this.user)));
+  void onClick(context) => Navigator.of(context).push(
+      MaterialPageRoute(builder: (ctx) => UserProfileView(user: this.user)));
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +77,7 @@ class KGigUserLabel extends StatelessWidget {
               ],
               // Flexible(
               //   child: this.user.userRating == null
-              //       ? Text("No rating", style: Styles.detailText)
+              //       ? Text("No rating", style: KStyles.detailText)
               //       : ratingField,
               // ),
             ],

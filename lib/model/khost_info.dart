@@ -1,8 +1,11 @@
 import 'dart:ui';
 
-import 'package:app_core/model/response/base_response.dart';
+import 'package:app_core/app_core.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+part 'khost_info.g.dart';
+
+@JsonSerializable()
 class KHostInfo {
   static const String HOSTNAME = "hostname";
   static const String PORT = "port";
@@ -43,4 +46,9 @@ class KHostInfo {
 
   // JSON
   KHostInfo();
+
+  factory KHostInfo.fromJson(Map<String, dynamic> json) =>
+      _$KHostInfoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$KHostInfoToJson(this);
 }

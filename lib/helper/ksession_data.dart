@@ -1,3 +1,5 @@
+import 'package:app_core/helper/kcall_kit_helper.dart';
+import 'package:app_core/helper/kfcm_helper.dart';
 import 'package:app_core/helper/khost_config.dart';
 import 'package:app_core/helper/kpref_helper.dart';
 import 'package:app_core/helper/kstring_helper.dart';
@@ -31,22 +33,22 @@ abstract class KSessionData {
     KPrefHelper.remove(KPrefHelper.KTOKEN);
   }
 
-  // static Future<String> getFCMToken() async {
-  //   FCMHelper.getPushToken().then((v) => _fcmToken = v);
-  //   if (_fcmToken == null) _fcmToken = await FCMHelper.getPushToken();
-  //   return _fcmToken!;
-  // }
-  //
-  // static Future<String> getVoipToken() async {
-  //   CallKitHelper.instance.getVoIPToken().then((v) => _voipToken = v);
-  //   if (_voipToken == null)
-  //     _voipToken = await CallKitHelper.instance.getVoIPToken();
-  //   return _voipToken ?? "";
-  // }
+  static Future<String> getFCMToken() async {
+    KFCMHelper.getPushToken().then((v) => _fcmToken = v);
+    if (_fcmToken == null) _fcmToken = await KFCMHelper.getPushToken();
+    return _fcmToken!;
+  }
+
+  static Future<String> getVoipToken() async {
+    KCallKitHelper.instance.getVoIPToken().then((v) => _voipToken = v);
+    if (_voipToken == null)
+      _voipToken = await KCallKitHelper.instance.getVoIPToken();
+    return _voipToken ?? "";
+  }
 
   // TODO = think about port hard coded to 8086
   static KHostInfo get webRTCHostInfo =>
-      userSession?.appCoreHostData?.appCoreWebRtcHostInfo ??
+      userSession?.hostData?.webRtcHostInfo ??
       KHostConfig.hostInfo.copyWith(port: 8086);
 
   /// Setup the session data
@@ -97,8 +99,6 @@ abstract class KSessionData {
   static bool get isSplashMode =>
       (userSession?.appCoreAppNav?.splashMode ?? KAppNavStatus.ON) ==
       KAppNavStatus.ON;
-
-  static bool get isOnline => userSession?.isOnlineMode ?? false;
 
   static bool get isGuest => userSession == null;
 }

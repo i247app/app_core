@@ -5,11 +5,13 @@ import 'dart:typed_data';
 
 import 'package:app_core/helper/khost_config.dart';
 import 'package:app_core/helper/kcore_code.dart';
+import 'package:app_core/helper/klocation_helper.dart';
 import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/helper/ktoast_helper.dart';
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/khost_info.dart';
+import 'package:app_core/model/klat_lng.dart';
 import 'package:app_core/model/response/simple_response.dart';
 import 'package:app_core/network/ksocket_manager.dart';
 import 'package:flutter/foundation.dart';
@@ -125,6 +127,8 @@ abstract class TLSHelper {
       if (result["kstatus"] == "${KCoreCode.BAD_SESSION}" &&
           KSessionData.hasActiveSession) {
         KSessionData.wipeSession();
+        // TODO: Check for schoolbird
+        // KSessionHelper.hardReload();
         KToastHelper.show("Session terminated");
       }
     } catch (e) {}
@@ -183,7 +187,12 @@ abstract class TLSHelper {
       ..._cachedDefaultReqData,
       "reqID": "$reqID",
       "ktoken": KSessionData.getSessionToken(),
+      "pushToken": await KSessionData.getFCMToken(),
+      "voipToken": await KSessionData.getVoipToken(),
       "tokenMode": KUtil.getPushTokenMode(),
+      "latLng": (KLocationHelper.cachedPosition == null
+          ? null
+          : KLatLng.fromPosition(KLocationHelper.cachedPosition!)),
     };
 
     return {...data, "metadata": data};

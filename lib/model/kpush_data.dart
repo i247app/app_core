@@ -1,6 +1,9 @@
 import 'package:app_core/app_core.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+part 'kpush_data.g.dart';
+
+@JsonSerializable()
 class KPushData {
   static const String PUSH_TYPE = "pushType";
   static const String APP = "app";
@@ -57,4 +60,12 @@ class KPushData {
 
   @JsonKey(name: MESSAGE)
   String? message;
+
+  // JSON
+  KPushData();
+
+  factory KPushData.fromJson(Map<String, dynamic> json) =>
+      _$KPushDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$KPushDataToJson(this);
 }

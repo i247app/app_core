@@ -1,6 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/model/kuser.dart';
 
+part 'kp2p_session.g.dart';
+
+@JsonSerializable()
 class KP2PSession {
   @JsonKey(name: "id")
   String? id;
@@ -31,4 +34,9 @@ class KP2PSession {
 
   // JSON
   KP2PSession();
+
+  factory KP2PSession.fromJson(Map<String, dynamic> json) =>
+      _$KP2PSessionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$KP2PSessionToJson(this);
 }

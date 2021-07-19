@@ -35,15 +35,12 @@ class KUser {
   @JsonKey(name: "addressLine1")
   String? address;
 
-  @deprecated
   @JsonKey(name: "addressLine2")
   String? address2;
-
-  @deprecated
+ 
   @JsonKey(name: "city")
   String? city;
 
-  @deprecated
   @JsonKey(name: "stateCode")
   String? state;
 
