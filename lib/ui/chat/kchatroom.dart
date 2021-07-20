@@ -48,7 +48,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
 
   bool get shouldSayHiToPapa => !this.hasSaidHiToPapa;
 
-  KUser? get refUser => (this.chatData.members ?? [])
+  KUser? get refUser => (widget.controller.members() ?? [])
       .firstWhereOrNull((m) => m.puid != KSessionData.me!.puid)
       ?.toUser();
 
@@ -124,8 +124,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
     if (this.widget.getUsers == null) return;
 
     this.widget.getUsers!(puid: puid).then((r) => Navigator.of(context).push(
-        MaterialPageRoute(
-            builder: (ctx) => UserProfileView(user: r.user))));
+        MaterialPageRoute(builder: (ctx) => UserProfileView(user: r.user))));
   }
 
   @override
@@ -266,6 +265,8 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
       ],
     );
 
-    return this.chatData.isInitializing ? Container() : KeyboardKiller(child: body);
+    return this.chatData.isInitializing
+        ? Container()
+        : KeyboardKiller(child: body);
   }
 }

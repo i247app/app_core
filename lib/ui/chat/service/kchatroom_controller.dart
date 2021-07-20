@@ -23,6 +23,10 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
 
   List<KChatMember>? get _smartMembers => this._members ?? this.value.members;
 
+  List<KChatMember>? members() {
+    return _smartMembers;
+  }
+
   KChatMessage get messageTemplate => KChatMessage()
     ..chatID = this._smartChatID
     ..localID = KChatMessage.generateLocalID()
@@ -40,7 +44,8 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
         this._refApp = refApp,
         this._refID = refID,
         this._members = members,
-        super(KChatroomData());
+        super(KChatroomData(
+            chatID: chatID, members: members, refApp: refApp, refID: refID));
 
   Future<String?> sendVideoCallEvent() async => sendMessage(
         messageType: KChatMessage.CONTENT_TYPE_VIDEO_CALL_EVENT,
@@ -86,6 +91,7 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
     );
     this.value.response = response;
     this.value.messages ??= [];
+    this.value.members ??= [];
     notifyListeners();
 
     if (response.isError || response.chat?.kMessages == null) return;
@@ -109,6 +115,8 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
         .removeWhere((e) => msgIdsForDeletion.contains(e.messageID));
 
     this.value.messages!.addAll(response.chat!.kMessages!);
+    this.value.members!.clear();
+    this.value.members!.addAll(response.chat!.kMembers!);
 
     // Truncate chats to MAX MESSAGE LENGTH
     if (this.value.messages!.length > MAX_MESSAGE_COUNT)
@@ -136,7 +144,12 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
     );
 
     if (response.isSuccess) {
-      this.value.members?.addAll(response.members!);
+      if (this.value.members == null) {
+        this.value.members = response.members;
+      } else {
+        this.value.members?.addAll(response.members!);
+      }
+
       notifyListeners();
     }
   }
