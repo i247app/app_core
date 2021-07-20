@@ -912,7 +912,7 @@ class _KVOIPCallState extends State<KVOIPCall>
         break;
     }
 
-    final chatroom = this.chatCtrl?.value.chatID == null
+    final chatroom = this.chatCtrl == null
         ? Container()
         : KChatroom(this.chatCtrl!, getUsers: this.widget.getUsers);
 
