@@ -28,15 +28,8 @@ abstract class KWebRTCHelper {
 
   static void blockAutoDisplayCallScreen() => _autoDisplayCallScreenDepth--;
 
-  static Future displayCallScreen(
-    String uuid,
-    String callID, {
-    bool autoPickup: false,
-    String? videoLogo,
-    Function({String? chatID, String? refApp, String? refID})? getChat,
-    Function({required KChatMessage message, List<String>? refPUIDs})?
-        sendMessage,
-  }) {
+  static Future displayCallScreen(String uuid, String callID,
+      {bool autoPickup: false, String? videoLogo}) {
     Future fut;
     if (KStringHelper.isExist(callID)) {
       fut = (() async {

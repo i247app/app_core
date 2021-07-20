@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_core/helper/kserver_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/kphoto_helper.dart';
@@ -22,13 +23,8 @@ import 'package:collection/collection.dart';
 class KChatroom extends StatefulWidget {
   final KChatroomController controller;
   final bool isReadOnly;
-  final Function({String? puid})? getUsers;
 
-  const KChatroom(
-    this.controller, {
-    this.isReadOnly = false,
-    this.getUsers,
-  });
+  const KChatroom(this.controller, {this.isReadOnly = false});
 
   @override
   _KChatroomState createState() => _KChatroomState();
@@ -121,9 +117,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
   }
 
   void onOtherPersonClick(String puid) {
-    if (this.widget.getUsers == null) return;
-
-    this.widget.getUsers!(puid: puid).then((r) => Navigator.of(context).push(
+    KServerHandler.getUsers(puid: puid).then((r) => Navigator.of(context).push(
         MaterialPageRoute(builder: (ctx) => UserProfileView(user: r.user))));
   }
 

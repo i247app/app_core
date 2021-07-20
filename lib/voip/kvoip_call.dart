@@ -5,6 +5,7 @@ import 'package:app_core/header/kassets.dart';
 import 'package:app_core/header/kstyles.dart';
 import 'package:app_core/helper/kcall_kit_helper.dart';
 import 'package:app_core/helper/knotif_stream_helper.dart';
+import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/helper/ksnackbar_helper.dart';
 import 'package:app_core/helper/kwebrtc_helper.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
@@ -33,8 +34,6 @@ class KVOIPCall extends StatefulWidget {
   final String? uuid;
   final KChatroomController? chatroomCtrl;
   final String? videoLogo;
-  final Function(List<String> refPUIDs, String callID, String uuid)? notify;
-  final Function({String? puid})? getUsers;
 
   KVOIPCall({
     required this.perspective,
@@ -45,40 +44,28 @@ class KVOIPCall extends StatefulWidget {
     this.autoPickup = false,
     this.chatroomCtrl,
     this.videoLogo,
-    this.notify,
-    this.getUsers,
   });
 
   KVOIPCall.asSender(
     KUser refUser, {
-    required this.notify,
     List<String>? invitePUIDs,
     this.chatroomCtrl,
     String? videoLogo,
-    Function({String? puid})? getUsers,
   })  : this.refUser = refUser,
         this.invitePUIDs = invitePUIDs,
         this.perspective = _CallPerspective.sender,
         this.autoPickup = false,
         this.uuid = Uuid().v4(),
         this.callID = null,
-        this.getUsers = getUsers,
         this.videoLogo = videoLogo;
 
-  KVOIPCall.asReceiver(
-    String callID,
-    String uuid, {
-    this.autoPickup = false,
-    this.videoLogo,
-    this.chatroomCtrl,
-    Function({String? puid})? getUsers,
-  })  : this.refUser = null,
+  KVOIPCall.asReceiver(String callID, String uuid,
+      {this.autoPickup = false, this.videoLogo, this.chatroomCtrl})
+      : this.refUser = null,
         this.invitePUIDs = null,
         this.perspective = _CallPerspective.receiver,
         this.callID = callID,
-        this.uuid = uuid,
-        this.getUsers = getUsers,
-        this.notify = null;
+        this.uuid = uuid;
 
   @override
   _KVOIPCallState createState() => _KVOIPCallState();
@@ -513,14 +500,14 @@ class _KVOIPCallState extends State<KVOIPCall>
     }
   }
 
-  void notifyWebRTCCall(String roomID) async => widget.notify?.call(
-        [
+  void notifyWebRTCCall(String roomID) async => KServerHandler.notifyWebRTCCall(
+        refPUIDs: [
           this.refPUID!,
           ...?widget.invitePUIDs,
         ],
-        roomID,
-        this._uuid,
-        // callType: KWebRTCHelper.CATEGORY_VIDEO,
+        callID: roomID,
+        uuid: this._uuid,
+        // callType: WebRTCHelper.CATEGORY_VIDEO,
       );
 
   void switchCamera() => this.commManager?.switchCamera();
@@ -912,9 +899,8 @@ class _KVOIPCallState extends State<KVOIPCall>
         break;
     }
 
-    final chatroom = this.chatCtrl == null
-        ? Container()
-        : KChatroom(this.chatCtrl!, getUsers: this.widget.getUsers);
+    final chatroom =
+        this.chatCtrl == null ? Container() : KChatroom(this.chatCtrl!);
 
     final body = this.callState == _CallState.in_progress && this.isChatEnabled
         ? () {

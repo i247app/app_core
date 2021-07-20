@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_core/helper/kserver_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/ksession_data.dart';
@@ -44,10 +45,10 @@ class _KChatContactListingState extends State<KChatContactListing> {
       searchedUsers = null;
     } else {
       setState(() => this.isSearching = true);
-      final users = await this.widget.searchUsers(searchText);
+      final response = await KServerHandler.searchUsers(searchText);
       setState(() => this.isSearching = false);
 
-      searchedUsers = users;
+      searchedUsers = response.users;
     }
 
     if (myReqID == searchReqID) setState(() => this.userLists = searchedUsers);

@@ -1,6 +1,8 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/response/chat_add_members_response.dart';
 import 'package:app_core/model/response/get_chat_response.dart';
+import 'package:app_core/model/response/get_users_response.dart';
+import 'package:app_core/model/response/search_users_response.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
 
 abstract class KServerHandler {
@@ -112,6 +114,7 @@ abstract class KServerHandler {
     return TLSHelper.send(params)
         .then((data) => ChatAddMembersResponse.fromJson(data));
   }
+
 //
 // static Future<ChatRemoveMembersResponse> removeChatMembers(
 //   String chatID,
@@ -136,22 +139,47 @@ abstract class KServerHandler {
 //       .then((data) => ChatRemoveMembersResponse.fromJson(data));
 // }
 //
-// static Future<SimpleResponse> notifyWebRTCCall({
-//   required List<String> refPUIDs,
-//   required String callID,
-//   required String uuid,
-//   // String? callType,
-// }) async {
-//   final params = {
-//     "svc": "chat",
-//     "req": "webrtc.call.notify",
-//     "notifyType": "voip",
-//     "refPUIDs": refPUIDs
-//         .where((element) => element != KSessionData.me?.puid)
-//         .toList(),
-//     "callID": callID,
-//     "uuid": uuid,
-//   };
-//   return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
-// }
+
+  static Future<GetUsersResponse> getUsers({
+    String? puid,
+    String? fone,
+  }) async {
+    final params = {
+      "svc": "user",
+      "req": "get.user",
+      "puid": puid,
+      "fone": fone,
+    };
+    return TLSHelper.send(params)
+        .then((data) => GetUsersResponse.fromJson(data));
+  }
+
+  static Future<SearchUsersResponse> searchUsers(String searchText) async {
+    final params = {
+      "svc": "auth",
+      "req": "search.users",
+      "searchText": searchText,
+    };
+    return TLSHelper.send(params)
+        .then((data) => SearchUsersResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> notifyWebRTCCall({
+    required List<String> refPUIDs,
+    required String callID,
+    required String uuid,
+    // String? callType,
+  }) async {
+    final params = {
+      "svc": "chat",
+      "req": "webrtc.call.notify",
+      "notifyType": "voip",
+      "refPUIDs": refPUIDs
+          .where((element) => element != KSessionData.me?.puid)
+          .toList(),
+      "callID": callID,
+      "uuid": uuid,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
 }

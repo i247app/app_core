@@ -23,9 +23,6 @@ class KCallKitHelper {
 
   bool isInit = false; // for ios to delay answering dead app
   String? videoLogo;
-  Function({String? chatID, String? refApp, String? refID})? getChat;
-  Function({required KChatMessage message, List<String>? refPUIDs})?
-      sendMessage;
 
   KCallKitHelper._internal();
 
@@ -66,8 +63,6 @@ class KCallKitHelper {
           callID,
           autoPickup: true,
           videoLogo: this.videoLogo,
-          getChat: this.getChat,
-          sendMessage: this.sendMessage,
         );
     } else
       saveCallInfo(uuid, callID);
@@ -106,15 +101,8 @@ class KCallKitHelper {
     return Future.value(null);
   }
 
-  void init({
-    String? videoLogo,
-    Function({String? chatID, String? refApp, String? refID})? getChat,
-    Function({required KChatMessage message, List<String>? refPUIDs})?
-        sendMessage,
-  }) {
+  void init({String? videoLogo}) {
     this.videoLogo = videoLogo;
-    this.getChat = getChat;
-    this.sendMessage = sendMessage;
     iosVoIPKit.onDidRejectIncomingCall = (
       String uuid,
       String callerId,
