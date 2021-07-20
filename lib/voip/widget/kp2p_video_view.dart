@@ -111,20 +111,23 @@ class _P2PVideoViewState extends State<KP2PVideoView> {
           ),
         ],
         if (!widget.isRemoteCameraEnabled)
-          Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (!widget.isRemoteCameraEnabled) ...[
-                  remoteVideoOffIcon,
-                  SizedBox(height: 6),
-                  Text(
-                    "No Video",
-                    style: KStyles.largeText.copyWith(color: KStyles.white),
-                  ),
-                ]
-              ],
+          InkWell(
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (!widget.isRemoteCameraEnabled) ...[
+                    remoteVideoOffIcon,
+                    SizedBox(height: 6),
+                    Text(
+                      "No Video",
+                      style: KStyles.largeText.copyWith(color: KStyles.white),
+                    ),
+                  ]
+                ],
+              ),
             ),
+            onTap: _onRemoteVideoTap,
           ),
       ],
     );
