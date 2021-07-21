@@ -261,7 +261,7 @@ class _ResultItem extends StatelessWidget {
         KContactNameView.fromUser(this.user),
         SizedBox(height: 4),
         KIconLabel(
-          asset: KAssets.IMG_PHONE,
+          icon: Icons.phone,
           text: KUtil.maskedFone(KUtil.prettyFone(
             foneCode: this.user.phoneCode ?? "",
             number: this.user.phone ?? "",
