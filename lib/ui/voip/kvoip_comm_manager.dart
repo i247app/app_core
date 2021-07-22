@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
 import 'package:app_core/helper/kwebrtc_helper.dart';
-import 'package:app_core/voip/ksimple_websocket.dart';
+import 'package:app_core/ui/voip/ksimple_websocket.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:app_core/app_core.dart';
 

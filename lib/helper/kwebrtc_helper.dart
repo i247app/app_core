@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:app_core/voip/ksimple_websocket.dart';
-import 'package:app_core/voip/kvoip_call.dart';
+import 'package:app_core/ui/voip/ksimple_websocket.dart';
+import 'package:app_core/ui/voip/kvoip_call.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:app_core/app_core.dart';
