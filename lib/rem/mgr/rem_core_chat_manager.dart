@@ -1,7 +1,5 @@
 import 'package:app_core/rem/mgr/rem_manager.dart';
 import 'package:app_core/rem/rem.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class REMCoreChatManager extends REMManager {
   static const String NOTIFY = "chat.notify";
