@@ -5,12 +5,13 @@ import 'package:app_core/header/kassets.dart';
 import 'package:app_core/header/kstyles.dart';
 import 'package:app_core/helper/kcall_kit_helper.dart';
 import 'package:app_core/helper/knotif_stream_helper.dart';
+import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/helper/ksnackbar_helper.dart';
 import 'package:app_core/helper/kwebrtc_helper.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
-import 'package:app_core/voip/kvoip_comm_manager.dart';
-import 'package:app_core/voip/widget/kp2p_button_view.dart';
-import 'package:app_core/voip/widget/kp2p_video_view.dart';
+import 'package:app_core/ui/voip/kvoip_comm_manager.dart';
+import 'package:app_core/ui/voip/widget/kp2p_button_view.dart';
+import 'package:app_core/ui/voip/widget/kp2p_video_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,8 +34,6 @@ class KVOIPCall extends StatefulWidget {
   final String? uuid;
   final KChatroomController? chatroomCtrl;
   final String? videoLogo;
-  final Function(List<String> refPUIDs, String callID, String uuid)? notify;
-  final Function({String? puid})? getUsers;
 
   KVOIPCall({
     required this.perspective,
@@ -45,40 +44,28 @@ class KVOIPCall extends StatefulWidget {
     this.autoPickup = false,
     this.chatroomCtrl,
     this.videoLogo,
-    this.notify,
-    this.getUsers,
   });
 
   KVOIPCall.asSender(
     KUser refUser, {
-    required this.notify,
     List<String>? invitePUIDs,
     this.chatroomCtrl,
     String? videoLogo,
-    Function({String? puid})? getUsers,
   })  : this.refUser = refUser,
         this.invitePUIDs = invitePUIDs,
         this.perspective = _CallPerspective.sender,
         this.autoPickup = false,
         this.uuid = Uuid().v4(),
         this.callID = null,
-        this.getUsers = getUsers,
         this.videoLogo = videoLogo;
 
-  KVOIPCall.asReceiver(
-    String callID,
-    String uuid, {
-    this.autoPickup = false,
-    this.videoLogo,
-    this.chatroomCtrl,
-    Function({String? puid})? getUsers,
-  })  : this.refUser = null,
+  KVOIPCall.asReceiver(String callID, String uuid,
+      {this.autoPickup = false, this.videoLogo, this.chatroomCtrl})
+      : this.refUser = null,
         this.invitePUIDs = null,
         this.perspective = _CallPerspective.receiver,
         this.callID = callID,
-        this.uuid = uuid,
-        this.getUsers = getUsers,
-        this.notify = null;
+        this.uuid = uuid;
 
   @override
   _KVOIPCallState createState() => _KVOIPCallState();
@@ -208,19 +195,24 @@ class _KVOIPCallState extends State<KVOIPCall>
     Wakelock.disable();
     WidgetsBinding.instance?.removeObserver(this);
 
-    KWebRTCHelper.allowAutoDisplayCallScreen();
-
     stopRingtone();
-    KCallKitHelper.instance.endCall(this._uuid, "", "", "");
 
     SystemChrome.setSystemUIOverlayStyle(KStyles.systemStyle);
     this.timer?.cancel();
     this.panelTimer?.cancel();
     this.streamSub.cancel();
-    this.commManager?.close();
-    this.localRenderer?.dispose();
-    this.remoteRenderers.forEach((_, rr) => rr.dispose());
+    releaseResourceIfNeed();
     super.dispose();
+  }
+
+  void releaseResourceIfNeed() {
+    if (this.commManager != null && !this.commManager!.isDisposed) {
+      KWebRTCHelper.allowAutoDisplayCallScreen();
+      this.commManager?.close();
+      this.localRenderer?.dispose();
+      this.remoteRenderers.forEach((_, rr) => rr.dispose());
+      KCallKitHelper.instance.endCall(this._uuid, "", "", "");
+    }
   }
 
   @override
@@ -393,6 +385,7 @@ class _KVOIPCallState extends State<KVOIPCall>
       case SignalingState.CallStateRoomEmpty:
         // safePop(false);
         setState(() => this.callState = _CallState.ended);
+        releaseResourceIfNeed();
         break;
       case SignalingState.CallStateBye:
         if (!KHostConfig.isReleaseMode)
@@ -401,6 +394,7 @@ class _KVOIPCallState extends State<KVOIPCall>
         // TODO do we need to null out localRenderer/remoteRenderer
         // pop() will call dispose()
         setState(() => this.callState = _CallState.ended);
+        releaseResourceIfNeed();
         Future.delayed(
           Duration(milliseconds: 500),
           () => safePop(true),
@@ -433,7 +427,7 @@ class _KVOIPCallState extends State<KVOIPCall>
           // this.remoteRenderer.srcObject = null;
           this.callState = _CallState.ended;
         });
-
+        releaseResourceIfNeed();
         // should do more like fb messenger
         Future.delayed(
           Duration(milliseconds: 1500),
@@ -484,6 +478,7 @@ class _KVOIPCallState extends State<KVOIPCall>
         // safePop(false);
         stopRingtone();
         setState(() => this.callState = _CallState.ended);
+        releaseResourceIfNeed();
         break;
       case SignalingState.CallStateBye:
         if (!KHostConfig.isReleaseMode)
@@ -513,14 +508,14 @@ class _KVOIPCallState extends State<KVOIPCall>
     }
   }
 
-  void notifyWebRTCCall(String roomID) async => widget.notify?.call(
-        [
+  void notifyWebRTCCall(String roomID) async => KServerHandler.notifyWebRTCCall(
+        refPUIDs: [
           this.refPUID!,
           ...?widget.invitePUIDs,
         ],
-        roomID,
-        this._uuid,
-        // callType: KWebRTCHelper.CATEGORY_VIDEO,
+        callID: roomID,
+        uuid: this._uuid,
+        // callType: WebRTCHelper.CATEGORY_VIDEO,
       );
 
   void switchCamera() => this.commManager?.switchCamera();
@@ -912,9 +907,8 @@ class _KVOIPCallState extends State<KVOIPCall>
         break;
     }
 
-    final chatroom = this.chatCtrl?.value.chatID == null
-        ? Container()
-        : KChatroom(this.chatCtrl!, getUsers: this.widget.getUsers);
+    final chatroom =
+        this.chatCtrl == null ? Container() : KChatroom(this.chatCtrl!);
 
     final body = this.callState == _CallState.in_progress && this.isChatEnabled
         ? () {

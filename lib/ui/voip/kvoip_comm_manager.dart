@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
 import 'package:app_core/helper/kwebrtc_helper.dart';
-import 'package:app_core/voip/ksimple_websocket.dart';
+import 'package:app_core/ui/voip/ksimple_websocket.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:app_core/app_core.dart';
 
@@ -79,6 +79,7 @@ class KVOIPCommManager {
   final String puid;
   final String deviceID;
   final String nickname;
+  bool isDisposed = false;
 
   String get myClientID => KWebRTCHelper.buildWebRTCClientID(
         puid: this.puid,
@@ -147,6 +148,7 @@ class KVOIPCommManager {
   });
 
   void close() {
+    this.isDisposed = true;
     this._localStreams.forEach((ls) => ls.dispose());
     this._remoteStreams.forEach((st) => st.dispose());
     this._peerConnections.forEach((_, pc) => pc.close());

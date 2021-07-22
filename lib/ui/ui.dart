@@ -5,3 +5,6 @@ export 'chat/service/kchatroom_controller.dart';
 export 'chat/service/kchatroom_data.dart';
 export 'chat/service/kchat_listing_controller.dart';
 export 'chat/service/kchat_listing_data.dart';
+export 'voip/ksimple_websocket.dart';
+export 'voip/kvoip_call.dart';
+export 'voip/kvoip_comm_manager.dart';

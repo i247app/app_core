@@ -17,6 +17,15 @@ DateTime? zzz_str2Date(String? z) =>
 String? zzz_date2Str(DateTime? d) =>
     d == null ? null : KDateHelper.to20FSP(d, toUTC: true);
 
+// ignore: non_constant_identifier_names
+String? zzz_dur2Str(Duration? d) => d == null ? null : "${d.inMilliseconds}";
+
+// ignore: non_constant_identifier_names
+Duration? zzz_str2Dur(String? z) {
+  int? i = int.tryParse(z ?? "");
+  return i == null ? null : Duration(milliseconds: i);
+}
+
 abstract class BaseResponse {
   static const String KTOKEN = "ktoken";
   static const String KSTATUS = "kstatus";

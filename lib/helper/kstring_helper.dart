@@ -49,16 +49,16 @@ abstract class KStringHelper {
 
   static String dtoa(double? num) => num != null ? num.toString() : "";
 
-  static bool parseBoolean(String? z) {
+  static bool parseBoolean(String z) {
     bool b = false;
-    switch ((z ?? "").toUpperCase()) {
-      case "T":
+    switch (z.toUpperCase()) {
+      case TRUE:
       case "TRUE":
       case "ON":
       case "YES":
         b = true;
         break;
-      case "F":
+      case FALSE:
       case "FALSE":
       case "OFF":
       case "NO":
@@ -69,7 +69,7 @@ abstract class KStringHelper {
     return b;
   }
 
-  static String toBooleanCode(bool b) => b ? "T" : "F";
+  static String toBooleanCode(bool b) => b ? TRUE : FALSE;
 
   static String removeWhiteSpace(String z) {
     try {
@@ -119,5 +119,10 @@ abstract class KStringHelper {
       sub = z;
     }
     return sub;
+  }
+
+  static String stripHTML(String z) {
+    RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
+    return z.replaceAll(exp, '');
   }
 }

@@ -15,7 +15,7 @@ import 'package:package_info/package_info.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 abstract class KUtil {
-  static Random _random = Random();
+  static Random? _random = Random();
   static String? _buildVersion;
   static String? _buildNumber;
 
@@ -60,7 +60,8 @@ abstract class KUtil {
 
   static String getPlatformCode() => Platform.operatingSystem;
 
-  static Random getRandom() => _random;
+  static Random getRandom() =>
+      _random ??= Random(DateTime.now().millisecondsSinceEpoch);
 
   static Color getRandomColor() => Color.fromRGBO(getRandom().nextInt(0xFF),
       getRandom().nextInt(0xFF), getRandom().nextInt(0xFF), 0x01);
@@ -537,6 +538,41 @@ abstract class KUtil {
       print(e.toString());
     }
     return result;
+  }
+
+  static String prettyDuration(Duration? d) {
+    if (d == null) return "";
+    final hour = d.inHours;
+    d -= Duration(hours: hour);
+    final mins = d.inMinutes;
+    d -= Duration(minutes: mins);
+    final secs = d.inSeconds;
+    d -= Duration(seconds: secs);
+
+    String str = "";
+    if (hour > 0) str = "$hour hours";
+    if (mins > 0) str = "$str $mins mins";
+    if (str.isEmpty) str = "$str ${secs}s";
+    return str.trim();
+  }
+
+  /// Returns a string in the format hh:mm:ss
+  static String prettyStopwatch(Duration duration) {
+    int h = duration.inHours % 24;
+    int m = duration.inMinutes % 60;
+    int s = duration.inSeconds % 60;
+
+    String prettyElapsed = "";
+    // Hours
+    if (h > 0) prettyElapsed = "${h.toString().padLeft(2, '0')}";
+    // Minutes
+    if (KStringHelper.isExist(prettyElapsed)) prettyElapsed = "$prettyElapsed:";
+    prettyElapsed = "$prettyElapsed${m.toString().padLeft(2, '0')}";
+    // Seconds
+    if (KStringHelper.isExist(prettyElapsed)) prettyElapsed = "$prettyElapsed:";
+    prettyElapsed = "$prettyElapsed${s.toString().padLeft(2, '0')}";
+
+    return prettyElapsed;
   }
 
   static String getOSCode() =>
