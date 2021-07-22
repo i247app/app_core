@@ -195,19 +195,24 @@ class _KVOIPCallState extends State<KVOIPCall>
     Wakelock.disable();
     WidgetsBinding.instance?.removeObserver(this);
 
-    KWebRTCHelper.allowAutoDisplayCallScreen();
-
     stopRingtone();
-    KCallKitHelper.instance.endCall(this._uuid, "", "", "");
 
     SystemChrome.setSystemUIOverlayStyle(KStyles.systemStyle);
     this.timer?.cancel();
     this.panelTimer?.cancel();
     this.streamSub.cancel();
-    this.commManager?.close();
-    this.localRenderer?.dispose();
-    this.remoteRenderers.forEach((_, rr) => rr.dispose());
+    releaseResourceIfNeed();
     super.dispose();
+  }
+
+  void releaseResourceIfNeed() {
+    if (this.commManager != null && !this.commManager!.isDisposed) {
+      KWebRTCHelper.allowAutoDisplayCallScreen();
+      this.commManager?.close();
+      this.localRenderer?.dispose();
+      this.remoteRenderers.forEach((_, rr) => rr.dispose());
+      KCallKitHelper.instance.endCall(this._uuid, "", "", "");
+    }
   }
 
   @override
@@ -380,6 +385,7 @@ class _KVOIPCallState extends State<KVOIPCall>
       case SignalingState.CallStateRoomEmpty:
         // safePop(false);
         setState(() => this.callState = _CallState.ended);
+        releaseResourceIfNeed();
         break;
       case SignalingState.CallStateBye:
         if (!KHostConfig.isReleaseMode)
@@ -388,6 +394,7 @@ class _KVOIPCallState extends State<KVOIPCall>
         // TODO do we need to null out localRenderer/remoteRenderer
         // pop() will call dispose()
         setState(() => this.callState = _CallState.ended);
+        releaseResourceIfNeed();
         Future.delayed(
           Duration(milliseconds: 500),
           () => safePop(true),
@@ -420,7 +427,7 @@ class _KVOIPCallState extends State<KVOIPCall>
           // this.remoteRenderer.srcObject = null;
           this.callState = _CallState.ended;
         });
-
+        releaseResourceIfNeed();
         // should do more like fb messenger
         Future.delayed(
           Duration(milliseconds: 1500),
@@ -471,6 +478,7 @@ class _KVOIPCallState extends State<KVOIPCall>
         // safePop(false);
         stopRingtone();
         setState(() => this.callState = _CallState.ended);
+        releaseResourceIfNeed();
         break;
       case SignalingState.CallStateBye:
         if (!KHostConfig.isReleaseMode)

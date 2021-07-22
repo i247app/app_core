@@ -79,6 +79,7 @@ class KVOIPCommManager {
   final String puid;
   final String deviceID;
   final String nickname;
+  bool isDisposed = false;
 
   String get myClientID => KWebRTCHelper.buildWebRTCClientID(
         puid: this.puid,
@@ -147,6 +148,7 @@ class KVOIPCommManager {
   });
 
   void close() {
+    this.isDisposed = true;
     this._localStreams.forEach((ls) => ls.dispose());
     this._remoteStreams.forEach((st) => st.dispose());
     this._peerConnections.forEach((_, pc) => pc.close());
