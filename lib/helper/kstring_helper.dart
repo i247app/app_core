@@ -69,7 +69,6 @@ abstract class KStringHelper {
     return b;
   }
 
-  // TODO - shouldn't null default to false
   static String toBooleanCode(bool b) => b ? "T" : "F";
 
   static String removeWhiteSpace(String z) {
