@@ -1,3 +1,4 @@
+import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kdate_helper.dart';
 import 'package:app_core/helper/kcore_code.dart';
 import 'package:app_core/helper/kvalidate_helper.dart';
@@ -25,6 +26,13 @@ Duration? zzz_str2Dur(String? z) {
   int? i = int.tryParse(z ?? "");
   return i == null ? null : Duration(milliseconds: i);
 }
+
+// ignore: non_constant_identifier_names
+bool? zzz_str2Bool(String? z) =>
+    KStringHelper.parseBoolean(z ?? KStringHelper.FALSE);
+
+// ignore: non_constant_identifier_names
+String? zzz_bool2Str(bool? b) => KStringHelper.toBooleanCode(b ?? false);
 
 abstract class BaseResponse {
   static const String KTOKEN = "ktoken";
