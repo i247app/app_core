@@ -121,4 +121,9 @@ abstract class KStringHelper {
     }
     return sub;
   }
+
+  static String stripHTML(String z) {
+    RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
+    return z.replaceAll(exp, '');
+  }
 }

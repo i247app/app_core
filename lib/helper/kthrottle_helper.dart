@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 abstract class KThrottleHelper {
   static const Duration DEFAULT_DURATION = Duration(milliseconds: 500);
   static const String DEFAULT_THROTTLE_ID = "_default";
@@ -7,23 +5,24 @@ abstract class KThrottleHelper {
   static final Map<dynamic, DateTime> _throttleHistory = {};
 
   /// Restrict how often a function can be called
-  static VoidCallback throttle(
-    Function f, {
+  static dynamic Function() throttle(
+    dynamic Function() f, {
     Duration duration = DEFAULT_DURATION,
     dynamic throttleID = DEFAULT_THROTTLE_ID,
   }) =>
       () {
-        DateTime now = DateTime.now();
-        DateTime? lastTime = _throttleHistory[throttleID];
-
-        bool isAllowed =
+        final now = DateTime.now();
+        final lastTime = _throttleHistory[throttleID];
+        final isAllowed =
             lastTime == null || lastTime.add(duration).isBefore(now);
 
         if (isAllowed) {
           _throttleHistory[throttleID] = now;
-          f();
+          return f();
           // perhaps after executing, clear the map or the throttle id entry
-        } else
+        } else {
           print("#THROTTLED");
+          return null;
+        }
       };
 }

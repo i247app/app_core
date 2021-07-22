@@ -2,6 +2,8 @@ import 'package:app_core/header/kstyles.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import 'khost_config.dart';
+
 abstract class KToastHelper {
   /// Display a toast with standardized appearance
   static show(
@@ -10,16 +12,24 @@ abstract class KToastHelper {
     Color? backgroundColor,
     Toast? toastLength,
   }) {
-    Fluttertoast.showToast(
-      msg: msg,
-      toastLength: toastLength ?? Toast.LENGTH_LONG,
-      gravity: ToastGravity.BOTTOM,
-      timeInSecForIosWeb: 1,
-      textColor: textColor ?? KStyles.extraDarkGrey,
-      fontSize: 16.0,
-      backgroundColor:
-          backgroundColor ?? KStyles.extraLightGrey.withAlpha(0xBB),
-    );
+    try {
+      if (KHostConfig.isReleaseMode) {
+        return Future.value(false);
+      } else {
+        return Fluttertoast.showToast(
+          msg: msg,
+          toastLength: toastLength ?? Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          textColor: textColor ?? KStyles.extraDarkGrey,
+          fontSize: 16.0,
+          backgroundColor:
+              backgroundColor ?? KStyles.extraLightGrey.withAlpha(0xBB),
+        );
+      }
+    } catch (e) {
+      return Future.value(false);
+    }
   }
 
   /// Display generic error message
