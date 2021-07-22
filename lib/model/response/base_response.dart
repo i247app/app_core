@@ -4,17 +4,22 @@ import 'package:app_core/helper/kcore_code.dart';
 import 'package:app_core/helper/kvalidate_helper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+// ignore: non_constant_identifier_names
 int? zzz_atoi(String? z) => z == null ? null : int.parse(z);
 
+// ignore: non_constant_identifier_names
 String? zzz_itoa(int? num) => num?.toString() ?? null;
 
+// ignore: non_constant_identifier_names
 int zzz_parseInt(String? z) => z == null || z == "" ? 0 : int.parse(z);
 
+// ignore: non_constant_identifier_names
 DateTime? zzz_str2Date(String? z) =>
     z == null || z == "" || KDateHelper.from20FSP(z, isUTC: true) == null
         ? null
         : KDateHelper.from20FSP(z, isUTC: true)!.toLocal();
 
+// ignore: non_constant_identifier_names
 String? zzz_date2Str(DateTime? d) =>
     d == null ? null : KDateHelper.to20FSP(d, toUTC: true);
 
