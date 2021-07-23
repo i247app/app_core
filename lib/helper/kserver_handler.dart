@@ -1,20 +1,22 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/response/chat_add_members_response.dart';
+import 'package:app_core/model/response/chat_remove_members_response.dart';
 import 'package:app_core/model/response/get_chat_response.dart';
+import 'package:app_core/model/response/get_chats_response.dart';
 import 'package:app_core/model/response/get_users_response.dart';
 import 'package:app_core/model/response/search_users_response.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
 
 abstract class KServerHandler {
   // chats
-  // static Future<GetChatsResponse> getChats() async {
-  //   final params = {
-  //     "svc": "chat",
-  //     "req": "chat.list",
-  //   };
-  //   return TLSHelper.send(params)
-  //       .then((data) => GetChatsResponse.fromJson(data));
-  // }
+  static Future<KGetChatsResponse> getChats() async {
+    final params = {
+      "svc": "chat",
+      "req": "chat.list",
+    };
+    return TLSHelper.send(params)
+        .then((data) => KGetChatsResponse.fromJson(data));
+  }
 
   static Future<GetChatResponse> getChat({
     String? chatID,
@@ -33,21 +35,22 @@ abstract class KServerHandler {
         .then((data) => GetChatResponse.fromJson(data));
   }
 
-  // static Future<SimpleResponse> removeChat(
-  //   String chatID,
-  //   String? refApp,
-  //   String? refID,
-  // ) async {
-  //   final params = {
-  //     "svc": "chat",
-  //     "req": "chat.remove",
-  //     "chat": KChat()
-  //       ..refApp = refApp
-  //       ..refID = refID
-  //       ..chatID = chatID,
-  //   };
-  //   return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
-  // }
+  static Future<SimpleResponse> removeChat(
+    String chatID,
+    String? refApp,
+    String? refID,
+  ) async {
+    final params = {
+      "svc": "chat",
+      "req": "chat.remove",
+      "chat": KChat()
+        ..refApp = refApp
+        ..refID = refID
+        ..chatID = chatID,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
   //
   // static Future<GetChatMessagesResponse> getChatMessages({
   //   String? chatID,
@@ -116,29 +119,28 @@ abstract class KServerHandler {
   }
 
 //
-// static Future<ChatRemoveMembersResponse> removeChatMembers(
-//   String chatID,
-//   List<String> refPUIDs,
-//   String? refApp,
-//   String? refID,
-// ) async {
-//   final domain = await KUtil.getPackageName();
-//   final params = {
-//     "svc": "chat",
-//     "req": "chat.member.remove",
-//     "members": refPUIDs
-//         .map((puid) => KChatMember()
-//           ..domain = domain
-//           ..refApp = refApp
-//           ..refID = refID
-//           ..chatID = chatID
-//           ..puid = puid)
-//         .toList(),
-//   };
-//   return TLSHelper.send(params)
-//       .then((data) => ChatRemoveMembersResponse.fromJson(data));
-// }
-//
+  static Future<KChatRemoveMembersResponse> removeChatMembers(
+    String chatID,
+    List<String> refPUIDs,
+    String? refApp,
+    String? refID,
+  ) async {
+    final domain = await KUtil.getPackageName();
+    final params = {
+      "svc": "chat",
+      "req": "chat.member.remove",
+      "members": refPUIDs
+          .map((puid) => KChatMember()
+            ..domain = domain
+            ..refApp = refApp
+            ..refID = refID
+            ..chatID = chatID
+            ..puid = puid)
+          .toList(),
+    };
+    return TLSHelper.send(params)
+        .then((data) => KChatRemoveMembersResponse.fromJson(data));
+  }
 
   static Future<GetUsersResponse> getUsers({
     String? puid,
