@@ -23,4 +23,9 @@ doc/api/
 *.js.map
 
 .DS_Store
-*.g.dart
+
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# g files need to in app_core github
+# *.g.dart  
