@@ -66,6 +66,9 @@ dependencies:
 
   sliding_up_panel: 2.0.0+1
 
+dependency_overrides:
+  flutter_local_notifications_platform_interface: 4.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
