@@ -5,9 +5,19 @@ import 'package:app_core/model/response/get_chat_response.dart';
 import 'package:app_core/model/response/get_chats_response.dart';
 import 'package:app_core/model/response/get_users_response.dart';
 import 'package:app_core/model/response/search_users_response.dart';
+import 'package:app_core/model/response/send_2fa_response.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
 
 abstract class KServerHandler {
+  static Future<SimpleResponse> logToServer(String key, value) async {
+    final params = {
+      "svc": "debug",
+      "req": "log",
+      key: value,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
   // chats
   static Future<KGetChatsResponse> getChats() async {
     final params = {
@@ -181,6 +191,29 @@ abstract class KServerHandler {
           .toList(),
       "callID": callID,
       "uuid": uuid,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<KSend2faResponse> send2FACode({
+    String? phone,
+    String? email,
+  }) async {
+    final params = {
+      "svc": "auth",
+      "req": "gen.secpin",
+      "phoneNumber": phone,
+      "email": email,
+    };
+    return TLSHelper.send(params)
+        .then((data) => KSend2faResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> verify2FACode(String kpin) async {
+    final params = {
+      "svc": "auth",
+      "req": "verify.secpin",
+      "kpin": kpin,
     };
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }
