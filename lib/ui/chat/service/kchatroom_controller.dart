@@ -91,7 +91,10 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
     );
     this.value.response = response;
     this.value.messages ??= [];
-    this.value.members ??= [];
+    if (this.value.members == null) {
+      this.value.members ??= [];
+    }
+
     notifyListeners();
 
     if (response.isError || response.chat?.kMessages == null) return;
@@ -115,8 +118,10 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
         .removeWhere((e) => msgIdsForDeletion.contains(e.messageID));
 
     this.value.messages!.addAll(response.chat!.kMessages!);
-    this.value.members!.clear();
-    this.value.members!.addAll(response.chat!.kMembers!);
+    if (response.chat!.kMembers!.length > 0) {
+      this.value.members!.clear();
+      this.value.members!.addAll(response.chat!.kMembers!);
+    }
 
     // Truncate chats to MAX MESSAGE LENGTH
     if (this.value.messages!.length > MAX_MESSAGE_COUNT)

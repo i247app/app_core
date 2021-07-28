@@ -1,12 +1,12 @@
-import 'package:app_core/rem/mgr/rem_manager.dart';
-import 'package:app_core/rem/rem.dart';
+import 'package:app_core/rem/mgr/krem_manager.dart';
+import 'package:app_core/rem/krem.dart';
 
-class REMCoreChatManager extends REMManager {
+class KREMCoreChatManager extends KREMManager {
   static const String NOTIFY = "chat.notify";
 
   @override
-  REMAction? dispatch(String path, Map<String, dynamic> data) {
-    REMAction? action;
+  KREMAction? dispatch(String path, Map<String, dynamic> data) {
+    KREMAction? action;
     switch (path) {
       case NOTIFY:
         action = onChatNotify(
@@ -22,13 +22,13 @@ class REMCoreChatManager extends REMManager {
     return action;
   }
 
-  REMAction defaultAction(Map<String, dynamic> json) => (nav) {
+  KREMAction defaultAction(Map<String, dynamic> json) => (nav) {
         print("huh?");
         return Future.value();
       };
 
-  REMAction? onChatNotify({String? chatID, String? refApp, String? refID}) {
-    REMAction? action;
+  KREMAction? onChatNotify({String? chatID, String? refApp, String? refID}) {
+    KREMAction? action;
     switch (refApp ?? "") {
       case "chat":
         if (chatID != null) action = _onNormalChatNotify(chatID);
@@ -37,7 +37,7 @@ class REMCoreChatManager extends REMManager {
     return action;
   }
 
-  REMAction? _onNormalChatNotify(String chatID) {
+  KREMAction? _onNormalChatNotify(String chatID) {
     return null;
     // return (NavigatorState nav) async {
     //   final screen = KChatScreen(chatID: chatID);

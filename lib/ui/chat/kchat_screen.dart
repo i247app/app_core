@@ -10,7 +10,7 @@ import 'package:app_core/model/kchat_message.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/rem/mgr/rem_core_chat_manager.dart';
+import 'package:app_core/rem/mgr/krem_core_chat_manager.dart';
 import 'package:app_core/ui/chat/kchat_manager.dart';
 import 'package:app_core/header/kassets.dart';
 import 'package:app_core/header/kstyles.dart';
@@ -100,7 +100,7 @@ class _KChatScreenState extends State<KChatScreen> {
 
     // local and push ask for iOS
     try {
-      REMCoreChatManager remDispatcher = REMCoreChatManager();
+      KREMCoreChatManager remDispatcher = KREMCoreChatManager();
       await KLocalNotifHelper.setupLocalNotifications(remDispatcher);
     } catch (e) {}
 

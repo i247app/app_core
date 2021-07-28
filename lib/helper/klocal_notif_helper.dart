@@ -10,8 +10,9 @@ import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/kfull_notification.dart';
 import 'package:app_core/model/knotif_data.dart';
 import 'package:app_core/model/kpush_data.dart';
-import 'package:app_core/rem/mgr/rem_manager.dart';
+import 'package:app_core/rem/mgr/krem_manager.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'dart:math';
 
 abstract class KLocalNotifHelper {
   static const bool BLOCKED_BANNERS_AS_TOAST = false;
@@ -51,7 +52,7 @@ abstract class KLocalNotifHelper {
   static void _logBlockDepth(String app) => print(
       "LocalNotifHelper :: banner block depth - ${_blockedBannersDepth[app]}");
 
-  static Future<void> setupLocalNotifications(REMManager dispatcher) async {
+  static Future<void> setupLocalNotifications(KREMManager dispatcher) async {
     print("fcm_helper => setupLocalNotifications fired");
 
     _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -76,7 +77,7 @@ abstract class KLocalNotifHelper {
 
   static void showNotification(
     KFullNotification? msg, {
-    REMManager? remDispatcher,
+    KREMManager? remDispatcher,
     bool obeyBlacklist = false,
   }) async {
     KNotifData? notif = msg?.appCoreNotification;
@@ -117,9 +118,9 @@ abstract class KLocalNotifHelper {
     if (KStringHelper.isExist(notif.title ?? "")) {
       if (_flutterLocalNotificationsPlugin == null && remDispatcher != null)
         await setupLocalNotifications(remDispatcher);
-
+      var rng = new Random();
       await _flutterLocalNotificationsPlugin!.show(
-        0,
+        rng.nextInt(100000),
         notif.title,
         notif.body,
         platform,
