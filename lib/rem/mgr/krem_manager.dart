@@ -1,4 +1,5 @@
 import 'package:app_core/rem/krem.dart';
+import 'package:app_core/rem/krem_path.dart';
 
 abstract class KREMManager {
   KREMAction? dispatch(String path, Map<String, dynamic> data);

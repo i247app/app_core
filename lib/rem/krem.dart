@@ -2,13 +2,11 @@ import 'package:flutter/widgets.dart';
 
 typedef KREMAction = Future Function(NavigatorState);
 
-class KREMPath {
-  final String head;
-  final String full;
-
-  const KREMPath(this.head, this.full);
-}
-
 abstract class KREM {
   static const String APP = "app";
+  static const String AMP = "amp";
+  static const String PROMO = "promo";
+  static const String CHAT = "chat";
+  static const String USER = "user";
+  static const String P2P = "p2p";
 }
