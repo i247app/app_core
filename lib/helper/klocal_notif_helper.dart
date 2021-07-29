@@ -16,7 +16,6 @@ import 'dart:math';
 
 abstract class KLocalNotifHelper {
   static const bool BLOCKED_BANNERS_AS_TOAST = false;
-  static String? transparentIcon;
   static FlutterLocalNotificationsPlugin? _flutterLocalNotificationsPlugin;
 
   // TODO replace with smarter system
@@ -56,8 +55,7 @@ abstract class KLocalNotifHelper {
     print("fcm_helper => setupLocalNotifications fired");
 
     _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    final android =
-        AndroidInitializationSettings(KLocalNotifHelper.transparentIcon!);
+    final android = AndroidInitializationSettings('notif_icon');
     final ios = IOSInitializationSettings();
     final platform = InitializationSettings(android: android, iOS: ios);
 
