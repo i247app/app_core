@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app_core/header/kassets.dart';
 import 'package:app_core/helper/kglobals.dart';
 import 'package:app_core/helper/khost_config.dart';
 import 'package:app_core/helper/krem_helper.dart';
@@ -55,7 +56,7 @@ abstract class KLocalNotifHelper {
     print("fcm_helper => setupLocalNotifications fired");
 
     _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    final android = AndroidInitializationSettings('notif_icon');
+    final android = AndroidInitializationSettings(KAssets.NOTIF_ICON);
     final ios = IOSInitializationSettings();
     final platform = InitializationSettings(android: android, iOS: ios);
 

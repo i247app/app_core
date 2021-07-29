@@ -375,6 +375,8 @@ class KVOIPCommManager {
         break;
       case 'bye':
         {
+          this.onStateChange?.call(SignalingState.CallStateBye);
+
           print("p2p_comm_manager.onMessage [bye] hitting from -------- bye");
           final to = data['to'];
 
@@ -395,7 +397,6 @@ class KVOIPCommManager {
             this._dataChannels.remove(to);
           }
 
-          this.onStateChange?.call(SignalingState.CallStateBye);
           // close();
         }
         break;
