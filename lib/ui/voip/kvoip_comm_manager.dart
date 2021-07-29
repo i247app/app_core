@@ -208,6 +208,8 @@ class KVOIPCommManager {
   // }
 
   void sayGoodbye([String? roomId]) {
+    print("sayGoodbye fired...");
+
     _wsSend('goodbye', {
       ...this.stdConnInfo,
       'roomID': this.session?.id ?? roomId,
@@ -375,29 +377,40 @@ class KVOIPCommManager {
         break;
       case 'bye':
         {
-          this.onStateChange?.call(SignalingState.CallStateBye);
+          print("koip_comm_manager.onMessage case bye...");
 
-          print("p2p_comm_manager.onMessage [bye] hitting from -------- bye");
+          try {
+            this.onStateChange?.call(SignalingState.CallStateBye);
+          }
+          catch(e) { print(e); }
+
           final to = data['to'];
 
-          if (this._localStream != null) {
-            this._localStream!.dispose();
-            this._localStreams.clear();
+          try {
+            if (this._localStream != null) {
+              this._localStream!.dispose();
+              this._localStreams.clear();
+            }
           }
+          catch(e) { print(e); }
 
-          final pc = this._peerConnections[to];
-          if (pc != null) {
-            pc.close();
-            this._peerConnections.remove(to);
+          try {
+            final pc = this._peerConnections[to];
+            if (pc != null) {
+              pc.close();
+              this._peerConnections.remove(to);
+            }
           }
+          catch(e) { print(e); }
 
-          final dc = this._dataChannels[to];
-          if (dc != null) {
-            dc.close();
-            this._dataChannels.remove(to);
+          try {
+            final dc = this._dataChannels[to];
+            if (dc != null) {
+              dc.close();
+              this._dataChannels.remove(to);
+            }
           }
-
-          // close();
+          catch(e) { print(e); }
         }
         break;
       case 'keepalive':
