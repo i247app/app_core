@@ -52,11 +52,12 @@ abstract class KLocalNotifHelper {
   static void _logBlockDepth(String app) => print(
       "LocalNotifHelper :: banner block depth - ${_blockedBannersDepth[app]}");
 
-  static Future<void> setupLocalNotifications(KREMManager dispatcher) async {
+  static Future<void> setupLocalNotifications(
+      KREMManager dispatcher, String transparentIcon) async {
     print("fcm_helper => setupLocalNotifications fired");
 
     _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    final android = AndroidInitializationSettings("chao_notif_sm_transparent");
+    final android = AndroidInitializationSettings(transparentIcon);
     final ios = IOSInitializationSettings();
     final platform = InitializationSettings(android: android, iOS: ios);
 
