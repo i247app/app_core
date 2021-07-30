@@ -11,6 +11,7 @@ import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/kfull_notification.dart';
 import 'package:app_core/model/knotif_data.dart';
 import 'package:app_core/model/kpush_data.dart';
+import 'package:app_core/rem/mgr/krem_core_chat_manager.dart';
 import 'package:app_core/rem/mgr/krem_manager.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:math';
@@ -52,7 +53,8 @@ abstract class KLocalNotifHelper {
   static void _logBlockDepth(String app) => print(
       "LocalNotifHelper :: banner block depth - ${_blockedBannersDepth[app]}");
 
-  static Future<void> setupLocalNotifications(KREMManager dispatcher) async {
+  static Future<void> setupLocalNotifications(
+      {SelectNotificationCallback? onSelectNotification}) async {
     print("fcm_helper => setupLocalNotifications fired");
 
     _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -62,22 +64,13 @@ abstract class KLocalNotifHelper {
 
     await _flutterLocalNotificationsPlugin!.initialize(
       platform,
-      onSelectNotification: (payload) async {
-        if (payload != null &&
-            // Removes a bug where app repeatedly triggers this method on launch
-            KSessionData.hasActiveSession)
-          KREMHelper.from(
-            dispatcher,
-            payload,
-            "LocalNotifHelper.setupLocalNotifications",
-          )?.call(kNavigatorKey.currentState!);
-      },
+      onSelectNotification: onSelectNotification,
     );
   }
 
   static void showNotification(
     KFullNotification? msg, {
-    KREMManager? remDispatcher,
+    SelectNotificationCallback? onSelectNotification,
     bool obeyBlacklist = false,
   }) async {
     KNotifData? notif = msg?.appCoreNotification;
@@ -116,8 +109,9 @@ abstract class KLocalNotifHelper {
         "LocalNotifHelper.showNotification - showing ${KUtil.prettyJSON(notif)}");
 
     if (KStringHelper.isExist(notif.title ?? "")) {
-      if (_flutterLocalNotificationsPlugin == null && remDispatcher != null)
-        await setupLocalNotifications(remDispatcher);
+      if (_flutterLocalNotificationsPlugin == null)
+        await setupLocalNotifications(
+            onSelectNotification: onSelectNotification);
       var rng = new Random();
       await _flutterLocalNotificationsPlugin!.show(
         rng.nextInt(100000),

@@ -100,8 +100,7 @@ class _KChatScreenState extends State<KChatScreen> {
 
     // local and push ask for iOS
     try {
-      KREMCoreChatManager remDispatcher = KREMCoreChatManager();
-      await KLocalNotifHelper.setupLocalNotifications(remDispatcher);
+      // await KLocalNotifHelper.setupLocalNotifications();
     } catch (e) {}
 
     // setup location permission ask
