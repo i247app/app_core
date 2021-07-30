@@ -49,7 +49,8 @@ abstract class KSessionData {
   // TODO = think about port hard coded to 8086
   static KHostInfo get webRTCHostInfo =>
       userSession?.hostData?.webRtcHostInfo ??
-      KHostConfig.hostInfo.copyWith(port: 9090);
+      KHostConfig.hostInfo
+          .copyWith(port: KHostConfig.isReleaseMode ? 9443 : 9090);
 
   /// Setup the session data
   static void setup(KSessionInitData data) {
