@@ -1,18 +1,13 @@
 import 'dart:convert';
 
 import 'package:app_core/header/kassets.dart';
-import 'package:app_core/helper/kglobals.dart';
 import 'package:app_core/helper/khost_config.dart';
-import 'package:app_core/helper/krem_helper.dart';
-import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/helper/ktoast_helper.dart';
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/kfull_notification.dart';
 import 'package:app_core/model/knotif_data.dart';
 import 'package:app_core/model/kpush_data.dart';
-import 'package:app_core/rem/mgr/krem_core_chat_manager.dart';
-import 'package:app_core/rem/mgr/krem_manager.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:math';
 
