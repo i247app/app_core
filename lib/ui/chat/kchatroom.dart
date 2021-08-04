@@ -116,9 +116,9 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
     widget.controller.sendText(sanitized);
   }
 
-  void onOtherPersonClick(String puid) {
-    KServerHandler.getUsers(puid: puid).then((r) => Navigator.of(context).push(
-        MaterialPageRoute(builder: (ctx) => UserProfileView(user: r.user))));
+  void onOtherPersonClick(KUser user) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (ctx) => UserProfileView(user: user)));
   }
 
   @override
