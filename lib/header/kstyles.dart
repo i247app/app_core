@@ -1,32 +1,9 @@
 import 'dart:ui';
 
+import 'package:app_core/header/theme_colors.dart';
 import 'package:app_core/helper/krebuild_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-class _ThemeColors {
-  final Color palettePrimary;
-  final Color paletteSecondary;
-  final Color paletteSupport;
-  final Color paletteButtonText;
-  final Color palette4;
-  final Color palette5;
-  final Color yes;
-  final Color no;
-  final ThemeData themeData;
-
-  _ThemeColors({
-    required this.palettePrimary,
-    required this.paletteSecondary,
-    required this.paletteSupport,
-    required this.paletteButtonText,
-    required this.palette4,
-    required this.palette5,
-    required this.yes,
-    required this.no,
-    required this.themeData,
-  });
-}
 
 // set _brightness to set default dark/light
 // _brightness > brightnessTheme > themeColor > palette
@@ -62,27 +39,27 @@ abstract class KStyles {
   static final Color blue = Colors.blue;
 
   /// Colors - perhaps better named as paletteColor
-  static _ThemeColors get paletteLight => _ThemeColors(
-        palettePrimary: Color(0xff0088DD),
-        paletteSecondary: Color(0xff0099EE),
-        paletteSupport: Color(0xff0099EE),
-        paletteButtonText: white,
-        palette4: Color(0xff0099EE),
-        palette5: Color(0xff0099EE),
-        yes: Color(0xff79AF2C),
-        no: Colors.red,
-        themeData: ThemeData(
-          primarySwatch: Colors.blue, // TODO make this a custom color
-          primaryColor: KStyles.white,
-          backgroundColor: KStyles.white,
-          brightness: Brightness.light,
-        ),
-      );
+  static ThemeColors paletteLight = ThemeColors(
+    palettePrimary: Color(0xff0088DD),
+    paletteSecondary: Color(0xff0099EE),
+    paletteSupport: Color(0xff0099EE),
+    paletteButtonText: white,
+    palette4: Color(0xff0099EE),
+    palette5: Color(0xff0099EE),
+    yes: Color(0xff79AF2C),
+    no: Colors.red,
+    themeData: ThemeData(
+      primarySwatch: Colors.blue, // TODO make this a custom color
+      primaryColor: KStyles.white,
+      backgroundColor: KStyles.white,
+      brightness: Brightness.light,
+    ),
+  );
 
-  static _ThemeColors get paletteDark => paletteLight;
+  static ThemeColors paletteDark = paletteLight;
 
   /* Theme Colors */
-  static _ThemeColors get themeColors =>
+  static ThemeColors get themeColors =>
       _brightness == Brightness.dark ? paletteDark : paletteLight;
 
   static Color get colorButton => themeColors.palettePrimary;
