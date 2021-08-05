@@ -19,7 +19,7 @@ class KChatBubble extends StatelessWidget {
   final KChatMessage chat;
   final KChatMessage? previousChat;
   final KChatMessage? nextChat;
-  final Function(String)? onAvatarClick;
+  final Function(KUser)? onAvatarClick;
 
   bool get isFirstOfSeries {
     if (this.previousChat == null ||
@@ -185,7 +185,7 @@ class KChatBubble extends StatelessWidget {
     }
 
     final userIcon = GestureDetector(
-      onTap: () => this.onAvatarClick?.call(this.chat.puid!),
+      onTap: () => this.onAvatarClick?.call(this.chat.kUser!),
       child: ClipOval(
         child: Container(
           width: GUTTER_SIZE,

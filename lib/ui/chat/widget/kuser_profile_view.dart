@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_core/helper/kserver_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/model/kuser.dart';
@@ -27,23 +28,21 @@ class _UserProfileViewState extends State<UserProfileView> {
     setupUser();
   }
 
-  void setupUser() async {
-    KUser? val;
-    try {
-      if (this.widget.getUsers == null) return;
-
-      val = widget.user ??
-          (await this.widget.getUsers!(puid: widget.puid)).users?.first;
-    } catch (e) {
-      val = null;
+  Future<KUser?> setupUser() async {
+    if (widget.user != null) {
+      return widget.user;
+    } else if (widget.puid != null) {
+      final response = await KServerHandler.getUsers(puid: widget.puid!);
+      return response.user;
+    } else {
+      return null;
     }
-    this.completer.complete(val);
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: this.completer.future,
+      future: setupUser(),
       builder: (ctx, snapshot) {
         if (snapshot.hasData) {
           return _ConcreteUserProfileView(snapshot.data as KUser);
