@@ -25,4 +25,10 @@ abstract class KFileHelper {
 
     return file;
   }
+
+  static String basename(String fullPath) {
+    final fileName = (fullPath.split('/').last);
+    // final filePath = fullPath.replaceAll("/$fileName", '');
+    return fileName;
+  }
 }
