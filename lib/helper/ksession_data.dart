@@ -28,9 +28,9 @@ abstract class KSessionData {
     }
   }
 
-  static void clearSessionToken() {
+  static Future<void> clearSessionToken() async {
     KSessionData.kSessionToken = null;
-    KPrefHelper.remove(KPrefHelper.KTOKEN);
+    await KPrefHelper.remove(KPrefHelper.KTOKEN);
   }
 
   static Future<String> getFCMToken() async {
@@ -79,16 +79,15 @@ abstract class KSessionData {
     // HomePortal.homeViewCount = 0; // determine if motd appears
 
     // common
-    KSessionData.clearSessionToken();
     KSessionData.setUserSession(null);
-    return KPrefHelper.remove(KPrefHelper.KTOKEN);
+    return KSessionData.clearSessionToken();
   }
 
   // // // // // user
   static KUserSession? getUserSession() => kUserSession;
 
   static void setUserSession(KUserSession? userSession) =>
-      userSession == null ? null : kUserSession = userSession;
+      kUserSession = userSession;
 
   static KUserSession? get userSession => kUserSession;
 
