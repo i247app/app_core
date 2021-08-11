@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_core/helper/khost_config.dart';
 import 'package:app_core/helper/klocal_notif_helper.dart';
 import 'package:app_core/helper/klocation_helper.dart';
 import 'package:app_core/helper/ksession_data.dart';
@@ -226,7 +227,9 @@ class _KChatScreenState extends State<KChatScreen> {
     );
 
     final videoCallAction = IconButton(
-      onPressed: onCallUser,
+      onPressed: (KHostConfig.isReleaseMode && this.members.length > 2)
+          ? null
+          : onCallUser,
       icon: Icon(Icons.video_call),
       color: KStyles.colorIcon,
     );
