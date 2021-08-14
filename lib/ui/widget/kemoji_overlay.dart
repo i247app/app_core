@@ -93,7 +93,7 @@ class _KEmojiOverlayState extends State<KEmojiOverlay>
                   this.emojiSeeds[i][1] -
               100,
           child: Text(
-            this.emojis[(this.emojiSeeds[i][2] % this.emojis.length).round()],
+            this.emojis[(this.emojiSeeds[i][2] * this.emojis.length).round()],
             style: KStyles.largeXLText,
           ),
         ),
