@@ -35,7 +35,7 @@ dependencies:
   flutter_google_places: ^0.3.0
 
   # Photo picker
-  image_picker: ^0.7.5+2
+  image_picker: ^0.8.1
 
   # QR code scan
   flutter_barcode_scanner: ^2.0.0

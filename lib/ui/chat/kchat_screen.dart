@@ -27,15 +27,16 @@ class KChatScreen extends StatefulWidget {
   final List<KChatMember>? members;
   final String? chatID;
   final String? title;
-
-  KChatScreen({this.members, this.chatID, this.title});
+  final Function? onChat;
+  KChatScreen({Key? key, this.members, this.chatID, this.title, this.onChat})
+      : super(key: key);
 
   @override
   _KChatScreenState createState() => _KChatScreenState();
 }
 
 class _KChatScreenState extends State<KChatScreen> {
-  late final KChatroomController chatroomCtrl;
+  late KChatroomController chatroomCtrl;
 
   List<KChatMember> get members =>
       this.chatroomCtrl.value.members ?? widget.members ?? [];
@@ -53,6 +54,17 @@ class _KChatScreenState extends State<KChatScreen> {
 
     requestPermissions(); // need perms before any api call
   }
+
+  // @override
+  // void didUpdateWidget(covariant KChatScreen oldWidget) {
+  // 	oldWidget
+  //   this.chatroomCtrl = KChatroomController(
+  //     refApp: KChat.APP_CONTENT_CHAT,
+  //     chatID: widget.chatID,
+  //     members: widget.members,
+  //   );
+  //   super.didUpdateWidget(oldWidget);
+  // }
 
   @override
   void dispose() {
@@ -91,7 +103,10 @@ class _KChatScreenState extends State<KChatScreen> {
     return null;
   }
 
-  void chatroomListener() => setState(() {});
+  void chatroomListener() {
+    widget.onChat?.call();
+    setState(() {});
+  }
 
   static Future<void> requestPermissions() async {
     // ios
@@ -234,17 +249,63 @@ class _KChatScreenState extends State<KChatScreen> {
       color: KStyles.colorIcon,
     );
 
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 1,
-        backgroundColor: Colors.white,
-        title: InkWell(
-          onTap: () => this.onManagerMember(),
-          child: Text(this.chatroomCtrl.value.chatTitle ?? "Chat"),
+    // If tablet not show back button
+    final shortestSide = MediaQuery.of(context).size.shortestSide;
+    if (shortestSide < KStyles.smallestSize) {
+      return Scaffold(
+        appBar: AppBar(
+          elevation: 1,
+          backgroundColor: Colors.white,
+          title: InkWell(
+            onTap: () => this.onManagerMember(),
+            child: Text(this.chatroomCtrl.value.chatTitle ?? "Chat"),
+          ),
+          actions: <Widget>[videoCallAction, addMemberAction],
         ),
-        actions: <Widget>[videoCallAction, addMemberAction],
-      ),
-      body: body,
-    );
+        body: body,
+      );
+    } else {
+      final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+
+      return Container(
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    width: 0.5,
+                    color: Colors.black54.withAlpha(0x10),
+                  ),
+                ),
+                color: Colors.white,
+              ),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () => this.onManagerMember(),
+                      child: Text(
+                        this.chatroomCtrl.value.chatTitle ?? "Chat",
+                        style: KStyles.largeText,
+                      ),
+                    ),
+                  ),
+                  videoCallAction,
+                  addMemberAction
+                ],
+              ),
+            ),
+            Expanded(child: body),
+            Container(
+              height: keyboardHeight == 0 ? 0 : keyboardHeight - 60,
+            )
+          ],
+        ),
+      );
+    }
   }
 }

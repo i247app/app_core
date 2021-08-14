@@ -25,6 +25,7 @@ class KChatList extends StatefulWidget {
 
 class _KChatListState extends State<KChatList> {
   late final KChatListingController chatListingCtrl;
+  Widget activeWidget = Container();
 
   @override
   void initState() {
@@ -72,16 +73,31 @@ class _KChatListState extends State<KChatList> {
     return response.isSuccess;
   }
 
-  void onChatClick(KChat chat) async {
+  void onChatClick(KChat chat, bool isTablet) async {
     print("Clicked on chat ${chat.chatID}");
-    final screen = KChatScreen(
-      chatID: chat.chatID,
-      members: (chat.kMembers ?? []),
-      title: chat.title,
-    );
 
-    await Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
-    this.chatListingCtrl.loadChats();
+    if (isTablet) {
+      final screen = KChatScreen(
+        key: UniqueKey(),
+        chatID: chat.chatID,
+        members: (chat.kMembers ?? []),
+        title: chat.title,
+        onChat: () => this.chatListingCtrl.loadChats(),
+      );
+
+      setState(() {
+        this.activeWidget = screen;
+      });
+    } else {
+      final screen = KChatScreen(
+        chatID: chat.chatID,
+        members: (chat.kMembers ?? []),
+        title: chat.title,
+      );
+      await Navigator.of(context)
+          .push(MaterialPageRoute(builder: (_) => screen));
+      this.chatListingCtrl.loadChats();
+    }
   }
 
   void onCreateChatClick() async {
@@ -100,8 +116,7 @@ class _KChatListState extends State<KChatList> {
     this.chatListingCtrl.loadChats();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildSmallLayout(bool isTablet) {
     final newChatAction = IconButton(
       onPressed: onCreateChatClick,
       icon: Icon(Icons.add_circle_rounded),
@@ -133,23 +148,51 @@ class _KChatListState extends State<KChatList> {
 
     final chatListing = KChatListing(
       this.chatListingCtrl,
-      onChatClick: this.onChatClick,
+      onChatClick: (chat) => onChatClick(chat, isTablet),
     );
 
-    final content = Column(
+    final body = Column(
       children: [
         topRow,
         Expanded(child: chatListing),
       ],
     );
 
+    return body;
+  }
+
+  Widget _buildTabletLayout(bool isTablet) {
+    return Row(
+      children: <Widget>[
+        Container(
+          width: 320,
+          child: Material(
+            elevation: 0.5,
+            child: _buildSmallLayout(isTablet),
+          ),
+        ),
+        Expanded(
+          child: this.activeWidget,
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Widget content;
+    final shortestSide = MediaQuery.of(context).size.shortestSide;
+    if (shortestSide < KStyles.smallestSize) {
+      content = _buildSmallLayout(false);
+    } else {
+      content = _buildTabletLayout(true);
+    }
+
     final scaffoldView = Scaffold(
       body: SafeArea(child: content),
       backgroundColor: KStyles.white,
     );
 
-    return KEmbedManager.of(context).isEmbed
-        ? SafeArea(child: content)
-        : scaffoldView;
+    return KEmbedManager.of(context).isEmbed ? content : scaffoldView;
   }
 }
