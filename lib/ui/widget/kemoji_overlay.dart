@@ -27,15 +27,15 @@ class _KEmojiOverlayState extends State<KEmojiOverlay>
   void initState() {
     super.initState();
 
-    double min = 0.3;
-    double max = 1;
-    final rnd = new Random();
-
+    final min = 0.3;
+    final max = 1;
+    final rnd = Random();
     this.emojiSeeds = List.generate(
       this.particleCount,
       (i) => [
-        KUtil.getRandom().nextDouble(),
+        rnd.nextDouble(),
         rnd.nextDouble() * (max - min) + min,
+        rnd.nextDouble(),
       ],
     );
 
@@ -81,19 +81,19 @@ class _KEmojiOverlayState extends State<KEmojiOverlay>
       children: List.generate(
         this.particleCount,
         (i) => Positioned(
-          left: size.width * this.emojiSeeds[i].first +
+          left: size.width * this.emojiSeeds[i][0] +
               sideToSideMovement *
                   cos(this.slideAnimationController.value *
-                      this.emojiSeeds[i].last *
+                      this.emojiSeeds[i][1] *
                       2 *
                       pi) -
               sideToSideMovement / 2,
           top: (size.height + 100) *
                   this.slideAnimationController.value /
-                  this.emojiSeeds[i].last -
+                  this.emojiSeeds[i][1] -
               100,
           child: Text(
-            this.emojis[this.emojiSeeds[i].first.round() % this.emojis.length],
+            this.emojis[this.emojiSeeds[i][2].round() % this.emojis.length],
             style: KStyles.largeXLText,
           ),
         ),
