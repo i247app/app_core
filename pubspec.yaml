@@ -69,6 +69,8 @@ dependencies:
 
   sliding_up_panel: 2.0.0+1
 
+  confetti: ^0.6.0-nullsafety
+
 
 dev_dependencies:
   flutter_test:
