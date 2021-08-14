@@ -1,6 +1,6 @@
 name: app_core
 description: App core package
-version: 0.9.9
+version: 0.9.10
 homepage:
 
 environment:
@@ -35,7 +35,7 @@ dependencies:
   flutter_google_places: ^0.3.0
 
   # Photo picker
-  image_picker: ^0.7.5+2
+  image_picker: ^0.8.1
 
   # QR code scan
   flutter_barcode_scanner: ^2.0.0
@@ -68,6 +68,8 @@ dependencies:
   uuid: ^3.0.4
 
   sliding_up_panel: 2.0.0+1
+
+  confetti: ^0.6.0-nullsafety
 
 
 dev_dependencies:
