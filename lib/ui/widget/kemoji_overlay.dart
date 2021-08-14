@@ -15,13 +15,13 @@ class _KEmojiOverlayState extends State<KEmojiOverlay>
     with TickerProviderStateMixin {
   late final AnimationController slideAnimationController;
   late final Animation<double> slideAnimation;
-  late final List<List<double>> emojis;
+  late final List<List<double>> emojiSeeds;
 
   final Duration animDuration = Duration(milliseconds: 5000);
 
   int get particleCount => 32;
 
-  String emoji = "🤤";
+  List<String> emojis = ["😎"];
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _KEmojiOverlayState extends State<KEmojiOverlay>
     double max = 1;
     final rnd = new Random();
 
-    this.emojis = List.generate(
+    this.emojiSeeds = List.generate(
       this.particleCount,
       (i) => [
         KUtil.getRandom().nextDouble(),
@@ -63,12 +63,11 @@ class _KEmojiOverlayState extends State<KEmojiOverlay>
 
   void confettiHelperListener() {
     if (this.slideAnimationController.status == AnimationStatus.dismissed) {
-      this.setState(() {
-        this.emoji = KConfettiHelper.emoji;
-      });
-      this.slideAnimationController.forward().whenComplete(() {
-        this.slideAnimationController.reset();
-      });
+      this.setState(() => this.emojis = KConfettiHelper.displayEmojis);
+      this
+          .slideAnimationController
+          .forward()
+          .whenComplete(() => this.slideAnimationController.reset());
     }
   }
 
@@ -76,22 +75,27 @@ class _KEmojiOverlayState extends State<KEmojiOverlay>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
+    final sideToSideMovement = 32;
+
     final body = Stack(
       children: List.generate(
         this.particleCount,
         (i) => Positioned(
-          left: size.width * this.emojis[i].first +
-              32 *
+          left: size.width * this.emojiSeeds[i].first +
+              sideToSideMovement *
                   cos(this.slideAnimationController.value *
-                      this.emojis[i].last *
+                      this.emojiSeeds[i].last *
                       2 *
                       pi) -
-              16,
+              sideToSideMovement / 2,
           top: (size.height + 100) *
                   this.slideAnimationController.value /
-                  this.emojis[i].last -
+                  this.emojiSeeds[i].last -
               100,
-          child: Text(emoji, style: KStyles.largeXLText),
+          child: Text(
+            this.emojis[this.emojiSeeds[i].first.round() % this.emojis.length],
+            style: KStyles.largeXLText,
+          ),
         ),
       ),
     );
