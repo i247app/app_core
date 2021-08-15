@@ -7,7 +7,7 @@ abstract class KScreenHelper {
       KTabletDetector.isTablet(MediaQuery.of(kNavigatorKey.currentContext!));
 
   /// Set default allowed device orientations
-  static void setPreferredOrientation(BuildContext context) async {
+  static void resetOrientation(BuildContext context) async {
     // Always support portrait mode AT LEAST
     List<DeviceOrientation> orientations = [DeviceOrientation.portraitUp];
 
