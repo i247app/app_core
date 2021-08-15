@@ -29,7 +29,7 @@ class KNumberPad extends StatelessWidget {
 
   double _keyboardHeight() {
     double w = _getShortestSide();
-    print("shortestSide ${w}");
+    print("shortestSide $w");
     if (w > 375) {
       return 250;
     } else if (w > 320) {
@@ -233,8 +233,7 @@ class _TextKey extends StatelessWidget {
     return Expanded(
       flex: flex,
       child: _BaseKey(
-        onClick: () =>
-            this.onTextInput != null ? this.onTextInput.call(this.text) : null,
+        onClick: () => this.onTextInput.call(this.text),
         child: Text(
           this.text,
           style: TextStyle(fontSize: 18),
@@ -293,8 +292,7 @@ class _SmallTextKey extends StatelessWidget {
     return Expanded(
       flex: flex,
       child: _SmallBaseKey(
-        onClick: () =>
-            this.onTextInput != null ? this.onTextInput.call(this.text) : null,
+        onClick: () => this.onTextInput.call(this.text),
         child: Text(
           this.text,
           style: TextStyle(fontSize: 18),
