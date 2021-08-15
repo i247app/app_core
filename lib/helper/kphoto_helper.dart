@@ -37,7 +37,7 @@ abstract class KPhotoHelper {
     try {
       //##### PickedFile
       final _picker = ImagePicker();
-      PickedFile? pickedFile = await _picker.getImage(source: source);
+      final pickedFile = await _picker.pickImage(source: source);
 
       if (pickedFile != null)
         result = KPhotoResult(

@@ -68,7 +68,7 @@ abstract class KLocalNotifHelper {
     SelectNotificationCallback? onSelectNotification,
     bool obeyBlacklist = false,
   }) async {
-    KNotifData? notif = msg?.appCoreNotification;
+    KNotifData? notif = msg?.notification;
     String? app = msg?.app;
     if (notif == null || app == null) return;
 
@@ -113,7 +113,7 @@ abstract class KLocalNotifHelper {
         notif.title,
         notif.body,
         platform,
-        payload: jsonEncode(msg?.appCoreData ?? {}),
+        payload: jsonEncode(msg?.data ?? {}),
       );
 
       print("LocalNotifHelper - DISPLAYING NOTIFICATION BANNER");
