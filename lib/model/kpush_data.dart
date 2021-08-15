@@ -29,7 +29,6 @@ class KPushData {
   static const String CALLER_NAME = "callName";
   static const String UUID = "uuid";
   static const String CONFETTI_COUNT = "confettiCount";
-  static const String CONFETTI_TYPE = "confettiType";
   static const String MESSAGE = "message";
 
   @JsonKey(name: PUSH_TYPE)
@@ -58,9 +57,6 @@ class KPushData {
 
   @JsonKey(name: CONFETTI_COUNT, toJson: zzz_itoa, fromJson: zzz_atoi)
   int? confettiCount;
-
-  @JsonKey(name: CONFETTI_TYPE)
-  String? confettiType;
 
   @JsonKey(name: MESSAGE)
   String? message;

@@ -1,14 +1,27 @@
+import 'package:app_core/app_core.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:app_core/model/knotif_data.dart';
-import 'package:app_core/model/kpush_data.dart';
 
+part 'kfull_notification.g.dart';
+
+@JsonSerializable()
 class KFullNotification {
-  @JsonKey(ignore: true)
-  KNotifData? appCoreNotification;
+  static const String NOTIFICATION = "notification";
+  static const String DATA = "data";
+
+  @JsonKey(name: NOTIFICATION)
+  KNotifData? notification;
+
+  @JsonKey(name: DATA)
+  KPushData? data;
 
   @JsonKey(ignore: true)
-  KPushData? appCoreData;
+  String? get app => this.data?.app;
 
-  @JsonKey(ignore: true)
-  String? get app => this.appCoreData?.app;
+  // JSON
+  KFullNotification();
+
+  factory KFullNotification.fromJson(Map<String, dynamic> json) =>
+      _$KFullNotificationFromJson(json);
+
+  Map<String, dynamic> toJson() => _$KFullNotificationToJson(this);
 }
