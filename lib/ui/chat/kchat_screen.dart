@@ -10,24 +10,28 @@ import 'package:app_core/model/kchat_message.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/helper/kserver_handler.dart';
+import 'package:app_core/ui/chat/kchat_contact_listing.dart';
 import 'package:app_core/ui/chat/kchat_manager.dart';
 import 'package:app_core/header/kassets.dart';
 import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/ui/chat/kchatroom.dart';
 import 'package:app_core/ui/chat/service/kchatroom_controller.dart';
 import 'package:app_core/ui/voip/kvoip_call.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'kchat_contact_listing.dart';
-import 'kchatroom.dart';
-
 class KChatScreen extends StatefulWidget {
   final List<KChatMember>? members;
   final String? chatID;
   final String? title;
-  final Function? onChat;
-  KChatScreen({Key? key, this.members, this.chatID, this.title, this.onChat})
-      : super(key: key);
+  final Function? onChatroomControllerHeard;
+
+  KChatScreen({
+    this.members,
+    this.chatID,
+    this.title,
+    this.onChatroomControllerHeard,
+  });
 
   @override
   _KChatScreenState createState() => _KChatScreenState();
@@ -38,6 +42,9 @@ class _KChatScreenState extends State<KChatScreen> {
 
   List<KChatMember> get members =>
       this.chatroomCtrl.value.members ?? widget.members ?? [];
+
+  bool get isVideoCallEnabled =>
+      KHostConfig.isReleaseMode && this.members.length > 2;
 
   @override
   void initState() {
@@ -52,17 +59,6 @@ class _KChatScreenState extends State<KChatScreen> {
 
     requestPermissions(); // need perms before any api call
   }
-
-  // @override
-  // void didUpdateWidget(covariant KChatScreen oldWidget) {
-  // 	oldWidget
-  //   this.chatroomCtrl = KChatroomController(
-  //     refApp: KChat.APP_CONTENT_CHAT,
-  //     chatID: widget.chatID,
-  //     members: widget.members,
-  //   );
-  //   super.didUpdateWidget(oldWidget);
-  // }
 
   @override
   void dispose() {
@@ -86,8 +82,10 @@ class _KChatScreenState extends State<KChatScreen> {
     return Future.value();
   }
 
-  Future<SendChatMessageResponse?> sendMessage(
-      {required KChatMessage message, List<String>? refPUIDs}) async {
+  Future<SendChatMessageResponse?> sendMessage({
+    required KChatMessage message,
+    List<String>? refPUIDs,
+  }) async {
     print("refPUIDs: " + (refPUIDs ?? []).join(','));
     try {
       final response = await KServerHandler.sendMessage(
@@ -102,7 +100,7 @@ class _KChatScreenState extends State<KChatScreen> {
   }
 
   void chatroomListener() {
-    widget.onChat?.call();
+    widget.onChatroomControllerHeard?.call();
     setState(() {});
   }
 
@@ -196,24 +194,6 @@ class _KChatScreenState extends State<KChatScreen> {
     }
   }
 
-  void showVideoCallDialog() async {
-    final dialog = AlertDialog(
-      title: Text("Video Call"),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextButton(
-            onPressed: () => onCallUser(),
-            style: TextButton.styleFrom(textStyle: KStyles.normalText),
-            child: Text(widget.title ?? ""),
-          )
-        ],
-      ),
-    );
-
-    showDialog(context: context, builder: (ctx) => dialog);
-  }
-
   void onManagerMember() async {
     List<KChatMember>? members =
         await Navigator.of(context).push(MaterialPageRoute(
@@ -231,8 +211,6 @@ class _KChatScreenState extends State<KChatScreen> {
   Widget build(BuildContext context) {
     final body = KChatroom(this.chatroomCtrl);
 
-    // final body = Chatroom(this.chatroomCtrl);
-
     final addMemberAction = IconButton(
       onPressed: () => this.onManagerMember(),
       icon: Icon(Icons.group_add),
@@ -240,9 +218,7 @@ class _KChatScreenState extends State<KChatScreen> {
     );
 
     final videoCallAction = IconButton(
-      onPressed: (KHostConfig.isReleaseMode && this.members.length > 2)
-          ? null
-          : onCallUser,
+      onPressed: this.isVideoCallEnabled ? null : onCallUser,
       icon: Icon(Icons.video_call),
       color: KStyles.colorIcon,
     );
@@ -258,51 +234,48 @@ class _KChatScreenState extends State<KChatScreen> {
             onTap: () => this.onManagerMember(),
             child: Text(this.chatroomCtrl.value.chatTitle ?? "Chat"),
           ),
-          actions: <Widget>[videoCallAction, addMemberAction],
+          actions: <Widget>[
+            if (this.isVideoCallEnabled) videoCallAction,
+            addMemberAction
+          ],
         ),
         body: body,
       );
     } else {
       final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
-      return Container(
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    width: 0.5,
-                    color: Colors.black54.withAlpha(0x10),
-                  ),
+      return Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  width: 0.5,
+                  color: Colors.black54.withAlpha(0x10),
                 ),
-                color: Colors.white,
               ),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () => this.onManagerMember(),
-                      child: Text(
-                        this.chatroomCtrl.value.chatTitle ?? "Chat",
-                        style: KStyles.largeText,
-                      ),
+              color: Colors.white,
+            ),
+            child: Row(
+              children: [
+                SizedBox(width: 10),
+                Expanded(
+                  child: InkWell(
+                    onTap: () => this.onManagerMember(),
+                    child: Text(
+                      this.chatroomCtrl.value.chatTitle ?? "Chat",
+                      style: KStyles.largeText,
                     ),
                   ),
-                  videoCallAction,
-                  addMemberAction
-                ],
-              ),
+                ),
+                if (this.isVideoCallEnabled) videoCallAction,
+                addMemberAction
+              ],
             ),
-            Expanded(child: body),
-            Container(
-              height: keyboardHeight == 0 ? 0 : keyboardHeight - 60,
-            )
-          ],
-        ),
+          ),
+          Expanded(child: body),
+          Container(height: keyboardHeight == 0 ? 0 : keyboardHeight - 60)
+        ],
       );
     }
   }
