@@ -25,7 +25,9 @@ class KChatList extends StatefulWidget {
 
 class _KChatListState extends State<KChatList> {
   late final KChatListingController chatListingCtrl;
-  Widget activeWidget = Container();
+  Widget activeWidget = Container(
+    child: Icon(Icons.message_outlined, size: 120, color: Colors.black12),
+  );
 
   @override
   void initState() {
