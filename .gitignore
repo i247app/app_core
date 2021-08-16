@@ -27,5 +27,5 @@ doc/api/
 .flutter-plugins
 .flutter-plugins-dependencies
 
-# g files need to in app_core github
+# generated g files need to be included in app_core repo
 # *.g.dart  
