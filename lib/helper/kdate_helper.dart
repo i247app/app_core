@@ -90,21 +90,40 @@ abstract class KDateHelper {
     DateTime? firstDate,
     DateTime? initialDate,
     DateTime? lastDate,
+    required bool skipDate,
+    required bool use24HourFormat,
   }) async {
+    initialDate ??= DateTime.now();
+    firstDate ??= initialDate;
+    lastDate ??= initialDate.add(Duration(days: 365 * 10));
+
     // Get the date
-    final DateTime? date = await showDatePicker(
-      context: context,
-      initialDate: initialDate!,
-      firstDate: firstDate!,
-      lastDate: lastDate!,
-    );
-    if (date == null) return null;
+    DateTime? date;
+    if (skipDate) {
+      date = DateTime.now();
+    } else {
+      date = await showDatePicker(
+        context: context,
+        initialDate: initialDate,
+        firstDate: firstDate,
+        lastDate: lastDate,
+      );
+      if (date == null) return null;
+    }
 
     // Get the time
     final TimeOfDay? tod = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(initialDate),
-    );
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(initialDate),
+        builder: use24HourFormat
+            ? (BuildContext context, Widget? child) {
+                return MediaQuery(
+                  data: MediaQuery.of(context)
+                      .copyWith(alwaysUse24HourFormat: true),
+                  child: child!,
+                );
+              }
+            : null);
     if (tod == null) return null;
 
     return DateTime(

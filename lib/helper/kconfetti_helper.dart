@@ -1,7 +1,6 @@
+import 'package:app_core/helper/kutil.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/foundation.dart';
-
-import 'kutil.dart';
 
 abstract class KConfettiHelper {
   static final ConfettiController controller =
@@ -10,7 +9,7 @@ abstract class KConfettiHelper {
 
   static int confettiCount = 50;
   static String confettiMessage = "";
-  static String emoji = "🤤";
+  static List<String> displayEmojis = ["🎈", "🎉"];
 
   static void play({int? confettiCount, String? message}) {
     if (confettiCount != null) KConfettiHelper.confettiCount = confettiCount;
@@ -20,8 +19,8 @@ abstract class KConfettiHelper {
 
   static void stop() => controller.stop();
 
-  static void playEmoji([String? _emoji]) {
-    emoji = _emoji ?? "🤤";
+  static void playEmoji([List<String>? emojis]) {
+    if (emojis != null) KConfettiHelper.displayEmojis = emojis;
     emojiController.value = KUtil.buildRandomString(8);
   }
 }

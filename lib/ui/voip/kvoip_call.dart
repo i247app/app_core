@@ -254,12 +254,12 @@ class _KVOIPCallState extends State<KVOIPCall>
         //     notification.data?.otherId != this.commManager?.session?.id;
 
         // If this call has already ended, respond to incoming call
-        if (notification.appCoreData?.id != null &&
+        if (notification.data?.id != null &&
             this.callState == _CallState.ended) {
           Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (ctx) => KVOIPCall.asReceiver(
-                  notification.appCoreData!.id!,
-                  notification.appCoreData!.uuid!,
+                  notification.data!.id!,
+                  notification.data!.uuid!,
                   autoPickup: true,
                   videoLogo: widget.videoLogo)));
 

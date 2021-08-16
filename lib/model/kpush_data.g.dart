@@ -17,7 +17,6 @@ KPushData _$KPushDataFromJson(Map<String, dynamic> json) {
     ..callerName = json['callName'] as String?
     ..uuid = json['uuid'] as String?
     ..confettiCount = zzz_atoi(json['confettiCount'] as String?)
-    ..confettiType = json['confettiType'] as String?
     ..message = json['message'] as String?;
 }
 
@@ -31,6 +30,5 @@ Map<String, dynamic> _$KPushDataToJson(KPushData instance) => <String, dynamic>{
       'callName': instance.callerName,
       'uuid': instance.uuid,
       'confettiCount': zzz_itoa(instance.confettiCount),
-      'confettiType': instance.confettiType,
       'message': instance.message,
     };

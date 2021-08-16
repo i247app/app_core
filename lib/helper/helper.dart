@@ -25,7 +25,6 @@ export 'kutil.dart';
 export 'kvalidate_helper.dart';
 export 'kcall_kit_helper.dart';
 export 'knotif_stream_helper.dart';
-export 'kscaffold_key.dart';
 export 'ksnackbar_helper.dart';
 export 'kwebrtc_helper.dart';
 export 'kfcm_helper.dart';

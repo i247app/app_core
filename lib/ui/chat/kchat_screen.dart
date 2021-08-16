@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:app_core/helper/khost_config.dart';
-import 'package:app_core/helper/klocal_notif_helper.dart';
 import 'package:app_core/helper/klocation_helper.dart';
 import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/helper/kwebrtc_helper.dart';
@@ -11,7 +10,6 @@ import 'package:app_core/model/kchat_message.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/rem/mgr/krem_core_chat_manager.dart';
 import 'package:app_core/ui/chat/kchat_manager.dart';
 import 'package:app_core/header/kassets.dart';
 import 'package:app_core/header/kstyles.dart';
