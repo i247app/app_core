@@ -54,9 +54,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
 
     this.pushDataStreamSub = KPushDataHelper.stream.listen(pushDataListener);
 
-    // widget.controller
-    //     .addListener(() => widget.loadChat.call(widget.controller));
-    widget.controller.addListener(() => setState(() {}));
+    widget.controller.addListener(controllerListener);
     WidgetsBinding.instance?.addObserver(this);
 
     widget.controller.loadChat();
@@ -65,6 +63,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
   @override
   void dispose() {
     KLocalNotifHelper.unblockBanner(KPushData.APP_CHAT_NOTIFY);
+    widget.controller.removeListener(controllerListener);
     this.pushDataStreamSub.cancel();
     WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
@@ -74,6 +73,8 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) widget.controller.loadChat();
   }
+
+  void controllerListener() => setState(() {});
 
   void pushDataListener(KPushData pushData) {
     switch (pushData.app) {
