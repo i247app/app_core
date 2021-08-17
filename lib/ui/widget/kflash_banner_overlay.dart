@@ -1,3 +1,4 @@
+import 'package:app_core/helper/helper.dart';
 import 'package:app_core/model/kflash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -18,9 +19,9 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
   final Duration displayDuration = Duration(milliseconds: 4500);
   final Duration animationDuration = Duration(milliseconds: 1250);
 
-  String get message => KFlashHelper.flashController.value.media ?? "";
+  String? message;
 
-  bool isShowMessage = false;
+  bool get isShowMessage => this.message != null;
 
   @override
   void initState() {
@@ -52,10 +53,11 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
     if (!(KFlashHelper.flash.flashType == KFlash.TYPE_BANNER &&
         KFlashHelper.flash.mediaType == KFlash.MEDIA_TEXT)) return;
 
-    this.setState(() => this.isShowMessage = true);
+    this.setState(() => this.message =
+        KFlashHelper.flash.media ?? "# ERROR: missing flash.media #");
     Future.delayed(
       this.displayDuration,
-      () => setState(() => this.isShowMessage = false),
+      () => setState(() => this.message = null),
     );
   }
 
@@ -77,7 +79,7 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              this.message,
+              this.message ?? "",
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w600,
