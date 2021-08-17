@@ -56,14 +56,14 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
     this.setState(() => this.message =
         KFlashHelper.flash.media ?? "# ERROR: missing flash.media #");
     Future.delayed(
-      this.displayDuration,
+      this.displayDuration + this.animationDuration,
       () => setState(() => this.message = null),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final animatedLayer = AnimatedOpacity(
+    final blackLayer = AnimatedOpacity(
       duration: this.delayDuration,
       opacity: this.isShowMessage ? 1 : 0,
       child: Container(color: KStyles.black.withOpacity(0.5)),
@@ -94,7 +94,7 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
     final body = Stack(
       fit: StackFit.expand,
       children: [
-        animatedLayer,
+        blackLayer,
         Center(child: messageLayer),
       ],
     );
