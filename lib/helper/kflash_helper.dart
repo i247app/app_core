@@ -1,28 +1,36 @@
-import 'package:app_core/helper/kutil.dart';
+import 'package:app_core/model/kflash.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/foundation.dart';
 
 abstract class KFlashHelper {
-  static final ConfettiController controller =
+  static final ValueNotifier<KFlash> flashController = ValueNotifier(KFlash());
+  static final ConfettiController confettiController =
       ConfettiController(duration: Duration(seconds: 5));
-  static final ValueNotifier<String> emojiController = ValueNotifier("");
 
   static int confettiCount = 50;
-  static String confettiMessage = "";
-  static List<String> displayEmojis = ["🎈", "🎉"];
 
   static void rainConfetti({int? confettiCount, String? message}) {
     if (confettiCount != null) KFlashHelper.confettiCount = confettiCount;
-    if (message != null) KFlashHelper.confettiMessage = message;
-    controller.play();
+    if (message != null) {
+      flashController.value = KFlash()
+        ..flashType = KFlash.TYPE_RAIN
+        ..mediaType = KFlash.MEDIA_TEXT
+        ..media = message;
+    }
+    confettiController.play();
   }
 
-  static void stop() => controller.stop();
+  static void stop() => confettiController.stop();
 
   static void rainEmoji([List<String>? emojis]) {
-    if (emojis != null) KFlashHelper.displayEmojis = emojis;
-    emojiController.value = KUtil.buildRandomString(8);
+    flashController.value = KFlash()
+      ..flashType = KFlash.TYPE_RAIN
+      ..mediaType = KFlash.MEDIA_EMOJI
+      ..media = emojis!.first;
   }
 
-  static void banner(String text) => rainEmoji([text]);
+  static void banner(String text) => flashController.value = KFlash()
+    ..flashType = KFlash.TYPE_BANNER
+    ..mediaType = KFlash.MEDIA_TEXT
+    ..media = text;
 }

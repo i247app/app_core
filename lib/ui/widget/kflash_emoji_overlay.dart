@@ -42,13 +42,13 @@ class _KFlashEmojiOverlayState extends State<KFlashEmojiOverlay>
       curve: Curves.linear,
     ))
       ..addListener(() => setState(() {}));
-    KFlashHelper.emojiController.addListener(confettiHelperListener);
+    KFlashHelper.flashController.addListener(confettiHelperListener);
   }
 
   @override
   void dispose() {
     this.slideAnimationController.dispose();
-    KFlashHelper.emojiController.removeListener(confettiHelperListener);
+    KFlashHelper.flashController.removeListener(confettiHelperListener);
     super.dispose();
   }
 
@@ -69,7 +69,8 @@ class _KFlashEmojiOverlayState extends State<KFlashEmojiOverlay>
   void confettiHelperListener() {
     if (this.slideAnimationController.status == AnimationStatus.dismissed) {
       resetEmojiSeeds();
-      this.setState(() => this.emojis = KFlashHelper.displayEmojis);
+      this.setState(
+          () => this.emojis = [KFlashHelper.flashController.value.media!]);
       this
           .slideAnimationController
           .forward()
