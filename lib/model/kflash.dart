@@ -1,10 +1,15 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:app_core/model/kuser.dart';
 
 part 'kflash.g.dart';
 
 @JsonSerializable()
 class KFlash {
+  static const String SMILEY = "smiley";
+  static const String PHO = "pho";
+
+  static const String TYPE_RAIN = "rain";
+  static const String TYPE_BANNER = "banner";
+
   @JsonKey(name: "flashType")
   String? flashType;
 
