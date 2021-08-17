@@ -11,7 +11,7 @@ abstract class KFlashHelper {
   static String confettiMessage = "";
   static List<String> displayEmojis = ["🎈", "🎉"];
 
-  static void play({int? confettiCount, String? message}) {
+  static void rainConfetti({int? confettiCount, String? message}) {
     if (confettiCount != null) KFlashHelper.confettiCount = confettiCount;
     if (message != null) KFlashHelper.confettiMessage = message;
     controller.play();
@@ -19,10 +19,10 @@ abstract class KFlashHelper {
 
   static void stop() => controller.stop();
 
-  static void playEmoji([List<String>? emojis]) {
+  static void rainEmoji([List<String>? emojis]) {
     if (emojis != null) KFlashHelper.displayEmojis = emojis;
     emojiController.value = KUtil.buildRandomString(8);
   }
 
-  static void banner(String text) => playEmoji([text]);
+  static void banner(String text) => rainEmoji([text]);
 }
