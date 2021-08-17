@@ -84,6 +84,7 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
           children: [
             Text(
               this.message ?? "",
+              textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w600,
