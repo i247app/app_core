@@ -12,8 +12,9 @@ class KFlash {
   static const String MEDIA_TEXT = "text";
   static const String MEDIA_CONFETTI = "confetti";
 
-  static const String NICKNAME_SMILEY = "smiley";
-  static const String NICKNAME_PHO = "pho";
+  static const String VALUE_SMILEY = "smiley";
+  static const String VALUE_PHO = "pho";
+  static const String VALUE_PAPER = "paper";
 
   @JsonKey(name: "flashType")
   String? flashType;
