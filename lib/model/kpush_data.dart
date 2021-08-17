@@ -10,6 +10,7 @@ class KPushData {
   static const String ID = "id";
   static const String REF_APP = "refApp";
   static const String REF_ID = "refID";
+  static const String REM = "rem";
 
   static const String PUSH_TYPE_NOTIFICATION = "notification";
   static const String PUSH_TYPE_DATA = "data";
@@ -23,6 +24,7 @@ class KPushData {
   static const String APP_PUSH_PING_NOTIFY = "push.ping.notify";
   static const String APP_P2P_CALL_NOTIFY = "p2p.call.notify";
   static const String APP_CONFETTI_NOTIFY = "confetti.notify";
+  static const String REM_NOTIFY = "rem.notify";
 
   /// EXTRAS
   static const String OTHER_ID = "other_id";
@@ -45,6 +47,9 @@ class KPushData {
 
   @JsonKey(name: REF_ID)
   String? refID;
+
+  @JsonKey(name: REM)
+  String? rem;
 
   @JsonKey(name: OTHER_ID)
   String? otherId;

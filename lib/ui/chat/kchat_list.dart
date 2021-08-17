@@ -25,8 +25,13 @@ class KChatList extends StatefulWidget {
 
 class _KChatListState extends State<KChatList> {
   late final KChatListingController chatListingCtrl;
+
   Widget activeWidget = Container(
-    child: Icon(Icons.message_outlined, size: 120, color: Colors.black12),
+    child: Icon(
+      Icons.message_outlined,
+      size: 120,
+      color: Colors.black12,
+    ),
   );
 
   @override
@@ -85,12 +90,10 @@ class _KChatListState extends State<KChatList> {
         chatID: chat.chatID,
         members: (chat.kMembers ?? []),
         title: chat.title,
-        onChat: () => this.chatListingCtrl.loadChats(),
+        onChatroomControllerHeard: this.chatListingCtrl.loadChats,
       );
 
-      setState(() {
-        this.activeWidget = screen;
-      });
+      setState(() => this.activeWidget = screen);
     } else {
       final screen = KChatScreen(
         chatID: chat.chatID,
@@ -174,9 +177,7 @@ class _KChatListState extends State<KChatList> {
             child: _buildSmallLayout(isTablet),
           ),
         ),
-        Expanded(
-          child: this.activeWidget,
-        ),
+        Expanded(child: this.activeWidget),
       ],
     );
   }

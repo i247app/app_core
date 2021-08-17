@@ -8,11 +8,12 @@ abstract class KREM {
   static const String CHAT = "chat";
   static const String USER = "user";
   static const String P2P = "p2p";
+  static const String FLASH = "flash";
 
   // chao
   static const String AMP = "amp";
   static const String PROMO = "promo";
 
   // schoolbird
-  static const GIG = "gig";
+  static const String GIG = "gig";
 }

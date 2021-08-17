@@ -13,6 +13,7 @@ KPushData _$KPushDataFromJson(Map<String, dynamic> json) {
     ..id = json['id'] as String?
     ..refApp = json['refApp'] as String?
     ..refID = json['refID'] as String?
+    ..rem = json['rem'] as String?
     ..otherId = json['other_id'] as String?
     ..callerName = json['callName'] as String?
     ..uuid = json['uuid'] as String?
@@ -26,6 +27,7 @@ Map<String, dynamic> _$KPushDataToJson(KPushData instance) => <String, dynamic>{
       'id': instance.id,
       'refApp': instance.refApp,
       'refID': instance.refID,
+      'rem': instance.rem,
       'other_id': instance.otherId,
       'callName': instance.callerName,
       'uuid': instance.uuid,
