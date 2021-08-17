@@ -1,3 +1,4 @@
+import 'package:app_core/header/kassets.dart';
 import 'package:app_core/helper/helper.dart';
 import 'package:app_core/model/kflash.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +20,9 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
   final Duration displayDuration = Duration(milliseconds: 4500);
   final Duration animationDuration = Duration(milliseconds: 1250);
 
-  String? message;
+  KFlash? flash;
 
-  bool get isShowMessage => this.message != null;
+  bool get isShowMessage => this.flash != null;
 
   @override
   void initState() {
@@ -53,8 +54,7 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
     if (!(KFlashHelper.flash.flashType == KFlash.TYPE_BANNER &&
         KFlashHelper.flash.mediaType == KFlash.MEDIA_TEXT)) return;
 
-    this.setState(() => this.message =
-        KFlashHelper.flash.media ?? "# ERROR: missing flash.media #");
+    this.setState(() => this.flash = KFlashHelper.flash);
 
     await Future.delayed(this.delayDuration);
 
@@ -62,7 +62,7 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
 
     await Future.delayed(this.displayDuration + this.animationDuration);
 
-    setState(() => this.message = null);
+    setState(() => this.flash = null);
   }
 
   @override
@@ -73,26 +73,32 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
       child: Container(color: KStyles.black.withOpacity(0.5)),
     );
 
-    final messageLayer = AnimatedOpacity(
-      duration: this.delayDuration,
-      opacity: this.isShowMessage ? 1 : 0,
-      child: SlideTransition(
-        position: this.slideAnimation,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              this.message ?? "",
+    Widget rawBanner;
+    try {
+      rawBanner = this.flash?.mediaType == KFlash.MEDIA_TEXT
+          ? Text(
+              this.flash?.media ?? "",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w600,
                 color: Colors.white,
               ),
-            ),
-          ],
-        ),
+            )
+          : FadeInImage.assetNetwork(
+              placeholder: KAssets.IMG_TRANSPARENCY,
+              image: this.flash!.media!,
+            );
+    } catch (e) {
+      rawBanner = Text("# ERROR: unexpected media #");
+    }
+
+    final displayLayer = AnimatedOpacity(
+      duration: this.delayDuration,
+      opacity: this.isShowMessage ? 1 : 0,
+      child: SlideTransition(
+        position: this.slideAnimation,
+        child: Center(child: rawBanner),
       ),
     );
 
@@ -100,7 +106,7 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
       fit: StackFit.expand,
       children: [
         blackLayer,
-        Center(child: messageLayer),
+        Center(child: displayLayer),
       ],
     );
 
