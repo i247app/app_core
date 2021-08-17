@@ -26,12 +26,12 @@ class _KFlashConfettiOverlayState extends State<KFlashConfettiOverlay>
   void initState() {
     super.initState();
 
-    this.confettiController.addListener(confettiHelperListener);
+    KFlashHelper.flashController.addListener(confettiHelperListener);
   }
 
   @override
   void dispose() {
-    this.confettiController.removeListener(confettiHelperListener);
+    KFlashHelper.flashController.removeListener(confettiHelperListener);
     super.dispose();
   }
 

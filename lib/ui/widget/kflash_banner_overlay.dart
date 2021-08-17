@@ -1,3 +1,4 @@
+import 'package:app_core/model/kflash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/kflash_helper.dart';
@@ -48,6 +49,9 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
   }
 
   void confettiHelperListener() {
+    if (!(KFlashHelper.flash.flashType == KFlash.TYPE_BANNER &&
+        KFlashHelper.flash.mediaType == KFlash.MEDIA_TEXT)) return;
+
     this.setState(() => this.isShowMessage = true);
     Future.delayed(
       this.displayDuration,
