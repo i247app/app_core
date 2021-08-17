@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/model/kflash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/kflash_helper.dart';
@@ -67,6 +68,9 @@ class _KFlashEmojiOverlayState extends State<KFlashEmojiOverlay>
   }
 
   void confettiHelperListener() {
+    if (!(KFlashHelper.flash.flashType == KFlash.TYPE_RAIN &&
+        KFlashHelper.flash.mediaType == KFlash.MEDIA_EMOJI)) return;
+
     if (this.slideAnimationController.status == AnimationStatus.dismissed) {
       resetEmojiSeeds();
       this.setState(
