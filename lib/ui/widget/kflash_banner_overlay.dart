@@ -49,16 +49,19 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
     super.dispose();
   }
 
-  void confettiHelperListener() {
+  void confettiHelperListener() async {
     if (!(KFlashHelper.flash.flashType == KFlash.TYPE_BANNER &&
         KFlashHelper.flash.mediaType == KFlash.MEDIA_TEXT)) return;
 
+    await Future.delayed(this.delayDuration);
+
     this.setState(() => this.message =
         KFlashHelper.flash.media ?? "# ERROR: missing flash.media #");
-    Future.delayed(
-      this.displayDuration + this.animationDuration,
-      () => setState(() => this.message = null),
-    );
+    this.slideAnimationController.forward();
+
+    await Future.delayed(this.displayDuration + this.animationDuration);
+
+    setState(() => this.message = null);
   }
 
   @override
