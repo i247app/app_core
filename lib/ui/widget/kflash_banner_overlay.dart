@@ -53,10 +53,11 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
     if (!(KFlashHelper.flash.flashType == KFlash.TYPE_BANNER &&
         KFlashHelper.flash.mediaType == KFlash.MEDIA_TEXT)) return;
 
-    await Future.delayed(this.delayDuration);
-
     this.setState(() => this.message =
         KFlashHelper.flash.media ?? "# ERROR: missing flash.media #");
+
+    await Future.delayed(this.delayDuration);
+
     this.slideAnimationController.forward();
 
     await Future.delayed(this.displayDuration + this.animationDuration);
