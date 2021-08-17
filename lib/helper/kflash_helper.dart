@@ -2,7 +2,7 @@ import 'package:app_core/helper/kutil.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/foundation.dart';
 
-abstract class KRainHelper {
+abstract class KFlashHelper {
   static final ConfettiController controller =
       ConfettiController(duration: Duration(seconds: 5));
   static final ValueNotifier<String> emojiController = ValueNotifier("");
@@ -12,15 +12,15 @@ abstract class KRainHelper {
   static List<String> displayEmojis = ["🎈", "🎉"];
 
   static void play({int? confettiCount, String? message}) {
-    if (confettiCount != null) KRainHelper.confettiCount = confettiCount;
-    if (message != null) KRainHelper.confettiMessage = message;
+    if (confettiCount != null) KFlashHelper.confettiCount = confettiCount;
+    if (message != null) KFlashHelper.confettiMessage = message;
     controller.play();
   }
 
   static void stop() => controller.stop();
 
   static void playEmoji([List<String>? emojis]) {
-    if (emojis != null) KRainHelper.displayEmojis = emojis;
+    if (emojis != null) KFlashHelper.displayEmojis = emojis;
     emojiController.value = KUtil.buildRandomString(8);
   }
 }
