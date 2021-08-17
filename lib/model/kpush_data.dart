@@ -23,6 +23,7 @@ class KPushData {
   static const String APP_PUSH_PING_NOTIFY = "push.ping.notify";
   static const String APP_P2P_CALL_NOTIFY = "p2p.call.notify";
   static const String APP_CONFETTI_NOTIFY = "confetti.notify";
+  static const String REM_NOTIFY = "rem.notify";
 
   /// EXTRAS
   static const String OTHER_ID = "other_id";
