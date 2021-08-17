@@ -3,15 +3,15 @@ import 'dart:math';
 import 'package:app_core/app_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:app_core/helper/kconfetti_helper.dart';
+import 'package:app_core/helper/krain_helper.dart';
 import 'package:app_core/header/kstyles.dart';
 
-class KEmojiOverlay extends StatefulWidget {
+class KRainEmojiOverlay extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _KEmojiOverlayState();
+  State<StatefulWidget> createState() => _KRainEmojiOverlayState();
 }
 
-class _KEmojiOverlayState extends State<KEmojiOverlay>
+class _KRainEmojiOverlayState extends State<KRainEmojiOverlay>
     with TickerProviderStateMixin {
   late final AnimationController slideAnimationController;
   late final Animation<double> slideAnimation;
@@ -51,19 +51,19 @@ class _KEmojiOverlayState extends State<KEmojiOverlay>
       curve: Curves.linear,
     ))
       ..addListener(() => setState(() {}));
-    KConfettiHelper.emojiController.addListener(confettiHelperListener);
+    KRainHelper.emojiController.addListener(confettiHelperListener);
   }
 
   @override
   void dispose() {
     this.slideAnimationController.dispose();
-    KConfettiHelper.emojiController.removeListener(confettiHelperListener);
+    KRainHelper.emojiController.removeListener(confettiHelperListener);
     super.dispose();
   }
 
   void confettiHelperListener() {
     if (this.slideAnimationController.status == AnimationStatus.dismissed) {
-      this.setState(() => this.emojis = KConfettiHelper.displayEmojis);
+      this.setState(() => this.emojis = KRainHelper.displayEmojis);
       this
           .slideAnimationController
           .forward()

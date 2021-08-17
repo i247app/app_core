@@ -3,15 +3,15 @@ import 'dart:math';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:app_core/helper/kconfetti_helper.dart';
+import 'package:app_core/helper/krain_helper.dart';
 import 'package:app_core/header/kstyles.dart';
 
-class KConfettiOverlay extends StatefulWidget {
+class KRainConfettiOverlay extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _KConfettiOverlayState();
+  State<StatefulWidget> createState() => _KRainConfettiOverlayState();
 }
 
-class _KConfettiOverlayState extends State<KConfettiOverlay>
+class _KRainConfettiOverlayState extends State<KRainConfettiOverlay>
     with TickerProviderStateMixin {
   late final AnimationController slideAnimationController;
   late final Animation<Offset> slideAnimation;
@@ -22,9 +22,9 @@ class _KConfettiOverlayState extends State<KConfettiOverlay>
   final Duration messageAnimation = Duration(milliseconds: 1250);
 
   int get particleCount =>
-      max(1, KConfettiHelper.confettiCount ~/ this.generatorCount);
+      max(1, KRainHelper.confettiCount ~/ this.generatorCount);
 
-  String get message => KConfettiHelper.confettiMessage;
+  String get message => KRainHelper.confettiMessage;
 
   bool isShowMessage = false;
 
@@ -44,19 +44,19 @@ class _KConfettiOverlayState extends State<KConfettiOverlay>
       curve: Curves.easeInCubic,
     ));
 
-    KConfettiHelper.controller.addListener(confettiHelperListener);
+    KRainHelper.controller.addListener(confettiHelperListener);
   }
 
   @override
   void dispose() {
     this.slideAnimationController.dispose();
-    KConfettiHelper.controller.removeListener(confettiHelperListener);
+    KRainHelper.controller.removeListener(confettiHelperListener);
     super.dispose();
   }
 
   void confettiHelperListener() {
-    if (KConfettiHelper.controller.state == ConfettiControllerState.playing &&
-        KConfettiHelper.confettiMessage.isNotEmpty &&
+    if (KRainHelper.controller.state == ConfettiControllerState.playing &&
+        KRainHelper.confettiMessage.isNotEmpty &&
         !this.isShowMessage) {
       Future.delayed(this.confettiDelay, () {
         this.setState(() => this.isShowMessage = true);
@@ -68,7 +68,7 @@ class _KConfettiOverlayState extends State<KConfettiOverlay>
 
           Future.delayed(
             this.confettiDelay,
-            () => KConfettiHelper.confettiMessage = "",
+            () => KRainHelper.confettiMessage = "",
           );
         });
       });
@@ -89,7 +89,7 @@ class _KConfettiOverlayState extends State<KConfettiOverlay>
       children: List<Widget>.generate(
         this.generatorCount,
         (i) => ConfettiWidget(
-          confettiController: KConfettiHelper.controller,
+          confettiController: KRainHelper.controller,
           blastDirectionality: BlastDirectionality.directional,
           blastDirection: 3.0 * (pi / 2.0),
           numberOfParticles: this.particleCount,

@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:app_core/ui/widget/kconfetti_overlay.dart';
-import 'package:app_core/ui/widget/kemoji_overlay.dart';
+import 'package:app_core/ui/widget/krain_confetti_overlay.dart';
+import 'package:app_core/ui/widget/krain_emoji_overlay.dart';
 
 abstract class KOverlayHelper {
   static final List<Widget> _defaults = [
-    IgnorePointer(child: KConfettiOverlay()),
-    IgnorePointer(child: KEmojiOverlay()),
+    IgnorePointer(child: KRainConfettiOverlay()),
+    IgnorePointer(child: KRainEmojiOverlay()),
   ];
   static final Map<int, Widget> _overlays = {};
 
