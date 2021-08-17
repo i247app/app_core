@@ -15,7 +15,8 @@ class _KFlashEmojiOverlayState extends State<KFlashEmojiOverlay>
     with TickerProviderStateMixin {
   late final AnimationController slideAnimationController;
   late final Animation<double> slideAnimation;
-  late final List<List<double>> emojiSeeds;
+
+  late List<List<double>> emojiSeeds;
 
   final Duration animDuration = Duration(milliseconds: 5000);
 
@@ -27,17 +28,7 @@ class _KFlashEmojiOverlayState extends State<KFlashEmojiOverlay>
   void initState() {
     super.initState();
 
-    final min = 0.3;
-    final max = 1;
-    final rnd = Random();
-    this.emojiSeeds = List.generate(
-      this.particleCount,
-      (i) => [
-        rnd.nextDouble(),
-        rnd.nextDouble() * (max - min) + min,
-        rnd.nextDouble(),
-      ],
-    );
+    resetEmojiSeeds();
 
     this.slideAnimationController = AnimationController(
       duration: this.animDuration,
@@ -61,8 +52,23 @@ class _KFlashEmojiOverlayState extends State<KFlashEmojiOverlay>
     super.dispose();
   }
 
+  void resetEmojiSeeds() {
+    final min = 0.3;
+    final max = 1;
+    final rnd = Random();
+    this.emojiSeeds = List.generate(
+      this.particleCount,
+      (i) => [
+        rnd.nextDouble(),
+        rnd.nextDouble() * (max - min) + min,
+        rnd.nextDouble(),
+      ],
+    );
+  }
+
   void confettiHelperListener() {
     if (this.slideAnimationController.status == AnimationStatus.dismissed) {
+      resetEmojiSeeds();
       this.setState(() => this.emojis = KFlashHelper.displayEmojis);
       this
           .slideAnimationController
