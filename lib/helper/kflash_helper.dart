@@ -23,4 +23,6 @@ abstract class KFlashHelper {
     if (emojis != null) KFlashHelper.displayEmojis = emojis;
     emojiController.value = KUtil.buildRandomString(8);
   }
+
+  static void banner(String text) => playEmoji([text]);
 }
