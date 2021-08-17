@@ -23,7 +23,7 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
   int get particleCount =>
       max(1, KFlashHelper.confettiCount ~/ this.generatorCount);
 
-  String get message => KFlashHelper.flashController.value.media!;
+  String get message => KFlashHelper.flashController.value.media ?? "";
 
   bool isShowMessage = false;
 
