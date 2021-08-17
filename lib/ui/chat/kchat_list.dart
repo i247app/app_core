@@ -81,6 +81,7 @@ class _KChatListState extends State<KChatList> {
     if (isTablet) {
       final screen = KChatScreen(
         key: UniqueKey(),
+        isEmbeded: true,
         chatID: chat.chatID,
         members: (chat.kMembers ?? []),
         title: chat.title,
