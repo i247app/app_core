@@ -48,7 +48,7 @@ class KApp extends StatelessWidget {
               navigatorKey: this.navigatorKey,
               debugShowCheckedModeBanner: false,
               navigatorObservers: this.navigatorObservers,
-              theme: this.themeData.themeData,
+              theme: this.themeData.systemTheme,
               home: this.home,
             ),
           ),

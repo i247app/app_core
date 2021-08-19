@@ -9,7 +9,7 @@ class KThemeData {
   final Color palette5;
   final Color yes;
   final Color no;
-  final ThemeData themeData;
+  final ThemeData systemTheme;
 
   const KThemeData({
     required this.palettePrimary,
@@ -20,6 +20,6 @@ class KThemeData {
     required this.palette5,
     required this.yes,
     required this.no,
-    required this.themeData,
+    required this.systemTheme,
   });
 }

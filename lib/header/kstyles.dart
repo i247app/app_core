@@ -51,7 +51,7 @@ abstract class KStyles {
     palette5: Color(0xff0099EE),
     yes: Color(0xff79AF2C),
     no: Colors.red,
-    themeData: ThemeData(
+    systemTheme: ThemeData(
       primarySwatch: Colors.blue, // TODO make this a custom color
       primaryColor: KStyles.white,
       backgroundColor: KStyles.white,
