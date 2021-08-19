@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ThemeColors {
-
+class KThemeData {
   final Color palettePrimary;
   final Color paletteSecondary;
   final Color paletteSupport;
@@ -12,7 +11,7 @@ class ThemeColors {
   final Color no;
   final ThemeData themeData;
 
-  ThemeColors({
+  const KThemeData({
     required this.palettePrimary,
     required this.paletteSecondary,
     required this.paletteSupport,

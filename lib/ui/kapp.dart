@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:app_core/header/ktheme_data.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/style/ktheme.dart';
-import 'package:app_core/style/kstyle_manager.dart';
 import 'package:app_core/ui/kicon/kicon_manager.dart';
 import 'package:app_core/ui/widget/kembed_manager.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +13,7 @@ class KApp extends StatelessWidget {
   final TextStyle defaultTextStyle;
   final bool isEmbed;
   final String title;
-  final KTheme kTheme;
+  final KThemeData themeData;
   final GlobalKey<NavigatorState> navigatorKey;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final List<NavigatorObserver> navigatorObservers;
@@ -23,7 +23,7 @@ class KApp extends StatelessWidget {
   const KApp({
     required this.home,
     required this.defaultTextStyle,
-    required this.kTheme,
+    required this.themeData,
     required this.navigatorKey,
     required this.scaffoldKey,
     required this.navigatorObservers,
@@ -35,8 +35,8 @@ class KApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final innerApp = KStyleManager(
-      theme: this.kTheme,
+    final innerApp = KTheme(
+      data: this.themeData,
       child: KIconManager(
         iconSet: this.iconSet,
         child: KEmbedManager(
@@ -48,7 +48,7 @@ class KApp extends StatelessWidget {
               navigatorKey: this.navigatorKey,
               debugShowCheckedModeBanner: false,
               navigatorObservers: this.navigatorObservers,
-              theme: this.kTheme.themeData,
+              theme: this.themeData.themeData,
               home: this.home,
             ),
           ),
