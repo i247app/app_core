@@ -248,7 +248,6 @@ class _KChatScreenState extends State<KChatScreen> {
       );
     } else {
       final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-
       return Column(
         children: [
           Container(
@@ -279,7 +278,7 @@ class _KChatScreenState extends State<KChatScreen> {
             ),
           ),
           Expanded(child: body),
-          Container(height: keyboardHeight == 0 ? 0 : keyboardHeight - 60)
+          Container(height: keyboardHeight < 60 ? 0 : keyboardHeight - 60)
         ],
       );
     }
