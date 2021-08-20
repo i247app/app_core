@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:app_core/header/ktheme_data.dart';
+import 'package:app_core/header/kpalette.dart';
 import 'package:app_core/helper/krebuild_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -42,7 +42,7 @@ abstract class KStyles {
   static final Color blue = Colors.blue;
 
   /// Colors - perhaps better named as paletteColor
-  static KThemeData paletteLight = KThemeData(
+  static KPalette paletteLight = KPalette(
     palettePrimary: Color(0xff0088DD),
     paletteSecondary: Color(0xff0099EE),
     paletteSupport: Color(0xff0099EE),
@@ -59,10 +59,10 @@ abstract class KStyles {
     ),
   );
 
-  static KThemeData paletteDark = paletteLight;
+  static KPalette paletteDark = paletteLight;
 
   /* Theme Colors */
-  static KThemeData get themeColors =>
+  static KPalette get themeColors =>
       _brightness == Brightness.dark ? paletteDark : paletteLight;
 
   static Color get colorButton => themeColors.palettePrimary;
