@@ -6,7 +6,7 @@ export 'ui/ui.dart';
 export 'rem/krem.dart';
 export 'network/network.dart';
 export 'header/ksession_init_data.dart';
-export 'header/theme_colors.dart';
+export 'header/kpalette.dart';
 export 'header/kstyles.dart';
 
 class AppCore {}
