@@ -5,7 +5,7 @@ import 'package:app_core/helper/khost_config.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 abstract class KPrefHelper {
-  static const String TAG = 'SecureStorageHelper';
+  static const String TAG = 'KPrefHelper';
 
   static bool get isDebugMode => !KHostConfig.isReleaseMode;
 
