@@ -25,7 +25,7 @@ class KChatScreen extends StatefulWidget {
   final String? chatID;
   final String? title;
   final Function? onChat;
-  final bool isEmbeded;
+  final bool isEmbedded;
   final Function? onChatroomControllerHeard;
 
   KChatScreen({
@@ -34,7 +34,7 @@ class KChatScreen extends StatefulWidget {
     this.chatID,
     this.title,
     this.onChat,
-    this.isEmbeded = false,
+    this.isEmbedded = false,
     this.onChatroomControllerHeard,
   }) : super(key: key);
 
@@ -230,7 +230,7 @@ class _KChatScreenState extends State<KChatScreen> {
 
     // If tablet not show back button
     final shortestSide = MediaQuery.of(context).size.shortestSide;
-    if (shortestSide < KStyles.smallestSize || !widget.isEmbeded) {
+    if (shortestSide < KStyles.smallestSize || !widget.isEmbedded) {
       return Scaffold(
         appBar: AppBar(
           elevation: 1,
