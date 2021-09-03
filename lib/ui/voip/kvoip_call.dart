@@ -21,6 +21,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:app_core/app_core.dart';
+import 'package:get/get.dart';
 
 enum _CallPerspective { sender, receiver }
 enum _CallState { ws_error, init, waiting, in_progress, ended }
@@ -133,6 +134,7 @@ class _KVOIPCallState extends State<KVOIPCall>
   String? get myName => KSessionData.me?.firstName;
 
   String? get refPUID => widget.refUser?.puid;
+  bool isDarkMode = true;
 
   String get infoLabel {
     if (this.hasPeerError) {
@@ -258,10 +260,8 @@ class _KVOIPCallState extends State<KVOIPCall>
             this.callState == _CallState.ended) {
           Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (ctx) => KVOIPCall.asReceiver(
-                  notification.data!.id!,
-                  notification.data!.uuid!,
-                  autoPickup: true,
-                  videoLogo: widget.videoLogo)));
+                  notification.data!.id!, notification.data!.uuid!,
+                  autoPickup: true, videoLogo: widget.videoLogo)));
 
           // safePop();
           // KWebRTCHelper.displayCallScreen(notification.data!.id!);

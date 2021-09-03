@@ -12,6 +12,7 @@ import 'package:app_core/ui/widget/kcontact_name_view.dart';
 import 'package:app_core/ui/widget/kicon_label.dart';
 import 'package:app_core/ui/widget/kkeyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
+import 'package:get/get.dart';
 
 class KChatContactListing extends StatefulWidget {
   final Function(String? searchText) searchUsers;
@@ -120,7 +121,7 @@ class _KChatContactListingState extends State<KChatContactListing> {
         separatorBuilder: (_, __) => Container(
           width: double.infinity,
           height: 1,
-          color: KStyles.colorDivider,
+          color: context.theme.dividerTheme.color,
         ),
       );
 
@@ -136,14 +137,14 @@ class _KChatContactListingState extends State<KChatContactListing> {
           Row(
             children: [
               BackButton(),
-              Text("Choose Users", style: KStyles.largeText),
+              Text("Choose Users", style: context.textTheme.subtitle1),
               Spacer(),
               doneButton,
             ],
           ),
           SizedBox(height: 8),
           searchInput,
-          Divider(height: 1, color: KStyles.colorDivider),
+          Divider(height: 1),
           Expanded(child: userListing),
         ],
       ),
@@ -185,12 +186,10 @@ class _SearchField extends StatelessWidget {
       showCursor: true,
       onTap: this.onTap,
       readOnly: this.readOnly,
-      style: KStyles.normalText,
+      style: context.textTheme.bodyText1,
       decoration: InputDecoration(
         hintText: "Type a name or phone number",
         counterText: "",
-        // contentPadding: EdgeInsets.symmetric(vertical: 2),
-        border: InputBorder.none,
       ),
     );
 
@@ -202,15 +201,15 @@ class _SearchField extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: KStyles.colorPrimary.withOpacity(0.1),
+                  color: context.theme.primaryColor.withOpacity(0.1),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       su.fullName ?? su.contactName ?? "",
-                      style: KStyles.normalText
-                          .copyWith(fontWeight: FontWeight.bold),
+                      style: context.textTheme.bodyText1
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(width: 6),
                     Icon(Icons.close, size: 20, color: KStyles.grey),

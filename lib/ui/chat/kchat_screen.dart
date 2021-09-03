@@ -19,6 +19,7 @@ import 'package:app_core/ui/chat/service/kchatroom_controller.dart';
 import 'package:app_core/ui/voip/kvoip_call.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 
 class KChatScreen extends StatefulWidget {
   final List<KChatMember>? members;
@@ -49,7 +50,7 @@ class _KChatScreenState extends State<KChatScreen> {
       this.chatroomCtrl.value.members ?? widget.members ?? [];
 
   bool get isVideoCallEnabled =>
-      KHostConfig.isReleaseMode && this.members.length > 2;
+      !KHostConfig.isReleaseMode || this.members.length <= 2;
 
   @override
   void initState() {
@@ -219,13 +220,13 @@ class _KChatScreenState extends State<KChatScreen> {
     final addMemberAction = IconButton(
       onPressed: () => this.onManagerMember(),
       icon: Icon(Icons.group_add),
-      color: KStyles.colorIcon,
+      color: context.theme.primaryColor,
     );
 
     final videoCallAction = IconButton(
-      onPressed: this.isVideoCallEnabled ? null : onCallUser,
+      onPressed: this.isVideoCallEnabled ? onCallUser : null,
       icon: Icon(Icons.video_call),
-      color: KStyles.colorIcon,
+      color: context.theme.primaryColor,
     );
 
     // If tablet not show back button
@@ -233,8 +234,6 @@ class _KChatScreenState extends State<KChatScreen> {
     if (shortestSide < KStyles.smallestSize || !widget.isEmbedded) {
       return Scaffold(
         appBar: AppBar(
-          elevation: 1,
-          backgroundColor: Colors.white,
           title: InkWell(
             onTap: () => this.onManagerMember(),
             child: Text(this.chatroomCtrl.value.chatTitle ?? "Chat"),
