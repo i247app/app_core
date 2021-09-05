@@ -171,7 +171,7 @@ class _KChatListState extends State<KChatList> {
     return Row(
       children: <Widget>[
         Container(
-          width: 320,
+          width: MediaQuery.of(context).size.width / 3, // 320
           child: Material(
             elevation: 0.5,
             child: _buildSmallLayout(isTablet),
