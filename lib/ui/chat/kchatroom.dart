@@ -193,19 +193,16 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
     final addCameraButton = IconButton(
       onPressed: onAddCameraImageClick,
       icon: Icon(Icons.camera_alt),
-      color: context.theme.primaryColor,
     );
 
     final addImageButton = IconButton(
       onPressed: onAddGalleryImageClick,
       icon: Icon(Icons.image_outlined),
-      color: context.theme.primaryColor,
     );
 
     final sendMessageButton = IconButton(
       onPressed: onSendTextClick,
       icon: Icon(Icons.send),
-      color: context.theme.primaryColor,
     );
 
     final messageInputBox = SafeArea(

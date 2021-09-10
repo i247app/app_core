@@ -220,13 +220,11 @@ class _KChatScreenState extends State<KChatScreen> {
     final addMemberAction = IconButton(
       onPressed: () => this.onManagerMember(),
       icon: Icon(Icons.group_add),
-      color: context.theme.primaryColor,
     );
 
     final videoCallAction = IconButton(
       onPressed: this.isVideoCallEnabled ? onCallUser : null,
       icon: Icon(Icons.video_call),
-      color: context.theme.primaryColor,
     );
 
     // If tablet not show back button
