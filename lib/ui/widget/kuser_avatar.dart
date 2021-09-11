@@ -64,8 +64,7 @@ class KUserAvatar extends StatelessWidget {
                   child: Text(
                     KStringHelper.substring(this.initial!, 0, 2).toUpperCase(),
                     textAlign: TextAlign.center,
-                    style: context.textTheme.headline5
-                        ?.copyWith(color: context.theme.primaryColor),
+                    style: context.textTheme.headline5,
                   ),
                 ),
               )
