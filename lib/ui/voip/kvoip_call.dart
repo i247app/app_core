@@ -19,8 +19,9 @@ import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:uuid/uuid.dart';
-import 'package:wakelock/wakelock.dart';
+// import 'package:wakelock/wakelock.dart';
 import 'package:app_core/app_core.dart';
+import 'package:get/get.dart';
 
 enum _CallPerspective { sender, receiver }
 enum _CallState { ws_error, init, waiting, in_progress, ended }
@@ -133,6 +134,7 @@ class _KVOIPCallState extends State<KVOIPCall>
   String? get myName => KSessionData.me?.firstName;
 
   String? get refPUID => widget.refUser?.puid;
+  bool isDarkMode = true;
 
   String get infoLabel {
     if (this.hasPeerError) {
@@ -155,7 +157,7 @@ class _KVOIPCallState extends State<KVOIPCall>
   @override
   void initState() {
     super.initState();
-    Wakelock.enable();
+    // Wakelock.enable();
     WidgetsBinding.instance?.addObserver(this);
 
     this._slidingAnimationController = AnimationController(
@@ -193,7 +195,7 @@ class _KVOIPCallState extends State<KVOIPCall>
     if (!KHostConfig.isReleaseMode) print("P2PCall.dispose fired...");
     this._slidingAnimationController.dispose();
 
-    Wakelock.disable();
+    // Wakelock.disable();
     WidgetsBinding.instance?.removeObserver(this);
 
     stopRingtone();
@@ -258,10 +260,8 @@ class _KVOIPCallState extends State<KVOIPCall>
             this.callState == _CallState.ended) {
           Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (ctx) => KVOIPCall.asReceiver(
-                  notification.data!.id!,
-                  notification.data!.uuid!,
-                  autoPickup: true,
-                  videoLogo: widget.videoLogo)));
+                  notification.data!.id!, notification.data!.uuid!,
+                  autoPickup: true, videoLogo: widget.videoLogo)));
 
           // safePop();
           // KWebRTCHelper.displayCallScreen(notification.data!.id!);

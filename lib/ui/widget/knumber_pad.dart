@@ -1,6 +1,7 @@
 import 'package:app_core/header/kstyles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 
 class KNumberPad extends StatelessWidget {
   static const int KEYBOARD_MODE_NONE = 0;
@@ -236,7 +237,7 @@ class _TextKey extends StatelessWidget {
         onClick: () => this.onTextInput.call(this.text),
         child: Text(
           this.text,
-          style: TextStyle(fontSize: 18),
+          style: context.textTheme.headline6?.copyWith(fontSize: 18),
         ),
       ),
     );
@@ -255,7 +256,7 @@ class _BackspaceKey extends StatelessWidget {
       flex: flex,
       child: _BaseKey(
         onClick: this.onBackspace,
-        child: Icon(Icons.backspace_outlined),
+        child: Icon(Icons.backspace_outlined, color: context.theme.accentColor),
       ),
     );
   }
@@ -273,7 +274,7 @@ class _QwertyKey extends StatelessWidget {
       flex: flex,
       child: _BaseKey(
         onClick: this.onQwerty,
-        child: Icon(Icons.check),
+        child: Icon(Icons.check, color: context.theme.accentColor),
       ),
     );
   }
@@ -320,7 +321,7 @@ class _SmallBaseKey extends StatelessWidget {
     );
 
     final body = Material(
-      color: Colors.white,
+      // color: Colors.white,
       child: InkWell(
         onTap: this.onClick,
         child: content,
@@ -349,7 +350,7 @@ class _BaseKey extends StatelessWidget {
     );
 
     final body = Material(
-      color: Colors.white,
+      // color: Colors.white,
       child: InkWell(
         onTap: this.onClick,
         child: content,
