@@ -18,6 +18,7 @@ import 'package:app_core/header/no_overscroll.dart';
 import 'package:app_core/ui/widget/dialog/kopen_settings_dialog.dart';
 import 'package:app_core/ui/widget/kkeyboard_killer.dart';
 import 'package:collection/collection.dart';
+import 'package:get/get.dart';
 
 class KChatroom extends StatefulWidget {
   final KChatroomController controller;
@@ -192,19 +193,19 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
     final addCameraButton = IconButton(
       onPressed: onAddCameraImageClick,
       icon: Icon(Icons.camera_alt),
-      color: KStyles.colorIcon,
+      color: context.theme.primaryColor,
     );
 
     final addImageButton = IconButton(
       onPressed: onAddGalleryImageClick,
       icon: Icon(Icons.image_outlined),
-      color: KStyles.colorIcon,
+      color: context.theme.primaryColor,
     );
 
     final sendMessageButton = IconButton(
       onPressed: onSendTextClick,
       icon: Icon(Icons.send),
-      color: KStyles.colorIcon,
+      color: context.theme.primaryColor,
     );
 
     final messageInputBox = SafeArea(
@@ -226,15 +227,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
                 minLines: 1,
                 maxLines: 6,
                 decoration: InputDecoration(
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 10, horizontal: 18),
-                  // hintText: "Enter a message...",
                   hintText: "Aa",
-                  isDense: true,
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.transparent),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
                 ),
                 textInputAction: TextInputAction.newline,
               ),

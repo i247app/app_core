@@ -172,10 +172,6 @@ class _KTwoFactorState extends State<KTwoFactor> with CodeAutoFill {
       decoration: InputDecoration(
         hintText: "Security Pin",
         hintStyle: TextStyle(letterSpacing: 1, fontSize: 16),
-        focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: KStyles.colorSecondary)),
-        border: OutlineInputBorder(
-            borderSide: BorderSide(color: KStyles.colorSecondary)),
       ),
     );
 

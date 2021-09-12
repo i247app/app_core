@@ -7,6 +7,7 @@ import 'package:app_core/model/kchat.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/header/kstyles.dart';
 import 'package:app_core/header/kassets.dart';
+import 'package:get/get.dart';
 
 class KUserAvatar extends StatelessWidget {
   final String? initial;
@@ -56,15 +57,13 @@ class KUserAvatar extends StatelessWidget {
             : FittedBox(
                 fit: BoxFit.contain,
                 child: CircleAvatar(
-                  backgroundColor: KStyles.colorButton,
-                  foregroundColor: KStyles.black,
+                  backgroundColor: context.theme.primaryColor,
+                  foregroundColor: context.theme.accentColor,
                   child: Text(
                     KStringHelper.substring(this.initial!, 0, 2).toUpperCase(),
                     textAlign: TextAlign.center,
-                    style: KStyles.normalText.copyWith(
-                      fontSize: 24,
-                      color: KStyles.white,
-                    ),
+                    style: context.textTheme.headline5
+                        ?.copyWith(color: Colors.white),
                   ),
                 ),
               )

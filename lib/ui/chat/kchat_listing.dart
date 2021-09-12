@@ -11,12 +11,14 @@ import 'package:app_core/model/kpush_data.dart';
 import 'package:app_core/ui/chat/widget/kchat_icon.dart';
 import 'package:app_core/header/kstyles.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get/get.dart';
 
 class KChatListing extends StatefulWidget {
   final KChatListingController controller;
   final Function(KChat chat)? onChatClick;
 
-  KChatListing(this.controller, {
+  KChatListing(
+    this.controller, {
     this.onChatClick,
   });
 
@@ -87,7 +89,8 @@ class _KChatListingState extends State<KChatListing> {
           ),
           dismissal: SlidableDismissal(
             child: SlidableDrawerDismissal(),
-            onDismissed: (actionType) => this.widget.controller.removeChat(i, chat),
+            onDismissed: (actionType) =>
+                this.widget.controller.removeChat(i, chat),
           ),
           secondaryActions: <Widget>[
             IconSlideAction(
@@ -137,8 +140,7 @@ class _ChatListEntry extends StatelessWidget {
       children: [
         Text(
           this.chat.title,
-          style: KStyles.normalText
-              .copyWith(color: KStyles.black, fontWeight: FontWeight.normal),
+          style: context.textTheme.subtitle1,
           overflow: TextOverflow.ellipsis,
         ),
         SizedBox(height: 6),
@@ -148,7 +150,7 @@ class _ChatListEntry extends StatelessWidget {
             Flexible(
               child: Text(
                 this.chat.previewMessage ?? "-",
-                style: KStyles.detailText.copyWith(color: KStyles.chatGrey),
+                style: context.textTheme.bodyText2,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -169,7 +171,7 @@ class _ChatListEntry extends StatelessWidget {
           SizedBox(width: 16),
           Text(
             KUtil.timeAgo(this.chat.activeDate ?? ""),
-            style: TextStyle(color: KStyles.darkGrey),
+            style: context.textTheme.bodyText2,
           ),
         ]),
       ),

@@ -1,7 +1,7 @@
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/kuser.dart';
-import 'package:app_core/header/kstyles.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class KContactNameView extends StatelessWidget {
   final String? kunm;
@@ -28,12 +28,13 @@ class KContactNameView extends StatelessWidget {
     final body = RichText(
       overflow: TextOverflow.ellipsis,
       text: TextSpan(
-        style: TextStyle(color: KStyles.black, fontSize: 16),
+        style: context.textTheme.subtitle1,
         children: <TextSpan>[
           if (this.kunm != null && (this.kunm ?? "").isNotEmpty)
             TextSpan(
               text: '@${this.kunm} ',
-              style: TextStyle(color: KStyles.colorPrimary, fontSize: 16),
+              style: context.textTheme.subtitle1
+                  ?.copyWith(color: context.theme.primaryColor),
             ),
           TextSpan(
             text: KUtil.prettyName(

@@ -10,6 +10,7 @@ import 'package:app_core/ui/widget/kkeyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get/get.dart';
 
 class KChatManager extends StatefulWidget {
   final String chatId;
@@ -73,15 +74,14 @@ class _KChatManagerState extends State<KChatManager> {
     }
 
     final response = await KServerHandler.searchUsers(searchText!);
-    if (response.kstatus == 100)
-      return response.users ?? [];
+    if (response.kstatus == 100) return response.users ?? [];
 
     return [];
   }
 
   void onAddMember() async {
-    List<KUser>? result = await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (ctx) => KChatContactListing(this.searchUsers)));
+    List<KUser>? result = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (ctx) => KChatContactListing(this.searchUsers)));
 
     if (result == null || result.length == 0) return;
 
@@ -151,7 +151,7 @@ class _KChatManagerState extends State<KChatManager> {
           actionPane: SlidableDrawerActionPane(),
           actionExtentRatio: 0.25,
           child: Container(
-            color: Colors.white,
+            color: context.theme.scaffoldBackgroundColor,
             child: _ResultItem(
               member: member,
               icon: Container(
@@ -177,14 +177,8 @@ class _KChatManagerState extends State<KChatManager> {
       separatorBuilder: (_, __) => Container(
         width: double.infinity,
         height: 1,
-        color: KStyles.colorDivider,
+        color: context.theme.dividerTheme.color,
       ),
-    );
-
-    final formDecoration = InputDecoration(
-      isDense: true,
-      border: InputBorder.none,
-      contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
     );
 
     return KeyboardKiller(
@@ -204,17 +198,14 @@ class _KChatManagerState extends State<KChatManager> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text("Group name:",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
-                        ),
+                        style: context.textTheme.subtitle1,
                         textAlign: TextAlign.left),
                     SizedBox(height: 8),
                     TextFormField(
                       focusNode: focusNode,
                       controller: groupNameCtrl,
                       textAlign: TextAlign.left,
-                      decoration: formDecoration.copyWith(
+                      decoration: InputDecoration(
                         hintText: "Group name",
                         suffix: isEditGroupName
                             ? GestureDetector(
@@ -247,7 +238,6 @@ class _KChatManagerState extends State<KChatManager> {
           )),
         ),
         appBar: AppBar(
-          backgroundColor: Colors.white,
           title: Text("Chat manager"),
         ),
       ),
@@ -278,14 +268,6 @@ class _ResultItem extends StatelessWidget {
           mnm: this.member.middleName ?? "",
           fnm: this.member.firstName ?? "",
         ),
-        // SizedBox(height: 4),
-        // IconLabel(
-        //   asset: Assets.IMG_PHONE,
-        //   text: KUtil.maskedFone(KUtil.prettyFone(
-        //     foneCode: "",
-        //     number: this.member.phone ?? "",
-        //   )),
-        // ),
       ],
     );
     return Container(
