@@ -48,7 +48,7 @@ dependencies:
   firebase_messaging: ^10.0.0
 
   # 2fa
-  sms_autofill: ^2.0.1 # 1.2.5 # 1.2.1
+  sms_autofill: ^2.0.0 # 1.2.5 # 1.2.1
 
   gallery_saver: 2.1.0 # +2.1.1 broken so far
   path_provider: ^2.0.1
