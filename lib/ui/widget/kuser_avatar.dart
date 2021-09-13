@@ -57,13 +57,14 @@ class KUserAvatar extends StatelessWidget {
             : FittedBox(
                 fit: BoxFit.contain,
                 child: CircleAvatar(
-                  backgroundColor: context.theme.primaryColor,
+                  backgroundColor: Get.isDarkMode
+                      ? Colors.grey.shade900
+                      : Colors.grey.shade200,
                   foregroundColor: context.theme.accentColor,
                   child: Text(
                     KStringHelper.substring(this.initial!, 0, 2).toUpperCase(),
                     textAlign: TextAlign.center,
-                    style: context.textTheme.headline5
-                        ?.copyWith(color: Colors.white),
+                    style: context.textTheme.headline5,
                   ),
                 ),
               )

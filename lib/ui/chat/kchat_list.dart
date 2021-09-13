@@ -126,7 +126,6 @@ class _KChatListState extends State<KChatList> {
     final newChatAction = IconButton(
       onPressed: onCreateChatClick,
       icon: Icon(Icons.add_circle_rounded),
-      color: KStyles.colorIcon,
     );
 
     final topRow = Container(
