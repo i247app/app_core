@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 
 // set _brightness to set default dark/light
 // _brightness > brightnessTheme > themeColor > palette
+@deprecated
 abstract class KStyles {
   static const double leftPanelWidth = 270;
   static const double smallestSize = 600;
