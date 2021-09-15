@@ -25,11 +25,6 @@ class KTheme extends KBaseTheme {
   ///
   /// Styles stuff
   ///
-  // BuildContext get context => kScaffoldKey.currentState!.context;
-
-  Brightness get systemBrightness => SchedulerBinding.instance!.window
-      .platformBrightness; // MediaQuery.of(this.context).platformBrightness; //
-
   KSmartThemeData get smartThemeData => KSmartThemeData(
         paletteGroup: this.paletteGroup,
         brightness: this.systemBrightness,
@@ -75,17 +70,13 @@ class KTheme extends KBaseTheme {
   //  KPalette paletteDark = paletteLight;
 
   /* Theme Colors */
-  KPalette get themeColors => this.systemBrightness == Brightness.dark
-      ? this.paletteGroup.dark
-      : this.paletteGroup.light;
+  Color get colorButton => this.activePalette.palettePrimary;
 
-  Color get colorButton => themeColors.palettePrimary;
+  Color get colorButtonText => this.activePalette.paletteButtonText;
 
-  Color get colorButtonText => themeColors.paletteButtonText;
+  Color get colorIcon => this.activePalette.palettePrimary;
 
-  Color get colorIcon => themeColors.palettePrimary;
-
-  Color get colorBGYes => themeColors.palettePrimary;
+  Color get colorBGYes => this.activePalette.palettePrimary;
 
   Color get colorBGNo => Colors.red;
 
@@ -97,9 +88,9 @@ class KTheme extends KBaseTheme {
 
   Color get colorRequiredField => Colors.red;
 
-  Color get colorPrimary => themeColors.palettePrimary;
+  Color get colorPrimary => this.activePalette.palettePrimary;
 
-  Color get colorSecondary => themeColors.paletteSecondary;
+  Color get colorSecondary => this.activePalette.paletteSecondary;
 
   Color get colorFormBorder => Color(0xffdddddd);
 

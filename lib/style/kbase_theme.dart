@@ -29,4 +29,11 @@ class KBaseTheme extends InheritedWidget {
   bool updateShouldNotify(KBaseTheme old) =>
       this.paletteGroup.light.palettePrimary !=
       old.paletteGroup.light.palettePrimary;
+
+  Brightness get systemBrightness => SchedulerBinding.instance!.window
+      .platformBrightness; // MediaQuery.of(this.context).platformBrightness; //
+
+  KPalette get activePalette => this.systemBrightness == Brightness.light
+      ? this.paletteGroup.light
+      : this.paletteGroup.dark;
 }
