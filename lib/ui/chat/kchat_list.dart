@@ -51,7 +51,7 @@ class _KChatListState extends State<KChatList> {
 
   Future<List<KUser>> searchUsers(String? searchText) async {
     if ((searchText ?? "").isEmpty) {
-      return Future.value();
+      return Future.value([]);
     }
 
     final response = await KServerHandler.searchUsers(searchText!);

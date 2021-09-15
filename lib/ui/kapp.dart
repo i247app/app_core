@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:app_core/header/kpalette.dart';
+import 'package:app_core/style/kpalette_group.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/style/ktheme.dart';
 import 'package:app_core/ui/kicon/kicon_manager.dart';
@@ -13,10 +13,14 @@ class KApp extends StatelessWidget {
   final TextStyle defaultTextStyle;
   final bool isEmbed;
   final String title;
-  final KPalette themeData;
-  final ThemeData? theme;
+  final KPaletteGroup paletteGroup;
+  @deprecated
+  final ThemeData? oldTheme;
+  @deprecated
   final ThemeData? darkTheme;
+  @deprecated
   final ThemeMode? themeMode;
+  final KTheme theme;
   final GlobalKey<NavigatorState> navigatorKey;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final List<NavigatorObserver> navigatorObservers;
@@ -26,15 +30,16 @@ class KApp extends StatelessWidget {
   const KApp({
     required this.home,
     required this.defaultTextStyle,
-    required this.themeData,
+    required this.paletteGroup,
     required this.navigatorKey,
     required this.scaffoldKey,
     required this.navigatorObservers,
+    required this.theme,
     this.isEmbed = false,
     this.title = '',
     this.iconSet = const {},
     this.initializer,
-    this.theme,
+    this.oldTheme,
     this.darkTheme,
     this.themeMode,
   });
@@ -42,7 +47,7 @@ class KApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final innerApp = KTheme(
-      palette: this.themeData,
+      paletteGroup: this.paletteGroup,
       child: KIconManager(
         iconSet: this.iconSet,
         child: KEmbedManager(
@@ -54,7 +59,7 @@ class KApp extends StatelessWidget {
               navigatorKey: this.navigatorKey,
               debugShowCheckedModeBanner: false,
               navigatorObservers: this.navigatorObservers,
-              theme: this.theme ?? this.themeData.systemTheme,
+              theme: this.oldTheme,
               darkTheme: this.darkTheme,
               themeMode: this.themeMode,
               home: this.home,
@@ -84,9 +89,10 @@ class KApp extends StatelessWidget {
         key: this.scaffoldKey,
         body: innerAppWithOverlay,
       ),
-      theme: this.theme,
-      darkTheme: this.darkTheme,
-      themeMode: this.themeMode,
+      theme: this.theme.smartThemeData.lightThemeData,
+      // theme: this.oldTheme,
+      darkTheme: this.theme.smartThemeData.darkThemeData,
+      themeMode: ThemeMode.system,
     );
 
     return masterApp;

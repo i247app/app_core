@@ -19,7 +19,6 @@ import 'package:app_core/ui/chat/service/kchatroom_controller.dart';
 import 'package:app_core/ui/voip/kvoip_call.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
 
 class KChatScreen extends StatefulWidget {
   final List<KChatMember>? members;
@@ -171,7 +170,7 @@ class _KChatScreenState extends State<KChatScreen> {
 
   Future<List<KUser>> searchUsers(String? searchText) async {
     if ((searchText ?? "").isEmpty) {
-      return Future.value();
+      return Future.value([]);
     }
 
     final response = await KServerHandler.searchUsers(searchText!);

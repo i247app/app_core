@@ -19,9 +19,7 @@ import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:uuid/uuid.dart';
-// import 'package:wakelock/wakelock.dart';
 import 'package:app_core/app_core.dart';
-import 'package:get/get.dart';
 
 enum _CallPerspective { sender, receiver }
 enum _CallState { ws_error, init, waiting, in_progress, ended }
