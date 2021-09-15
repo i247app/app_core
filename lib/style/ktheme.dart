@@ -4,7 +4,6 @@ import 'package:app_core/style/kpalette.dart';
 import 'package:app_core/style/kpalette_group.dart';
 import 'package:app_core/style/ksmart_theme_data.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 class KTheme extends KBaseTheme {
@@ -151,9 +150,7 @@ class KTheme extends KBaseTheme {
 
   TextStyle get detailText => defaultText.copyWith(
         fontSize: fontSizeSmall,
-        color: this.systemBrightness == Brightness.light
-            ? grey
-            : extraExtraLightGrey,
+        color: this.isLightMode ? grey : extraExtraLightGrey,
       );
 
   TextStyle get normalText => defaultText.copyWith(fontSize: fontSizeNormal);

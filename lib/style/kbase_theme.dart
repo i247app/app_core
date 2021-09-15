@@ -33,7 +33,10 @@ class KBaseTheme extends InheritedWidget {
   Brightness get systemBrightness => SchedulerBinding.instance!.window
       .platformBrightness; // MediaQuery.of(this.context).platformBrightness; //
 
-  KPalette get activePalette => this.systemBrightness == Brightness.light
-      ? this.paletteGroup.light
-      : this.paletteGroup.dark;
+  KPalette get activePalette =>
+      this.isLightMode ? this.paletteGroup.light : this.paletteGroup.dark;
+
+  bool get isLightMode => this.systemBrightness == Brightness.light;
+
+  bool get isDarkMode => this.systemBrightness == Brightness.dark;
 }
