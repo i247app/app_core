@@ -11,7 +11,6 @@ import 'package:app_core/model/kpush_data.dart';
 import 'package:app_core/ui/chat/widget/kchat_icon.dart';
 import 'package:app_core/header/kstyles.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:get/get.dart';
 
 class KChatListing extends StatefulWidget {
   final KChatListingController controller;
@@ -140,7 +139,7 @@ class _ChatListEntry extends StatelessWidget {
       children: [
         Text(
           this.chat.title,
-          style: context.textTheme.subtitle1,
+          style: Theme.of(context).textTheme.subtitle1,
           overflow: TextOverflow.ellipsis,
         ),
         SizedBox(height: 6),
@@ -150,7 +149,7 @@ class _ChatListEntry extends StatelessWidget {
             Flexible(
               child: Text(
                 this.chat.previewMessage ?? "-",
-                style: context.textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyText2,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -171,7 +170,7 @@ class _ChatListEntry extends StatelessWidget {
           SizedBox(width: 16),
           Text(
             KUtil.timeAgo(this.chat.activeDate ?? ""),
-            style: context.textTheme.bodyText2,
+            style: Theme.of(context).textTheme.bodyText2,
           ),
         ]),
       ),

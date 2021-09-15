@@ -5,7 +5,6 @@ import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/model/kchat.dart';
 import 'package:app_core/model/kuser.dart';
-import 'package:app_core/header/kstyles.dart';
 import 'package:app_core/header/kassets.dart';
 import 'package:get/get.dart';
 
@@ -60,11 +59,11 @@ class KUserAvatar extends StatelessWidget {
                   backgroundColor: Get.isDarkMode
                       ? Colors.grey.shade900
                       : Colors.grey.shade200,
-                  foregroundColor: context.theme.accentColor,
+                  foregroundColor: Theme.of(context).accentColor,
                   child: Text(
                     KStringHelper.substring(this.initial!, 0, 2).toUpperCase(),
                     textAlign: TextAlign.center,
-                    style: context.textTheme.headline5,
+                    style: Theme.of(context).textTheme.headline5,
                   ),
                 ),
               )

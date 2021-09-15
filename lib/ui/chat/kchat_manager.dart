@@ -10,7 +10,6 @@ import 'package:app_core/ui/widget/kkeyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:get/get.dart';
 
 class KChatManager extends StatefulWidget {
   final String chatId;
@@ -151,7 +150,7 @@ class _KChatManagerState extends State<KChatManager> {
           actionPane: SlidableDrawerActionPane(),
           actionExtentRatio: 0.25,
           child: Container(
-            color: context.theme.scaffoldBackgroundColor,
+            color: Theme.of(context).scaffoldBackgroundColor,
             child: _ResultItem(
               member: member,
               icon: Container(
@@ -177,7 +176,7 @@ class _KChatManagerState extends State<KChatManager> {
       separatorBuilder: (_, __) => Container(
         width: double.infinity,
         height: 1,
-        color: context.theme.dividerTheme.color,
+        color: Theme.of(context).dividerTheme.color,
       ),
     );
 
@@ -198,7 +197,7 @@ class _KChatManagerState extends State<KChatManager> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text("Group name:",
-                        style: context.textTheme.subtitle1,
+                        style: Theme.of(context).textTheme.subtitle1,
                         textAlign: TextAlign.left),
                     SizedBox(height: 8),
                     TextFormField(
