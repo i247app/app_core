@@ -38,11 +38,11 @@ class KApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final lightTheme = KSmartThemeData(
       paletteGroup: this.paletteGroup,
-      themeMode: ThemeMode.light,
+      brightness: Brightness.light,
     ).lightThemeData;
     final darkTheme = KSmartThemeData(
       paletteGroup: this.paletteGroup,
-      themeMode: ThemeMode.dark,
+      brightness: Brightness.dark,
     ).lightThemeData;
 
     final innerApp = KTheme(

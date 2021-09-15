@@ -26,9 +26,9 @@ import 'package:google_fonts/google_fonts.dart';
 /// ```
 class KSmartThemeData {
   final KPaletteGroup paletteGroup;
-  final ThemeMode themeMode;
+  final Brightness brightness;
 
-  KPalette get activePalette => this.themeMode == ThemeMode.light
+  KPalette get activePalette => this.brightness == Brightness.light
       ? this.paletteGroup.light
       : this.paletteGroup.dark;
 
@@ -140,7 +140,7 @@ class KSmartThemeData {
 
   KSmartThemeData({
     required this.paletteGroup,
-    required this.themeMode,
+    required this.brightness,
   });
 
 // final lightTheme = ThemeData.light().copyWith(

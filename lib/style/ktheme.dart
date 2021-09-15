@@ -1,7 +1,9 @@
+import 'package:app_core/app_core.dart';
 import 'package:app_core/style/kpalette.dart';
 import 'package:app_core/style/kpalette_group.dart';
 import 'package:app_core/style/ksmart_theme_data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
 class KTheme extends InheritedWidget {
@@ -30,11 +32,14 @@ class KTheme extends InheritedWidget {
   ///
   /// Styles stuff
   ///
-  ThemeMode get themeMode => ThemeMode.light;
+  // BuildContext get context => kScaffoldKey.currentState!.context;
+
+  Brightness get systemBrightness => SchedulerBinding.instance!.window
+      .platformBrightness; // MediaQuery.of(this.context).platformBrightness; //
 
   KSmartThemeData get smartThemeData => KSmartThemeData(
         paletteGroup: this.paletteGroup,
-        themeMode: this.themeMode,
+        brightness: this.systemBrightness,
       );
 
   static const double leftPanelWidth = 270;
@@ -78,7 +83,7 @@ class KTheme extends InheritedWidget {
   //  KPalette paletteDark = paletteLight;
 
   /* Theme Colors */
-  KPalette get themeColors => this.themeMode == ThemeMode.dark
+  KPalette get themeColors => this.systemBrightness == Brightness.dark
       ? this.paletteGroup.dark
       : this.paletteGroup.light;
 
@@ -163,7 +168,9 @@ class KTheme extends InheritedWidget {
 
   TextStyle get detailText => defaultText.copyWith(
         fontSize: fontSizeSmall,
-        color: this.themeMode == ThemeMode.light ? grey : extraExtraLightGrey,
+        color: this.systemBrightness == Brightness.light
+            ? grey
+            : extraExtraLightGrey,
       );
 
   TextStyle get normalText => defaultText.copyWith(fontSize: fontSizeNormal);
