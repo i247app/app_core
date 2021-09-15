@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_core/style/ktheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/kphoto_helper.dart';
@@ -131,7 +132,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
             children: [
               Text(
                 "Say hi to ${this.refUser?.firstName}",
-                style: KOldStyles.largeXLText,
+                style: KTheme.of(context).largeXLText,
               ),
               SizedBox(height: 14),
               IconButton(
@@ -181,7 +182,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
               padding: EdgeInsets.all(10),
               child: Text(
                 "Session has ended",
-                style: KOldStyles.detailText,
+                style: KTheme.of(context).detailText,
               ),
             ),
           SizedBox(height: 4),
@@ -239,7 +240,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
       children: [
         Expanded(child: chatBody),
         if (!widget.isReadOnly) ...[
-          Divider(height: 1, color: KOldStyles.colorDivider),
+          Divider(height: 1, color: KTheme.of(context).colorDivider),
           Container(
             padding: EdgeInsets.all(2),
             child: messageInputBox,

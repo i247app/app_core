@@ -15,6 +15,7 @@ class KApp extends StatelessWidget {
   final bool isEmbed;
   final String title;
   final KPaletteGroup paletteGroup;
+  final KTheme Function(KPaletteGroup, Widget) themeBuilder;
   final GlobalKey<NavigatorState> navigatorKey;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final List<NavigatorObserver> navigatorObservers;
@@ -25,6 +26,7 @@ class KApp extends StatelessWidget {
     required this.home,
     required this.defaultTextStyle,
     required this.paletteGroup,
+    required this.themeBuilder,
     required this.navigatorKey,
     required this.scaffoldKey,
     required this.navigatorObservers,
@@ -45,9 +47,9 @@ class KApp extends StatelessWidget {
       brightness: Brightness.dark,
     ).lightThemeData;
 
-    final innerApp = KTheme(
-      paletteGroup: this.paletteGroup,
-      child: KIconManager(
+    final innerApp = this.themeBuilder(
+      this.paletteGroup,
+      KIconManager(
         iconSet: this.iconSet,
         child: KEmbedManager(
           isEmbed: this.isEmbed,

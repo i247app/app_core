@@ -1,4 +1,5 @@
 import 'package:app_core/app_core.dart';
+import 'package:app_core/style/kbase_theme.dart';
 import 'package:app_core/style/kpalette.dart';
 import 'package:app_core/style/kpalette_group.dart';
 import 'package:app_core/style/ksmart_theme_data.dart';
@@ -6,28 +7,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
-class KTheme extends InheritedWidget {
-  final Widget child;
-  final KPaletteGroup paletteGroup;
-
+class KTheme extends KBaseTheme {
   ///
   /// InheritedWidget stuff
   ///
   KTheme({
-    required this.child,
-    required this.paletteGroup,
-  }) : super(child: child);
+    required Widget child,
+    required KPaletteGroup paletteGroup,
+  }) : super(child: child, paletteGroup: paletteGroup);
 
   static KTheme of(BuildContext context) {
     final KTheme? result = context.dependOnInheritedWidgetOfExactType<KTheme>();
     assert(result != null, 'No KTheme found in context');
     return result!;
   }
-
-  @override
-  bool updateShouldNotify(KTheme old) =>
-      this.paletteGroup.light.palettePrimary !=
-      old.paletteGroup.light.palettePrimary;
 
   ///
   /// Styles stuff
@@ -42,10 +35,9 @@ class KTheme extends InheritedWidget {
         brightness: this.systemBrightness,
       );
 
-  static const double leftPanelWidth = 270;
-  static const double smallestSize = 600;
-  static const double maxWidth = 390;
-  static const Brightness DEFAULT_BRIGHTNESS = Brightness.light;
+  final double leftPanelWidth = 270;
+  final double smallestSize = 600;
+  final double maxWidth = 390;
 
   /* Base Colors */
   final Color white = Colors.white; //Color(0xfffafafa);
