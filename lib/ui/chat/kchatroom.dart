@@ -10,7 +10,7 @@ import 'package:app_core/ui/chat/service/kchatroom_controller.dart';
 import 'package:app_core/ui/chat/service/kchatroom_data.dart';
 import 'package:app_core/ui/chat/widget/kchat_bubble.dart';
 import 'package:app_core/ui/chat/widget/kuser_profile_view.dart';
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/header/kold_styles.dart';
 import 'package:app_core/helper/klocal_notif_helper.dart';
 import 'package:app_core/helper/kpush_data_helper.dart';
 import 'package:app_core/model/kpush_data.dart';
@@ -131,7 +131,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
             children: [
               Text(
                 "Say hi to ${this.refUser?.firstName}",
-                style: KStyles.largeXLText,
+                style: KOldStyles.largeXLText,
               ),
               SizedBox(height: 14),
               IconButton(
@@ -181,7 +181,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
               padding: EdgeInsets.all(10),
               child: Text(
                 "Session has ended",
-                style: KStyles.detailText,
+                style: KOldStyles.detailText,
               ),
             ),
           SizedBox(height: 4),
@@ -239,7 +239,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
       children: [
         Expanded(child: chatBody),
         if (!widget.isReadOnly) ...[
-          Divider(height: 1, color: KStyles.colorDivider),
+          Divider(height: 1, color: KOldStyles.colorDivider),
           Container(
             padding: EdgeInsets.all(2),
             child: messageInputBox,

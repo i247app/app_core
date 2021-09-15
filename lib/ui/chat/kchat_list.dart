@@ -12,7 +12,7 @@ import 'package:flutter/widgets.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/ui/chat/kchat_screen.dart';
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/header/kold_styles.dart';
 import 'package:app_core/ui/widget/kembed_manager.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 
@@ -142,7 +142,7 @@ class _KChatListState extends State<KChatList> {
           Expanded(
             child: Text(
               "Chats",
-              style: KStyles.largeText.copyWith(fontWeight: KStyles.semiBold),
+              style: KOldStyles.largeText.copyWith(fontWeight: KOldStyles.semiBold),
               textAlign: TextAlign.start,
             ),
           ),
@@ -187,7 +187,7 @@ class _KChatListState extends State<KChatList> {
   Widget build(BuildContext context) {
     final Widget content;
     final shortestSide = MediaQuery.of(context).size.shortestSide;
-    if (shortestSide < KStyles.smallestSize) {
+    if (shortestSide < KOldStyles.smallestSize) {
       content = _buildSmallLayout(false);
     } else {
       content = _buildTabletLayout(true);
@@ -195,7 +195,7 @@ class _KChatListState extends State<KChatList> {
 
     final scaffoldView = Scaffold(
       body: SafeArea(child: content),
-      backgroundColor: KStyles.white,
+      backgroundColor: KOldStyles.white,
     );
 
     return KEmbedManager.of(context).isEmbed ? content : scaffoldView;

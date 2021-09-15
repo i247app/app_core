@@ -7,6 +7,6 @@ export 'rem/krem.dart';
 export 'network/network.dart';
 export 'header/ksession_init_data.dart';
 export 'style/kpalette.dart';
-export 'header/kstyles.dart';
+export 'header/kold_styles.dart';
 
 class AppCore {}

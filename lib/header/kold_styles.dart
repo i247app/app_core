@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 // set _brightness to set default dark/light
 // _brightness > brightnessTheme > themeColor > palette
 @deprecated
-abstract class KStyles {
+abstract class KOldStyles {
   static const double leftPanelWidth = 270;
   static const double smallestSize = 600;
   static const double maxWidth = 390;
@@ -144,7 +144,7 @@ abstract class KStyles {
 
   static TextStyle get detailText => defaultText.copyWith(
         fontSize: fontSizeSmall,
-        color: KStyles.brightnessTheme == Brightness.light
+        color: KOldStyles.brightnessTheme == Brightness.light
             ? grey
             : extraExtraLightGrey,
       );
