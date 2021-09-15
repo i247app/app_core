@@ -1,8 +1,6 @@
-import 'package:app_core/app_core.dart';
 import 'package:app_core/style/kbase_theme.dart';
-import 'package:app_core/style/kpalette.dart';
 import 'package:app_core/style/kpalette_group.dart';
-import 'package:app_core/style/ksmart_theme_data.dart';
+import 'package:app_core/style/ktheme_data_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -24,10 +22,11 @@ class KTheme extends KBaseTheme {
   ///
   /// Styles stuff
   ///
-  KSmartThemeData get smartThemeData => KSmartThemeData(
-        paletteGroup: this.paletteGroup,
-        brightness: this.systemBrightness,
-      );
+  KThemeDataManager get themeDataManager =>
+      KThemeDataManager(this.paletteGroup);
+
+  ThemeData get themeData =>
+      this.themeDataManager.themeDataBuilder(this.activePalette);
 
   final double leftPanelWidth = 270;
   final double smallestSize = 600;
@@ -47,26 +46,6 @@ class KTheme extends KBaseTheme {
   final Color extraDarkGrey = Color(0xff333333);
   final Color blueFaded = Color(0xffcce5ff);
   final Color blue = Colors.blue;
-
-  /// Colors - perhaps better named as paletteColor
-  //  KPalette paletteLight = KPalette(
-  //   palettePrimary: Color(0xff0088DD),
-  //   paletteSecondary: Color(0xff0099EE),
-  //   paletteSupport: Color(0xff0099EE),
-  //   paletteButtonText: white,
-  //   palette4: Color(0xff0099EE),
-  //   palette5: Color(0xff0099EE),
-  //   yes: Color(0xff79AF2C),
-  //   no: Colors.red,
-  //   systemTheme: ThemeData(
-  //     primarySwatch: Colors.blue, // TODO make this a custom color
-  //     primaryColor: KStyles.white,
-  //     backgroundColor: KStyles.white,
-  //     brightness: Brightness.light,
-  //   ),
-  // );
-  //
-  //  KPalette paletteDark = paletteLight;
 
   /* Theme Colors */
   Color get colorButton => this.activePalette.palettePrimary;
@@ -177,9 +156,4 @@ class KTheme extends KBaseTheme {
         fontWeight: FontWeight.bold,
         fontSize: 22,
       );
-
-  // TODO - delete
-  static const double SPACING_SMALL = 4;
-  static const double SPACING_NORMAL = 8;
-  static const double SPACING_LARGE = 12;
 }

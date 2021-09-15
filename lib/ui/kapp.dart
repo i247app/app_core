@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:app_core/style/kpalette_group.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
-import 'package:app_core/style/ksmart_theme_data.dart';
+import 'package:app_core/style/ktheme_data_manager.dart';
 import 'package:app_core/style/ktheme.dart';
 import 'package:app_core/ui/kicon/kicon_manager.dart';
 import 'package:app_core/ui/widget/kembed_manager.dart';
@@ -22,6 +22,9 @@ class KApp extends StatelessWidget {
   final Map<dynamic, KIconProvider> iconSet;
   final Completer? initializer;
 
+  KThemeDataManager get themeDataManager =>
+      KThemeDataManager(this.paletteGroup);
+
   const KApp({
     required this.home,
     required this.defaultTextStyle,
@@ -38,15 +41,6 @@ class KApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lightTheme = KSmartThemeData(
-      paletteGroup: this.paletteGroup,
-      brightness: Brightness.light,
-    ).lightThemeData;
-    final darkTheme = KSmartThemeData(
-      paletteGroup: this.paletteGroup,
-      brightness: Brightness.dark,
-    ).lightThemeData;
-
     final innerApp = this.themeBuilder(
       this.paletteGroup,
       KIconManager(
@@ -60,8 +54,8 @@ class KApp extends StatelessWidget {
               navigatorKey: this.navigatorKey,
               debugShowCheckedModeBanner: false,
               navigatorObservers: this.navigatorObservers,
-              theme: lightTheme,
-              darkTheme: darkTheme,
+              theme: this.themeDataManager.lightThemeData,
+              darkTheme: this.themeDataManager.darkThemeData,
               themeMode: ThemeMode.system,
               home: this.home,
             ),
@@ -95,8 +89,8 @@ class KApp extends StatelessWidget {
         key: this.scaffoldKey,
         body: innerAppWithOverlay,
       ),
-      theme: lightTheme,
-      darkTheme: darkTheme,
+      theme: this.themeDataManager.lightThemeData,
+      darkTheme: this.themeDataManager.darkThemeData,
       themeMode: ThemeMode.system,
     );
 
