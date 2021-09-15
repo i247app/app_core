@@ -20,7 +20,6 @@ class KApp extends StatelessWidget {
   final ThemeData? darkTheme;
   @deprecated
   final ThemeMode? themeMode;
-  final KTheme theme;
   final GlobalKey<NavigatorState> navigatorKey;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final List<NavigatorObserver> navigatorObservers;
@@ -34,7 +33,6 @@ class KApp extends StatelessWidget {
     required this.navigatorKey,
     required this.scaffoldKey,
     required this.navigatorObservers,
-    required this.theme,
     this.isEmbed = false,
     this.title = '',
     this.iconSet = const {},
@@ -89,9 +87,9 @@ class KApp extends StatelessWidget {
         key: this.scaffoldKey,
         body: innerAppWithOverlay,
       ),
-      theme: this.theme.smartThemeData.lightThemeData,
+      theme: innerApp.smartThemeData.lightThemeData,
       // theme: this.oldTheme,
-      darkTheme: this.theme.smartThemeData.darkThemeData,
+      darkTheme: innerApp.smartThemeData.darkThemeData,
       themeMode: ThemeMode.system,
     );
 
