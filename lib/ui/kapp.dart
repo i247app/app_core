@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:app_core/style/kpalette_group.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
+import 'package:app_core/style/ksmart_theme_data.dart';
 import 'package:app_core/style/ktheme.dart';
 import 'package:app_core/ui/kicon/kicon_manager.dart';
 import 'package:app_core/ui/widget/kembed_manager.dart';
@@ -14,12 +15,6 @@ class KApp extends StatelessWidget {
   final bool isEmbed;
   final String title;
   final KPaletteGroup paletteGroup;
-  @deprecated
-  final ThemeData? oldTheme;
-  @deprecated
-  final ThemeData? darkTheme;
-  @deprecated
-  final ThemeMode? themeMode;
   final GlobalKey<NavigatorState> navigatorKey;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final List<NavigatorObserver> navigatorObservers;
@@ -37,13 +32,19 @@ class KApp extends StatelessWidget {
     this.title = '',
     this.iconSet = const {},
     this.initializer,
-    this.oldTheme,
-    this.darkTheme,
-    this.themeMode,
   });
 
   @override
   Widget build(BuildContext context) {
+    final lightTheme = KSmartThemeData(
+      paletteGroup: this.paletteGroup,
+      themeMode: ThemeMode.light,
+    ).lightThemeData;
+    final darkTheme = KSmartThemeData(
+      paletteGroup: this.paletteGroup,
+      themeMode: ThemeMode.dark,
+    ).lightThemeData;
+
     final innerApp = KTheme(
       paletteGroup: this.paletteGroup,
       child: KIconManager(
@@ -57,9 +58,9 @@ class KApp extends StatelessWidget {
               navigatorKey: this.navigatorKey,
               debugShowCheckedModeBanner: false,
               navigatorObservers: this.navigatorObservers,
-              theme: this.oldTheme,
-              darkTheme: this.darkTheme,
-              themeMode: this.themeMode,
+              theme: lightTheme,
+              darkTheme: darkTheme,
+              themeMode: ThemeMode.system,
               home: this.home,
             ),
           ),
@@ -92,9 +93,8 @@ class KApp extends StatelessWidget {
         key: this.scaffoldKey,
         body: innerAppWithOverlay,
       ),
-      theme: innerApp.smartThemeData.lightThemeData,
-      // theme: this.oldTheme,
-      darkTheme: innerApp.smartThemeData.darkThemeData,
+      theme: lightTheme,
+      darkTheme: darkTheme,
       themeMode: ThemeMode.system,
     );
 
