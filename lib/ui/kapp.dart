@@ -82,7 +82,12 @@ class KApp extends StatelessWidget {
 
     final masterApp = MaterialApp(
       debugShowCheckedModeBanner: false,
-      builder: (_, __) => Scaffold(
+      // builder: (_, __) => Scaffold(
+      //   resizeToAvoidBottomInset: false,
+      //   key: this.scaffoldKey,
+      //   body: innerAppWithOverlay,
+      // ),
+      home: Scaffold(
         resizeToAvoidBottomInset: false,
         key: this.scaffoldKey,
         body: innerAppWithOverlay,
