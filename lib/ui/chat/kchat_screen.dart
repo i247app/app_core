@@ -10,16 +10,16 @@ import 'package:app_core/model/kchat_message.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/helper/kserver_handler.dart';
+import 'package:app_core/style/ktheme.dart';
 import 'package:app_core/ui/chat/kchat_contact_listing.dart';
 import 'package:app_core/ui/chat/kchat_manager.dart';
 import 'package:app_core/header/kassets.dart';
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/header/kold_styles.dart';
 import 'package:app_core/ui/chat/kchatroom.dart';
 import 'package:app_core/ui/chat/service/kchatroom_controller.dart';
 import 'package:app_core/ui/voip/kvoip_call.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
 
 class KChatScreen extends StatefulWidget {
   final List<KChatMember>? members;
@@ -171,7 +171,7 @@ class _KChatScreenState extends State<KChatScreen> {
 
   Future<List<KUser>> searchUsers(String? searchText) async {
     if ((searchText ?? "").isEmpty) {
-      return Future.value();
+      return Future.value([]);
     }
 
     final response = await KServerHandler.searchUsers(searchText!);
@@ -229,7 +229,7 @@ class _KChatScreenState extends State<KChatScreen> {
 
     // If tablet not show back button
     final shortestSide = MediaQuery.of(context).size.shortestSide;
-    if (shortestSide < KStyles.smallestSize || !widget.isEmbedded) {
+    if (shortestSide < KTheme.of(context).smallestSize || !widget.isEmbedded) {
       return Scaffold(
         appBar: AppBar(
           title: InkWell(
@@ -265,7 +265,7 @@ class _KChatScreenState extends State<KChatScreen> {
                     onTap: () => this.onManagerMember(),
                     child: Text(
                       this.chatroomCtrl.value.chatTitle ?? "Chat",
-                      style: KStyles.largeText,
+                      style: KTheme.of(context).largeText,
                     ),
                   ),
                 ),

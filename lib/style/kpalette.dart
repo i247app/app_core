@@ -9,7 +9,6 @@ class KPalette {
   final Color palette5;
   final Color yes;
   final Color no;
-  final ThemeData systemTheme;
 
   const KPalette({
     required this.palettePrimary,
@@ -20,6 +19,5 @@ class KPalette {
     required this.palette5,
     required this.yes,
     required this.no,
-    required this.systemTheme,
   });
 }

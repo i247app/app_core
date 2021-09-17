@@ -37,7 +37,7 @@ class KUser {
 
   @JsonKey(name: "addressLine2")
   String? address2;
- 
+
   @JsonKey(name: "city")
   String? city;
 
@@ -59,6 +59,9 @@ class KUser {
 
   @JsonKey(name: "avatarData")
   String? avatarImageData;
+
+  @JsonKey(name: "heroAvatar")
+  String? heroAvatarURL;
 
   @JsonKey(ignore: true)
   String? get contactName {

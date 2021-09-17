@@ -9,7 +9,7 @@ import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/kchat.dart';
 import 'package:app_core/model/kpush_data.dart';
 import 'package:app_core/ui/chat/widget/kchat_icon.dart';
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/header/kold_styles.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 
@@ -113,7 +113,7 @@ class _KChatListingState extends State<KChatListing> {
 
     final content = Column(
       children: [
-        Divider(height: 1, color: KStyles.colorDivider),
+        Divider(height: 1, color: KOldStyles.colorDivider),
         Expanded(
           child: this.isReady
               ? ((chats ?? []).isEmpty ? emptyInbox : chatListing)

@@ -4,7 +4,7 @@ import 'package:app_core/model/kflash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/kflash_helper.dart';
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/header/kold_styles.dart';
 
 class KFlashBannerOverlay extends StatefulWidget {
   @override
@@ -70,7 +70,7 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
     final blackLayer = AnimatedOpacity(
       duration: this.delayDuration,
       opacity: this.isShowMessage ? 1 : 0,
-      child: Container(color: KStyles.black.withOpacity(0.5)),
+      child: Container(color: KOldStyles.black.withOpacity(0.5)),
     );
 
     Widget rawBanner;
