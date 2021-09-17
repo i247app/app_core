@@ -6,7 +6,6 @@ import 'package:app_core/ui/widget/knumber_pad.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sms_autofill/sms_autofill.dart';
 
 enum KTwoFactorBehavior { legacy, passBackPin }
 
@@ -27,12 +26,11 @@ class KTwoFactor extends StatefulWidget {
   State<StatefulWidget> createState() => _KTwoFactorState();
 }
 
-class _KTwoFactorState extends State<KTwoFactor> with CodeAutoFill {
+class _KTwoFactorState extends State<KTwoFactor> {
   static const int KEYBOARD_MODE_NONE = 0;
   static const int KEYBOARD_MODE_NUMBER = 1;
 
   final TextEditingController pinController = TextEditingController();
-  final SmsAutoFill smsAutoFill = SmsAutoFill();
 
   String? responseKpin;
   KNoticeData? notice;
@@ -47,15 +45,6 @@ class _KTwoFactorState extends State<KTwoFactor> with CodeAutoFill {
   void initState() {
     super.initState();
 
-    // Listen for 2FA pin
-    listenForCode();
-
-    // Print the app signature
-    this
-        .smsAutoFill
-        .getAppSignature
-        .then((sig) => KServerHandler.logToServer("appSignature", sig));
-
     // Auto send code if requested
     if (this.shouldAutoSendPin) Future.delayed(Duration(seconds: 1), sendCode);
   }
@@ -63,17 +52,7 @@ class _KTwoFactorState extends State<KTwoFactor> with CodeAutoFill {
   @override
   void dispose() {
     this.focusNode.dispose();
-    cancel();
-    this.smsAutoFill.unregisterListener();
     super.dispose();
-  }
-
-  @override
-  void codeUpdated() {
-    if (KStringHelper.isExist(this.code ?? "")) {
-      print("######### CODE - $code");
-      setState(() => this.pinController.text = (this.code ?? ""));
-    }
   }
 
   void sendCode() async {
@@ -107,8 +86,6 @@ class _KTwoFactorState extends State<KTwoFactor> with CodeAutoFill {
       setState(() =>
           this.notice = KNoticeData.error("Failed to send security code."));
     }
-
-    await smsAutoFill.listenForCode;
   }
 
   void submit(String kpin) async {

@@ -47,9 +47,6 @@ dependencies:
   firebase_core: ^1.2.0
   firebase_messaging: ^10.0.0
 
-  # 2fa
-  sms_autofill: ^2.0.0 # 1.2.5 # 1.2.1
-
   gallery_saver: 2.1.0 # +2.1.1 broken so far
   path_provider: ^2.0.1
 
@@ -67,7 +64,10 @@ dependencies:
 
   # Flutter WebRTC
   flutter_webrtc: ^0.6.3 # 0.5.8
-  flutter_ringtone_player: ^3.0.0
+  flutter_ringtone_player:
+    git:
+      url: https://github.com/huynhtuanhuy/flutter_ringtone_player.git
+    #^3.0.0
 
   # wakelock: ^0.5.2 # ^0.5.1
   uuid: ^3.0.4

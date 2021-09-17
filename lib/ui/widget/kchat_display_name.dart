@@ -1,6 +1,5 @@
 import 'package:app_core/app_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class ChatDisplayName extends StatelessWidget {
   final String? kunm;
@@ -20,11 +19,12 @@ class ChatDisplayName extends StatelessWidget {
     return RichText(
       overflow: TextOverflow.ellipsis,
       text: TextSpan(
-        style: context.textTheme.subtitle1,
+        style: Theme.of(context).textTheme.subtitle1,
         children: <TextSpan>[
           if (this.kunm != null && !KStringHelper.isEmpty(this.kunm))
             TextSpan(
-                text: '@${this.kunm} ', style: context.textTheme.subtitle2),
+                text: '@${this.kunm} ',
+                style: Theme.of(context).textTheme.subtitle2),
           TextSpan(
               text: KUtil.prettyName(
                       lnm: this.lnm ?? "",

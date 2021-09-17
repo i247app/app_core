@@ -59,11 +59,11 @@ class KUserAvatar extends StatelessWidget {
                   backgroundColor: Get.isDarkMode
                       ? Colors.grey.shade900
                       : Colors.grey.shade200,
-                  foregroundColor: context.theme.accentColor,
+                  foregroundColor: Theme.of(context).accentColor,
                   child: Text(
                     KStringHelper.substring(this.initial!, 0, 2).toUpperCase(),
                     textAlign: TextAlign.center,
-                    style: context.textTheme.headline5,
+                    style: Theme.of(context).textTheme.headline5,
                   ),
                 ),
               )
