@@ -84,7 +84,7 @@ class KApp extends StatelessWidget {
       ),
       theme: this.theme,
       darkTheme: this.darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: this.themeMode ?? ThemeMode.system,
     );
 
     return masterApp;
