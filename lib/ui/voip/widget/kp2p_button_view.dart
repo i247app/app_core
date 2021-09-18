@@ -1,4 +1,4 @@
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/header/kold_styles.dart';
 import 'package:app_core/helper/kwebrtc_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -30,35 +30,35 @@ class KP2PButtonView extends StatelessWidget {
     final toggleMicBtn = KP2PButton(
       onClick: () => this.onMicToggled?.call(!this.isMicEnabled),
       backgroundColor:
-          KStyles.darkGrey.withOpacity(this.isMicEnabled ? 1 : 0.5),
+          KOldStyles.darkGrey.withOpacity(this.isMicEnabled ? 1 : 0.5),
       icon: Icon(
         this.isMicEnabled ? Icons.mic : Icons.mic_off,
-        color: KStyles.white,
+        color: KOldStyles.white,
       ),
     );
 
     final toggleCameraBtn = KP2PButton(
       onClick: () => this.onCameraToggled?.call(!this.isCameraEnabled),
       backgroundColor:
-          KStyles.darkGrey.withOpacity(this.isCameraEnabled ? 1 : 0.5),
+          KOldStyles.darkGrey.withOpacity(this.isCameraEnabled ? 1 : 0.5),
       icon: Icon(
         this.isCameraEnabled ? Icons.videocam : Icons.videocam_off,
-        color: KStyles.white,
+        color: KOldStyles.white,
       ),
     );
 
     final switchSpeakerBtn = KP2PButton(
       onClick: () => this.onSpeakerToggled?.call(!this.isSpeakerEnabled),
       backgroundColor:
-          KStyles.darkGrey.withOpacity(this.isSpeakerEnabled ? 1 : 0.5),
+          KOldStyles.darkGrey.withOpacity(this.isSpeakerEnabled ? 1 : 0.5),
       icon: Icon(this.isSpeakerEnabled ? Icons.volume_up : Icons.volume_off,
-          color: KStyles.colorButtonText),
+          color: KOldStyles.colorButtonText),
     );
 
     final hangUpBtn = KP2PButton(
       onClick: this.onHangUp ?? () {},
-      backgroundColor: KStyles.colorBGNo,
-      icon: Icon(Icons.call_end, color: KStyles.colorButtonText),
+      backgroundColor: KOldStyles.colorBGNo,
+      icon: Icon(Icons.call_end, color: KOldStyles.colorButtonText),
     );
 
     final body = Row(

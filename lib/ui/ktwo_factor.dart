@@ -1,7 +1,7 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/knotice_data.dart';
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/header/kold_styles.dart';
 import 'package:app_core/ui/widget/knumber_pad.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
@@ -159,7 +159,7 @@ class _KTwoFactorState extends State<KTwoFactor> {
       style: TextButton.styleFrom(
         textStyle: TextStyle(
           color:
-              this.sendCodeEnabled ? KStyles.colorSecondary : KStyles.lightGrey,
+              this.sendCodeEnabled ? KOldStyles.colorSecondary : KOldStyles.lightGrey,
         ),
       ),
       child: Text("Resend Code"),
@@ -172,8 +172,8 @@ class _KTwoFactorState extends State<KTwoFactor> {
                 this.notice?.message ?? "An error occurred",
                 style: TextStyle(
                   color: this.notice?.isSuccess ?? false
-                      ? KStyles.darkGrey
-                      : KStyles.colorError,
+                      ? KOldStyles.darkGrey
+                      : KOldStyles.colorError,
                 ),
               )
             : Column(
@@ -189,7 +189,7 @@ class _KTwoFactorState extends State<KTwoFactor> {
                     style: TextStyle(
                       fontSize: 60,
                       fontWeight: FontWeight.normal,
-                      color: KStyles.colorSecondary,
+                      color: KOldStyles.colorSecondary,
                     ),
                   ),
                 ],

@@ -1,13 +1,14 @@
 import 'dart:ui';
 
-import 'package:app_core/header/kpalette.dart';
+import 'package:app_core/style/kpalette.dart';
 import 'package:app_core/helper/krebuild_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // set _brightness to set default dark/light
 // _brightness > brightnessTheme > themeColor > palette
-abstract class KStyles {
+@deprecated
+abstract class KOldStyles {
   static const double leftPanelWidth = 270;
   static const double smallestSize = 600;
   static const double maxWidth = 390;
@@ -51,12 +52,6 @@ abstract class KStyles {
     palette5: Color(0xff0099EE),
     yes: Color(0xff79AF2C),
     no: Colors.red,
-    systemTheme: ThemeData(
-      primarySwatch: Colors.blue, // TODO make this a custom color
-      primaryColor: KStyles.white,
-      backgroundColor: KStyles.white,
-      brightness: Brightness.light,
-    ),
   );
 
   static KPalette paletteDark = paletteLight;
@@ -149,7 +144,7 @@ abstract class KStyles {
 
   static TextStyle get detailText => defaultText.copyWith(
         fontSize: fontSizeSmall,
-        color: KStyles.brightnessTheme == Brightness.light
+        color: KOldStyles.brightnessTheme == Brightness.light
             ? grey
             : extraExtraLightGrey,
       );

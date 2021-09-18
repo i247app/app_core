@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/kchat_message.dart';
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/header/kold_styles.dart';
 import 'package:app_core/ui/widget/kimage_viewer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 
@@ -50,9 +50,9 @@ class KChatBubble extends StatelessWidget {
           LONG_TIME_CUTOFF;
 
   Color get chatBGColor =>
-      this.chat.isMe ? KStyles.colorPrimary : KStyles.extraExtraLightGrey;
+      this.chat.isMe ? KOldStyles.colorPrimary : KOldStyles.extraExtraLightGrey;
 
-  Color get chatTextColor => this.chat.isMe ? KStyles.white : KStyles.black;
+  Color get chatTextColor => this.chat.isMe ? KOldStyles.white : KOldStyles.black;
 
   /// Kinda complex rule-set for determining chat bubble border radius
   BorderRadiusGeometry get chatBorderRadius {
@@ -97,7 +97,7 @@ class KChatBubble extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
           borderRadius: this.chatBorderRadius,
-          color: this.chat.isLocal ? KStyles.blueFaded : this.chatBGColor,
+          color: this.chat.isLocal ? KOldStyles.blueFaded : this.chatBGColor,
         ),
         child: child,
       );
@@ -161,7 +161,7 @@ class KChatBubble extends StatelessWidget {
               SizedBox(height: 4),
               Text(
                 "${KUtil.prettyDate(this.chat.messageDate, showTime: true)}",
-                style: KStyles.detailText
+                style: KOldStyles.detailText
                     .copyWith(color: this.chatTextColor)
                     .apply(),
               ),
@@ -173,11 +173,11 @@ class KChatBubble extends StatelessWidget {
         content = Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.error, color: KStyles.colorError),
+            Icon(Icons.error, color: KOldStyles.colorError),
             SizedBox(width: 4),
             Text(
               "An error occurred",
-              style: TextStyle(color: KStyles.colorError),
+              style: TextStyle(color: KOldStyles.colorError),
             ),
           ],
         );
@@ -229,7 +229,7 @@ class KChatBubble extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Text(
                     KUtil.timeAgo(this.chat.messageDate),
-                    style: KStyles.detailText,
+                    style: KOldStyles.detailText,
                   ),
                 ),
               ),

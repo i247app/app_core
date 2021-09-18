@@ -5,7 +5,7 @@ import 'package:app_core/model/kflash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/kflash_helper.dart';
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/header/kold_styles.dart';
 
 class KFlashEmojiOverlay extends StatefulWidget {
   @override
@@ -106,7 +106,7 @@ class _KFlashEmojiOverlayState extends State<KFlashEmojiOverlay>
           child: Text(
             this.emojis[(this.emojiSeeds[i][2] * this.emojis.length).round() %
                 this.emojis.length],
-            style: KStyles.largeXLText,
+            style: KOldStyles.largeXLText,
           ),
         ),
       ),

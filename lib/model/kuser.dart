@@ -37,7 +37,7 @@ class KUser {
 
   @JsonKey(name: "addressLine2")
   String? address2;
- 
+
   @JsonKey(name: "city")
   String? city;
 

@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/ui/chat/widget/kuser_profile_view.dart';
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/header/kold_styles.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 
 class KGigUserLabel extends StatelessWidget {
@@ -43,14 +43,14 @@ class KGigUserLabel extends StatelessWidget {
         softWrap: false,
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: KStyles.fontSizeNormal,
+          fontSize: KOldStyles.fontSizeNormal,
         ),
       ),
     );
 
     final titleView = Text(
       this.title ?? "",
-      style: TextStyle(fontSize: KStyles.fontSizeSmall),
+      style: TextStyle(fontSize: KOldStyles.fontSizeSmall),
     );
 
     // final ratingField = ReviewField.readOnly(this.user.userRating ?? "");

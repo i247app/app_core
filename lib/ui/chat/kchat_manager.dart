@@ -3,7 +3,7 @@ import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/model/kchat_member.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/header/kold_styles.dart';
 import 'package:app_core/ui/chat/kchat_contact_listing.dart';
 import 'package:app_core/ui/widget/kchat_display_name.dart';
 import 'package:app_core/ui/widget/kkeyboard_killer.dart';
@@ -69,7 +69,7 @@ class _KChatManagerState extends State<KChatManager> {
 
   Future<List<KUser>> searchUsers(String? searchText) async {
     if ((searchText ?? "").isEmpty) {
-      return Future.value();
+      return Future.value([]);
     }
 
     final response = await KServerHandler.searchUsers(searchText!);
@@ -211,14 +211,14 @@ class _KChatManagerState extends State<KChatManager> {
                                 onTap: () => this.onChangeGroupName(),
                                 child: Icon(
                                   Icons.save,
-                                  color: KStyles.colorPrimary,
+                                  color: KOldStyles.colorPrimary,
                                   size: 20,
                                 ))
                             : GestureDetector(
                                 onTap: () => this.onEditGroupName(),
                                 child: Icon(
                                   Icons.edit,
-                                  color: KStyles.grey,
+                                  color: KOldStyles.grey,
                                   size: 20,
                                 ),
                               ),
