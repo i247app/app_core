@@ -7,7 +7,6 @@ import 'package:app_core/ui/kicon/kicon_manager.dart';
 import 'package:app_core/ui/widget/kembed_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get/get.dart';
 
 class KApp extends StatelessWidget {
   final Widget home;
@@ -50,7 +49,7 @@ class KApp extends StatelessWidget {
           isEmbed: this.isEmbed,
           child: DefaultTextStyle(
             style: this.defaultTextStyle,
-            child: GetMaterialApp(
+            child: MaterialApp(
               title: this.title,
               navigatorKey: this.navigatorKey,
               debugShowCheckedModeBanner: false,
