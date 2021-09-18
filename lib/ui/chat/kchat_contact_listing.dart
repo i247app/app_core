@@ -7,7 +7,7 @@ import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/kuser.dart';
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/header/kold_styles.dart';
 import 'package:app_core/ui/widget/kcontact_name_view.dart';
 import 'package:app_core/ui/widget/kicon_label.dart';
 import 'package:app_core/ui/widget/kkeyboard_killer.dart';
@@ -94,7 +94,7 @@ class _KChatContactListingState extends State<KChatContactListing> {
         child: Text(
           "Nothing found!",
           textAlign: TextAlign.center,
-          style: KStyles.normalText,
+          style: KOldStyles.normalText,
         ),
       );
     else
@@ -214,7 +214,7 @@ class _SearchField extends StatelessWidget {
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(width: 6),
-                    Icon(Icons.close, size: 20, color: KStyles.grey),
+                    Icon(Icons.close, size: 20, color: KOldStyles.grey),
                   ],
                 ),
               ),

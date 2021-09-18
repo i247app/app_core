@@ -1,4 +1,4 @@
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/header/kold_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -21,10 +21,10 @@ abstract class KToastHelper {
           toastLength: toastLength ?? Toast.LENGTH_LONG,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
-          textColor: textColor ?? KStyles.extraDarkGrey,
+          textColor: textColor ?? KOldStyles.extraDarkGrey,
           fontSize: 16.0,
           backgroundColor:
-              backgroundColor ?? KStyles.extraLightGrey.withAlpha(0xBB),
+              backgroundColor ?? KOldStyles.extraLightGrey.withAlpha(0xBB),
         );
       }
     } catch (e) {
@@ -34,9 +34,9 @@ abstract class KToastHelper {
 
   /// Display generic error message
   static Future<bool?> error([String? message]) async =>
-      show(message ?? "An error occurred", textColor: KStyles.colorError);
+      show(message ?? "An error occurred", textColor: KOldStyles.colorError);
 
   /// Display generic success message
   static Future<bool?> success([String? message]) async =>
-      show(message ?? "Success", textColor: KStyles.black);
+      show(message ?? "Success", textColor: KOldStyles.black);
 }

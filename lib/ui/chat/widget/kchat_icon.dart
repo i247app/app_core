@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/model/kchat.dart';
 import 'package:app_core/model/kchat_member.dart';
-import 'package:app_core/header//kstyles.dart';
+import 'package:app_core/header//kold_styles.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 
 class _ChatIconPosition {
@@ -69,7 +69,7 @@ class KChatIcon extends StatelessWidget {
                 padding: EdgeInsets.all(2),
                 child: Icon(
                   Icons.group_add_outlined,
-                  color: KStyles.colorPrimary,
+                  color: KOldStyles.colorPrimary,
                 ),
               )
             : ClipOval(
