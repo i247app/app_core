@@ -24,7 +24,8 @@ KUser _$KUserFromJson(Map<String, dynamic> json) {
     ..countryCode = json['countryCode'] as String?
     ..displayImg = json['displayImg'] as String?
     ..avatarURL = json['avatar'] as String?
-    ..avatarImageData = json['avatarData'] as String?;
+    ..avatarImageData = json['avatarData'] as String?
+    ..heroAvatarURL = json['heroAvatar'] as String?;
 }
 
 Map<String, dynamic> _$KUserToJson(KUser instance) => <String, dynamic>{
@@ -45,4 +46,5 @@ Map<String, dynamic> _$KUserToJson(KUser instance) => <String, dynamic>{
       'displayImg': instance.displayImg,
       'avatar': instance.avatarURL,
       'avatarData': instance.avatarImageData,
+      'heroAvatar': instance.heroAvatarURL,
     };
