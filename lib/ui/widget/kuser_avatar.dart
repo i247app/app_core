@@ -52,7 +52,7 @@ class KUserAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final raw = this.imageURL == null || !KStringHelper.isExist(this.imageURL)
         ? this.initial == null
-            ? placeholderImage
+            ? this.placeholderImage
             : FittedBox(
                 fit: BoxFit.contain,
                 child: CircleAvatar(
@@ -74,7 +74,7 @@ class KUserAvatar extends StatelessWidget {
             fadeInDuration: Duration(milliseconds: 100),
             imageErrorBuilder: (BuildContext context, Object exception,
                 StackTrace? stackTrace) {
-              return placeholderImage;
+              return this.placeholderImage;
             },
           );
 
