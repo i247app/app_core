@@ -226,7 +226,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
                 minLines: 1,
                 maxLines: 6,
                 decoration: InputDecoration(
-                  fillColor: isDarkMode ? Colors.black12 : Colors.black12,
+                  fillColor: Theme.of(context).brightness == Brightness.dark ? Colors.green : Colors.blue,
                   hintText: "Aa",
                   filled: true,
                   border: OutlineInputBorder(
