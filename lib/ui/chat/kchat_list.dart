@@ -142,7 +142,10 @@ class _KChatListState extends State<KChatList> {
           Expanded(
             child: Text(
               "Chats",
-              style: KOldStyles.largeText.copyWith(fontWeight: KOldStyles.semiBold),
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle1!
+                  .copyWith(fontWeight: FontWeight.w600),
               textAlign: TextAlign.start,
             ),
           ),
@@ -195,7 +198,6 @@ class _KChatListState extends State<KChatList> {
 
     final scaffoldView = Scaffold(
       body: SafeArea(child: content),
-      backgroundColor: KOldStyles.white,
     );
 
     return KEmbedManager.of(context).isEmbed ? content : scaffoldView;

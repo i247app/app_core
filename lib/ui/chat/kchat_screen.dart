@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_core/header/kold_styles.dart';
 import 'package:app_core/helper/khost_config.dart';
 import 'package:app_core/helper/klocation_helper.dart';
 import 'package:app_core/helper/ksession_data.dart';
@@ -10,11 +11,9 @@ import 'package:app_core/model/kchat_message.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/style/ktheme.dart';
 import 'package:app_core/ui/chat/kchat_contact_listing.dart';
 import 'package:app_core/ui/chat/kchat_manager.dart';
 import 'package:app_core/header/kassets.dart';
-import 'package:app_core/header/kold_styles.dart';
 import 'package:app_core/ui/chat/kchatroom.dart';
 import 'package:app_core/ui/chat/service/kchatroom_controller.dart';
 import 'package:app_core/ui/voip/kvoip_call.dart';
@@ -229,7 +228,7 @@ class _KChatScreenState extends State<KChatScreen> {
 
     // If tablet not show back button
     final shortestSide = MediaQuery.of(context).size.shortestSide;
-    if (shortestSide < KTheme.of(context).smallestSize || !widget.isEmbedded) {
+    if (shortestSide < KOldStyles.smallestSize || !widget.isEmbedded) {
       return Scaffold(
         appBar: AppBar(
           title: InkWell(
@@ -265,7 +264,7 @@ class _KChatScreenState extends State<KChatScreen> {
                     onTap: () => this.onManagerMember(),
                     child: Text(
                       this.chatroomCtrl.value.chatTitle ?? "Chat",
-                      style: KTheme.of(context).largeText,
+                      style: Theme.of(context).textTheme.headline5,
                     ),
                   ),
                 ),

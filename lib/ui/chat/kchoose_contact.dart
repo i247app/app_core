@@ -7,7 +7,6 @@ import 'package:flutter/widgets.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/header/kassets.dart';
-import 'package:app_core/header/kold_styles.dart';
 import 'package:app_core/ui/widget/kcontact_name_view.dart';
 import 'package:app_core/ui/widget/kicon_label.dart';
 import 'package:app_core/ui/widget/kkeyboard_killer.dart';
@@ -81,6 +80,8 @@ class _KChooseContactState extends State<KChooseContact> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     final searchInput = _SearchField(
       searchFieldController: this.searchFieldController,
       onChanged: onSearchChanged,
@@ -100,7 +101,7 @@ class _KChooseContactState extends State<KChooseContact> {
         child: Text(
           "Nothing found!",
           textAlign: TextAlign.center,
-          style: KOldStyles.normalText,
+          style: theme.textTheme.bodyText1,
         ),
       );
     else
@@ -118,11 +119,7 @@ class _KChooseContactState extends State<KChooseContact> {
             ),
           );
         },
-        separatorBuilder: (_, __) => Container(
-          width: double.infinity,
-          height: 1,
-          color: KOldStyles.colorDivider,
-        ),
+        separatorBuilder: (_, __) => Divider(),
       );
 
     final doneButton = TextButton(
@@ -137,14 +134,13 @@ class _KChooseContactState extends State<KChooseContact> {
           Row(
             children: [
               BackButton(),
-              Text("Choose Users", style: KOldStyles.largeText),
+              Text("Choose Users", style: theme.textTheme.subtitle1),
               Spacer(),
               doneButton,
             ],
           ),
           SizedBox(height: 8),
           searchInput,
-          Divider(height: 1, color: KOldStyles.colorDivider),
           Expanded(child: userListing),
         ],
       ),
@@ -175,6 +171,8 @@ class _SearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     final searchField = TextField(
       maxLength: 12,
       maxLines: null,
@@ -186,7 +184,7 @@ class _SearchField extends StatelessWidget {
       showCursor: true,
       onTap: this.onTap,
       readOnly: this.readOnly,
-      style: KOldStyles.normalText,
+      style: theme.textTheme.bodyText1,
       decoration: InputDecoration(
         hintText: "Type a name or phone number",
         counterText: "",
@@ -203,18 +201,18 @@ class _SearchField extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: KOldStyles.colorPrimary.withOpacity(0.1),
+                  color: theme.primaryColor.withOpacity(0.1),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       su.fullName ?? su.contactName ?? "",
-                      style: KOldStyles.normalText
+                      style: theme.textTheme.bodyText1!
                           .copyWith(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(width: 6),
-                    Icon(Icons.close, size: 20, color: KOldStyles.grey),
+                    Icon(Icons.close, size: 20),
                   ],
                 ),
               ),

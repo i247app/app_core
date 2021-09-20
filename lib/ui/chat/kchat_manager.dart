@@ -3,7 +3,6 @@ import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/model/kchat_member.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/header/kold_styles.dart';
 import 'package:app_core/ui/chat/kchat_contact_listing.dart';
 import 'package:app_core/ui/widget/kchat_display_name.dart';
 import 'package:app_core/ui/widget/kkeyboard_killer.dart';
@@ -211,14 +210,12 @@ class _KChatManagerState extends State<KChatManager> {
                                 onTap: () => this.onChangeGroupName(),
                                 child: Icon(
                                   Icons.save,
-                                  color: KOldStyles.colorPrimary,
                                   size: 20,
                                 ))
                             : GestureDetector(
                                 onTap: () => this.onEditGroupName(),
                                 child: Icon(
                                   Icons.edit,
-                                  color: KOldStyles.grey,
                                   size: 20,
                                 ),
                               ),
