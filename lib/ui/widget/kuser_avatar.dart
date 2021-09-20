@@ -6,7 +6,6 @@ import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/model/kchat.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/header/kassets.dart';
-import 'package:get/get.dart';
 
 class KUserAvatar extends StatelessWidget {
   final String? initial;
@@ -50,20 +49,25 @@ class KUserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
     final raw = this.imageURL == null || !KStringHelper.isExist(this.imageURL)
         ? this.initial == null
             ? placeholderImage
             : FittedBox(
                 fit: BoxFit.contain,
                 child: CircleAvatar(
-                  backgroundColor: Get.isDarkMode
-                      ? Colors.grey.shade900
-                      : Colors.grey.shade200,
+                  backgroundColor:
+                      isDarkMode ? Colors.blueGrey[800] : Colors.grey.shade200,
                   foregroundColor: Theme.of(context).accentColor,
                   child: Text(
                     KStringHelper.substring(this.initial!, 0, 2).toUpperCase(),
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline5,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline5!
+                        .copyWith(color: Colors.white),
                   ),
                 ),
               )

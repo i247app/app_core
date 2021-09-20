@@ -204,6 +204,9 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
       icon: Icon(Icons.send),
     );
 
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
     final messageInputBox = SafeArea(
       top: false,
       bottom: true,
@@ -223,7 +226,21 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
                 minLines: 1,
                 maxLines: 6,
                 decoration: InputDecoration(
+                  fillColor: isDarkMode ? Colors.white30 : Colors.black12,
                   hintText: "Aa",
+                  filled: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
                 textInputAction: TextInputAction.newline,
               ),
@@ -239,7 +256,6 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
       children: [
         Expanded(child: chatBody),
         if (!widget.isReadOnly) ...[
-          Divider(),
           Container(
             padding: EdgeInsets.all(2),
             child: messageInputBox,
