@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/kchat_message.dart';
-import 'package:app_core/header/kold_styles.dart';
 import 'package:app_core/ui/widget/kimage_viewer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 
@@ -49,11 +48,6 @@ class KChatBubble extends StatelessWidget {
       this.chat.messageDate!.difference(this.previousChat!.messageDate!).abs() >
           LONG_TIME_CUTOFF;
 
-  Color get chatBGColor =>
-      this.chat.isMe ? KOldStyles.colorPrimary : KOldStyles.extraExtraLightGrey;
-
-  Color get chatTextColor => this.chat.isMe ? KOldStyles.white : KOldStyles.black;
-
   /// Kinda complex rule-set for determining chat bubble border radius
   BorderRadiusGeometry get chatBorderRadius {
     BorderRadiusGeometry br = this.chat.isMe
@@ -93,11 +87,11 @@ class KChatBubble extends StatelessWidget {
     );
   }
 
-  Widget wrapWithChatBubble(Widget child) => Container(
+  Widget wrapWithChatBubble(Widget child, Color chatBGColor) => Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
           borderRadius: this.chatBorderRadius,
-          color: this.chat.isLocal ? KOldStyles.blueFaded : this.chatBGColor,
+          color: this.chat.isLocal ? Colors.blue[50] : chatBGColor,
         ),
         child: child,
       );
@@ -105,14 +99,19 @@ class KChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final content;
+
+    final theme = Theme.of(context);
+
+    final chatBGColor =
+        this.chat.isMe ? Colors.blueGrey.shade600 : Colors.blueGrey.shade900;
     switch (this.chat.messageType ?? "") {
       case KChatMessage.CONTENT_TYPE_TEXT:
         content = wrapWithChatBubble(
-          Text(
-            this.chat.message ?? "",
-            style: TextStyle(fontSize: 17, color: this.chatTextColor),
-          ),
-        );
+            Text(
+              this.chat.message ?? "",
+              style: theme.textTheme.subtitle2!.copyWith(color: Colors.white),
+            ),
+            chatBGColor);
         break;
       case KChatMessage.CONTENT_TYPE_IMAGE:
         content = ClipRRect(
@@ -148,12 +147,13 @@ class KChatBubble extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.video_call, color: this.chatTextColor),
+                  Icon(Icons.video_call, color: Colors.white),
                   SizedBox(width: 10),
                   Flexible(
                     child: Text(
                       "Video call from ${this.chat.kUser?.firstName ?? "user"}",
-                      style: TextStyle(fontSize: 17, color: this.chatTextColor),
+                      style: theme.textTheme.subtitle1!
+                          .copyWith(color: Colors.white),
                     ),
                   ),
                 ],
@@ -161,24 +161,22 @@ class KChatBubble extends StatelessWidget {
               SizedBox(height: 4),
               Text(
                 "${KUtil.prettyDate(this.chat.messageDate, showTime: true)}",
-                style: KOldStyles.detailText
-                    .copyWith(color: this.chatTextColor)
-                    .apply(),
+                style: theme.textTheme.caption,
               ),
             ],
           ),
+          chatBGColor,
         );
         break;
       default:
         content = Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.error, color: KOldStyles.colorError),
+            Icon(Icons.error, color: theme.errorColor),
             SizedBox(width: 4),
-            Text(
-              "An error occurred",
-              style: TextStyle(color: KOldStyles.colorError),
-            ),
+            Text("An error occurred",
+                style: theme.textTheme.bodyText1!
+                    .copyWith(color: theme.errorColor)),
           ],
         );
         break;
@@ -229,7 +227,7 @@ class KChatBubble extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Text(
                     KUtil.timeAgo(this.chat.messageDate),
-                    style: KOldStyles.detailText,
+                    style: theme.textTheme.bodyText2,
                   ),
                 ),
               ),

@@ -747,7 +747,8 @@ class _KVOIPCallState extends State<KVOIPCall>
                 Text(
                   this.infoLabel,
                   textAlign: TextAlign.center,
-                  style: KOldStyles.normalText.copyWith(color: KOldStyles.lightGrey),
+                  style: KOldStyles.normalText
+                      .copyWith(color: KOldStyles.lightGrey),
                 ),
               ],
             ],
@@ -845,21 +846,23 @@ class _KVOIPCallState extends State<KVOIPCall>
                 Text(
                   "Video calling service is unavailable",
                   textAlign: TextAlign.center,
-                  style: KOldStyles.largeXLText.copyWith(color: KOldStyles.white),
+                  style:
+                      KOldStyles.largeXLText.copyWith(color: KOldStyles.white),
                 ),
                 SizedBox(height: 16),
                 Text(
                   "Please try again in a moment",
                   textAlign: TextAlign.center,
-                  style: KOldStyles.normalText.copyWith(color: KOldStyles.white),
+                  style:
+                      KOldStyles.normalText.copyWith(color: KOldStyles.white),
                 ),
                 if (!KHostConfig.isReleaseMode) ...[
                   SizedBox(height: 30),
                   Text(
                     "!! (the TURN server is likely dead/crashed/frozen) !!",
                     textAlign: TextAlign.center,
-                    style:
-                        KOldStyles.normalText.copyWith(color: KOldStyles.colorError),
+                    style: KOldStyles.normalText
+                        .copyWith(color: KOldStyles.colorError),
                   ),
                 ],
               ],

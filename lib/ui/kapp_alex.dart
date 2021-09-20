@@ -1,16 +1,21 @@
 import 'dart:async';
 
+import 'package:app_core/style/kpalette_group.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
+import 'package:app_core/style/ktheme_data_manager.dart';
+import 'package:app_core/style/ktheme.dart';
 import 'package:app_core/ui/kicon/kicon_manager.dart';
 import 'package:app_core/ui/widget/kembed_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class KApp extends StatelessWidget {
+class KAppAlex extends StatelessWidget {
   final Widget home;
   final TextStyle defaultTextStyle;
   final bool isEmbed;
   final String title;
+  final KPaletteGroup paletteGroup;
+  final KTheme Function(KPaletteGroup, Widget) themeBuilder;
   final GlobalKey<NavigatorState> navigatorKey;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final List<NavigatorObserver> navigatorObservers;
@@ -20,9 +25,14 @@ class KApp extends StatelessWidget {
   final ThemeData? darkTheme;
   final ThemeMode? themeMode;
 
-  const KApp({
+  KThemeDataManager get themeDataManager =>
+      KThemeDataManager(this.paletteGroup);
+
+  const KAppAlex({
     required this.home,
     required this.defaultTextStyle,
+    required this.paletteGroup,
+    required this.themeBuilder,
     required this.navigatorKey,
     required this.scaffoldKey,
     required this.navigatorObservers,
@@ -37,21 +47,24 @@ class KApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final innerApp = KIconManager(
-      iconSet: this.iconSet,
-      child: KEmbedManager(
-        isEmbed: this.isEmbed,
-        child: DefaultTextStyle(
-          style: this.defaultTextStyle,
-          child: MaterialApp(
-            title: this.title,
-            navigatorKey: this.navigatorKey,
-            debugShowCheckedModeBanner: false,
-            navigatorObservers: this.navigatorObservers,
-            theme: this.theme,
-            darkTheme: this.darkTheme,
-            themeMode: this.themeMode ?? ThemeMode.system,
-            home: this.home,
+    final innerApp = this.themeBuilder(
+      this.paletteGroup,
+      KIconManager(
+        iconSet: this.iconSet,
+        child: KEmbedManager(
+          isEmbed: this.isEmbed,
+          child: DefaultTextStyle(
+            style: this.defaultTextStyle,
+            child: MaterialApp(
+              title: this.title,
+              navigatorKey: this.navigatorKey,
+              debugShowCheckedModeBanner: false,
+              navigatorObservers: this.navigatorObservers,
+              theme: this.theme,
+              darkTheme: this.darkTheme,
+              themeMode: this.themeMode ?? ThemeMode.system,
+              home: this.home,
+            ),
           ),
         ),
       ),
@@ -82,9 +95,9 @@ class KApp extends StatelessWidget {
         key: this.scaffoldKey,
         body: innerAppWithOverlay,
       ),
-      theme: this.theme,
-      darkTheme: this.darkTheme,
-      themeMode: this.themeMode ?? ThemeMode.system,
+      theme: this.themeDataManager.lightThemeData,
+      darkTheme: this.themeDataManager.darkThemeData,
+      themeMode: ThemeMode.system,
     );
 
     return masterApp;

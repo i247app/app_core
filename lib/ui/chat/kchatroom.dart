@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:app_core/style/ktheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/kphoto_helper.dart';
@@ -11,7 +10,6 @@ import 'package:app_core/ui/chat/service/kchatroom_controller.dart';
 import 'package:app_core/ui/chat/service/kchatroom_data.dart';
 import 'package:app_core/ui/chat/widget/kchat_bubble.dart';
 import 'package:app_core/ui/chat/widget/kuser_profile_view.dart';
-import 'package:app_core/header/kold_styles.dart';
 import 'package:app_core/helper/klocal_notif_helper.dart';
 import 'package:app_core/helper/kpush_data_helper.dart';
 import 'package:app_core/model/kpush_data.dart';
@@ -124,6 +122,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final sayHiToPapaBtn = widget.isReadOnly
         ? Container()
         : Column(
@@ -132,7 +131,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
             children: [
               Text(
                 "Say hi to ${this.refUser?.firstName}",
-                style: KTheme.of(context).largeXLText,
+                style: theme.textTheme.headline4,
               ),
               SizedBox(height: 14),
               IconButton(
@@ -182,7 +181,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
               padding: EdgeInsets.all(10),
               child: Text(
                 "Session has ended",
-                style: KTheme.of(context).detailText,
+                style: theme.textTheme.bodyText1,
               ),
             ),
           SizedBox(height: 4),
@@ -205,6 +204,9 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
       icon: Icon(Icons.send),
     );
 
+    var brightness = MediaQuery.of(context).platformBrightness;
+    bool isDarkMode = brightness == Brightness.dark;
+
     final messageInputBox = SafeArea(
       top: false,
       bottom: true,
@@ -224,7 +226,21 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
                 minLines: 1,
                 maxLines: 6,
                 decoration: InputDecoration(
+                  fillColor: isDarkMode ? Colors.white30 : Colors.black12,
                   hintText: "Aa",
+                  filled: true,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
                 textInputAction: TextInputAction.newline,
               ),
@@ -240,7 +256,6 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
       children: [
         Expanded(child: chatBody),
         if (!widget.isReadOnly) ...[
-          Divider(height: 1, color: KTheme.of(context).colorDivider),
           Container(
             padding: EdgeInsets.all(2),
             child: messageInputBox,
