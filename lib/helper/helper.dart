@@ -1,6 +1,6 @@
 export 'kbiometric_helper.dart';
 export 'kcheck_version_helper.dart';
-export 'kcore_code.dart';
+export '../header/kcore_code.dart';
 export 'kdate_helper.dart';
 export 'kdevice_id_helper.dart';
 export 'kfile_helper.dart';
