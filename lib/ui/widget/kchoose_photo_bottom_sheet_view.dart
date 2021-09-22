@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class KChoosePhotoBottomSheetView extends StatefulWidget {
+  final bool hero;
+  const KChoosePhotoBottomSheetView({required this.hero});
   @override
   _KChoosePhotoBottomSheetViewState createState() =>
       _KChoosePhotoBottomSheetViewState();
@@ -17,6 +19,11 @@ class _KChoosePhotoBottomSheetViewState
 
   void onGalleryClick() async {
     final result = await KPhotoHelper.gallery();
+    Navigator.of(context).pop(result);
+  }
+
+  void onHeroClicked() async {
+    final result = KPhotoResult(status: KPhotoStatus.hero);
     Navigator.of(context).pop(result);
   }
 
@@ -54,6 +61,21 @@ class _KChoosePhotoBottomSheetViewState
               ),
             ),
           ),
+          if (widget.hero) ...[
+            InkWell(
+              onTap: onHeroClicked,
+              child: Container(
+                padding: edgeInsets,
+                child: Row(
+                  children: [
+                    Icon(Icons.health_and_safety),
+                    SizedBox(width: 10),
+                    Text("Hero Avatar"),
+                  ],
+                ),
+              ),
+            )
+          ],
         ],
       ),
     );
