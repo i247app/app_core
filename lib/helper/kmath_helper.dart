@@ -51,6 +51,10 @@ abstract class KMathHelper {
     return z;
   }
 
+  static bool isDecimal(String z) => z.contains(".");
+
+  static bool isInt(String z) => !isDecimal(z);
+
   /// Test for negative
   static bool isNegative(String z) {
     bool b = false;
