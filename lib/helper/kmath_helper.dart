@@ -21,6 +21,9 @@ abstract class KMathHelper {
     return d;
   }
 
+  static dynamic smartParse(String? v) =>
+      isInt(v) ? parseInt(v) : parseDouble(v);
+
   /// Negate
   static String negate(String z) {
     String result = z;
