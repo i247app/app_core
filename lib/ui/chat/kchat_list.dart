@@ -4,6 +4,7 @@ import 'package:app_core/helper/kglobals.dart';
 import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/model/kchat.dart';
 import 'package:app_core/model/kchat_member.dart';
+import 'package:app_core/ui/chat/kchat_contact_listing.dart';
 import 'package:app_core/ui/chat/kchat_listing.dart';
 import 'package:app_core/ui/chat/service/kchat_listing_controller.dart';
 import 'package:app_core/ui/chat/service/kchat_listing_data.dart';
@@ -15,8 +16,6 @@ import 'package:app_core/ui/chat/kchat_screen.dart';
 import 'package:app_core/header/kold_styles.dart';
 import 'package:app_core/ui/widget/kembed_manager.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
-
-import 'kchat_contact_listing.dart';
 
 class KChatList extends StatefulWidget {
   @override
@@ -162,6 +161,7 @@ class _KChatListState extends State<KChatList> {
     final body = Column(
       children: [
         topRow,
+        Divider(height: 1, color: KOldStyles.colorDivider),
         Expanded(child: chatListing),
       ],
     );

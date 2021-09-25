@@ -110,16 +110,9 @@ class _KChatListingState extends State<KChatListing> {
       ),
     );
 
-    final content = Column(
-      children: [
-        Divider(height: 1, color: KOldStyles.colorDivider),
-        Expanded(
-          child: this.isReady
-              ? ((chats ?? []).isEmpty ? emptyInbox : chatListing)
-              : Container(),
-        ),
-      ],
-    );
+    final content = this.isReady
+        ? ((chats ?? []).isEmpty ? emptyInbox : chatListing)
+        : Container();
 
     return content;
   }
