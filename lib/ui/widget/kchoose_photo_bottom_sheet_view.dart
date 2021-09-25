@@ -41,9 +41,9 @@ class _KChoosePhotoBottomSheetViewState
               padding: edgeInsets,
               child: Row(
                 children: [
-                  Icon(Icons.camera),
+                  Icon(Icons.photo_camera),
                   SizedBox(width: 10),
-                  Text("Take a Photo"),
+                  Text("Camera"),
                 ],
               ),
             ),
@@ -56,7 +56,7 @@ class _KChoosePhotoBottomSheetViewState
                 children: [
                   Icon(Icons.photo_library),
                   SizedBox(width: 10),
-                  Text("Choose from Gallery"),
+                  Text("Photo"),
                 ],
               ),
             ),
@@ -68,7 +68,7 @@ class _KChoosePhotoBottomSheetViewState
                 padding: edgeInsets,
                 child: Row(
                   children: [
-                    Icon(Icons.health_and_safety),
+                    Icon(Icons.pets),
                     SizedBox(width: 10),
                     Text("Hero Avatar"),
                   ],
