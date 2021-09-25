@@ -8,6 +8,9 @@ class KLocale {
   const KLocale({required this.language, required this.country});
 
   Locale toSystemLocale() => Locale(this.language, this.country);
+
+  @override
+  String toString() => "${this.language}-${this.country}";
 }
 
 abstract class KLocaleHelper {
