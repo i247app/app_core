@@ -159,6 +159,7 @@ class _KChatListScreenState extends State<KChatListScreen> {
     );
 
     final body = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         topRow,
         Divider(height: 1, color: KOldStyles.colorDivider),
