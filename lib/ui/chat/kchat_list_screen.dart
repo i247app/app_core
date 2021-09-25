@@ -17,12 +17,12 @@ import 'package:app_core/header/kold_styles.dart';
 import 'package:app_core/ui/widget/kembed_manager.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 
-class KChatList extends StatefulWidget {
+class KChatListScreen extends StatefulWidget {
   @override
-  _KChatListState createState() => _KChatListState();
+  _KChatListScreenState createState() => _KChatListScreenState();
 }
 
-class _KChatListState extends State<KChatList> {
+class _KChatListScreenState extends State<KChatListScreen> {
   late final KChatListingController chatListingCtrl;
 
   Widget activeWidget = Container(
