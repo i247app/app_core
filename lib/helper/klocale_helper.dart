@@ -1,10 +1,13 @@
 import 'dart:io';
+import 'dart:ui';
 
 class KLocale {
   final String language;
   final String country;
 
   const KLocale({required this.language, required this.country});
+
+  Locale toSystemLocale() => Locale(this.language, this.country);
 }
 
 abstract class KLocaleHelper {
