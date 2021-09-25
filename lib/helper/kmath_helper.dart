@@ -51,9 +51,9 @@ abstract class KMathHelper {
     return z;
   }
 
-  static bool isDecimal(String z) => z.contains(".");
+  static bool isDecimal(String? z) => (z ?? "").contains(".");
 
-  static bool isInt(String z) => !isDecimal(z);
+  static bool isInt(String? z) => !isDecimal(z);
 
   /// Test for negative
   static bool isNegative(String z) {
@@ -68,9 +68,10 @@ abstract class KMathHelper {
   static bool isPositive(String z) => !isNegative(z);
 
   /// Add two values
-  static String add(String? a, String? b) =>
-      ((double.tryParse(a ?? "0") ?? 0) + (double.tryParse(b ?? "0") ?? 0))
-          .toString();
+  static String add(String? a, String? b) {
+    final method = (isDecimal(a) || isDecimal(b)) ? parseDouble : parseInt;
+    return ((method.call(a ?? "0")) + (method.call(b ?? "0"))).toString();
+  }
 
   /// Subtract two values
   static String sub(String? a, String? b) =>
