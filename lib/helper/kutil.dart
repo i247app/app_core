@@ -245,8 +245,10 @@ abstract class KUtil {
     double dAmount = double.tryParse(amount ?? "0") ?? 0;
 
     String pretty = "0";
+    String upercaseToken = tokenName?.toUpperCase() ?? "";
+
     try {
-      switch (tokenName ?? "") {
+      switch (upercaseToken) {
         case "USD":
           if (useCurrencyName) // USD1,234.56 or USD1,234.00
             pretty = NumberFormat.currency(locale: "en").format(dAmount);
