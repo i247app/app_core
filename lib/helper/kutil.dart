@@ -243,8 +243,8 @@ abstract class KUtil {
     bool useCurrencyName = false,
     bool accepetZero = true,
   }) {
-    double dAmount = double.tryParse(amount ?? "0") ?? 0;
-    if (dAmount == 0 && !accepetZero) return "";
+    if (amount == null) return "";
+    double dAmount = double.tryParse(amount) ?? 0;
     String pretty = "0";
     String upercaseToken = tokenName?.toUpperCase() ?? "";
 
