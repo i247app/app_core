@@ -90,12 +90,10 @@ class _KVOIPCallState extends State<KVOIPCall>
   Timer? timer;
   Timer? endCallTimer;
   Timer? panelTimer;
-
   String? infoMsg;
   int? infoCode;
   RTCVideoRenderer? localRenderer;
 
-  bool get isAccepted => widget.autoPickup;
   bool isMySoundEnabled = true;
   bool isMySpeakerEnabled = true;
   bool isMyCameraEnabled = true;
@@ -103,6 +101,8 @@ class _KVOIPCallState extends State<KVOIPCall>
   bool isOtherCameraEnabled = true;
   bool isVideoInitialized = false;
   bool isPanelOpen = false;
+
+  bool get isAccepted => widget.autoPickup;
 
   String get _uuid => widget.uuid ?? Uuid().v4();
 
@@ -271,7 +271,9 @@ class _KVOIPCallState extends State<KVOIPCall>
   void setup() async => setupCommManager(this.myPUID!, this.myName!);
 
   void safePop([final result]) =>
-      mounted ? Navigator.of(context).pop(result) : null;
+      (mounted && (ModalRoute.of(context)?.isActive ?? false))
+          ? Navigator.of(context).pop(result)
+          : null;
 
   Future initRenderers() async {
     final permissionsGranted = await KWebRTCHelper.askForPermissions();
