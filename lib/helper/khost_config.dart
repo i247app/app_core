@@ -11,7 +11,7 @@ abstract class KHostConfig {
 
   static KHostInfo _currentHost = defaultHost;
 
-  static KHostInfo get defaultHost => k1;
+  static KHostInfo get defaultHost => k4;
 
   static bool get isReleaseMode => system.kReleaseMode;
 
