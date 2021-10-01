@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/ui/kicon/kicon_manager.dart';
 import 'package:app_core/ui/widget/kembed_manager.dart';
+import 'package:app_core/ui/widget/kerror_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -72,16 +73,16 @@ class KApp extends StatelessWidget {
 
     final masterApp = MaterialApp(
       debugShowCheckedModeBanner: false,
-      // builder: (_, __) => Scaffold(
-      //   resizeToAvoidBottomInset: false,
-      //   key: this.scaffoldKey,
-      //   body: innerAppWithOverlay,
-      // ),
-      home: Scaffold(
-        resizeToAvoidBottomInset: false,
-        key: this.scaffoldKey,
-        body: innerAppWithOverlay,
-      ),
+      builder: (_, __) {
+        ErrorWidget.builder =
+            (FlutterErrorDetails errorDetails) => KErrorView(errorDetails);
+
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          key: this.scaffoldKey,
+          body: innerAppWithOverlay,
+        );
+      },
       theme: this.theme,
       darkTheme: this.darkTheme,
       themeMode: this.themeMode ?? ThemeMode.system,
