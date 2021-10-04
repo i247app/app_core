@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
-enum KPhotoStatus { ok, permission_error, unknown, hero }
+enum KPhotoStatus { ok, permission_error, unknown, hero, removeHero }
 
 class KPhotoResult {
   File? photoFile;
@@ -16,11 +16,11 @@ class KPhotoResult {
 
 abstract class KPhotoHelper {
   static Future<KPhotoResult> chooser(BuildContext context,
-      {bool hero = false}) async {
+      {bool hero = false, bool showRemoveHero = false}) async {
     final result = await showModalBottomSheet(
-      context: context,
-      builder: (ctx) => KChoosePhotoBottomSheetView(hero: hero),
-    );
+        context: context,
+        builder: (ctx) => KChoosePhotoBottomSheetView(
+            hero: hero, showRemoveHero: showRemoveHero));
 
     return result ?? KPhotoResult(status: KPhotoStatus.unknown);
   }

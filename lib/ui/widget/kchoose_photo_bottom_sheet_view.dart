@@ -4,7 +4,9 @@ import 'package:flutter/widgets.dart';
 
 class KChoosePhotoBottomSheetView extends StatefulWidget {
   final bool hero;
-  const KChoosePhotoBottomSheetView({required this.hero});
+  final bool showRemoveHero;
+  const KChoosePhotoBottomSheetView(
+      {required this.hero, required this.showRemoveHero});
   @override
   _KChoosePhotoBottomSheetViewState createState() =>
       _KChoosePhotoBottomSheetViewState();
@@ -24,6 +26,11 @@ class _KChoosePhotoBottomSheetViewState
 
   void onHeroClicked() async {
     final result = KPhotoResult(status: KPhotoStatus.hero);
+    Navigator.of(context).pop(result);
+  }
+
+  void onRemoveHeroClicked() async {
+    final result = KPhotoResult(status: KPhotoStatus.removeHero);
     Navigator.of(context).pop(result);
   }
 
@@ -71,6 +78,21 @@ class _KChoosePhotoBottomSheetViewState
                     Icon(Icons.pets),
                     SizedBox(width: 10),
                     Text("Hero Avatar"),
+                  ],
+                ),
+              ),
+            )
+          ],
+          if (widget.showRemoveHero) ...[
+            InkWell(
+              onTap: onRemoveHeroClicked,
+              child: Container(
+                padding: edgeInsets,
+                child: Row(
+                  children: [
+                    Icon(Icons.highlight_off_outlined),
+                    SizedBox(width: 10),
+                    Text("Remove Hero Avatar"),
                   ],
                 ),
               ),
