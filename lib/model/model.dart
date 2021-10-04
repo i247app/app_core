@@ -14,3 +14,4 @@ export 'ksystem_host_data.dart';
 export 'kuser.dart';
 export 'kuser_session.dart';
 export 'kvoip_call_info.dart';
+export 'kimage_animation_parameters.dart';

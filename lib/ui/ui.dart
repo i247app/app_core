@@ -17,3 +17,4 @@ export 'widget/knumber_pad.dart';
 export 'widget/kflash_confetti_overlay.dart';
 export 'widget/kflash_emoji_overlay.dart';
 export 'ktwo_factor.dart';
+export 'widget/kimage_animation/kimage_animation.dart';
