@@ -115,6 +115,7 @@ class _CrossRightToLeftImageState extends State<CrossRightToLeftImage>
                 errorBuilder: (context, error, stack) => Image.asset(
                   KAssets.HERO_EGG,
                   height: heroSize,
+                  package: 'app_core',
                 ),
               ),
             ),

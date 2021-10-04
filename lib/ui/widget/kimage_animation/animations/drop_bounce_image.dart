@@ -129,6 +129,7 @@ class _DropBounceImageState extends State<DropBounceImage>
                   errorBuilder: (context, error, stack) => Image.asset(
                     KAssets.HERO_EGG,
                     height: heroSize,
+                    package: 'app_core',
                   ),
                 ),
               ),
