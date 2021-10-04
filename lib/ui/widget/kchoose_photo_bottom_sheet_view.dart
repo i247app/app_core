@@ -75,7 +75,7 @@ class _KChoosePhotoBottomSheetViewState
                 padding: edgeInsets,
                 child: Row(
                   children: [
-                    Icon(Icons.pets),
+                    Icon(Icons.pets_outlined),
                     SizedBox(width: 10),
                     Text("Hero Avatar"),
                   ],
@@ -90,7 +90,7 @@ class _KChoosePhotoBottomSheetViewState
                 padding: edgeInsets,
                 child: Row(
                   children: [
-                    Icon(Icons.highlight_off_outlined),
+                    Icon(Icons.not_interested_outlined),
                     SizedBox(width: 10),
                     Text("Remove Hero Avatar"),
                   ],
