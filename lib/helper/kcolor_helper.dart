@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 abstract class KColorHelper {
   static final Map<String, Color> nameToColorMap = {
-    "BLACK": KOldStyles.black,
-    "WHITE": KOldStyles.white,
+    "BLACK": KStyles.black,
+    "WHITE": KStyles.white,
   };
 
   static Color fromName(String name) =>

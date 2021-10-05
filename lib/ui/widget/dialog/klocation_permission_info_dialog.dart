@@ -1,4 +1,4 @@
-import 'package:app_core/header/kold_styles.dart';
+import 'package:app_core/header/kstyles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -7,7 +7,7 @@ class KLocationPermissionInfoDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = Row(
       children: [
-        Icon(Icons.location_pin, color: KOldStyles.colorSecondary),
+        Icon(Icons.location_pin, color: KStyles.colorSecondary),
         SizedBox(width: 4),
         Text("Location Access"),
       ],
@@ -28,14 +28,14 @@ class KLocationPermissionInfoDialog extends StatelessWidget {
       titleTextStyle: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.bold,
-        color: KOldStyles.black,
+        color: KStyles.black,
       ),
       content: content,
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
           style: TextButton.styleFrom(
-            textStyle: TextStyle(color: KOldStyles.colorSecondary),
+            textStyle: TextStyle(color: KStyles.colorSecondary),
           ),
           child: Text("Ok"),
         ),

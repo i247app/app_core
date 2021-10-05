@@ -1,4 +1,4 @@
-import 'package:app_core/header/kold_styles.dart';
+import 'package:app_core/header/kstyles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -314,7 +314,7 @@ class _SmallBaseKey extends StatelessWidget {
     final content = Container(
       margin: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
       decoration: BoxDecoration(
-        border: Border.all(color: KOldStyles.colorDivider),
+        border: Border.all(color: KStyles.colorDivider),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Center(child: this.child),
@@ -343,7 +343,7 @@ class _BaseKey extends StatelessWidget {
     final content = Container(
       margin: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
       decoration: BoxDecoration(
-        border: Border.all(color: KOldStyles.colorDivider),
+        border: Border.all(color: KStyles.colorDivider),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Center(child: this.child),

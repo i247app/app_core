@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:app_core/header/kold_styles.dart';
+import 'package:app_core/header/kstyles.dart';
 import 'package:app_core/helper/khost_config.dart';
 import 'package:app_core/helper/klocation_helper.dart';
 import 'package:app_core/helper/ksession_data.dart';
@@ -228,7 +228,7 @@ class _KChatScreenState extends State<KChatScreen> {
 
     // If tablet not show back button
     final shortestSide = MediaQuery.of(context).size.shortestSide;
-    if (shortestSide < KOldStyles.smallestSize || !widget.isEmbedded) {
+    if (shortestSide < KStyles.smallestSize || !widget.isEmbedded) {
       return Scaffold(
         appBar: AppBar(
           title: InkWell(

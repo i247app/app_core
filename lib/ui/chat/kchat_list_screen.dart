@@ -13,7 +13,7 @@ import 'package:flutter/widgets.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/ui/chat/kchat_screen.dart';
-import 'package:app_core/header/kold_styles.dart';
+import 'package:app_core/header/kstyles.dart';
 import 'package:app_core/ui/widget/kembed_manager.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 
@@ -165,7 +165,7 @@ class _KChatListScreenState extends State<KChatListScreen> {
         Container(
           width: double.infinity,
           height: 1,
-          color: KOldStyles.colorDivider,
+          color: KStyles.colorDivider,
         ),
         Expanded(child: chatListing),
       ],
@@ -195,7 +195,7 @@ class _KChatListScreenState extends State<KChatListScreen> {
   Widget build(BuildContext context) {
     final Widget content;
     final shortestSide = MediaQuery.of(context).size.shortestSide;
-    if (shortestSide < KOldStyles.smallestSize) {
+    if (shortestSide < KStyles.smallestSize) {
       content = _buildSmallLayout(false);
     } else {
       content = _buildTabletLayout(true);

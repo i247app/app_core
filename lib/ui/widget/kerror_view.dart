@@ -1,4 +1,4 @@
-import 'package:app_core/header/kold_styles.dart';
+import 'package:app_core/header/kstyles.dart';
 import 'package:flutter/widgets.dart';
 
 class KErrorView extends StatelessWidget {
@@ -11,7 +11,7 @@ class KErrorView extends StatelessWidget {
     final body = Text(
       "Oops, an error occurred! We'll fix this soon.",
       textAlign: TextAlign.center,
-      style: KOldStyles.largeText,
+      style: KStyles.largeText,
     );
 
     return body;

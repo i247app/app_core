@@ -1,4 +1,4 @@
-import 'package:app_core/header/kold_styles.dart';
+import 'package:app_core/header/kstyles.dart';
 import 'package:app_core/helper/kglobals.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +12,7 @@ abstract class KSnackBarHelper {
       ScaffoldMessenger.of((key ?? kNavigatorKey).currentContext!).showSnackBar(
         SnackBar(
           content: Text(text),
-          backgroundColor: isSuccess ? KOldStyles.colorBGYes : KOldStyles.colorBGNo,
+          backgroundColor: isSuccess ? KStyles.colorBGYes : KStyles.colorBGNo,
         ),
       );
 

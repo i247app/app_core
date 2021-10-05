@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:app_core/header/kold_styles.dart';
+import 'package:app_core/header/kstyles.dart';
 
 class KOpenSettingsDialog extends StatelessWidget {
   final String body;
@@ -22,19 +22,19 @@ class KOpenSettingsDialog extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(false),
           child: Text(
             "Cancel",
-            style: KOldStyles.normalText.copyWith(color: KOldStyles.extraDarkGrey),
+            style: KStyles.normalText.copyWith(color: KStyles.extraDarkGrey),
           ),
         ),
         ElevatedButton(
           onPressed: () => openAppSettings()
               .whenComplete(() => Navigator.of(context).pop(true)),
           style: ElevatedButton.styleFrom(
-            primary: KOldStyles.colorBGYes,
-            onPrimary: KOldStyles.colorButtonText,
+            primary: KStyles.colorBGYes,
+            onPrimary: KStyles.colorButtonText,
           ),
           child: Text(
             "Open Settings",
-            style: KOldStyles.normalText.copyWith(color: KOldStyles.white),
+            style: KStyles.normalText.copyWith(color: KStyles.white),
           ),
         ),
       ],

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/kfile_helper.dart';
 import 'package:app_core/helper/ktoast_helper.dart';
-import 'package:app_core/header/kold_styles.dart';
+import 'package:app_core/header/kstyles.dart';
 
 enum _ImageViewerType { url, file }
 
@@ -63,18 +63,18 @@ class _KImageViewerState extends State<KImageViewer> {
     final backButton = IconButton(
       onPressed: () => Navigator.of(context).pop(),
       icon: CircleAvatar(
-          backgroundColor: KOldStyles.extraDarkGrey,
+          backgroundColor: KStyles.extraDarkGrey,
           child: Icon(
             Icons.close,
-            color: KOldStyles.colorButtonText,
+            color: KStyles.colorButtonText,
           )),
     );
 
     final saveButton = IconButton(
       onPressed: onSaveClick,
       icon: CircleAvatar(
-        backgroundColor: KOldStyles.extraDarkGrey,
-        child: Icon(Icons.save, color: KOldStyles.colorButtonText),
+        backgroundColor: KStyles.extraDarkGrey,
+        child: Icon(Icons.save, color: KStyles.colorButtonText),
       ),
     );
 
@@ -94,7 +94,7 @@ class _KImageViewerState extends State<KImageViewer> {
           );
 
     final imageViewer = Container(
-      color: KOldStyles.black,
+      color: KStyles.black,
       child: InteractiveViewer(
         panEnabled: false,
         minScale: 0.5,

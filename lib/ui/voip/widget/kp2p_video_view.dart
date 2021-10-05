@@ -1,4 +1,4 @@
-import 'package:app_core/header/kold_styles.dart';
+import 'package:app_core/header/kstyles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -53,7 +53,7 @@ class _P2PVideoViewState extends State<KP2PVideoView> {
             borderRadius: BorderRadius.circular(10),
             child: Container(
               height: MediaQuery.of(context).size.height / 4,
-              color: KOldStyles.extraDarkGrey,
+              color: KStyles.extraDarkGrey,
               child: AspectRatio(
                 aspectRatio: this.localAspectRatio!,
                 child: InkWell(
@@ -66,7 +66,7 @@ class _P2PVideoViewState extends State<KP2PVideoView> {
 
     final remoteVideo = widget.remoteRenderers.length == 1
         ? Container(
-            color: KOldStyles.black,
+            color: KStyles.black,
             child: RTCVideoView(
               widget.remoteRenderers.values.first,
               objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
@@ -79,7 +79,7 @@ class _P2PVideoViewState extends State<KP2PVideoView> {
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.red),
-                        color: KOldStyles.black,
+                        color: KStyles.black,
                       ),
                       child: RTCVideoView(
                         widget.remoteRenderers[id]!,
@@ -93,10 +93,10 @@ class _P2PVideoViewState extends State<KP2PVideoView> {
           );
 
     final remoteVideoOffIcon = CircleAvatar(
-      backgroundColor: KOldStyles.black,
+      backgroundColor: KStyles.black,
       child: Icon(
         Icons.videocam_off,
-        color: KOldStyles.white,
+        color: KStyles.white,
         size: 32,
       ),
     );
@@ -121,7 +121,7 @@ class _P2PVideoViewState extends State<KP2PVideoView> {
                     SizedBox(height: 6),
                     Text(
                       "No Video",
-                      style: KOldStyles.largeText.copyWith(color: KOldStyles.white),
+                      style: KStyles.largeText.copyWith(color: KStyles.white),
                     ),
                   ]
                 ],
@@ -133,7 +133,7 @@ class _P2PVideoViewState extends State<KP2PVideoView> {
     );
 
     final body = Container(
-      color: KOldStyles.black,
+      color: KStyles.black,
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[

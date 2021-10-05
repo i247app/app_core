@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:app_core/header/kassets.dart';
-import 'package:app_core/header/kold_styles.dart';
+import 'package:app_core/header/kstyles.dart';
 import 'package:app_core/helper/kcall_kit_helper.dart';
 import 'package:app_core/helper/knotif_stream_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
@@ -173,9 +173,9 @@ class _KVOIPCallState extends State<KVOIPCall>
     this.streamSub = KNotifStreamHelper.stream.listen(notifListener);
 
     // White status bar icons & black software buttons
-    SystemChrome.setSystemUIOverlayStyle(KOldStyles.systemStyle.copyWith(
+    SystemChrome.setSystemUIOverlayStyle(KStyles.systemStyle.copyWith(
       statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: KOldStyles.black,
+      systemNavigationBarColor: KStyles.black,
     ));
 
     KWebRTCHelper.blockAutoDisplayCallScreen();
@@ -198,7 +198,7 @@ class _KVOIPCallState extends State<KVOIPCall>
 
     stopRingtone();
 
-    SystemChrome.setSystemUIOverlayStyle(KOldStyles.systemStyle);
+    SystemChrome.setSystemUIOverlayStyle(KStyles.systemStyle);
     this.timer?.cancel();
     this.endCallTimer?.cancel();
     this.panelTimer?.cancel();
@@ -679,8 +679,8 @@ class _KVOIPCallState extends State<KVOIPCall>
       children: <Widget>[
         KP2PButton(
           onClick: hangUp,
-          backgroundColor: KOldStyles.colorBGNo,
-          icon: Icon(Icons.call_end, color: KOldStyles.colorButtonText),
+          backgroundColor: KStyles.colorBGNo,
+          icon: Icon(Icons.call_end, color: KStyles.colorButtonText),
         ),
       ],
     );
@@ -691,20 +691,20 @@ class _KVOIPCallState extends State<KVOIPCall>
         if (!this.hasPeerError)
           KP2PButton(
             onClick: rejectCall,
-            backgroundColor: KOldStyles.colorBGNo,
-            icon: Icon(Icons.call, color: KOldStyles.colorButtonText),
+            backgroundColor: KStyles.colorBGNo,
+            icon: Icon(Icons.call, color: KStyles.colorButtonText),
           ),
         if (this.hasPeerError)
           KP2PButton(
             onClick: safePop,
-            backgroundColor: KOldStyles.colorBGNo,
-            icon: Icon(Icons.logout, color: KOldStyles.colorButtonText),
+            backgroundColor: KStyles.colorBGNo,
+            icon: Icon(Icons.logout, color: KStyles.colorButtonText),
           ),
         if (!(this.isAudioCall || this.isAccepted || this.hasPeerError)) ...[
           KP2PButton(
             onClick: answerCall,
             backgroundColor: Colors.green,
-            icon: Icon(Icons.videocam, color: KOldStyles.colorButtonText),
+            icon: Icon(Icons.videocam, color: KStyles.colorButtonText),
           ),
         ],
       ],
@@ -722,7 +722,7 @@ class _KVOIPCallState extends State<KVOIPCall>
                     : NetworkImage(this.refAvatarURL!),
                 fit: BoxFit.cover,
               ),
-        Container(color: KOldStyles.black.withOpacity(0.8)),
+        Container(color: KStyles.black.withOpacity(0.8)),
         SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -739,8 +739,8 @@ class _KVOIPCallState extends State<KVOIPCall>
               Text(
                 this.refName ?? "",
                 textAlign: TextAlign.center,
-                style: KOldStyles.largeXXLText.copyWith(
-                  color: KOldStyles.white,
+                style: KStyles.largeXXLText.copyWith(
+                  color: KStyles.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -749,8 +749,7 @@ class _KVOIPCallState extends State<KVOIPCall>
                 Text(
                   this.infoLabel,
                   textAlign: TextAlign.center,
-                  style: KOldStyles.normalText
-                      .copyWith(color: KOldStyles.lightGrey),
+                  style: KStyles.normalText.copyWith(color: KStyles.lightGrey),
                 ),
               ],
             ],
@@ -760,7 +759,7 @@ class _KVOIPCallState extends State<KVOIPCall>
     );
 
     final connectView = Container(
-      color: KOldStyles.white,
+      color: KStyles.white,
       child: Stack(
         fit: StackFit.expand,
         children: [
@@ -789,7 +788,7 @@ class _KVOIPCallState extends State<KVOIPCall>
         Center(
           child: Text(
             "Call has ended",
-            style: KOldStyles.largeText.copyWith(color: KOldStyles.white),
+            style: KStyles.largeText.copyWith(color: KStyles.white),
           ),
         ),
         Align(
@@ -799,8 +798,8 @@ class _KVOIPCallState extends State<KVOIPCall>
             child: SafeArea(
               child: KP2PButton(
                 onClick: safePop,
-                backgroundColor: KOldStyles.colorBGNo,
-                icon: Icon(Icons.logout, color: KOldStyles.colorButtonText),
+                backgroundColor: KStyles.colorBGNo,
+                icon: Icon(Icons.logout, color: KStyles.colorButtonText),
               ),
             ),
           ),
@@ -809,14 +808,14 @@ class _KVOIPCallState extends State<KVOIPCall>
     );
 
     final initView = Container(
-      color: KOldStyles.black.withOpacity(0.8),
+      color: KStyles.black.withOpacity(0.8),
       child: Stack(
         fit: StackFit.expand,
         children: [
           Center(
             child: Text(
               "Connecting to call...",
-              style: KOldStyles.largeXLText.copyWith(color: KOldStyles.white),
+              style: KStyles.largeXLText.copyWith(color: KStyles.white),
             ),
           ),
           Align(
@@ -826,8 +825,8 @@ class _KVOIPCallState extends State<KVOIPCall>
               child: SafeArea(
                 child: KP2PButton(
                   onClick: safePop,
-                  backgroundColor: KOldStyles.colorBGNo,
-                  icon: Icon(Icons.close, color: KOldStyles.colorButtonText),
+                  backgroundColor: KStyles.colorBGNo,
+                  icon: Icon(Icons.close, color: KStyles.colorButtonText),
                 ),
               ),
             ),
@@ -837,7 +836,7 @@ class _KVOIPCallState extends State<KVOIPCall>
     );
 
     final wsErrorView = Container(
-      color: KOldStyles.black.withOpacity(0.8),
+      color: KStyles.black.withOpacity(0.8),
       child: Stack(
         fit: StackFit.expand,
         children: [
@@ -848,23 +847,21 @@ class _KVOIPCallState extends State<KVOIPCall>
                 Text(
                   "Video calling service is unavailable",
                   textAlign: TextAlign.center,
-                  style:
-                      KOldStyles.largeXLText.copyWith(color: KOldStyles.white),
+                  style: KStyles.largeXLText.copyWith(color: KStyles.white),
                 ),
                 SizedBox(height: 16),
                 Text(
                   "Please try again in a moment",
                   textAlign: TextAlign.center,
-                  style:
-                      KOldStyles.normalText.copyWith(color: KOldStyles.white),
+                  style: KStyles.normalText.copyWith(color: KStyles.white),
                 ),
                 if (!KHostConfig.isReleaseMode) ...[
                   SizedBox(height: 30),
                   Text(
                     "!! (the TURN server is likely dead/crashed/frozen) !!",
                     textAlign: TextAlign.center,
-                    style: KOldStyles.normalText
-                        .copyWith(color: KOldStyles.colorError),
+                    style:
+                        KStyles.normalText.copyWith(color: KStyles.colorError),
                   ),
                 ],
               ],
@@ -877,8 +874,8 @@ class _KVOIPCallState extends State<KVOIPCall>
               child: SafeArea(
                 child: KP2PButton(
                   onClick: safePop,
-                  backgroundColor: KOldStyles.colorBGNo,
-                  icon: Icon(Icons.close, color: KOldStyles.colorButtonText),
+                  backgroundColor: KStyles.colorBGNo,
+                  icon: Icon(Icons.close, color: KStyles.colorButtonText),
                 ),
               ),
             ),

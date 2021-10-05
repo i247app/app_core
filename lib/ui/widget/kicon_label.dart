@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:app_core/header/kold_styles.dart';
+import 'package:app_core/header/kstyles.dart';
 
 class KIconLabel extends StatelessWidget {
   final String? asset;
@@ -44,7 +44,7 @@ class KIconLabel extends StatelessWidget {
             height: this.assetSize,
             padding: EdgeInsets.all(2),
             decoration: BoxDecoration(
-              color: KOldStyles.white,
+              color: KStyles.white,
               borderRadius: BorderRadius.circular(30),
             ),
             child: rawIcon,
