@@ -9,5 +9,5 @@ pub: clean
 
 clean:
 	flutter clean
-	rm -f lib/model/*.g/dart
-	rm -f lib/model/response/*.g/dart
+	rm -f lib/model/*.g.dart
+	rm -f lib/model/response/*.g.dart
