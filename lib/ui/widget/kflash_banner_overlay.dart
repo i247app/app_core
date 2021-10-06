@@ -51,8 +51,7 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
   }
 
   void confettiHelperListener() async {
-    if (!(KFlashHelper.flash.flashType == KFlash.TYPE_BANNER &&
-        KFlashHelper.flash.mediaType == KFlash.MEDIA_TEXT)) return;
+    if (!(KFlashHelper.flash.flashType == KFlash.TYPE_BANNER)) return;
 
     this.setState(() => this.flash = KFlashHelper.flash);
 
