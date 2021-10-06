@@ -59,14 +59,13 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
       this.flash = KFlashHelper.flash;
       this.isFlashing = true;
     });
-
-    await Future.delayed(this.delayDuration);
-
     this.slideAnimationController.forward();
 
-    await Future.delayed(this.displayDuration + this.animationDuration);
+    await Future.delayed(
+        this.delayDuration + this.displayDuration + this.animationDuration);
 
     setState(() => this.isFlashing = false);
+    this.slideAnimationController.reset();
   }
 
   @override
