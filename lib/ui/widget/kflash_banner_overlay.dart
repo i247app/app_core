@@ -22,7 +22,9 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
 
   KFlash? flash;
 
-  bool get isShowMessage => this.flash != null;
+  bool isFlashing = false;
+
+  bool get isShowMessage => this.flash != null && this.isFlashing;
 
   @override
   void initState() {
@@ -53,7 +55,10 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
   void confettiHelperListener() async {
     if (!(KFlashHelper.flash.flashType == KFlash.TYPE_BANNER)) return;
 
-    this.setState(() => this.flash = KFlashHelper.flash);
+    this.setState(() {
+      this.flash = KFlashHelper.flash;
+      this.isFlashing = true;
+    });
 
     await Future.delayed(this.delayDuration);
 
@@ -61,7 +66,7 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
 
     await Future.delayed(this.displayDuration + this.animationDuration);
 
-    setState(() => this.flash = null);
+    setState(() => this.isFlashing = false);
   }
 
   @override
