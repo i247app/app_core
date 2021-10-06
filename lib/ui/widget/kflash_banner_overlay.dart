@@ -75,20 +75,25 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
 
     Widget rawBanner;
     try {
-      rawBanner = this.flash?.mediaType == KFlash.MEDIA_TEXT
-          ? Text(
-              this.flash?.media ?? "",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-            )
-          : FadeInImage.assetNetwork(
-              placeholder: KAssets.IMG_TRANSPARENCY,
-              image: this.flash!.media!,
-            );
+      switch (this.flash?.mediaType) {
+        case KFlash.MEDIA_TEXT:
+          rawBanner = Text(
+            this.flash?.media ?? "",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          );
+          break;
+        default:
+          rawBanner = FadeInImage.assetNetwork(
+            placeholder: KAssets.IMG_TRANSPARENCY,
+            image: this.flash!.media!,
+          );
+          break;
+      }
     } catch (e) {
       rawBanner = Text("# ERROR: unexpected media #");
     }
