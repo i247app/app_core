@@ -9,6 +9,7 @@ part 'kchat.g.dart';
 @JsonSerializable()
 class KChat {
   static const String APP_CONTENT_CHAT = "chat";
+  static const String APP_CONTENT_SUPPORT = "cusup";
 
   @JsonKey(name: "chatID")
   String? chatID;
@@ -40,6 +41,9 @@ class KChat {
   @JsonKey(name: "refApp")
   String? refApp;
 
+  @JsonKey(name: "domain")
+  String? domain;
+
   /// Methods
   @JsonKey(ignore: true)
   bool get isGroup => (this.kMembers ?? []).length > 2;
@@ -62,8 +66,7 @@ class KChat {
 
   KChat();
 
-  factory KChat.fromJson(Map<String, dynamic> json) =>
-      _$KChatFromJson(json);
+  factory KChat.fromJson(Map<String, dynamic> json) => _$KChatFromJson(json);
 
   Map<String, dynamic> toJson() => _$KChatToJson(this);
 }

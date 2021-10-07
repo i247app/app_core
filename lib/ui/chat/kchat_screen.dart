@@ -22,6 +22,7 @@ import 'package:flutter/widgets.dart';
 
 class KChatScreen extends StatefulWidget {
   final List<KChatMember>? members;
+  final bool isSupport;
   final String? chatID;
   final String? title;
   final Function? onChat;
@@ -36,6 +37,7 @@ class KChatScreen extends StatefulWidget {
     this.onChat,
     this.isEmbedded = false,
     this.onChatroomControllerHeard,
+    this.isSupport = false,
   }) : super(key: key);
 
   @override
@@ -56,7 +58,8 @@ class _KChatScreenState extends State<KChatScreen> {
     super.initState();
 
     this.chatroomCtrl = KChatroomController(
-      refApp: KChat.APP_CONTENT_CHAT,
+      refApp:
+          widget.isSupport ? KChat.APP_CONTENT_SUPPORT : KChat.APP_CONTENT_CHAT,
       chatID: widget.chatID,
       members: widget.members,
     );

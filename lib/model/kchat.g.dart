@@ -21,7 +21,8 @@ KChat _$KChatFromJson(Map<String, dynamic> json) {
         .toList()
     ..activeDate = zzz_str2Date(json['activeDate'] as String?)
     ..refID = json['refID'] as String?
-    ..refApp = json['refApp'] as String?;
+    ..refApp = json['refApp'] as String?
+    ..domain = json['domain'] as String?;
 }
 
 Map<String, dynamic> _$KChatToJson(KChat instance) => <String, dynamic>{
@@ -35,4 +36,5 @@ Map<String, dynamic> _$KChatToJson(KChat instance) => <String, dynamic>{
       'activeDate': zzz_date2Str(instance.activeDate),
       'refID': instance.refID,
       'refApp': instance.refApp,
+      'domain': instance.domain,
     };

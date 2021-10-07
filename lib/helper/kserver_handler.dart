@@ -37,6 +37,7 @@ abstract class KServerHandler {
       "svc": "chat",
       "req": "chat.get",
       "chat": KChat()
+        ..domain = await KUtil.getPackageName()
         ..refApp = refApp
         ..refID = refID
         ..chatID = chatID,
