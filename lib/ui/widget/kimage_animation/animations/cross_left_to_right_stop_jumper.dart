@@ -89,6 +89,8 @@ class _CrossLeftToRightStopJumperImageState
               if (mounted) this.executeAnimation();
             },
           );
+        } else if (mounted && currentPreset!.onFinish != null) {
+          currentPreset!.onFinish!();
         }
       });
     this._crossScreenAnimation = Tween<double>(

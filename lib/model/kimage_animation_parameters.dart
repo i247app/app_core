@@ -4,6 +4,7 @@ class KImageAnimationParameters {
   bool? isRandom;
   bool? isHorizontal;
   int? maxLoop;
+  Function? onFinish;
 
   KImageAnimationParameters({
     this.key,
@@ -11,5 +12,6 @@ class KImageAnimationParameters {
     this.isHorizontal,
     this.isRandom,
     this.maxLoop,
+    this.onFinish,
   });
 }

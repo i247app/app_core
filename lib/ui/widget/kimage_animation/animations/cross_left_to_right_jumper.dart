@@ -84,6 +84,8 @@ class _CrossLeftToRightJumperImageState
               }
             },
           );
+        } else if (mounted && currentPreset!.onFinish != null) {
+          currentPreset!.onFinish!();
         }
       });
     this._crossScreenAnimation = Tween<double>(
