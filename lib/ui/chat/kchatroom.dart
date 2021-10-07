@@ -21,8 +21,10 @@ import 'package:collection/collection.dart';
 class KChatroom extends StatefulWidget {
   final KChatroomController controller;
   final bool isReadOnly;
+  final bool isSupport;
 
-  const KChatroom(this.controller, {this.isReadOnly = false});
+  const KChatroom(this.controller,
+      {this.isReadOnly = false, this.isSupport = false});
 
   @override
   _KChatroomState createState() => _KChatroomState();
@@ -130,13 +132,14 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "Say hi to ${this.refUser?.firstName}",
+                "Say hi to ${widget.isSupport ? "customer support" : this.refUser?.firstName}",
                 style: theme.textTheme.headline4,
+                textAlign: TextAlign.center,
               ),
               SizedBox(height: 14),
               IconButton(
-                onPressed: () => widget.controller
-                    .sendText("Hi ${this.refUser?.firstName}!"),
+                onPressed: () => widget.controller.sendText(
+                    "Hi ${widget.isSupport ? "" : this.refUser?.firstName!}"),
                 icon: Center(child: Text("👋", style: TextStyle(fontSize: 58))),
                 iconSize: 70,
               ),

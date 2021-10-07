@@ -217,7 +217,10 @@ class _KChatScreenState extends State<KChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final body = KChatroom(this.chatroomCtrl);
+    final body = KChatroom(
+      this.chatroomCtrl,
+      isSupport: widget.isSupport,
+    );
 
     final addMemberAction = IconButton(
       onPressed: () => this.onManagerMember(),
