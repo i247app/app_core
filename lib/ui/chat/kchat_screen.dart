@@ -239,7 +239,8 @@ class _KChatScreenState extends State<KChatScreen> {
         appBar: AppBar(
           title: InkWell(
             onTap: () => this.onManagerMember(),
-            child: Text(this.chatroomCtrl.value.chatTitle ?? "Chat"),
+            child: Text(this.chatroomCtrl.value.chatTitle ??
+                (widget.isSupport ? "Support" : "Chat")),
           ),
           actions: <Widget>[
             if (this.isVideoCallEnabled) videoCallAction,

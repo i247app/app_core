@@ -95,9 +95,10 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
       this.value.members ??= [];
     }
 
-    notifyListeners();
-
-    if (response.isError || response.chat?.kMessages == null) return;
+    if (response.isError || response.chat?.kMessages == null) {
+      notifyListeners();
+      return;
+    }
 
     // Merge algorithm
     final List<String> msgIdsForDeletion = [];
@@ -136,6 +137,10 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
       final rhs = a;
       return lhs.messageDate!.compareTo(rhs.messageDate!);
     });
+
+    if (this._smartChatID == null && (this.value.messages?.length ?? 0) > 0) {
+      this.value.chatID = this.value.messages?.first.chatID;
+    }
 
     notifyListeners();
   }
