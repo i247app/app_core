@@ -75,6 +75,8 @@ class _CrossRightToLeftImageState extends State<CrossRightToLeftImage>
                   }
                 },
               );
+            } else if (mounted && currentPreset!.onFinish != null) {
+              currentPreset!.onFinish!();
             }
           });
 

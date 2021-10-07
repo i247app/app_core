@@ -44,10 +44,12 @@ class KImageAnimation extends StatefulWidget {
   final String animationType;
   final List<String> imageUrls;
   final int? maxLoop;
+  final Function? onFinish;
 
   const KImageAnimation({
     required this.animationType,
     required this.imageUrls,
+    this.onFinish,
     this.maxLoop,
   });
 
@@ -63,7 +65,10 @@ class _KImageAnimationState extends State<KImageAnimation> {
           widget.imageUrls.length > 0
               ? widget.imageUrls
               : KImageAnimationHelper.animationImages,
-          animationPreset: KImageAnimationParameters(maxLoop: widget.maxLoop ?? 0),
+          animationPreset: KImageAnimationParameters(
+            maxLoop: widget.maxLoop ?? 0,
+            onFinish: widget.onFinish,
+          ),
         );
       case KImageAnimationType.HORIZONTAL:
         return ShakeImage(
@@ -71,10 +76,12 @@ class _KImageAnimationState extends State<KImageAnimation> {
               ? widget.imageUrls
               : KImageAnimationHelper.animationImages,
           animationPreset: KImageAnimationParameters(
-              speed: 10,
-              isHorizontal: true,
-              isRandom: false,
-              maxLoop: widget.maxLoop ?? 0),
+            speed: 10,
+            isHorizontal: true,
+            isRandom: false,
+            maxLoop: widget.maxLoop ?? 0,
+            onFinish: widget.onFinish,
+          ),
         );
       case KImageAnimationType.DROP_BOUNCE_SHAKE_RANDOM:
         return DropBounceShakeImage(
@@ -82,10 +89,12 @@ class _KImageAnimationState extends State<KImageAnimation> {
               ? widget.imageUrls
               : KImageAnimationHelper.animationImages,
           animationPreset: KImageAnimationParameters(
-              speed: 10,
-              isHorizontal: false,
-              isRandom: true,
-              maxLoop: widget.maxLoop ?? 0),
+            speed: 10,
+            isHorizontal: false,
+            isRandom: true,
+            maxLoop: widget.maxLoop ?? 0,
+            onFinish: widget.onFinish,
+          ),
         );
       case KImageAnimationType.DROP_BOUNCE_SHAKE_HORIZONTAL:
         return DropBounceShakeImage(
@@ -93,10 +102,12 @@ class _KImageAnimationState extends State<KImageAnimation> {
               ? widget.imageUrls
               : KImageAnimationHelper.animationImages,
           animationPreset: KImageAnimationParameters(
-              speed: 10,
-              isHorizontal: true,
-              isRandom: false,
-              maxLoop: widget.maxLoop ?? 0),
+            speed: 10,
+            isHorizontal: true,
+            isRandom: false,
+            maxLoop: widget.maxLoop ?? 0,
+            onFinish: widget.onFinish,
+          ),
         );
       case KImageAnimationType.SCREEN_RIGHT_LEFT:
         return CrossRightToLeftImage(
@@ -104,10 +115,12 @@ class _KImageAnimationState extends State<KImageAnimation> {
               ? widget.imageUrls
               : KImageAnimationHelper.animationImages,
           animationPreset: KImageAnimationParameters(
-              speed: 10,
-              isHorizontal: true,
-              isRandom: false,
-              maxLoop: widget.maxLoop ?? 0),
+            speed: 10,
+            isHorizontal: true,
+            isRandom: false,
+            maxLoop: widget.maxLoop ?? 0,
+            onFinish: widget.onFinish,
+          ),
         );
       case KImageAnimationType.SCREEN_LEFT_RIGHT:
         return CrossLeftToRightImage(
@@ -115,10 +128,12 @@ class _KImageAnimationState extends State<KImageAnimation> {
               ? widget.imageUrls
               : KImageAnimationHelper.animationImages,
           animationPreset: KImageAnimationParameters(
-              speed: 10,
-              isHorizontal: true,
-              isRandom: false,
-              maxLoop: widget.maxLoop ?? 0),
+            speed: 10,
+            isHorizontal: true,
+            isRandom: false,
+            maxLoop: widget.maxLoop ?? 0,
+            onFinish: widget.onFinish,
+          ),
         );
       case KImageAnimationType.SCREEN_LEFT_RIGHT_JUMP:
         return CrossLeftToRightJumperImage(
@@ -126,10 +141,12 @@ class _KImageAnimationState extends State<KImageAnimation> {
               ? widget.imageUrls
               : KImageAnimationHelper.animationImages,
           animationPreset: KImageAnimationParameters(
-              speed: 10,
-              isHorizontal: true,
-              isRandom: false,
-              maxLoop: widget.maxLoop ?? 0),
+            speed: 10,
+            isHorizontal: true,
+            isRandom: false,
+            maxLoop: widget.maxLoop ?? 0,
+            onFinish: widget.onFinish,
+          ),
         );
       case KImageAnimationType.SCREEN_LEFT_RIGHT_STOP_JUMP:
         return CrossLeftToRightStopJumperImage(
@@ -137,10 +154,12 @@ class _KImageAnimationState extends State<KImageAnimation> {
               ? widget.imageUrls
               : KImageAnimationHelper.animationImages,
           animationPreset: KImageAnimationParameters(
-              speed: 10,
-              isHorizontal: true,
-              isRandom: false,
-              maxLoop: widget.maxLoop ?? 0),
+            speed: 10,
+            isHorizontal: true,
+            isRandom: false,
+            maxLoop: widget.maxLoop ?? 0,
+            onFinish: widget.onFinish,
+          ),
         );
       default:
         return Container();

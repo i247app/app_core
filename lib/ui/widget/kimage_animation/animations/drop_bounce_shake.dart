@@ -110,6 +110,8 @@ class _DropBounceShakeImageState extends State<DropBounceShakeImage>
                 if (loopTime > 0) this.setState(() => loopTime = loopTime - 1);
               }
             });
+          } else if (currentPreset!.onFinish != null) {
+            currentPreset!.onFinish!();
           }
         }
       });

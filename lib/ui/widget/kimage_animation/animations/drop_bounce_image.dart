@@ -87,6 +87,8 @@ class _DropBounceImageState extends State<DropBounceImage>
                   }
                 },
               );
+            } else if (mounted && currentPreset!.onFinish != null) {
+              currentPreset!.onFinish!();
             }
           });
 
