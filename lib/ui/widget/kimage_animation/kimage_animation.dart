@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:app_core/ui/widget/kimage_animation/animations/zoom_drop.dart';
+import 'package:app_core/ui/widget/kimage_animation/animations/zoom_bounce.dart';
 import 'package:app_core/ui/widget/kimage_animation/animations/zoom_shake.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -26,8 +26,8 @@ class KImageAnimationType {
   static const String SCREEN_LEFT_RIGHT_JUMP = "SCREEN_LEFT_RIGHT_JUMP";
   static const String SCREEN_LEFT_RIGHT_STOP_JUMP =
       "SCREEN_LEFT_RIGHT_STOP_JUMP";
-  static const String ZOOM_DROP =
-      "ZOOM_DROP";
+  static const String ZOOM_BOUNCE =
+      "ZOOM_BOUNCE";
   static const String ZOOM_SHAKE =
       "ZOOM_SHAKE";
 
@@ -40,7 +40,7 @@ class KImageAnimationType {
     SCREEN_LEFT_RIGHT,
     SCREEN_LEFT_RIGHT_JUMP,
     SCREEN_LEFT_RIGHT_STOP_JUMP,
-    ZOOM_DROP,
+    ZOOM_BOUNCE,
     ZOOM_SHAKE,
   ];
 
@@ -169,8 +169,8 @@ class _KImageAnimationState extends State<KImageAnimation> {
             onFinish: widget.onFinish,
           ),
         );
-      case KImageAnimationType.ZOOM_DROP:
-        return ZoomDropImage(
+      case KImageAnimationType.ZOOM_BOUNCE:
+        return ZoomBounceImage(
           widget.imageUrls.length > 0
               ? widget.imageUrls
               : KImageAnimationHelper.animationImages,

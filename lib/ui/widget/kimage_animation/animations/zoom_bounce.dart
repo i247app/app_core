@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/model/kimage_animation_parameters.dart';
 import 'package:app_core/header/kassets.dart';
-import 'package:vector_math/vector_math_64.dart';
 
-class ZoomDropImage extends StatefulWidget {
+class ZoomBounceImage extends StatefulWidget {
   final List<String> imageUrls;
   final KImageAnimationParameters? animationPreset;
 
-  const ZoomDropImage(this.imageUrls, {this.animationPreset});
+  const ZoomBounceImage(this.imageUrls, {this.animationPreset});
 
   @override
-  _ZoomDropImageState createState() => _ZoomDropImageState();
+  _ZoomBounceImageState createState() => _ZoomBounceImageState();
 }
 
-class _ZoomDropImageState extends State<ZoomDropImage>
+class _ZoomBounceImageState extends State<ZoomBounceImage>
     with TickerProviderStateMixin {
   late Animation _bouncingAnimation;
   late Animation<double> _scaleAnimation;
