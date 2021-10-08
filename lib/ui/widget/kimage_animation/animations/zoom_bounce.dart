@@ -20,7 +20,7 @@ class _ZoomBounceImageState extends State<ZoomBounceImage>
   late AnimationController _scaleAnimationController,
       _bouncingAnimationController;
 
-  static const MAX_BOUNCE_TIME = 5;
+  static const MAX_BOUNCE_TIME = 3;
 
   final Duration scaleDuration = Duration(milliseconds: 1000);
   final Duration bouncingDuration = Duration(milliseconds: 300);
