@@ -22,7 +22,7 @@ class _ZoomShakeImageState extends State<ZoomShakeImage>
   late Animation<double> _scaleAnimation;
   late AnimationController _scaleAnimationController, _shakeAnimationController;
 
-  static const MAX_SHAKE_TIME = 3;
+  static const MAX_SHAKE_TIME = 1;
 
   final Duration scaleDuration = Duration(milliseconds: 1000);
   final Duration shakeDuration = Duration(milliseconds: 1000);
