@@ -41,4 +41,6 @@ abstract class KFlashHelper {
     ..flashType = KFlash.TYPE_BANNER
     ..media = KFlash.MEDIA_HERO
     ..media = heroImageURL;
+
+  static void doFlash(KFlash flash) => flashController.value = flash;
 }
