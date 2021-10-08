@@ -3,6 +3,7 @@ class KImageAnimationParameters {
   double? speed;
   bool? isRandom;
   bool? isHorizontal;
+  double? size;
   int? maxLoop;
   Function? onFinish;
 
@@ -11,6 +12,7 @@ class KImageAnimationParameters {
     this.speed,
     this.isHorizontal,
     this.isRandom,
+    this.size,
     this.maxLoop,
     this.onFinish,
   });

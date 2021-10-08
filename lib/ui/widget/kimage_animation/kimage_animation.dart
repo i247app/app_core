@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:app_core/ui/widget/kimage_animation/animations/shake_the_top.dart';
 import 'package:app_core/ui/widget/kimage_animation/animations/zoom_bounce.dart';
 import 'package:app_core/ui/widget/kimage_animation/animations/zoom_shake.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,8 @@ class KImageAnimationType {
       "ZOOM_BOUNCE";
   static const String ZOOM_SHAKE =
       "ZOOM_SHAKE";
+  static const String SHAKE_THE_TOP =
+      "SHAKE_THE_TOP";
 
   static const List<String> animationList = [
     DROP_BOUNCE,
@@ -42,6 +45,7 @@ class KImageAnimationType {
     SCREEN_LEFT_RIGHT_STOP_JUMP,
     ZOOM_BOUNCE,
     ZOOM_SHAKE,
+    SHAKE_THE_TOP,
   ];
 
   static String get randomAnimationType =>
@@ -52,6 +56,7 @@ class KImageAnimation extends StatefulWidget {
   final String animationType;
   final List<String> imageUrls;
   final int? maxLoop;
+  final double? size;
   final Function? onFinish;
 
   const KImageAnimation({
@@ -59,6 +64,7 @@ class KImageAnimation extends StatefulWidget {
     required this.imageUrls,
     this.onFinish,
     this.maxLoop,
+    this.size,
   });
 
   @override
@@ -185,6 +191,17 @@ class _KImageAnimationState extends State<KImageAnimation> {
               ? widget.imageUrls
               : KImageAnimationHelper.animationImages,
           animationPreset: KImageAnimationParameters(
+            maxLoop: widget.maxLoop ?? 0,
+            onFinish: widget.onFinish,
+          ),
+        );
+      case KImageAnimationType.SHAKE_THE_TOP:
+        return ShakeTheTopImage(
+          widget.imageUrls.length > 0
+              ? widget.imageUrls
+              : KImageAnimationHelper.animationImages,
+          animationPreset: KImageAnimationParameters(
+            size: widget.size,
             maxLoop: widget.maxLoop ?? 0,
             onFinish: widget.onFinish,
           ),
