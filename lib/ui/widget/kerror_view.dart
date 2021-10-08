@@ -25,6 +25,6 @@ class KErrorView extends StatelessWidget {
       child: label,
     );
 
-    return Material(child: body);
+    return Material(child: SafeArea(child: body));
   }
 }
