@@ -94,6 +94,7 @@ class _KFlashBannerOverlayState extends State<KFlashBannerOverlay>
           rawBanner = FadeInImage.assetNetwork(
             placeholder: KAssets.IMG_TRANSPARENCY,
             image: this.flash!.media!,
+            fadeInDuration: Duration(milliseconds: 300),
           );
           break;
       }
