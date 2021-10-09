@@ -69,7 +69,7 @@ dependencies:
       url: https://github.com/huynhtuanhuy/flutter_ringtone_player.git
     #^3.0.0
 
-  # wakelock: ^0.5.2 # ^0.5.1
+  wakelock: ^0.5.2 # ^0.5.1
   uuid: ^3.0.4
 
   sliding_up_panel: 2.0.0+1
