@@ -13,6 +13,7 @@ class KFlash {
   static const String MEDIA_CONFETTI = "confetti";
   static const String MEDIA_HERO = "hero";
 
+  // VALUE Emoji
   static const String VALUE_SMILEY = "smiley";
   static const String VALUE_FROWN = "frown";
   static const String VALUE_STAR = "star";
@@ -20,7 +21,13 @@ class KFlash {
   static const String VALUE_THUMB_UP = "thumbUp";
   static const String VALUE_THUMB_DOWN = "thumbDown";
   static const String VALUE_PHO = "pho";
+
+  // VALUE Confetti
   static const String VALUE_PAPER = "paper";
+
+  // VALUE Hero
+  static const String VALUE_DURIMAN = "duriman";
+  static const String VALUE_FUGU = "fugu";
 
   @JsonKey(name: "flashType")
   String? flashType;
