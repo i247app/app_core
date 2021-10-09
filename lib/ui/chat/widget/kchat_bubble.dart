@@ -161,7 +161,7 @@ class KChatBubble extends StatelessWidget {
               SizedBox(height: 4),
               Text(
                 "${KUtil.prettyDate(this.chat.messageDate, showTime: true)}",
-                style: theme.textTheme.caption,
+                style: theme.textTheme.caption!.copyWith(color: Colors.white),
               ),
             ],
           ),
