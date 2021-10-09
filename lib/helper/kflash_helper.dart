@@ -32,15 +32,16 @@ abstract class KFlashHelper {
       ..media = emojis!.first;
   }
 
-  static void banner(String text) => flashController.value = KFlash()
-    ..flashType = KFlash.TYPE_BANNER
-    ..mediaType = KFlash.MEDIA_TEXT
-    ..media = text;
+  static void banner(String text, {String mediaType = KFlash.MEDIA_TEXT}) =>
+      flashController.value = KFlash()
+        ..flashType = KFlash.TYPE_BANNER
+        ..mediaType = mediaType
+        ..media = text;
 
-  static void hero(String heroImageURL) => flashController.value = KFlash()
-    ..flashType = KFlash.TYPE_BANNER
-    ..media = KFlash.MEDIA_HERO
-    ..media = heroImageURL;
+  static void hero(String heroImageURL) => banner(
+        heroImageURL,
+        mediaType: KFlash.MEDIA_HERO,
+      );
 
   static void doFlash(KFlash flash) => flashController.value = flash;
 }
