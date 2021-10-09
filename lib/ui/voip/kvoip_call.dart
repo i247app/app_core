@@ -20,6 +20,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:uuid/uuid.dart';
 import 'package:app_core/app_core.dart';
+import 'package:wakelock/wakelock.dart';
 
 enum _CallPerspective { sender, receiver }
 enum _CallState { ws_error, init, waiting, in_progress, ended }
@@ -155,7 +156,7 @@ class _KVOIPCallState extends State<KVOIPCall>
   @override
   void initState() {
     super.initState();
-    // Wakelock.enable();
+    Wakelock.enable();
     WidgetsBinding.instance?.addObserver(this);
 
     this._slidingAnimationController = AnimationController(
@@ -193,7 +194,7 @@ class _KVOIPCallState extends State<KVOIPCall>
     if (!KHostConfig.isReleaseMode) print("P2PCall.dispose fired...");
     this._slidingAnimationController.dispose();
 
-    // Wakelock.disable();
+    Wakelock.disable();
     WidgetsBinding.instance?.removeObserver(this);
 
     stopRingtone();
