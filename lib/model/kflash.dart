@@ -11,7 +11,7 @@ class KFlash {
   static const String MEDIA_IMAGE = "image";
   static const String MEDIA_TEXT = "text";
   static const String MEDIA_CONFETTI = "confetti";
-  static const String MEDIA_HERO = "confetti";
+  static const String MEDIA_HERO = "hero";
 
   static const String VALUE_SMILEY = "smiley";
   static const String VALUE_FROWN = "frown";
