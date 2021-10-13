@@ -939,7 +939,6 @@ class _KVOIPCallState extends State<KVOIPCall>
                 Expanded(
                     child: Container(
                   child: chatroom,
-                  color: Colors.white,
                 )),
               ],
             );
