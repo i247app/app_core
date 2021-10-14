@@ -16,6 +16,10 @@ KUser _$KUserFromJson(Map<String, dynamic> json) {
     ..firstName = json['firstName'] as String?
     ..middleName = json['middleName'] as String?
     ..lastName = json['lastName'] as String?
+    ..dob = zzz_str2Date(json['dob'] as String?)
+    ..parentName = json['parentName'] as String?
+    ..parentEmail = json['parentEmail'] as String?
+    ..parentPhone = json['parentPhone'] as String?
     ..address = json['addressLine1'] as String?
     ..address2 = json['addressLine2'] as String?
     ..city = json['city'] as String?
@@ -37,6 +41,10 @@ Map<String, dynamic> _$KUserToJson(KUser instance) => <String, dynamic>{
       'firstName': instance.firstName,
       'middleName': instance.middleName,
       'lastName': instance.lastName,
+      'dob': zzz_date2Str(instance.dob),
+      'parentName': instance.parentName,
+      'parentEmail': instance.parentEmail,
+      'parentPhone': instance.parentPhone,
       'addressLine1': instance.address,
       'addressLine2': instance.address2,
       'city': instance.city,

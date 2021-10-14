@@ -1,3 +1,4 @@
+import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kutil.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -28,6 +29,18 @@ class KUser {
 
   @JsonKey(name: "lastName")
   String? lastName;
+
+  @JsonKey(name: "dob", fromJson: zzz_str2Date, toJson: zzz_date2Str)
+  DateTime? dob;
+
+  @JsonKey(name: "parentName")
+  String? parentName;
+
+  @JsonKey(name: "parentEmail")
+  String? parentEmail;
+
+  @JsonKey(name: "parentPhone")
+  String? parentPhone;
 
   /*
    * Address
