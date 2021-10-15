@@ -109,7 +109,10 @@ class _ShakeTheTopImageState extends State<ShakeTheTopImage>
         child: Container(
           transform: Matrix4.rotationZ(_shakeAnimation.value * Math.pi),
           transformAlignment: Alignment.bottomCenter,
-          child: Image.network(
+          child: (currentPreset?.isAssetImage ?? false) ? Image.asset(
+            imageUrls[imageIndex],
+            height: heroSize,
+          ) : Image.network(
             imageUrls[imageIndex],
             height: heroSize,
             errorBuilder: (context, error, stack) => Image.asset(

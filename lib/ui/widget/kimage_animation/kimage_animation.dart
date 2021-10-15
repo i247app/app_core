@@ -57,11 +57,13 @@ class KImageAnimation extends StatefulWidget {
   final List<String> imageUrls;
   final int? maxLoop;
   final double? size;
+  final bool? isAssetImage;
   final Function? onFinish;
 
   const KImageAnimation({
     required this.animationType,
     required this.imageUrls,
+    this.isAssetImage,
     this.onFinish,
     this.maxLoop,
     this.size,
@@ -82,6 +84,7 @@ class _KImageAnimationState extends State<KImageAnimation> {
           animationPreset: KImageAnimationParameters(
             maxLoop: widget.maxLoop ?? 0,
             onFinish: widget.onFinish,
+            isAssetImage: widget.isAssetImage,
           ),
         );
       case KImageAnimationType.HORIZONTAL:
@@ -95,6 +98,7 @@ class _KImageAnimationState extends State<KImageAnimation> {
             isRandom: false,
             maxLoop: widget.maxLoop ?? 0,
             onFinish: widget.onFinish,
+            isAssetImage: widget.isAssetImage,
           ),
         );
       case KImageAnimationType.DROP_BOUNCE_SHAKE_RANDOM:
@@ -108,6 +112,7 @@ class _KImageAnimationState extends State<KImageAnimation> {
             isRandom: true,
             maxLoop: widget.maxLoop ?? 0,
             onFinish: widget.onFinish,
+            isAssetImage: widget.isAssetImage,
           ),
         );
       case KImageAnimationType.DROP_BOUNCE_SHAKE_HORIZONTAL:
@@ -121,6 +126,7 @@ class _KImageAnimationState extends State<KImageAnimation> {
             isRandom: false,
             maxLoop: widget.maxLoop ?? 0,
             onFinish: widget.onFinish,
+            isAssetImage: widget.isAssetImage,
           ),
         );
       case KImageAnimationType.SCREEN_RIGHT_LEFT:
@@ -134,6 +140,7 @@ class _KImageAnimationState extends State<KImageAnimation> {
             isRandom: false,
             maxLoop: widget.maxLoop ?? 0,
             onFinish: widget.onFinish,
+            isAssetImage: widget.isAssetImage,
           ),
         );
       case KImageAnimationType.SCREEN_LEFT_RIGHT:
@@ -147,6 +154,7 @@ class _KImageAnimationState extends State<KImageAnimation> {
             isRandom: false,
             maxLoop: widget.maxLoop ?? 0,
             onFinish: widget.onFinish,
+            isAssetImage: widget.isAssetImage,
           ),
         );
       case KImageAnimationType.SCREEN_LEFT_RIGHT_JUMP:
@@ -160,6 +168,7 @@ class _KImageAnimationState extends State<KImageAnimation> {
             isRandom: false,
             maxLoop: widget.maxLoop ?? 0,
             onFinish: widget.onFinish,
+            isAssetImage: widget.isAssetImage,
           ),
         );
       case KImageAnimationType.SCREEN_LEFT_RIGHT_STOP_JUMP:
@@ -173,6 +182,7 @@ class _KImageAnimationState extends State<KImageAnimation> {
             isRandom: false,
             maxLoop: widget.maxLoop ?? 0,
             onFinish: widget.onFinish,
+            isAssetImage: widget.isAssetImage,
           ),
         );
       case KImageAnimationType.ZOOM_BOUNCE:
@@ -183,6 +193,7 @@ class _KImageAnimationState extends State<KImageAnimation> {
           animationPreset: KImageAnimationParameters(
             maxLoop: widget.maxLoop ?? 0,
             onFinish: widget.onFinish,
+            isAssetImage: widget.isAssetImage,
           ),
         );
       case KImageAnimationType.ZOOM_SHAKE:
@@ -193,6 +204,7 @@ class _KImageAnimationState extends State<KImageAnimation> {
           animationPreset: KImageAnimationParameters(
             maxLoop: widget.maxLoop ?? 0,
             onFinish: widget.onFinish,
+            isAssetImage: widget.isAssetImage,
           ),
         );
       case KImageAnimationType.SHAKE_THE_TOP:
@@ -204,6 +216,7 @@ class _KImageAnimationState extends State<KImageAnimation> {
             size: widget.size,
             maxLoop: widget.maxLoop ?? 0,
             onFinish: widget.onFinish,
+            isAssetImage: widget.isAssetImage,
           ),
         );
       default:
