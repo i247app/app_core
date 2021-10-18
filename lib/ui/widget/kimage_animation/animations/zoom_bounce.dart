@@ -50,6 +50,9 @@ class _ZoomBounceImageState extends State<ZoomBounceImage>
       ..addListener(() => setState(() {}))
       ..addStatusListener((status) {
         if (mounted && status == AnimationStatus.completed) {
+          this.setState(() {
+            this.bounceTime = this.bounceTime - 1;
+          });
           this._bouncingAnimationController.forward();
         } else if (mounted && status == AnimationStatus.dismissed) {
           if (currentPreset!.maxLoop != 0 && loopTime == 0 && currentPreset!.onFinish != null) {

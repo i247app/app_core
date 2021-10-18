@@ -54,6 +54,9 @@ class _ZoomShakeImageState extends State<ZoomShakeImage>
       ..addListener(() => setState(() {}))
       ..addStatusListener((status) {
         if (mounted && status == AnimationStatus.completed) {
+          this.setState(() {
+            this.shakeTime = this.shakeTime - 1;
+          });
           this._shakeAnimationController.forward();
         } else if (mounted && status == AnimationStatus.dismissed) {
           if (currentPreset!.maxLoop != 0 &&
