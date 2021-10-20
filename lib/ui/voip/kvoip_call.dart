@@ -639,8 +639,8 @@ class _KVOIPCallState extends State<KVOIPCall>
     return (await showDialog(
           context: context,
           builder: (context) => new AlertDialog(
-            title: new Text('Are you sure?'),
-            content: new Text('Do you want to exit the call'),
+            title: new Text('Hang up call?'),
+            content: new Text('Cúp máy?'),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),

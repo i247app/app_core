@@ -50,5 +50,6 @@
   "invalid_email": "Invalid email format",
   "an_error_occurred": "An error occurred",
   "email_already_used": "Email Already in Use",
-  "phone_already_used": "Phone Already in Use"
+  "phone_already_used": "Phone Already in Use",
+  "hangup": "Hangup call?"
 }

@@ -50,5 +50,6 @@
   "invalid_email": "Email không hợp lệ",
   "an_error_occurred": "Đã xảy ra lỗi",
   "email_already_used": "Email này đã được sử dụng",
-  "phone_already_used": "Số điện thoại này đã được sử dụng"
+  "phone_already_used": "Số điện thoại này đã được sử dụng",
+  "hangup": "Cúp máy?"
 }
