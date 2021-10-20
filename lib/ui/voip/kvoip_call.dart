@@ -635,6 +635,27 @@ class _KVOIPCallState extends State<KVOIPCall>
     this.commManager?.setCameraEnabled(newValue);
   }
 
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+            title: new Text('Are you sure?'),
+            content: new Text('Do you want to exit the call'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: new Text('No'),
+              ),
+              TextButton(
+                onPressed: hangUp,
+                child: new Text('Yes'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final callView = Stack(
@@ -985,17 +1006,20 @@ class _KVOIPCallState extends State<KVOIPCall>
           }()
         : voipView;
 
-    return Scaffold(
-      // body: Stack(
-      //   children: [
-      //     body,
-      //     Align(
-      //       alignment: Alignment.topLeft,
-      //       child: SafeArea(child: BackButton(onPressed: safePop)),
-      //     ),
-      //   ],
-      // ),
-      body: body,
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        // body: Stack(
+        //   children: [
+        //     body,
+        //     Align(
+        //       alignment: Alignment.topLeft,
+        //       child: SafeArea(child: BackButton(onPressed: safePop)),
+        //     ),
+        //   ],
+        // ),
+        body: body,
+      ),
     );
   }
 }
