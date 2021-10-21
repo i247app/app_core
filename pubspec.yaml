@@ -60,6 +60,7 @@ dependencies:
   flutter_ios_voip_kit:
     git:
       url: https://github.com/KashinApp/flutter_voip_ios.git
+      ref: 0.0.1
     # path: ../flutter_voip_ios_local
 
   # Flutter WebRTC
