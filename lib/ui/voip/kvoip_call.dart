@@ -157,6 +157,7 @@ class _KVOIPCallState extends State<KVOIPCall>
   void initState() {
     super.initState();
     Wakelock.enable();
+    KCallKitHelper.instance.isCalling = true;
     WidgetsBinding.instance?.addObserver(this);
 
     this._slidingAnimationController = AnimationController(
@@ -178,8 +179,6 @@ class _KVOIPCallState extends State<KVOIPCall>
       statusBarIconBrightness: Brightness.light,
       systemNavigationBarColor: KStyles.black,
     ));
-
-    KWebRTCHelper.blockAutoDisplayCallScreen();
 
     requestPermission()
         .whenComplete(initRenderers)
@@ -205,7 +204,7 @@ class _KVOIPCallState extends State<KVOIPCall>
     this.panelTimer?.cancel();
     this.streamSub.cancel();
     releaseResourceIfNeed();
-    KWebRTCHelper.allowAutoDisplayCallScreen();
+    KCallKitHelper.instance.isCalling = false;
     super.dispose();
   }
 

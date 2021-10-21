@@ -22,6 +22,7 @@ class KCallKitHelper {
   KVOIPCommManager? commManager;
 
   bool isInit = false; // for ios to delay answering dead app
+  bool isCalling = false; // for ios to delay answering dead app
   String? videoLogo;
 
   KCallKitHelper._internal();
@@ -57,13 +58,12 @@ class KCallKitHelper {
 
   Future<void> onCallAccepted(String uuid, String callID) async {
     if (this.isInit) {
-      if (KWebRTCHelper.autoDisplayCallScreen)
-        KWebRTCHelper.displayCallScreen(
-          uuid,
-          callID,
-          autoPickup: true,
-          videoLogo: this.videoLogo,
-        );
+      KWebRTCHelper.displayCallScreen(
+        uuid,
+        callID,
+        autoPickup: true,
+        videoLogo: this.videoLogo,
+      );
     } else
       saveCallInfo(uuid, callID);
   }
@@ -86,7 +86,7 @@ class KCallKitHelper {
 
   Future<dynamic> openVoipCallIfNeeded(BuildContext context) async {
     KVoipCallInfo? callInfo = await consumeCallInfo();
-    if (KWebRTCHelper.autoDisplayCallScreen && callInfo != null) {
+    if (callInfo != null) {
       await KPrefHelper.remove("callID");
       return Navigator.of(context).push(MaterialPageRoute(
         builder: (ctx) => KVOIPCall.asReceiver(
