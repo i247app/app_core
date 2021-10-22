@@ -98,20 +98,21 @@ class KChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content;
-
     final theme = Theme.of(context);
+    final chatBGColor = this.chat.isMe
+        ? theme.colorScheme.primary
+        : theme.primaryColor.withOpacity(0.4);
 
-    final chatBGColor =
-        this.chat.isMe ? Colors.blueGrey.shade600 : Colors.blueGrey.shade900;
+    final content;
     switch (this.chat.messageType ?? "") {
       case KChatMessage.CONTENT_TYPE_TEXT:
         content = wrapWithChatBubble(
-            Text(
-              this.chat.message ?? "",
-              style: theme.textTheme.subtitle2!.copyWith(color: Colors.white),
-            ),
-            chatBGColor);
+          Text(
+            this.chat.message ?? "",
+            style: theme.textTheme.subtitle2!.copyWith(color: Colors.white),
+          ),
+          chatBGColor,
+        );
         break;
       case KChatMessage.CONTENT_TYPE_IMAGE:
         content = ClipRRect(
