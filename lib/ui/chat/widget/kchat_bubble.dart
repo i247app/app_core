@@ -101,7 +101,7 @@ class KChatBubble extends StatelessWidget {
     final theme = Theme.of(context);
     final chatBGColor = this.chat.isMe
         ? theme.colorScheme.primary
-        : theme.primaryColor.withOpacity(0.4);
+        : theme.primaryColor.withOpacity(0.2);
 
     final content;
     switch (this.chat.messageType ?? "") {
