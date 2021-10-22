@@ -101,8 +101,9 @@ class KChatBubble extends StatelessWidget {
     final theme = Theme.of(context);
     final chatBGColor = this.chat.isMe
         ? theme.colorScheme.primary
-        : theme.primaryColor.withOpacity(0.1);
-    final chatTextColor = this.chat.isMe ? Colors.white : theme.primaryColor;
+        : theme.primaryColor.withOpacity(0.05);
+    final chatForegroundColor =
+        this.chat.isMe ? Colors.white : theme.primaryColor;
 
     final content;
     switch (this.chat.messageType ?? "") {
@@ -110,7 +111,8 @@ class KChatBubble extends StatelessWidget {
         content = wrapWithChatBubble(
           Text(
             this.chat.message ?? "",
-            style: theme.textTheme.subtitle2!.copyWith(color: chatTextColor),
+            style:
+                theme.textTheme.subtitle1!.copyWith(color: chatForegroundColor),
           ),
           chatBGColor,
         );
@@ -149,13 +151,13 @@ class KChatBubble extends StatelessWidget {
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.video_call, color: Colors.white),
+                  Icon(Icons.video_call, color: chatForegroundColor),
                   SizedBox(width: 10),
                   Flexible(
                     child: Text(
                       "Video call from ${this.chat.kUser?.firstName ?? "user"}",
                       style: theme.textTheme.subtitle1!
-                          .copyWith(color: chatTextColor),
+                          .copyWith(color: chatForegroundColor),
                     ),
                   ),
                 ],
@@ -163,7 +165,8 @@ class KChatBubble extends StatelessWidget {
               SizedBox(height: 4),
               Text(
                 "${KUtil.prettyDate(this.chat.messageDate, showTime: true)}",
-                style: theme.textTheme.caption!.copyWith(color: chatTextColor),
+                style: theme.textTheme.caption!
+                    .copyWith(color: chatForegroundColor),
               ),
             ],
           ),
