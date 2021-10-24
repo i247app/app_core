@@ -133,7 +133,6 @@ class _KVOIPCallState extends State<KVOIPCall>
   String? get myName => KSessionData.me?.firstName;
 
   String? get refPUID => widget.refUser?.puid;
-  bool isDarkMode = true;
 
   String get infoLabel {
     if (this.hasPeerError) {

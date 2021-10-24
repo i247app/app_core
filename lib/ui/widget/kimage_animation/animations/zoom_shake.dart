@@ -84,7 +84,7 @@ class _ZoomShakeImageState extends State<ZoomShakeImage>
               this.shakeTime = this.shakeTime - 1;
             });
             Future.delayed(delay, () {
-              if (mounted && _shakeAnimationController != null) {
+              if (mounted) {
                 _shakeAnimationController.reset();
                 _shakeAnimationController.forward();
               }
