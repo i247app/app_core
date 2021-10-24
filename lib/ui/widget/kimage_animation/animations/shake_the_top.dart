@@ -45,8 +45,7 @@ class _ShakeTheTopImageState extends State<ShakeTheTopImage>
     )
       ..addListener(() => setState(() {}))
       ..addStatusListener((status) {
-        if (currentPreset!.maxLoop == 0 ||
-            loopTime > 0 && mounted && _shakeAnimationController != null) {
+        if (currentPreset!.maxLoop == 0 || loopTime > 0 && mounted) {
           if (status == AnimationStatus.completed) {
             int newIndex = imageIndex + 1;
             if (newIndex < imageUrls.length) {
@@ -109,18 +108,20 @@ class _ShakeTheTopImageState extends State<ShakeTheTopImage>
         child: Container(
           transform: Matrix4.rotationZ(_shakeAnimation.value * Math.pi),
           transformAlignment: Alignment.bottomCenter,
-          child: (currentPreset?.isAssetImage ?? false) ? Image.asset(
-            imageUrls[imageIndex],
-            height: heroSize,
-          ) : Image.network(
-            imageUrls[imageIndex],
-            height: heroSize,
-            errorBuilder: (context, error, stack) => Image.asset(
-              KAssets.HERO_EGG,
-              height: heroSize,
-              package: 'app_core',
-            ),
-          ),
+          child: (currentPreset?.isAssetImage ?? false)
+              ? Image.asset(
+                  imageUrls[imageIndex],
+                  height: heroSize,
+                )
+              : Image.network(
+                  imageUrls[imageIndex],
+                  height: heroSize,
+                  errorBuilder: (context, error, stack) => Image.asset(
+                    KAssets.HERO_EGG,
+                    height: heroSize,
+                    package: 'app_core',
+                  ),
+                ),
         ),
       ),
     );
