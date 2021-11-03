@@ -81,7 +81,7 @@ class _ShakeTheTopImageState extends State<ShakeTheTopImage>
     ).animate(_shakeAnimationController);
 
     Future.delayed(
-      Duration(milliseconds: 700),
+      Duration(milliseconds: 50),
       () {
         if (mounted) {
           this._shakeAnimationController.forward();
