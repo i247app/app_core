@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:app_core/ui/widget/kimage_animation/animations/shake_the_top.dart';
+import 'package:app_core/ui/widget/kimage_animation/animations/tiny_zoom_shake.dart';
 import 'package:app_core/ui/widget/kimage_animation/animations/zoom_bounce.dart';
 import 'package:app_core/ui/widget/kimage_animation/animations/zoom_shake.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ import 'animations/drop_bounce_shake.dart';
 import 'animations/shake_image.dart';
 
 class KImageAnimationType {
+  static const String TINY_ZOOM_SHAKE = "TINY_ZOOM_SHAKE";
   static const String DROP_BOUNCE = "DROP_BOUNCE";
   static const String HORIZONTAL = "HORIZONTAL";
   static const String DROP_BOUNCE_SHAKE_RANDOM = "DROP_BOUNCE_SHAKE_RANDOM";
@@ -198,6 +200,17 @@ class _KImageAnimationState extends State<KImageAnimation> {
         );
       case KImageAnimationType.ZOOM_SHAKE:
         return ZoomShakeImage(
+          widget.imageUrls.length > 0
+              ? widget.imageUrls
+              : KImageAnimationHelper.animationImages,
+          animationPreset: KImageAnimationParameters(
+            maxLoop: widget.maxLoop ?? 0,
+            onFinish: widget.onFinish,
+            isAssetImage: widget.isAssetImage,
+          ),
+        );
+      case KImageAnimationType.TINY_ZOOM_SHAKE:
+        return TinyZoomShakeImage(
           widget.imageUrls.length > 0
               ? widget.imageUrls
               : KImageAnimationHelper.animationImages,
