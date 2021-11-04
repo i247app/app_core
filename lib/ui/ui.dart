@@ -18,3 +18,8 @@ export 'widget/kflash_confetti_overlay.dart';
 export 'widget/kflash_emoji_overlay.dart';
 export 'ktwo_factor.dart';
 export 'widget/kimage_animation/kimage_animation.dart';
+export 'widget/khero/kegg_hatch_intro.dart';
+export 'widget/khero/kegg_hatch_short_intro.dart';
+export 'widget/khero/khero_hatch_view.dart';
+export 'widget/khero/khero_intro.dart';
+export 'widget/khero/khero_short_hatch_view.dart';

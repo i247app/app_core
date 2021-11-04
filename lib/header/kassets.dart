@@ -9,4 +9,9 @@ abstract class KAssets {
   static const String IMG_PHONE = "$ASSET_BASE/phone.png";
 
   static const String HERO_EGG = "$ASSET_BASE/heroegg.png";
+
+  static const String IMG_TAMAGO_1 = "$ASSET_BASE/tamago_01.png";
+  static const String IMG_TAMAGO_2 = "$ASSET_BASE/tamago_02.png";
+  static const String IMG_TAMAGO_3 = "$ASSET_BASE/tamago_03.png";
+  static const String IMG_TAMAGO_4 = "$ASSET_BASE/tamago_04.png";
 }

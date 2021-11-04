@@ -112,6 +112,7 @@ class _ShakeTheTopImageState extends State<ShakeTheTopImage>
               ? Image.asset(
                   imageUrls[imageIndex],
                   height: heroSize,
+                  package: 'app_core',
                 )
               : Image.network(
                   imageUrls[imageIndex],
