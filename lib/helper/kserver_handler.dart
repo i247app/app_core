@@ -4,6 +4,7 @@ import 'package:app_core/model/response/chat_remove_members_response.dart';
 import 'package:app_core/model/response/get_chat_response.dart';
 import 'package:app_core/model/response/get_chats_response.dart';
 import 'package:app_core/model/response/get_users_response.dart';
+import 'package:app_core/model/response/list_heroes_response.dart';
 import 'package:app_core/model/response/search_users_response.dart';
 import 'package:app_core/model/response/send_2fa_response.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
@@ -215,6 +216,50 @@ abstract class KServerHandler {
       "svc": "auth",
       "req": "verify.secpin",
       "kpin": kpin,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<KListHeroesResponse> hatchHero({
+    required String id,
+    required String heroID,
+  }) async {
+    final params = {
+      "svc": "bird",
+      "req": "hero.hatch",
+      "hero": KHero()
+        ..id = id
+        ..heroID = heroID,
+    };
+    return TLSHelper.send(params)
+        .then((data) => KListHeroesResponse.fromJson(data));
+  }
+
+  static Future<KListHeroesResponse> getHeroes() async {
+    final params = {
+      "svc": "bird",
+      "req": "hero.list",
+    };
+    return TLSHelper.send(params)
+        .then((data) => KListHeroesResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> modifyUserPersonal({
+    String? firstName,
+    String? middleName,
+    String? lastName,
+    String? avatarData,
+    String? heroAvatarURL,
+  }) async {
+    final params = {
+      "svc": "user",
+      "req": "user.personal.modify",
+      "user": KUser()
+        ..firstName = firstName
+        ..middleName = middleName
+        ..lastName = lastName
+        ..avatarImageData = avatarData
+        ..heroAvatarURL = heroAvatarURL,
     };
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }
