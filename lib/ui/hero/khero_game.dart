@@ -38,14 +38,14 @@ class _KHeroGameState extends State<KHeroGame> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    this.showHeroGameEndOverlay(
-          () {
-        if (this.overlayID != null) {
-          KOverlayHelper.removeOverlay(this.overlayID!);
-          this.overlayID = null;
-        }
-      },
-    );
+    // this.showHeroGameEndOverlay(
+    //       () {
+    //     if (this.overlayID != null) {
+    //       KOverlayHelper.removeOverlay(this.overlayID!);
+    //       this.overlayID = null;
+    //     }
+    //   },
+    // );
   }
 
   void showHeroGameEndOverlay(Function() onFinish) async {
