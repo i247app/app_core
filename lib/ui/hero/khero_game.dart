@@ -28,8 +28,9 @@ class _KHeroGameState extends State<KHeroGame> {
     KAssets.GAME_BACKGROUND_DARK,
   ];
 
-  String gameBackground =
-      Math.Random().nextDouble() >= 0.5 ? KAssets.MOON_LIGHT : KAssets.MOON_DARK;
+  String gameBackground = Math.Random().nextDouble() >= 0.5
+      ? KAssets.MOON_LIGHT
+      : KAssets.MOON_DARK;
 
   void showHeroGameEndLevelOverlay(Function() onFinish) async {
     final heroGameEndLevel = KHeroGameEndLevel(
@@ -615,23 +616,38 @@ class _KGameScreenState extends State<_KGameScreen>
       fit: StackFit.expand,
       children: [
         Align(
-          alignment: Alignment.bottomLeft,
+          alignment: Alignment(-1, 1),
           child: Container(
             width: MediaQuery.of(context).size.width * 0.3,
+            height: MediaQuery.of(context).size.height * 0.5,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: GridView.count(
-                shrinkWrap: true,
-                crossAxisCount: 3,
-                reverse: true,
-                children: List.generate(eggReceive, (index) {
-                  return Image.asset(
-                    KAssets.IMG_TAMAGO_LIGHT_1,
-                    width: 32,
-                    height: 32,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4),
+                    child: GridView.count(
+                      shrinkWrap: true,
+                      crossAxisCount: 3,
+                      reverse: true,
+                      children: List.generate(eggReceive, (index) {
+                        return Image.asset(
+                          KAssets.IMG_EGG,
+                          width: 32,
+                          height: 32,
+                          package: 'app_core',
+                        );
+                      }),
+                    ),
+                  ),
+                  Image.asset(
+                    KAssets.IMG_NEST,
+                    fit: BoxFit.fitWidth,
                     package: 'app_core',
-                  );
-                }),
+                  ),
+                ],
               ),
             ),
           ),
@@ -786,7 +802,7 @@ class _KGameScreenState extends State<_KGameScreen>
           ),
         ),
         Align(
-          alignment: Alignment(0, 1.05),
+          alignment: Alignment(0, 1),
           child: Container(
             width: heroWidth * 2,
             height: heroHeight * 2,

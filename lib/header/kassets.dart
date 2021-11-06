@@ -34,4 +34,6 @@ abstract class KAssets {
   static const String IMG_TAMAGO_LIGHT_2 = "$ASSET_BASE/tamago_light_02.png";
   static const String IMG_TAMAGO_LIGHT_3 = "$ASSET_BASE/tamago_light_03.png";
   static const String IMG_TAMAGO_LIGHT_4 = "$ASSET_BASE/tamago_light_04.png";
+  static const String IMG_NEST = "$ASSET_BASE/nest.png";
+  static const String IMG_EGG = "$ASSET_BASE/heroegg_without_space.png";
 }
