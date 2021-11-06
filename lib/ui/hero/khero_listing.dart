@@ -17,6 +17,8 @@ import 'package:app_core/ui/hero/widget/khero_combine_view.dart';
 import 'package:app_core/ui/hero/widget/khero_grid_item.dart';
 import 'package:app_core/ui/widget/kstopwatch_label.dart';
 
+import 'khero_jump_game.dart';
+
 final GlobalKey _draggableKey = GlobalKey();
 
 class KHeroListing extends StatefulWidget {
@@ -96,6 +98,15 @@ class _KHeroListingState extends State<KHeroListing> {
         .push(MaterialPageRoute(builder: (ctx) => KHeroGame(hero: hero)));
   }
 
+  void onPlayJumpGame(KHero? hero) {
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (ctx) => KHeroJumpGame(hero: hero)));
+  }
+
   void onHeroClick(KHero hero) {
     if (KHeroHelper.isHatchable(hero) && KHeroHelper.isEgg(hero))
       hatchHero(hero);
@@ -108,6 +119,7 @@ class _KHeroListingState extends State<KHeroListing> {
         onSetAvatar: onSetAvatarClick,
         onTraining: onTraining,
         onPlayGame: onPlayGame,
+        onPlayJumpGame: onPlayJumpGame,
         isAvatar: this.avatarHero?.id == this.selectedHero?.id,
       );
 
@@ -120,8 +132,7 @@ class _KHeroListingState extends State<KHeroListing> {
                 this.overlayID = null;
               }
             },
-            child: Container(
-                color: Colors.black.withOpacity(0.8)),
+            child: Container(color: Colors.black.withOpacity(0.8)),
           ),
           Align(
             alignment: Alignment.center,
@@ -279,7 +290,9 @@ class _KHeroListingState extends State<KHeroListing> {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: heroes != null && heroes!.length > 0 ? () => onTraining(heroes![0]) : () {},
+                    onPressed: heroes != null && heroes!.length > 0
+                        ? () => onTraining(heroes![0])
+                        : () {},
                     style: KStyles.squaredButton(
                       KStyles.colorPrimary,
                       textColor: Colors.white,
@@ -306,6 +319,24 @@ class _KHeroListingState extends State<KHeroListing> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text("👾️"),
+                        // SizedBox(width: 10),
+                        // Text("Game"),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 18),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => onPlayJumpGame(null),
+                    style: KStyles.squaredButton(
+                      KStyles.colorPrimary,
+                      textColor: Colors.white,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("🕹"),
                         // SizedBox(width: 10),
                         // Text("Game"),
                       ],
@@ -388,6 +419,7 @@ class _HeroDetail extends StatefulWidget {
   final Future Function(KHero) onSetAvatar;
   final Function(KHero) onTraining;
   final Function(KHero) onPlayGame;
+  final Function(KHero) onPlayJumpGame;
   final bool isAvatar;
 
   const _HeroDetail(
@@ -397,6 +429,7 @@ class _HeroDetail extends StatefulWidget {
     required this.onSetAvatar,
     required this.onTraining,
     required this.onPlayGame,
+    required this.onPlayJumpGame,
     required this.isAvatar,
   });
 
@@ -493,8 +526,7 @@ class _HeroDetailState extends State<_HeroDetail> {
         ? KStopwatchLabel(
             widget.hero!.eggDate!.add(widget.hero!.eggDuration!),
             style: bioStyle,
-            formatter: (dur) =>
-                "Hatch in ${KUtil.prettyStopwatch(dur)}\n\n",
+            formatter: (dur) => "Hatch in ${KUtil.prettyStopwatch(dur)}\n\n",
             doneFormatter: (_) => "Ready to hatch!\n\n",
           )
         : Text(
