@@ -90,15 +90,17 @@ class _KHeroGameState extends State<KHeroGame> {
                   Expanded(
                     child: _KGameScreen(
                       hero: widget.hero,
-                      onFinishLevel: () {
-                        this.showHeroGameEndLevelOverlay(
-                          () {
-                            if (this.overlayID != null) {
-                              KOverlayHelper.removeOverlay(this.overlayID!);
-                              this.overlayID = null;
-                            }
-                          },
-                        );
+                      onFinishLevel: (level) {
+                        if (level >= 2) {
+                          this.showHeroGameEndLevelOverlay(
+                                () {
+                              if (this.overlayID != null) {
+                                KOverlayHelper.removeOverlay(this.overlayID!);
+                                this.overlayID = null;
+                              }
+                            },
+                          );
+                        }
                       },
                       onChangeLevel: (level) => this.setState(
                         () {
@@ -530,7 +532,7 @@ class _KGameScreenState extends State<_KGameScreen>
                     if (currentLevel + 1 < levelHardness.length) {
                       canAdvance = true;
                       if (widget.onFinishLevel != null) {
-                        widget.onFinishLevel!();
+                        widget.onFinishLevel!(currentLevel + 1);
                       }
                     }
                   }
@@ -633,11 +635,14 @@ class _KGameScreenState extends State<_KGameScreen>
                       crossAxisCount: 3,
                       reverse: true,
                       children: List.generate(eggReceive, (index) {
-                        return Image.asset(
-                          KAssets.IMG_EGG,
-                          width: 32,
-                          height: 32,
-                          package: 'app_core',
+                        return Padding(
+                          padding: EdgeInsets.only(top: 4),
+                          child: Image.asset(
+                            KAssets.IMG_EGG,
+                            width: 32,
+                            height: 32,
+                            package: 'app_core',
+                          ),
                         );
                       }),
                     ),
