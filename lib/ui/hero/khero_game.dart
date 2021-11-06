@@ -91,7 +91,7 @@ class _KHeroGameState extends State<KHeroGame> {
                     child: _KGameScreen(
                       hero: widget.hero,
                       onFinishLevel: (level) {
-                        if (level >= 1) {
+                        if (level >= 2) {
                           this.showHeroGameEndLevelOverlay(
                                 () {
                               if (this.overlayID != null) {
