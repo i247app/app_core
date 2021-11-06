@@ -90,7 +90,6 @@ class _ZoomShakeImageState extends State<ZoomShakeImage>
               }
             });
           } else {
-            print("Sadasda");
             _shakeAnimationController.reset();
             _scaleAnimationController.reverse();
             this.shakeTime = MAX_SHAKE_TIME;
@@ -163,7 +162,7 @@ class _ZoomShakeImageState extends State<ZoomShakeImage>
                     imageUrls[imageIndex],
                     height: heroSize,
                     errorBuilder: (context, error, stack) => Image.asset(
-                      KAssets.HERO_EGG,
+                      widget.imageUrls.length > 0 ? widget.imageUrls[0] : KAssets.HERO_EGG,
                       height: heroSize,
                       package: 'app_core',
                     ),

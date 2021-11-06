@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:math' as Math;
 
+import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kimage_animation_helper.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
+import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:app_core/ui/hero/widget/khero_game_end_level.dart';
+import 'package:app_core/ui/hero/widget/khero_game_level.dart';
 import 'package:app_core/header/kassets.dart';
 
 class KHeroGame extends StatefulWidget {
@@ -32,11 +34,34 @@ class _KHeroGameState extends State<KHeroGame> {
       ? KAssets.MOON_LIGHT
       : KAssets.MOON_DARK;
 
-  void showHeroGameEndLevelOverlay(Function() onFinish) async {
-    final heroGameEndLevel = KHeroGameEndLevel(
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    this.showHeroGameEndOverlay(
+          () {
+        if (this.overlayID != null) {
+          KOverlayHelper.removeOverlay(this.overlayID!);
+          this.overlayID = null;
+        }
+      },
+    );
+  }
+
+  void showHeroGameEndOverlay(Function() onFinish) async {
+    final heroGameEnd = KHeroGameEnd(
+      hero: KHero()
+        ..imageURL = KImageAnimationHelper.randomImage,
       onFinish: onFinish,
     );
-    showCustomOverlay(heroGameEndLevel);
+    showCustomOverlay(heroGameEnd);
+  }
+
+  void showHeroGameLevelOverlay(Function() onFinish) async {
+    final heroGameLevel = KHeroGameLevel(
+      onFinish: onFinish,
+    );
+    showCustomOverlay(heroGameLevel);
   }
 
   void showCustomOverlay(Widget view) {
@@ -91,8 +116,8 @@ class _KHeroGameState extends State<KHeroGame> {
                     child: _KGameScreen(
                       hero: widget.hero,
                       onFinishLevel: (level) {
-                        if (level >= 2) {
-                          this.showHeroGameEndLevelOverlay(
+                        if (level <= 3) {
+                          this.showHeroGameLevelOverlay(
                                 () {
                               if (this.overlayID != null) {
                                 KOverlayHelper.removeOverlay(this.overlayID!);

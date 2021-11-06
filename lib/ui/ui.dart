@@ -25,7 +25,7 @@ export 'hero/widget/khero_intro.dart';
 export 'hero/widget/khero_short_hatch_view.dart';
 export 'hero/widget/khero_combine_view.dart';
 export 'hero/widget/khero_egg_view.dart';
-export 'hero/widget/khero_game_end_level.dart';
+export 'hero/widget/khero_game_level.dart';
 export 'hero/widget/khero_grid_item.dart';
 export 'hero/widget/khero_portrait.dart';
 export 'hero/khero_basic_picker.dart';
