@@ -11,16 +11,16 @@ import 'package:flutter/widgets.dart';
 import 'package:app_core/ui/hero/widget/khero_game_level.dart';
 import 'package:app_core/header/kassets.dart';
 
-class KHeroGame extends StatefulWidget {
+class KHeroJumpGame extends StatefulWidget {
   final KHero? hero;
 
-  const KHeroGame({this.hero});
+  const KHeroJumpGame({this.hero});
 
   @override
-  _KHeroGameState createState() => _KHeroGameState();
+  _KHeroJumpGameState createState() => _KHeroJumpGameState();
 }
 
-class _KHeroGameState extends State<KHeroGame> {
+class _KHeroJumpGameState extends State<KHeroJumpGame> {
   int? overlayID;
   int currentLevel = 0;
   List<String> levelBackground = [
@@ -50,8 +50,7 @@ class _KHeroGameState extends State<KHeroGame> {
 
   void showHeroGameEndOverlay(Function() onFinish) async {
     final heroGameEnd = KHeroGameEnd(
-      hero: KHero()
-        ..imageURL = KImageAnimationHelper.randomImage,
+      hero: KHero()..imageURL = KImageAnimationHelper.randomImage,
       onFinish: onFinish,
     );
     showCustomOverlay(heroGameEnd);
@@ -113,12 +112,12 @@ class _KHeroGameState extends State<KHeroGame> {
                     ),
                   ),
                   Expanded(
-                    child: _KGameScreen(
+                    child: _KJumpGameScreen(
                       hero: widget.hero,
                       onFinishLevel: (level) {
                         if (level <= 3) {
                           this.showHeroGameLevelOverlay(
-                                () {
+                            () {
                               if (this.overlayID != null) {
                                 KOverlayHelper.removeOverlay(this.overlayID!);
                                 this.overlayID = null;
@@ -149,18 +148,18 @@ class _KHeroGameState extends State<KHeroGame> {
   }
 }
 
-class _KGameScreen extends StatefulWidget {
+class _KJumpGameScreen extends StatefulWidget {
   final KHero? hero;
   final Function(int)? onChangeLevel;
   final Function? onFinishLevel;
 
-  const _KGameScreen({this.hero, this.onChangeLevel, this.onFinishLevel});
+  const _KJumpGameScreen({this.hero, this.onChangeLevel, this.onFinishLevel});
 
   @override
-  _KGameScreenState createState() => _KGameScreenState();
+  _KJumpGameScreenState createState() => _KJumpGameScreenState();
 }
 
-class _KGameScreenState extends State<_KGameScreen>
+class _KJumpGameScreenState extends State<_KJumpGameScreen>
     with TickerProviderStateMixin {
   late Animation<Offset> _bouncingAnimation;
   late Animation<double> _scaleAnimation, _moveUpAnimation, _heroScaleAnimation;
@@ -172,27 +171,22 @@ class _KGameScreenState extends State<_KGameScreen>
 
   double screenWidth = 0;
   double screenHeight = 0;
-  double heroY = 1;
-  double initialPos = 1;
+  double heroY = 0;
+  double initialPos = 0;
   double height = 0;
   double time = 0;
-  double gravity = 0.0;
+  double gravity = -6.0;
   double velocity = 3.5;
   Timer? _timer;
   bool isStart = false;
-  double heroHeight = 40;
-  double heroWidth = 40;
+  double heroHeight = 80;
+  double heroWidth = 80;
   int trueAnswer = 2;
-  double bulletSpeed = 0.01;
   bool? result;
   bool isScroll = true;
   double scrollSpeed = 0.01;
   bool isShooting = false;
   int eggReceive = 0;
-  double bulletHeight = 40;
-  double bulletWidth = 40;
-  List<double> bulletsY = [];
-  List<double> bulletsTime = [];
   bool isWrongAnswer = false;
   int rightAnswerCount = 0;
   int wrongAnswerCount = 0;
@@ -367,38 +361,37 @@ class _KGameScreenState extends State<_KGameScreen>
 
     _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
       if (isStart) {
-        for (int i = 0; i < bulletsY.length; i++) {
-          double bulletY = bulletsY[i];
-          double bulletTime = bulletsTime[i];
+        height = (gravity - points * 0.2) * time * time + velocity * time;
+        final pos = initialPos - height;
 
-          height = gravity * bulletTime * bulletTime + velocity * bulletTime;
-          final pos = initialPos - height;
-          if (pos <= -2) {
-            setState(() {
-              bulletsY.removeAt(i);
-              bulletsTime.removeAt(i);
-            });
-            return;
-          } else if (pos < 1) {
-            setState(() {
-              bulletsY[i] = pos;
-            });
-          } else {
-            setState(() {
-              bulletsY[i] = 1;
-            });
-          }
+        setState(() {
+          if (pos <= -2.4) {
+          } else if (pos <= 0) {
+            heroY = pos;
+          } else
+            heroY = 0;
+        });
 
-          if (isStart) {
-            setState(() {
-              bulletsTime[i] += bulletSpeed;
-            });
-          }
-
-          if (isScroll) {
-            checkResult(bulletY, i);
-          }
+        // if (isReachTarget() &&
+        //     (lastGetPointTime == null ||
+        //         lastGetPointTime!.difference(DateTime.now()).inMilliseconds <
+        //             -1000)) {
+        //   this._scaleAnimationController.reset();
+        //   this.setState(() {
+        //     isShowPlusPoint = true;
+        //   });
+        //   this._scaleAnimationController.forward();
+        //   setState(() {
+        //     // resetPos = true;
+        //     lastGetPointTime = DateTime.now();
+        //     points = points + 1;
+        //   });
+        // }
+        if (isScroll) {
+          checkResult();
         }
+
+        time += 0.01;
 
         moveMap();
       }
@@ -419,25 +412,13 @@ class _KGameScreenState extends State<_KGameScreen>
     return false;
   }
 
-  void fire() {
-    if (!isShooting && bulletsY.length < 3) {
-      setState(() {
-        bulletsY = [
-          ...bulletsY,
-          1,
-        ];
-        bulletsTime = [
-          ...bulletsTime,
-          0,
-        ];
-        isShooting = true;
-      });
-      Future.delayed(Duration(milliseconds: 10), () {
-        setState(() {
-          isShooting = false;
-        });
-      });
-    }
+  void jump() {
+    setState(() {
+      if (isStart) {
+        time = 0;
+        initialPos = heroY;
+      }
+    });
   }
 
   void moveMap() {
@@ -462,7 +443,7 @@ class _KGameScreenState extends State<_KGameScreen>
     }
   }
 
-  void checkResult(double bulletY, int bulletIndex) {
+  void checkResult() {
     if (isScroll) {
       for (int i = 0; i < barrierX.length; i++) {
         double _barrierWidth =
@@ -489,10 +470,10 @@ class _KGameScreenState extends State<_KGameScreen>
                 (_barrierHeight / 2);
 
         double bottomBulletY =
-            (bulletY * MediaQuery.of(context).size.height / 2) / 2 +
+            (heroY * MediaQuery.of(context).size.height / 2) / 2 +
                 (heroHeight / 2);
         double topBulletY =
-            (bulletY * MediaQuery.of(context).size.height / 2) / 2 -
+            (heroY * MediaQuery.of(context).size.height / 2) / 2 -
                 (heroHeight / 2);
 
         if ((leftBarrier < -heroWidth / 2 && rightBarrier >= heroWidth / 2 ||
@@ -507,8 +488,6 @@ class _KGameScreenState extends State<_KGameScreen>
                     bottomBulletY >= topBarrier)) {
           this._bouncingAnimationController.forward();
           this.setState(() {
-            bulletsY.removeAt(bulletIndex);
-            bulletsTime.removeAt(bulletIndex);
             spinningHeroIndex = i;
             isShooting = false;
           });
@@ -615,8 +594,6 @@ class _KGameScreenState extends State<_KGameScreen>
       });
     }
     this.setState(() {
-      this.bulletsY = [];
-      this.bulletsTime = [];
       this.isStart = true;
       this.isScroll = true;
       this.isShooting = false;
@@ -730,32 +707,28 @@ class _KGameScreenState extends State<_KGameScreen>
               ),
             ),
           ),
-        // Align(
-        //   alignment: Alignment(0, heroY),
-        //   child: Container(
-        //     width: heroWidth,
-        //     height: heroHeight,
-        //     child: Image.asset(
-        //       Assets.IMG_TAMAGO_LIGHT_4,
-        //       width: heroWidth,
-        //       height: heroHeight,
-        //     ),
-        //   ),
-        // ),
-        ...List.generate(
-          bulletsY.length,
-          (i) => Align(
-            alignment: Alignment(0, bulletsY[i]),
-            child: Container(
-              width: bulletWidth,
-              height: bulletWidth,
-              child: Image.asset(
-                KAssets.IMG_TAMAGO_LIGHT_4,
-                width: bulletWidth,
-                height: bulletWidth,
-                package: 'app_core',
-              ),
-            ),
+        Container(
+          width: heroWidth,
+          height: heroHeight,
+          alignment: Alignment(0, heroY + 1),
+          child: widget.hero?.imageURL != null
+              ? Image.network(
+            widget.hero!.imageURL!,
+            width: heroWidth,
+            height: heroHeight,
+            errorBuilder: (context, error, stack) =>
+                Image.asset(
+                  KAssets.IMG_TAMAGO_LIGHT_1,
+                  width: heroWidth,
+                  height: heroHeight,
+                  package: 'app_core',
+                ),
+          )
+              : Image.asset(
+            KAssets.IMG_TAMAGO_LIGHT_1,
+            width: heroWidth,
+            height: heroHeight,
+            package: 'app_core',
           ),
         ),
         Align(
@@ -766,26 +739,6 @@ class _KGameScreenState extends State<_KGameScreen>
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                // Container(
-                //   width: MediaQuery.of(context).size.width * 0.3,
-                //   height: 40,
-                //   padding:
-                //       EdgeInsets.only(top: 5, bottom: 5, left: 30, right: 10),
-                //   decoration: BoxDecoration(
-                //     color: Color(0xffa167df),
-                //     borderRadius: BorderRadius.circular(5),
-                //   ),
-                //   child: Text(
-                //     "Level ${currentLevel + 1}",
-                //     style: TextStyle(
-                //       color: Colors.white,
-                //       fontSize: 18,
-                //     ),
-                //   ),
-                // ),
-                SizedBox(
-                  height: 10,
-                ),
                 if (isStart || result != null)
                   Stack(
                     clipBehavior: Clip.none,
@@ -831,33 +784,9 @@ class _KGameScreenState extends State<_KGameScreen>
             ),
           ),
         ),
-        Align(
-          alignment: Alignment(0, 1),
-          child: Container(
-            width: heroWidth * 2,
-            height: heroHeight * 2,
-            child: Image.asset(
-              KAssets.IMG_CANNON_BARREL,
-              width: heroWidth * 2,
-              height: heroHeight * 2,
-              package: 'app_core',
-            ),
-          ),
-        ),
-        // if (!isStart && result != null)
-        //   Align(
-        //     alignment: Alignment(0, 0),
-        //     child: Padding(
-        //       padding: EdgeInsets.symmetric(horizontal: 10),
-        //       child: Text(
-        //         "Tap to restart",
-        //         style: TextStyle(fontSize: 30),
-        //       ),
-        //     ),
-        //   ),
         GestureDetector(
             onTap: isStart
-                ? fire
+                ? jump
                 : (result == null
                     ? start
                     : (canRestartGame ? restartGame : () {}))),
@@ -941,70 +870,67 @@ class _KGameScreenState extends State<_KGameScreen>
         //       ),
         //     ),
         //   ),
-        if (isStart)
+        if (isStart) ...[
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-              child: Column(
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.75,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(40),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      blurRadius: 8,
+                      offset: Offset(2, 6),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  questions[currentQuestionIndex],
+                  textScaleFactor: 1.0,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+              child: Stack(
                 children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.75,
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(40),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.5),
-                          blurRadius: 8,
-                          offset: Offset(2, 6),
-                        ),
-                      ],
+                  ...List.generate(
+                    barrierValues.length,
+                    (i) => _Barrier(
+                      barrierX: barrierX[i],
+                      barrierWidth: barrierWidth,
+                      barrierHeight: barrierHeight[i][1],
+                      imageUrl: barrierImageUrls[i],
+                      value: barrierValues[i],
+                      rotateAngle: spinningHeroIndex == i
+                          ? -this._spinAnimationController.value * 4 * Math.pi
+                          : 0,
+                      bouncingAnimation: spinningHeroIndex == i
+                          ? _bouncingAnimation.value
+                          : Offset(0, 0),
+                      scaleAnimation:
+                          spinningHeroIndex == i ? _heroScaleAnimation : null,
                     ),
-                    child: Text(
-                      questions[currentQuestionIndex],
-                      textScaleFactor: 1.0,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 35,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 50,
-                  ),
-                  Stack(
-                    children: [
-                      ...List.generate(
-                        barrierValues.length,
-                        (i) => _Barrier(
-                          barrierX: barrierX[i],
-                          barrierWidth: barrierWidth,
-                          barrierHeight: barrierHeight[i][1],
-                          imageUrl: barrierImageUrls[i],
-                          value: barrierValues[i],
-                          rotateAngle: spinningHeroIndex == i
-                              ? -this._spinAnimationController.value *
-                                  4 *
-                                  Math.pi
-                              : 0,
-                          bouncingAnimation: spinningHeroIndex == i
-                              ? _bouncingAnimation.value
-                              : Offset(0, 0),
-                          scaleAnimation: spinningHeroIndex == i
-                              ? _heroScaleAnimation
-                              : null,
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),
             ),
           ),
+        ],
       ],
     );
 
@@ -1037,7 +963,7 @@ class _Barrier extends StatelessWidget {
   Widget build(context) {
     return Container(
       alignment:
-          Alignment((2 * barrierX + barrierWidth) / (2 - barrierWidth), -0.7),
+          Alignment((2 * barrierX + barrierWidth) / (2 - barrierWidth), 0.3),
       child: Container(
         width: (MediaQuery.of(context).size.width / 2) * barrierWidth,
         height: (MediaQuery.of(context).size.height / 2) * barrierHeight,
