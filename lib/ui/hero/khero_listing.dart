@@ -4,6 +4,7 @@ import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/helper/ksnackbar_helper.dart';
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/khero.dart';
+import 'package:app_core/ui/hero/khero_jump_over_game.dart';
 import 'package:app_core/ui/hero/widget/kegg_hatch_short_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_short_hatch_view.dart';
 import 'package:flutter/material.dart';
@@ -105,6 +106,15 @@ class _KHeroListingState extends State<KHeroListing> {
     }
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (ctx) => KHeroJumpGame(hero: hero)));
+  }
+
+  void onPlayJumpOverGame(KHero? hero) {
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (ctx) => KHeroJumpOverGame(hero: hero)));
   }
 
   void onHeroClick(KHero hero) {
@@ -337,6 +347,24 @@ class _KHeroListingState extends State<KHeroListing> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text("🕹"),
+                        // SizedBox(width: 10),
+                        // Text("Game"),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 18),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => onPlayJumpOverGame(null),
+                    style: KStyles.squaredButton(
+                      KStyles.colorPrimary,
+                      textColor: Colors.white,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("🎮"),
                         // SizedBox(width: 10),
                         // Text("Game"),
                       ],
