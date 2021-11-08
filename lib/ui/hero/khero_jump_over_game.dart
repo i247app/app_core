@@ -481,82 +481,84 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                 topBulletY <= topBarrier &&
                     bottomBulletY <= bottomBarrier &&
                     bottomBulletY >= topBarrier)) {
-          this._bouncingAnimationController.forward();
-          this.setState(() {
-            spinningHeroIndex = i;
-            isShooting = false;
-          });
-          bool isTrueAnswer =
-              barrierValues[i] == rightAnswers[currentQuestionIndex];
-          if (isTrueAnswer) {
+          if (spinningHeroIndex != i) {
+            this._bouncingAnimationController.forward();
             this.setState(() {
-              isShowPlusPoint = true;
+              spinningHeroIndex = i;
+              isShooting = false;
             });
-            this._scaleAnimationController.reset();
-            this._moveUpAnimationController.reset();
-            this._scaleAnimationController.forward();
-            this._moveUpAnimationController.forward();
-            this.setState(() {
-              result = true;
-              points = points + 5;
-              isScroll = false;
-              if (!isWrongAnswer) {
-                rightAnswerCount += 1;
-              }
-              isWrongAnswer = false;
-            });
+            bool isTrueAnswer =
+                barrierValues[i] == rightAnswers[currentQuestionIndex];
+            if (isTrueAnswer) {
+              this.setState(() {
+                isShowPlusPoint = true;
+              });
+              this._scaleAnimationController.reset();
+              this._moveUpAnimationController.reset();
+              this._scaleAnimationController.forward();
+              this._moveUpAnimationController.forward();
+              this.setState(() {
+                result = true;
+                points = points + 5;
+                isScroll = false;
+                if (!isWrongAnswer) {
+                  rightAnswerCount += 1;
+                }
+                isWrongAnswer = false;
+              });
 
-            Future.delayed(Duration(milliseconds: 1500), () {
-              if (currentQuestionIndex + 1 < questions.length) {
-                this.setState(() {
-                  currentQuestionIndex = currentQuestionIndex + 1;
-                  barrierX = [2, 2 + 1.5];
-                  barrierImageUrls = [
-                    KImageAnimationHelper.randomImage,
-                    KImageAnimationHelper.randomImage
-                  ];
-                  barrierValues = [
-                    this.getRandomAnswer,
-                    this.getRandomAnswer,
-                  ];
-                });
-                Future.delayed(Duration(milliseconds: 50), () {
-                  isScroll = true;
-                });
-              } else {
-                this.setState(() {
-                  if (rightAnswerCount / questions.length >=
-                      levelHardness[currentLevel]) {
-                    eggReceive = eggReceive + 1;
-                    if (currentLevel + 1 < levelHardness.length) {
-                      canAdvance = true;
-                      if (widget.onFinishLevel != null) {
-                        widget.onFinishLevel!(currentLevel + 1);
+              Future.delayed(Duration(milliseconds: 1500), () {
+                if (currentQuestionIndex + 1 < questions.length) {
+                  this.setState(() {
+                    currentQuestionIndex = currentQuestionIndex + 1;
+                    barrierX = [2, 2 + 1.5];
+                    barrierImageUrls = [
+                      KImageAnimationHelper.randomImage,
+                      KImageAnimationHelper.randomImage
+                    ];
+                    barrierValues = [
+                      this.getRandomAnswer,
+                      this.getRandomAnswer,
+                    ];
+                  });
+                  Future.delayed(Duration(milliseconds: 50), () {
+                    isScroll = true;
+                  });
+                } else {
+                  this.setState(() {
+                    if (rightAnswerCount / questions.length >=
+                        levelHardness[currentLevel]) {
+                      eggReceive = eggReceive + 1;
+                      if (currentLevel + 1 < levelHardness.length) {
+                        canAdvance = true;
+                        if (widget.onFinishLevel != null) {
+                          widget.onFinishLevel!(currentLevel + 1);
+                        }
                       }
                     }
-                  }
-                  isStart = false;
-                  barrierX = [2, 2 + 1.5];
-                  barrierImageUrls = [
-                    KImageAnimationHelper.randomImage,
-                    KImageAnimationHelper.randomImage
-                  ];
-                  barrierValues = [
-                    this.getRandomAnswer,
-                    this.getRandomAnswer,
-                  ];
-                });
-              }
-            });
-          } else {
-            this.setState(() {
-              result = false;
-              points = points > 0 ? points - 1 : 0;
-              if (!isWrongAnswer) {
-                wrongAnswerCount += 1;
-                isWrongAnswer = true;
-              }
-            });
+                    isStart = false;
+                    barrierX = [2, 2 + 1.5];
+                    barrierImageUrls = [
+                      KImageAnimationHelper.randomImage,
+                      KImageAnimationHelper.randomImage
+                    ];
+                    barrierValues = [
+                      this.getRandomAnswer,
+                      this.getRandomAnswer,
+                    ];
+                  });
+                }
+              });
+            } else {
+              this.setState(() {
+                result = false;
+                points = points > 0 ? points - 1 : 0;
+                if (!isWrongAnswer) {
+                  wrongAnswerCount += 1;
+                  isWrongAnswer = true;
+                }
+              });
+            }
           }
         }
       }
@@ -615,6 +617,24 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
       fit: StackFit.expand,
       children: [
         Align(
+          alignment: Alignment.bottomCenter,
+          child: Transform.translate(
+            offset: Offset(0, 0),
+            child: Transform.translate(
+              offset: Offset(0, -100 * _moveUpAnimation.value),
+              child: AnimatedOpacity(
+                duration: Duration(milliseconds: 500),
+                opacity: isShowPlusPoint ? 1 : 0,
+                child: Icon(
+                  Icons.star,
+                  color: Colors.amberAccent,
+                  size: 50,
+                ),
+              ),
+            ),
+          ),
+        ),
+        Align(
           alignment: Alignment(-1, -1),
           child: Container(
             width: MediaQuery.of(context).size.width * 0.3,
@@ -644,11 +664,11 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                       }),
                     ),
                   ),
-                  Image.asset(
-                    KAssets.IMG_NEST,
-                    fit: BoxFit.fitWidth,
-                    package: 'app_core',
-                  ),
+                  // Image.asset(
+                  //   KAssets.IMG_NEST,
+                  //   fit: BoxFit.fitWidth,
+                  //   package: 'app_core',
+                  // ),
                 ],
               ),
             ),
@@ -785,24 +805,6 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                 : (result == null
                     ? start
                     : (canRestartGame ? restartGame : () {}))),
-        Align(
-          alignment: Alignment.topCenter,
-          child: Transform.translate(
-            offset: Offset(0, 170),
-            child: Transform.translate(
-              offset: Offset(0, -80 * _moveUpAnimation.value),
-              child: AnimatedOpacity(
-                duration: Duration(milliseconds: 500),
-                opacity: isShowPlusPoint ? 1 : 0,
-                child: Icon(
-                  Icons.star,
-                  color: Colors.amberAccent,
-                  size: 50,
-                ),
-              ),
-            ),
-          ),
-        ),
         // if (isStart && result != null)
         //   Align(
         //     alignment: Alignment(0, -0.6),
