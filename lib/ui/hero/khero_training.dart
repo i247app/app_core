@@ -6,9 +6,9 @@ import 'package:flutter/widgets.dart';
 import 'package:app_core/header/kassets.dart';
 
 class KHeroTraining extends StatefulWidget {
-  final KHero hero;
+  final KHero? hero;
 
-  const KHeroTraining({required this.hero});
+  const KHeroTraining({this.hero});
 
   @override
   _KHeroTrainingState createState() => _KHeroTrainingState();
@@ -237,7 +237,7 @@ class _KHeroTrainingState extends State<KHeroTraining>
                       height: 128,
                       alignment: Alignment(0, 1 + heroY),
                       child: Image.network(
-                        widget.hero.imageURL ?? "",
+                        widget.hero?.imageURL ?? "",
                         width: 128,
                         height: 128,
                         errorBuilder: (context, error, stack) => Image.asset(

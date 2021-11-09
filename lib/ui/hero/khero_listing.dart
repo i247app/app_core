@@ -84,10 +84,8 @@ class _KHeroListingState extends State<KHeroListing> {
       KOverlayHelper.removeOverlay(this.overlayID!);
       this.overlayID = null;
     }
-    if (hero != null) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (ctx) => KHeroTraining(hero: hero)));
-    }
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (ctx) => KHeroTraining(hero: hero)));
   }
 
   void onPlayGame(KHero? hero) {
@@ -113,8 +111,8 @@ class _KHeroListingState extends State<KHeroListing> {
       KOverlayHelper.removeOverlay(this.overlayID!);
       this.overlayID = null;
     }
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (ctx) => KHeroJumpOverGame(hero: hero)));
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (ctx) => KHeroJumpOverGame(hero: hero)));
   }
 
   void onHeroClick(KHero hero) {
@@ -301,7 +299,7 @@ class _KHeroListingState extends State<KHeroListing> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: heroes != null && heroes!.length > 0
-                        ? () => onTraining(heroes![0])
+                        ? () => onTraining(null)
                         : () {},
                     style: KStyles.squaredButton(
                       KStyles.colorPrimary,
