@@ -468,8 +468,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
         double bottomBulletY =
             (heroY * MediaQuery.of(context).size.height / 2) / 2;
         double topBulletY =
-            (heroY * MediaQuery.of(context).size.height / 2) / 2 -
-                (heroHeight);
+            (heroY * MediaQuery.of(context).size.height / 2) / 2 - (heroHeight);
 
         if ((leftBarrier < -heroWidth / 2 && rightBarrier >= heroWidth / 2 ||
                 leftBarrier <= -heroWidth / 2 &&
@@ -728,23 +727,22 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
           alignment: Alignment(0, heroY + 1),
           child: widget.hero?.imageURL != null
               ? Image.network(
-            widget.hero!.imageURL!,
-            width: heroWidth,
-            height: heroHeight,
-            errorBuilder: (context, error, stack) =>
-                Image.asset(
+                  widget.hero!.imageURL!,
+                  width: heroWidth,
+                  height: heroHeight,
+                  errorBuilder: (context, error, stack) => Image.asset(
+                    KAssets.IMG_TAMAGO_LIGHT_1,
+                    width: heroWidth,
+                    height: heroHeight,
+                    package: 'app_core',
+                  ),
+                )
+              : Image.asset(
                   KAssets.IMG_TAMAGO_LIGHT_1,
                   width: heroWidth,
                   height: heroHeight,
                   package: 'app_core',
                 ),
-          )
-              : Image.asset(
-            KAssets.IMG_TAMAGO_LIGHT_1,
-            width: heroWidth,
-            height: heroHeight,
-            package: 'app_core',
-          ),
         ),
         Align(
           alignment: Alignment.topRight,
