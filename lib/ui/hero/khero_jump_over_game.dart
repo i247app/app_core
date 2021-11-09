@@ -175,7 +175,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   double initialPos = 0;
   double height = 0;
   double time = 0;
-  double gravity = -4.0;
+  double gravity = -10;
   double velocity = 3.5;
   Timer? _timer;
   bool isStart = false;
@@ -498,7 +498,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
               this._moveUpAnimationController.forward();
               this.setState(() {
                 result = true;
-                points = points + 5;
+                points = points + 1;
                 isScroll = false;
                 if (!isWrongAnswer) {
                   rightAnswerCount += 1;
