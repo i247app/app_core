@@ -175,6 +175,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   double initialPos = 0;
   double height = 0;
   double time = 0;
+  double BASE_GRAVITY = -6.0;
   double gravity = -6.0;
   double velocity = 3.5;
   Timer? _timer;
@@ -253,6 +254,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
     [0.6, 0.4],
     [0.6, 0.4],
   ];
+
+  double topBoundary = -2.1;
 
   @override
   void initState() {
@@ -361,15 +364,17 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
 
     _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
       if (isStart) {
-        height = (gravity - points * 0.2) * time * time + velocity * time;
-        final pos = initialPos - height;
+        height = (gravity * 0.5) * time * time + velocity * time;
+        double pos = initialPos - height;
 
         setState(() {
-          if (pos <= -1.7) {
+          if (pos <= topBoundary) {
+            time += 0.08;
           } else if (pos <= 0) {
             heroY = pos;
-          } else
+          } else {
             heroY = 0;
+          }
         });
 
         // if (isReachTarget() &&
@@ -391,7 +396,9 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
           checkResult();
         }
 
-        time += 0.01;
+        this.setState(() {
+          time += 0.01;
+        });
 
         moveMap();
       }
@@ -526,7 +533,9 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                   ];
                 });
                 Future.delayed(Duration(milliseconds: 50), () {
-                  isScroll = true;
+                  this.setState(() {
+                    isScroll = true;
+                  });
                 });
               } else {
                 this.setState(() {

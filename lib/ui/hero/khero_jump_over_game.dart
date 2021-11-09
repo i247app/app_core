@@ -254,6 +254,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
     [0.6, 0.4],
   ];
 
+  double topBoundary = -2.1;
+
   @override
   void initState() {
     super.initState();
@@ -365,7 +367,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
         final pos = initialPos - height;
 
         setState(() {
-          if (pos <= -1.3) {
+          if (pos <= topBoundary) {
+            time += 0.08;
           } else if (pos <= 0) {
             heroY = pos;
           } else
@@ -391,7 +394,9 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
           checkResult();
         }
 
-        time += 0.01;
+        this.setState(() {
+          time += 0.01;
+        });
 
         moveMap();
       }
@@ -447,10 +452,9 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
     if (isScroll) {
       for (int i = 0; i < barrierX.length; i++) {
         double _barrierWidth =
-            (MediaQuery.of(context).size.width / 2) * barrierWidth / 2;
+            (MediaQuery.of(context).size.width / 2) * barrierWidth / 2 - 10;
         double _barrierHeight =
-            (MediaQuery.of(context).size.height / 2) * barrierHeight[i][1];
-
+            (MediaQuery.of(context).size.height / 2) * barrierHeight[i][1] * 0.4;
         double leftBarrier =
             (((2 * barrierX[i] + barrierWidth) / (2 - barrierWidth)) *
                         MediaQuery.of(context).size.width) /
