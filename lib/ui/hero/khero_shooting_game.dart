@@ -12,16 +12,16 @@ import 'package:flutter/widgets.dart';
 import 'package:app_core/ui/hero/widget/khero_game_level.dart';
 import 'package:app_core/header/kassets.dart';
 
-class KHeroGame extends StatefulWidget {
+class KHeroShootingGame extends StatefulWidget {
   final KHero? hero;
 
-  const KHeroGame({this.hero});
+  const KHeroShootingGame({this.hero});
 
   @override
-  _KHeroGameState createState() => _KHeroGameState();
+  _KHeroShootingGameState createState() => _KHeroShootingGameState();
 }
 
-class _KHeroGameState extends State<KHeroGame> {
+class _KHeroShootingGameState extends State<KHeroShootingGame> {
   int? overlayID;
   int currentLevel = 0;
   bool isShowIntro = true;
