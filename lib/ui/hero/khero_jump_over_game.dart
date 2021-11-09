@@ -162,12 +162,17 @@ class _KJumpGameScreen extends StatefulWidget {
 class _KJumpGameScreenState extends State<_KJumpGameScreen>
     with TickerProviderStateMixin {
   late Animation<Offset> _bouncingAnimation;
-  late Animation<double> _scaleAnimation, _moveUpAnimation, _heroScaleAnimation;
+  late Animation<double> _playerScaleAnimation,
+      _scaleAnimation,
+      _moveUpAnimation,
+      _heroScaleAnimation;
   late AnimationController _heroScaleAnimationController,
+      _playerScaleAnimationController,
       _bouncingAnimationController,
       _scaleAnimationController,
       _moveUpAnimationController,
-      _spinAnimationController;
+      _spinAnimationController,
+      _playerSpinAnimationController;
 
   double screenWidth = 0;
   double screenHeight = 0;
@@ -264,6 +269,32 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
       this.getRandomAnswer,
       this.getRandomAnswer,
     ];
+
+    _playerScaleAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    )
+      ..addListener(() => setState(() {}))
+      ..addStatusListener((status) {
+        if (mounted && status == AnimationStatus.completed) {
+          this._playerSpinAnimationController.forward();
+        } else if (mounted && status == AnimationStatus.dismissed) {}
+      });
+    _playerScaleAnimation = new Tween(
+      begin: 1.0,
+      end: 1.2,
+    ).animate(new CurvedAnimation(
+        parent: _playerScaleAnimationController, curve: Curves.bounceOut));
+
+    _playerSpinAnimationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500))
+          ..addListener(() => setState(() {}))
+          ..addStatusListener((status) {
+            if (mounted && status == AnimationStatus.completed) {
+              this._playerSpinAnimationController.reset();
+              this._playerScaleAnimationController.reverse();
+            } else if (status == AnimationStatus.dismissed) {}
+          });
 
     _heroScaleAnimationController = AnimationController(
       duration: const Duration(milliseconds: 200),
@@ -406,9 +437,13 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   @override
   void dispose() {
     _timer?.cancel();
+    _heroScaleAnimationController.dispose();
+    _playerScaleAnimationController.dispose();
+    _bouncingAnimationController.dispose();
     _scaleAnimationController.dispose();
-    _spinAnimationController.dispose();
     _moveUpAnimationController.dispose();
+    _spinAnimationController.dispose();
+    _playerSpinAnimationController.dispose();
     // TODO: implement dispose
     super.dispose();
   }
@@ -453,8 +488,9 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
       for (int i = 0; i < barrierX.length; i++) {
         double _barrierWidth =
             (MediaQuery.of(context).size.width / 2) * barrierWidth / 2 - 10;
-        double _barrierHeight =
-            (MediaQuery.of(context).size.height / 2) * barrierHeight[i][1] * 0.4;
+        double _barrierHeight = (MediaQuery.of(context).size.height / 2) *
+            barrierHeight[i][1] *
+            0.4;
         double leftBarrier =
             (((2 * barrierX[i] + barrierWidth) / (2 - barrierWidth)) *
                         MediaQuery.of(context).size.width) /
@@ -486,14 +522,12 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                     bottomBulletY >= topBarrier)) {
           if (spinningHeroIndex != i) {
             this._bouncingAnimationController.forward();
-            this.setState(() {
-              spinningHeroIndex = i;
-              isShooting = false;
-            });
             bool isTrueAnswer =
                 barrierValues[i] == rightAnswers[currentQuestionIndex];
             if (isTrueAnswer) {
               this.setState(() {
+                spinningHeroIndex = i;
+                isShooting = false;
                 isShowPlusPoint = true;
               });
               this._scaleAnimationController.reset();
@@ -552,6 +586,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                 }
               });
             } else {
+              _playerScaleAnimationController.forward();
               this.setState(() {
                 result = false;
                 if (!isWrongAnswer) {
@@ -726,15 +761,21 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
           width: heroWidth,
           height: heroHeight,
           alignment: Alignment(0, heroY + 1),
-          child: Image.network(
-            widget.hero?.imageURL ?? "",
-            width: heroWidth,
-            height: heroHeight,
-            errorBuilder: (context, error, stack) => Image.asset(
-              KAssets.IMG_TAMAGO_CHAN,
-              width: heroWidth,
-              height: heroHeight,
-              package: 'app_core',
+          child: Transform.rotate(
+            angle: -this._playerSpinAnimationController.value * 4 * Math.pi,
+            child: ScaleTransition(
+              scale: _playerScaleAnimation,
+              child: Image.network(
+                widget.hero?.imageURL ?? "",
+                width: heroWidth,
+                height: heroHeight,
+                errorBuilder: (context, error, stack) => Image.asset(
+                  KAssets.IMG_TAMAGO_CHAN,
+                  width: heroWidth,
+                  height: heroHeight,
+                  package: 'app_core',
+                ),
+              ),
             ),
           ),
         ),

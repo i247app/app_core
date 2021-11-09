@@ -162,12 +162,17 @@ class _KJumpGameScreen extends StatefulWidget {
 class _KJumpGameScreenState extends State<_KJumpGameScreen>
     with TickerProviderStateMixin {
   late Animation<Offset> _bouncingAnimation;
-  late Animation<double> _scaleAnimation, _moveUpAnimation, _heroScaleAnimation;
+  late Animation<double> _playerScaleAnimation,
+      _scaleAnimation,
+      _moveUpAnimation,
+      _heroScaleAnimation;
   late AnimationController _heroScaleAnimationController,
+      _playerScaleAnimationController,
       _bouncingAnimationController,
       _scaleAnimationController,
       _moveUpAnimationController,
-      _spinAnimationController;
+      _spinAnimationController,
+      _playerSpinAnimationController;
 
   double screenWidth = 0;
   double screenHeight = 0;
@@ -175,7 +180,6 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   double initialPos = 0;
   double height = 0;
   double time = 0;
-  double BASE_GRAVITY = -6.0;
   double gravity = -6.0;
   double velocity = 3.5;
   Timer? _timer;
@@ -265,6 +269,32 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
       this.getRandomAnswer,
       this.getRandomAnswer,
     ];
+
+    _playerScaleAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    )
+      ..addListener(() => setState(() {}))
+      ..addStatusListener((status) {
+        if (mounted && status == AnimationStatus.completed) {
+          this._playerSpinAnimationController.forward();
+        } else if (mounted && status == AnimationStatus.dismissed) {}
+      });
+    _playerScaleAnimation = new Tween(
+      begin: 1.0,
+      end: 1.2,
+    ).animate(new CurvedAnimation(
+        parent: _playerScaleAnimationController, curve: Curves.bounceOut));
+
+    _playerSpinAnimationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500))
+          ..addListener(() => setState(() {}))
+          ..addStatusListener((status) {
+            if (mounted && status == AnimationStatus.completed) {
+              this._playerSpinAnimationController.reset();
+              this._playerScaleAnimationController.reverse();
+            } else if (status == AnimationStatus.dismissed) {}
+          });
 
     _heroScaleAnimationController = AnimationController(
       duration: const Duration(milliseconds: 200),
@@ -408,9 +438,13 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   @override
   void dispose() {
     _timer?.cancel();
+    _heroScaleAnimationController.dispose();
+    _playerScaleAnimationController.dispose();
+    _bouncingAnimationController.dispose();
     _scaleAnimationController.dispose();
-    _spinAnimationController.dispose();
     _moveUpAnimationController.dispose();
+    _spinAnimationController.dispose();
+    _playerSpinAnimationController.dispose();
     // TODO: implement dispose
     super.dispose();
   }
@@ -454,7 +488,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
     if (isScroll) {
       for (int i = 0; i < barrierX.length; i++) {
         double _barrierWidth =
-            (MediaQuery.of(context).size.width / 2) * barrierWidth / 2;
+            (MediaQuery.of(context).size.width / 2) * barrierWidth / 2 - 10;
         double _barrierHeight =
             (MediaQuery.of(context).size.height / 2) * barrierHeight[i][1];
 
@@ -470,10 +504,10 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                 (_barrierWidth / 2);
 
         double bottomBarrier =
-            (-0.7 * MediaQuery.of(context).size.height / 2) / 2 +
+            (-1.4 * MediaQuery.of(context).size.height / 2) / 2 +
                 (_barrierHeight / 2);
         double topBarrier =
-            (-0.7 * MediaQuery.of(context).size.height / 2) / 2 -
+            (-1.4 * MediaQuery.of(context).size.height / 2) / 2 -
                 (_barrierHeight / 2);
 
         double bottomBulletY =
@@ -494,14 +528,12 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                     bottomBulletY <= bottomBarrier &&
                     bottomBulletY >= topBarrier)) {
           this._bouncingAnimationController.forward();
-          this.setState(() {
-            spinningHeroIndex = i;
-            isShooting = false;
-          });
           bool isTrueAnswer =
               barrierValues[i] == rightAnswers[currentQuestionIndex];
           if (isTrueAnswer) {
             this.setState(() {
+              spinningHeroIndex = i;
+              isShooting = false;
               isShowPlusPoint = true;
             });
             this._scaleAnimationController.reset();
@@ -563,6 +595,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
               }
             });
           } else {
+            _playerScaleAnimationController.forward();
             this.setState(() {
               result = false;
               points = points > 0 ? points - 1 : 0;
@@ -720,24 +753,29 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
           width: heroWidth,
           height: heroHeight,
           alignment: Alignment(0, heroY + 1),
-          child: widget.hero?.imageURL != null
-              ? Image.network(
-            widget.hero!.imageURL!,
-            width: heroWidth,
-            height: heroHeight,
-            errorBuilder: (context, error, stack) =>
-                Image.asset(
-                  KAssets.IMG_TAMAGO_LIGHT_1,
-                  width: heroWidth,
-                  height: heroHeight,
-                  package: 'app_core',
-                ),
-          )
-              : Image.asset(
-            KAssets.IMG_TAMAGO_LIGHT_1,
-            width: heroWidth,
-            height: heroHeight,
-            package: 'app_core',
+          child: Transform.rotate(
+            angle: -this._playerSpinAnimationController.value * 4 * Math.pi,
+            child: ScaleTransition(
+              scale: _playerScaleAnimation,
+              child: widget.hero?.imageURL != null
+                  ? Image.network(
+                      widget.hero!.imageURL!,
+                      width: heroWidth,
+                      height: heroHeight,
+                      errorBuilder: (context, error, stack) => Image.asset(
+                        KAssets.IMG_TAMAGO_LIGHT_1,
+                        width: heroWidth,
+                        height: heroHeight,
+                        package: 'app_core',
+                      ),
+                    )
+                  : Image.asset(
+                      KAssets.IMG_TAMAGO_LIGHT_1,
+                      width: heroWidth,
+                      height: heroHeight,
+                      package: 'app_core',
+                    ),
+            ),
           ),
         ),
         Align(
@@ -972,7 +1010,7 @@ class _Barrier extends StatelessWidget {
   Widget build(context) {
     return Container(
       alignment:
-          Alignment((2 * barrierX + barrierWidth) / (2 - barrierWidth), 0.3),
+          Alignment((2 * barrierX + barrierWidth) / (2 - barrierWidth), -0.2),
       child: Container(
         width: (MediaQuery.of(context).size.width / 2) * barrierWidth,
         height: (MediaQuery.of(context).size.height / 2) * barrierHeight,
