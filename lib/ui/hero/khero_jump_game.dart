@@ -365,7 +365,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
         final pos = initialPos - height;
 
         setState(() {
-          if (pos <= -2.4) {
+          if (pos <= -1.7) {
           } else if (pos <= 0) {
             heroY = pos;
           } else
