@@ -279,10 +279,10 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
           });
         }
       });
-    _heroScaleAnimation = new Tween(
+    _heroScaleAnimation = Tween(
       begin: 1.0,
       end: 1.2,
-    ).animate(new CurvedAnimation(
+    ).animate(CurvedAnimation(
         parent: _heroScaleAnimationController, curve: Curves.bounceOut));
 
     _bouncingAnimationController =
@@ -327,11 +327,13 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
           });
         } else if (mounted && status == AnimationStatus.dismissed) {}
       });
-    _scaleAnimation = new Tween(
+    _scaleAnimation = Tween(
       begin: 1.0,
       end: 2.0,
-    ).animate(new CurvedAnimation(
-        parent: _scaleAnimationController, curve: Curves.bounceOut));
+    ).animate(CurvedAnimation(
+      parent: _scaleAnimationController,
+      curve: Curves.bounceOut,
+    ));
 
     _moveUpAnimationController = AnimationController(
       duration: const Duration(milliseconds: 1000),
@@ -350,11 +352,13 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
         //   });
         // } else if (mounted && status == AnimationStatus.dismissed) {}
       });
-    _moveUpAnimation = new Tween(
+    _moveUpAnimation = Tween(
       begin: 0.0,
       end: 1.0,
-    ).animate(new CurvedAnimation(
-        parent: _moveUpAnimationController, curve: Curves.bounceOut));
+    ).animate(CurvedAnimation(
+      parent: _moveUpAnimationController,
+      curve: Curves.bounceOut,
+    ));
 
     // this.screenHeight = MediaQuery.of(context).size.height;
     // this.screenWidth = MediaQuery.of(context).size.width;
