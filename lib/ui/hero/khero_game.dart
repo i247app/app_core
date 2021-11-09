@@ -902,9 +902,11 @@ class _KGameScreenState extends State<_KGameScreen>
                 width: heroWidth * 2,
                 height: heroHeight * 2,
                 child: Transform.rotate(
-                  angle: -this._barrelHeroSpinAnimationController.value * 4 * Math.pi,
+                  angle: -this._barrelHeroSpinAnimationController.value *
+                      4 *
+                      Math.pi,
                   child: Image.asset(
-                    KAssets.IMG_TAMAGO_1,
+                    KAssets.IMG_TAMAGO_CHAN,
                     width: heroWidth * 2,
                     height: heroHeight * 2,
                     package: 'app_core',

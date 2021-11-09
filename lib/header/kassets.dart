@@ -10,6 +10,7 @@ abstract class KAssets {
 
   static const String HERO_EGG = "$ASSET_BASE/heroegg.png";
 
+  static const String IMG_TAMAGO_CHAN = "$ASSET_BASE/tamago_chan.png";
   static const String IMG_TAMAGO_1 = "$ASSET_BASE/tamago_01.png";
   static const String IMG_TAMAGO_2 = "$ASSET_BASE/tamago_02.png";
   static const String IMG_TAMAGO_3 = "$ASSET_BASE/tamago_03.png";
@@ -23,8 +24,10 @@ abstract class KAssets {
   static const String IMG_TARGET_ORANGE = "$ASSET_BASE/target_orange.png";
   static const String IMG_CANNON_BARREL = "$ASSET_BASE/cannon_barrel.png";
   static const String IMG_BROADCAST = "$ASSET_BASE/broadcast.png";
-  static const String GAME_BACKGROUND_LIGHT = "$ASSET_BASE/game_background_light.png";
-  static const String GAME_BACKGROUND_DARK = "$ASSET_BASE/game_background_dark.png";
+  static const String GAME_BACKGROUND_LIGHT =
+      "$ASSET_BASE/game_background_light.png";
+  static const String GAME_BACKGROUND_DARK =
+      "$ASSET_BASE/game_background_dark.png";
   static const String BULLET_BALL_YELLOW = "$ASSET_BASE/bullet_ball_yellow.png";
   static const String BULLET_BALL_GREEN = "$ASSET_BASE/bullet_ball_green.png";
   static const String BULLET_BALL_BLUE = "$ASSET_BASE/bullet_ball_blue.png";
