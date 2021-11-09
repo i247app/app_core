@@ -12,7 +12,7 @@ import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/khero_helper.dart';
 import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/ui/hero/khero_game.dart';
+import 'package:app_core/ui/hero/khero_shooting_game.dart';
 import 'package:app_core/ui/hero/khero_training.dart';
 import 'package:app_core/ui/hero/widget/khero_combine_view.dart';
 import 'package:app_core/ui/hero/widget/khero_grid_item.dart';
@@ -84,10 +84,8 @@ class _KHeroListingState extends State<KHeroListing> {
       KOverlayHelper.removeOverlay(this.overlayID!);
       this.overlayID = null;
     }
-    if (hero != null) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (ctx) => KHeroTraining(hero: hero)));
-    }
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (ctx) => KHeroTraining(hero: hero)));
   }
 
   void onPlayGame(KHero? hero) {
@@ -96,7 +94,7 @@ class _KHeroListingState extends State<KHeroListing> {
       this.overlayID = null;
     }
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (ctx) => KHeroGame(hero: hero)));
+        .push(MaterialPageRoute(builder: (ctx) => KHeroShootingGame(hero: hero)));
   }
 
   void onPlayJumpGame(KHero? hero) {
@@ -113,8 +111,8 @@ class _KHeroListingState extends State<KHeroListing> {
       KOverlayHelper.removeOverlay(this.overlayID!);
       this.overlayID = null;
     }
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (ctx) => KHeroJumpOverGame(hero: hero)));
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (ctx) => KHeroJumpOverGame(hero: hero)));
   }
 
   void onHeroClick(KHero hero) {
@@ -301,7 +299,7 @@ class _KHeroListingState extends State<KHeroListing> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: heroes != null && heroes!.length > 0
-                        ? () => onTraining(heroes![0])
+                        ? () => onTraining(null)
                         : () {},
                     style: KStyles.squaredButton(
                       KStyles.colorPrimary,

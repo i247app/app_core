@@ -6,9 +6,9 @@ import 'package:flutter/widgets.dart';
 import 'package:app_core/header/kassets.dart';
 
 class KHeroTraining extends StatefulWidget {
-  final KHero hero;
+  final KHero? hero;
 
-  const KHeroTraining({required this.hero});
+  const KHeroTraining({this.hero});
 
   @override
   _KHeroTrainingState createState() => _KHeroTrainingState();
@@ -23,8 +23,8 @@ class _KHeroTrainingState extends State<KHeroTraining>
   double initialPos = 0;
   double height = 0;
   double time = 0;
-  double gravity = -10.0;
-  double velocity = 3.5;
+  double gravity = -4;
+  double velocity = 1.8;
   Timer? _timer;
   bool isStart = false;
 
@@ -233,29 +233,20 @@ class _KHeroTrainingState extends State<KHeroTraining>
                     // ),
                   ),
                   Container(
-                    width: 128,
-                    height: 128,
-                    alignment: Alignment(0, 1 + heroY),
-                    child: widget.hero.imageURL != null
-                        ? Image.network(
-                            widget.hero.imageURL!,
-                            width: 128,
-                            height: 128,
-                            errorBuilder: (context, error, stack) =>
-                                Image.asset(
-                              KAssets.IMG_TAMAGO_LIGHT_1,
-                              width: 128,
-                              height: 128,
-                              package: 'app_core',
-                            ),
-                          )
-                        : Image.asset(
-                            KAssets.IMG_TAMAGO_LIGHT_1,
-                            width: 128,
-                            height: 128,
-                            package: 'app_core',
-                          ),
-                  ),
+                      width: 80,
+                      height: 80,
+                      alignment: Alignment(0, 1 + heroY),
+                      child: Image.network(
+                        widget.hero?.imageURL ?? "",
+                        width: 80,
+                        height: 80,
+                        errorBuilder: (context, error, stack) => Image.asset(
+                          KAssets.IMG_TAMAGO_CHAN,
+                          width: 80,
+                          height: 80,
+                          package: 'app_core',
+                        ),
+                      )),
                 ],
               ),
             ),
