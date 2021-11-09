@@ -175,8 +175,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   double initialPos = 0;
   double height = 0;
   double time = 0;
-  double gravity = -4;
-  double velocity = 1.8;
+  double gravity = -10;
+  double velocity = 2.5;
   Timer? _timer;
   bool isStart = false;
   double heroHeight = 80;
@@ -361,7 +361,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
 
     _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
       if (isStart) {
-        height = (gravity - points * 0.2) * time * time + velocity * time;
+        height = (gravity * 0.5) * time * time + velocity * time;
         final pos = initialPos - height;
 
         setState(() {
@@ -498,7 +498,6 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
               this._moveUpAnimationController.forward();
               this.setState(() {
                 result = true;
-                points = points + 1;
                 isScroll = false;
                 if (!isWrongAnswer) {
                   rightAnswerCount += 1;
@@ -551,7 +550,6 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
             } else {
               this.setState(() {
                 result = false;
-                points = points > 0 ? points - 1 : 0;
                 if (!isWrongAnswer) {
                   wrongAnswerCount += 1;
                   isWrongAnswer = true;
@@ -594,7 +592,6 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
       this.isScroll = true;
       this.isShooting = false;
       this.result = null;
-      this.points = 0;
       this.currentQuestionIndex = 0;
       this.spinningHeroIndex = null;
       this.barrierX = [2, 2 + 1.5];
