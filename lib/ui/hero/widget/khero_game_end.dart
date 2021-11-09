@@ -92,8 +92,25 @@ class _KHeroGameEndState extends State<KHeroGameEnd>
           isAssetImage: true,
           maxLoop: 1,
           onFinish: () {
-            this.setState(() {
-              this.eggBreakStep = this.eggBreakStep + 1;
+            Future.delayed(Duration(milliseconds: 750), () {
+              this.setState(() {
+                this.eggBreakStep = this.eggBreakStep + 1;
+              });
+
+              Future.delayed(Duration(milliseconds: 1000), () {
+                this.setState(() {
+                  this.eggBreakStep = this.eggBreakStep + 1;
+                });
+
+                Future.delayed(Duration(milliseconds: 1000), () {
+                  if (widget.hero != null && KStringHelper.isExist(widget.hero!.imageURL)) {
+                    this.setState(() {
+                      this.eggBreakStep = this.eggBreakStep + 1;
+                    });
+                  } else if (this.widget.onFinish != null)
+                    this.widget.onFinish!();
+                });
+              });
             });
           },
         ),
@@ -107,18 +124,9 @@ class _KHeroGameEndState extends State<KHeroGameEnd>
       child: this.eggBreakStep == 2
           ? Transform.scale(
         scale: 0.5,
-        child: KImageAnimation(
-          animationType: KImageAnimationType.ZOOM_SHAKE,
-          imageUrls: [
-            KAssets.IMG_TAMAGO_2,
-          ],
-          isAssetImage: true,
-          maxLoop: 1,
-          onFinish: () {
-            this.setState(() {
-              this.eggBreakStep = this.eggBreakStep + 1;
-            });
-          },
+        child: Image.asset(
+          KAssets.IMG_TAMAGO_2,
+          package: 'app_core',
         ),
       )
           : Container(),
@@ -130,21 +138,9 @@ class _KHeroGameEndState extends State<KHeroGameEnd>
       child: this.eggBreakStep == 3
           ? Transform.scale(
         scale: 0.5,
-        child: KImageAnimation(
-          animationType: KImageAnimationType.ZOOM_SHAKE,
-          imageUrls: [
-            KAssets.IMG_TAMAGO_3,
-          ],
-          isAssetImage: true,
-          maxLoop: 1,
-          onFinish: () {
-            if (widget.hero != null && KStringHelper.isExist(widget.hero!.imageURL)) {
-              this.setState(() {
-                this.eggBreakStep = this.eggBreakStep + 1;
-              });
-            } else if (this.widget.onFinish != null)
-              this.widget.onFinish!();
-          },
+        child: Image.asset(
+          KAssets.IMG_TAMAGO_3,
+          package: 'app_core',
         ),
       )
           : Container(),

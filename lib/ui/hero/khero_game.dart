@@ -50,8 +50,7 @@ class _KHeroGameState extends State<KHeroGame> {
 
   void showHeroGameEndOverlay(Function() onFinish) async {
     final heroGameEnd = KHeroGameEnd(
-      hero: KHero()
-        ..imageURL = KImageAnimationHelper.randomImage,
+      hero: KHero()..imageURL = KImageAnimationHelper.randomImage,
       onFinish: onFinish,
     );
     showCustomOverlay(heroGameEnd);
@@ -118,7 +117,7 @@ class _KHeroGameState extends State<KHeroGame> {
                       onFinishLevel: (level) {
                         if (level <= 3) {
                           this.showHeroGameLevelOverlay(
-                                () {
+                            () {
                               if (this.overlayID != null) {
                                 KOverlayHelper.removeOverlay(this.overlayID!);
                                 this.overlayID = null;
@@ -163,11 +162,18 @@ class _KGameScreen extends StatefulWidget {
 class _KGameScreenState extends State<_KGameScreen>
     with TickerProviderStateMixin {
   late Animation<Offset> _bouncingAnimation;
-  late Animation<double> _scaleAnimation, _moveUpAnimation, _heroScaleAnimation;
+  late Animation<double> _scaleAnimation,
+      _moveUpAnimation,
+      _heroScaleAnimation,
+      _barrelMovingAnimation,
+      _barrelHeroMovingAnimation;
   late AnimationController _heroScaleAnimationController,
       _bouncingAnimationController,
       _scaleAnimationController,
       _moveUpAnimationController,
+      _barrelMovingAnimationController,
+      _barrelHeroMovingAnimationController,
+      _barrelHeroSpinAnimationController,
       _spinAnimationController;
 
   double screenWidth = 0;
@@ -269,6 +275,52 @@ class _KGameScreenState extends State<_KGameScreen>
       this.getRandomAnswer,
     ];
 
+    _barrelMovingAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )
+      ..addListener(() => setState(() {}))
+      ..addStatusListener((status) {
+        if (mounted && status == AnimationStatus.completed) {
+          if (!isStart && currentLevel == 0) {
+            Future.delayed(Duration(milliseconds: 1000), () {
+              setState(() {
+                isStart = true;
+                time = 0;
+              });
+              this.fire();
+              Future.delayed(Duration(milliseconds: 200), () {
+                this._barrelHeroMovingAnimationController.reverse();
+                this._barrelHeroSpinAnimationController.repeat();
+              });
+            });
+          }
+        } else if (mounted && status == AnimationStatus.dismissed) {}
+      });
+    _barrelMovingAnimation = new Tween(
+      begin: -1.5,
+      end: 0.0,
+    ).animate(new CurvedAnimation(
+        parent: _barrelMovingAnimationController, curve: Curves.linear));
+
+    _barrelHeroMovingAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )
+      ..addListener(() => setState(() {}))
+      ..addStatusListener((status) {
+        if (mounted && status == AnimationStatus.completed) {
+        } else if (mounted && status == AnimationStatus.dismissed) {
+          this._barrelHeroSpinAnimationController.stop();
+          this._barrelHeroSpinAnimationController.reset();
+        }
+      });
+    _barrelHeroMovingAnimation = new Tween(
+      begin: -1.5,
+      end: 0.0,
+    ).animate(new CurvedAnimation(
+        parent: _barrelHeroMovingAnimationController, curve: Curves.linear));
+
     _heroScaleAnimationController = AnimationController(
       duration: const Duration(milliseconds: 200),
       vsync: this,
@@ -304,6 +356,14 @@ class _KGameScreenState extends State<_KGameScreen>
           });
     _bouncingAnimation = Tween(begin: Offset(0, 0), end: Offset(0, -10.0))
         .animate(_bouncingAnimationController);
+
+    _barrelHeroSpinAnimationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500))
+          ..addListener(() => setState(() {}))
+          ..addStatusListener((status) {
+            if (mounted && status == AnimationStatus.completed) {
+            } else if (status == AnimationStatus.dismissed) {}
+          });
 
     _spinAnimationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 500))
@@ -408,9 +468,14 @@ class _KGameScreenState extends State<_KGameScreen>
   @override
   void dispose() {
     _timer?.cancel();
+    _heroScaleAnimationController.dispose();
+    _bouncingAnimationController.dispose();
     _scaleAnimationController.dispose();
-    _spinAnimationController.dispose();
     _moveUpAnimationController.dispose();
+    _barrelMovingAnimationController.dispose();
+    _barrelHeroMovingAnimationController.dispose();
+    _barrelHeroSpinAnimationController.dispose();
+    _spinAnimationController.dispose();
     // TODO: implement dispose
     super.dispose();
   }
@@ -592,10 +657,8 @@ class _KGameScreenState extends State<_KGameScreen>
   void start() {
     if (!isStart) {
       if (currentLevel == 0) {
-        setState(() {
-          isStart = true;
-          time = 0;
-        });
+        this._barrelMovingAnimationController.forward();
+        this._barrelHeroMovingAnimationController.forward();
       } else {
         setState(() {
           isStart = true;
@@ -832,7 +895,25 @@ class _KGameScreenState extends State<_KGameScreen>
           ),
         ),
         Align(
-          alignment: Alignment(0, 1),
+            alignment: Alignment(_barrelHeroMovingAnimation.value, 1),
+            child: Transform.translate(
+              offset: Offset(-heroWidth * 2 + 15, 0),
+              child: Container(
+                width: heroWidth * 2,
+                height: heroHeight * 2,
+                child: Transform.rotate(
+                  angle: -this._barrelHeroSpinAnimationController.value * 4 * Math.pi,
+                  child: Image.asset(
+                    KAssets.IMG_TAMAGO_1,
+                    width: heroWidth * 2,
+                    height: heroHeight * 2,
+                    package: 'app_core',
+                  ),
+                ),
+              ),
+            )),
+        Align(
+          alignment: Alignment(_barrelMovingAnimation.value, 1),
           child: Container(
             width: heroWidth * 2,
             height: heroHeight * 2,
