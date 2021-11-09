@@ -233,17 +233,17 @@ class _KHeroTrainingState extends State<KHeroTraining>
                     // ),
                   ),
                   Container(
-                      width: 128,
-                      height: 128,
+                      width: 80,
+                      height: 80,
                       alignment: Alignment(0, 1 + heroY),
                       child: Image.network(
                         widget.hero?.imageURL ?? "",
-                        width: 128,
-                        height: 128,
+                        width: 80,
+                        height: 80,
                         errorBuilder: (context, error, stack) => Image.asset(
                           KAssets.IMG_TAMAGO_CHAN,
-                          width: 128,
-                          height: 128,
+                          width: 80,
+                          height: 80,
                           package: 'app_core',
                         ),
                       )),
