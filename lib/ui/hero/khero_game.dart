@@ -463,6 +463,8 @@ class _KGameScreenState extends State<_KGameScreen>
         moveMap();
       }
     });
+
+    Future.delayed(Duration(milliseconds: 1500), start);
   }
 
   @override
