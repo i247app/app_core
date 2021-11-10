@@ -6,6 +6,7 @@ import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/ui/hero/khero_jump_game.dart';
 import 'package:app_core/ui/hero/khero_jump_over_game.dart';
+import 'package:app_core/ui/hero/widget/kegg_hatch_new_short_intro.dart';
 import 'package:app_core/ui/hero/widget/kegg_hatch_short_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_short_hatch_view.dart';
 import 'package:flutter/material.dart';
@@ -417,7 +418,7 @@ class _KHeroListingState extends State<KHeroListing> {
         content,
         if (this.isShowIntro) ...[
           Container(color: Theme.of(context).backgroundColor.withOpacity(1)),
-          KEggHatchShortIntro(
+          KEggHatchNewShortIntro(
               onFinish: () => setState(() => this.isShowIntro = false)),
           GestureDetector(
               onTap: () => setState(() => this.isShowIntro = false)),

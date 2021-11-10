@@ -2,11 +2,9 @@ import 'dart:async';
 import 'dart:math' as Math;
 
 import 'package:app_core/header/kassets.dart';
-import 'package:app_core/helper/kimage_animation_helper.dart';
 import 'package:app_core/ui/widget/kimage_animation/kimage_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:vector_math/vector_math_64.dart' as Vector;
 
 class KEggHatchShortIntro extends StatefulWidget {
   final VoidCallback? onFinish;
@@ -19,114 +17,23 @@ class KEggHatchShortIntro extends StatefulWidget {
 
 class _KEggHatchShortIntroState extends State<KEggHatchShortIntro>
     with TickerProviderStateMixin {
-  late Animation _adultShakeAnimation, _adultBouncingAnimation;
-  late AnimationController _adultShakeAnimationController,
-      _adultBouncingAnimationController,
-      _flashingAnimationController;
-
-  final List<String> heroImageUrls =
-      List.generate(1, (_) => KImageAnimationHelper.randomImage);
-
-  final Duration delay = Duration(milliseconds: 200);
-
-  final Duration eggBouncingDuration = Duration(milliseconds: 500);
-
-  final Duration adultBouncingDuration = Duration(milliseconds: 750);
-  final Duration adultShakeDuration = Duration(milliseconds: 750);
-
-  final Duration flashingDuration = Duration(milliseconds: 500);
-
-  int imageUrlIndex = 0;
-  bool showAdult = false;
-  bool showEgg = true;
-  bool showFlashing = false;
   int eggBreakStep = 1;
 
   @override
   void initState() {
     super.initState();
-
-    _adultBouncingAnimationController =
-        AnimationController(vsync: this, duration: adultBouncingDuration)
-          ..addListener(() => setState(() {}));
-    _adultBouncingAnimation = Tween(begin: Offset(0, 0), end: Offset(0, -10.0))
-        .animate(_adultBouncingAnimationController);
-
-    _flashingAnimationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 250))
-          ..addListener(() => setState(() {}));
-
-    this._adultShakeAnimationController = AnimationController(
-      vsync: this,
-      duration: adultShakeDuration,
-    )
-      ..addListener(() => setState(() {}))
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          if (imageUrlIndex + 1 < heroImageUrls.length) {
-            _adultShakeAnimationController.reset();
-            _adultBouncingAnimationController.reset();
-            Future.delayed(delay, () {
-              this.setState(() {
-                this.imageUrlIndex = this.imageUrlIndex + 1;
-              });
-              _adultShakeAnimationController.forward();
-              _adultBouncingAnimationController.forward();
-            });
-          } else {
-            Future.delayed(Duration(milliseconds: 500), () {
-              if (this.widget.onFinish != null) this.widget.onFinish!();
-            });
-          }
-        }
-      });
-    this._adultShakeAnimation = Tween<double>(
-      begin: 50.0,
-      end: 120.0,
-    ).animate(_adultShakeAnimationController);
   }
 
   @override
   void dispose() {
-    this._adultShakeAnimationController.dispose();
-    this._adultBouncingAnimationController.dispose();
-    this._flashingAnimationController.dispose();
     super.dispose();
-  }
-
-  Vector.Vector3 adultShakeTransformValue() {
-    final progress = this._adultShakeAnimationController.value;
-    final offset = Math.sin(progress * Math.pi * 8.0);
-    return Vector.Vector3(offset * 8.0, 0.0, 0.0);
   }
 
   @override
   Widget build(BuildContext context) {
-    final flashing = AnimatedOpacity(
-      duration: Duration(milliseconds: 1500),
-      opacity: this.showFlashing ? 1.0 : 0.0,
-      child: Container(
-        color: _flashingAnimationController.value < 0.5
-            ? Colors.black
-            : Colors.white,
-      ),
-    );
-
-    final adultView = Container(
-      width: 128,
-      child: AnimatedOpacity(
-        duration: Duration(seconds: 1),
-        opacity: this.showAdult ? 1.0 : 0.0,
-        child: Image.network(
-          heroImageUrls[imageUrlIndex],
-          errorBuilder: (context, error, stack) => Container(),
-        ),
-      ),
-    );
-
     final eggStep1 = AnimatedOpacity(
       duration: Duration(milliseconds: 700),
-      opacity: this.showEgg && this.eggBreakStep == 1 ? 1.0 : 0.0,
+      opacity: this.eggBreakStep == 1 ? 1.0 : 0.0,
       child: this.eggBreakStep == 1
           ? Transform.scale(
               scale: 0.5,
@@ -168,7 +75,7 @@ class _KEggHatchShortIntroState extends State<KEggHatchShortIntro>
 
     final eggStep2 = AnimatedOpacity(
       duration: Duration(milliseconds: 700),
-      opacity: this.showEgg && this.eggBreakStep == 2 ? 1.0 : 0.0,
+      opacity: this.eggBreakStep == 2 ? 1.0 : 0.0,
       child: this.eggBreakStep == 2
           ? Transform.scale(
               scale: 0.5,
@@ -182,7 +89,7 @@ class _KEggHatchShortIntroState extends State<KEggHatchShortIntro>
 
     final eggStep3 = AnimatedOpacity(
       duration: Duration(milliseconds: 700),
-      opacity: this.showEgg && this.eggBreakStep == 3 ? 1.0 : 0.0,
+      opacity: this.eggBreakStep == 3 ? 1.0 : 0.0,
       child: this.eggBreakStep == 3
           ? Transform.scale(
               scale: 0.5,
@@ -196,7 +103,7 @@ class _KEggHatchShortIntroState extends State<KEggHatchShortIntro>
 
     final eggStep4 = AnimatedOpacity(
       duration: Duration(milliseconds: 700),
-      opacity: this.showEgg && this.eggBreakStep == 4 ? 1.0 : 0.0,
+      opacity: this.eggBreakStep == 4 ? 1.0 : 0.0,
       child: this.eggBreakStep == 4
           ? Transform.scale(
               scale: 0.5,
@@ -206,14 +113,6 @@ class _KEggHatchShortIntroState extends State<KEggHatchShortIntro>
               ),
             )
           : Container(),
-    );
-
-    final animatedAdult = Transform.translate(
-      offset: _adultBouncingAnimation.value,
-      child: Transform(
-        transform: Matrix4.translation(adultShakeTransformValue()),
-        child: adultView,
-      ),
     );
 
     final content = Stack(
@@ -234,10 +133,6 @@ class _KEggHatchShortIntroState extends State<KEggHatchShortIntro>
           alignment: Alignment.center,
           child: eggStep4,
         ),
-        Align(
-          alignment: Alignment.center,
-          child: animatedAdult,
-        ),
       ],
     );
 
@@ -246,11 +141,6 @@ class _KEggHatchShortIntroState extends State<KEggHatchShortIntro>
     return Stack(
       children: [
         body,
-        // if (this.showFlashing)
-        //   Align(
-        //     alignment: Alignment.center,
-        //     child: flashing,
-        //   ),
       ],
     );
   }
