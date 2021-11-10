@@ -474,8 +474,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
       for (int i = 0; i < barrierX.length; i++) {
         double _barrierWidth =
             (MediaQuery.of(context).size.width / 2) * barrierWidth / 2 - 10;
-        double _barrierHeight =
-            (MediaQuery.of(context).size.height / 2) * barrierHeight[i][1];
+        double _barrierHeight = (MediaQuery.of(context).size.height / 2) *
+            barrierHeight[i][1] * 0.4;
 
         double leftBarrier =
             (((2 * barrierX[i] + barrierWidth) / (2 - barrierWidth)) *
@@ -489,11 +489,9 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                 (_barrierWidth / 2);
 
         double bottomBarrier =
-            (-1.4 * MediaQuery.of(context).size.height / 2) / 2 +
-                (_barrierHeight / 2);
+            (-0.8 * MediaQuery.of(context).size.height / 2) / 2;
         double topBarrier =
-            (-1.4 * MediaQuery.of(context).size.height / 2) / 2 -
-                (_barrierHeight / 2);
+            (-0.8 * MediaQuery.of(context).size.height / 2) / 2 - _barrierHeight;
 
         double bottomBulletY =
             (heroY * MediaQuery.of(context).size.height / 2) / 2 +
