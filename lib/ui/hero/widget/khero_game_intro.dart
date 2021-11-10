@@ -17,12 +17,13 @@ class KGameIntro extends StatefulWidget {
   _KGameIntroState createState() => _KGameIntroState();
 }
 
-class _KGameIntroState extends State<KGameIntro>
-    with TickerProviderStateMixin {
+class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
+  late Animation<Offset> _bouncingAnimation;
   late Animation<double> _shakeTheTopAnimation,
       _barrelMovingAnimation,
       _barrelHeroMovingAnimation;
   late AnimationController _shakeTheTopAnimationController,
+      _bouncingAnimationController,
       _barrelMovingAnimationController,
       _barrelHeroMovingAnimationController,
       _barrelHeroSpinAnimationController;
@@ -48,6 +49,20 @@ class _KGameIntroState extends State<KGameIntro>
   void initState() {
     super.initState();
 
+    _bouncingAnimationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 100))
+          ..addListener(() => setState(() {}))
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              _bouncingAnimationController.reverse();
+            } else if (status == AnimationStatus.dismissed) {
+              this._barrelHeroMovingAnimationController.reverse();
+              this._barrelHeroSpinAnimationController.repeat();
+            }
+          });
+    _bouncingAnimation = Tween(begin: Offset(0, 0), end: Offset(0, -10.0))
+        .animate(_bouncingAnimationController);
+
     this._shakeTheTopAnimationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 300),
@@ -61,14 +76,13 @@ class _KGameIntroState extends State<KGameIntro>
             }
             _shakeTheTopAnimationController.reverse();
           } else if (status == AnimationStatus.dismissed) {
-            Future.delayed(Duration(milliseconds: 1000), () {
+            Future.delayed(
+                Duration(milliseconds: introShakeTime - 1 > 0 ? 1000 : 500),
+                () {
               if (introShakeTime - 1 > 0) {
                 this._shakeTheTopAnimationController.forward();
               } else {
-                Future.delayed(Duration(milliseconds: 1000), () {
-                  this._barrelHeroMovingAnimationController.reverse();
-                  this._barrelHeroSpinAnimationController.repeat();
-                });
+                this._bouncingAnimationController.forward();
               }
               if (introShakeTime > 0)
                 this.setState(() => introShakeTime = introShakeTime - 1);
@@ -222,21 +236,24 @@ class _KGameIntroState extends State<KGameIntro>
           alignment: Alignment(_barrelHeroMovingAnimation.value, 1),
           child: Transform.translate(
             offset: Offset(-heroWidth * 2 + 15, 0),
-            child: Container(
-              transform:
-                  Matrix4.rotationZ(_shakeTheTopAnimation.value * Math.pi),
-              transformAlignment: Alignment.bottomCenter,
-              width: heroWidth * 2,
-              height: heroHeight * 2,
-              child: Transform.rotate(
-                angle: -this._barrelHeroSpinAnimationController.value *
-                    4 *
-                    Math.pi,
-                child: Image.asset(
-                  KAssets.IMG_TAMAGO_CHAN,
-                  width: heroWidth * 2,
-                  height: heroHeight * 2,
-                  package: 'app_core',
+            child: Transform.translate(
+              offset: _bouncingAnimation.value,
+              child: Container(
+                transform:
+                    Matrix4.rotationZ(_shakeTheTopAnimation.value * Math.pi),
+                transformAlignment: Alignment.bottomCenter,
+                width: heroWidth * 2,
+                height: heroHeight * 2,
+                child: Transform.rotate(
+                  angle: -this._barrelHeroSpinAnimationController.value *
+                      4 *
+                      Math.pi,
+                  child: Image.asset(
+                    KAssets.IMG_TAMAGO_CHAN,
+                    width: heroWidth * 2,
+                    height: heroHeight * 2,
+                    package: 'app_core',
+                  ),
                 ),
               ),
             ),
