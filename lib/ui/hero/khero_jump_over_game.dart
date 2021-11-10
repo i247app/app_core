@@ -240,6 +240,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   ];
   int currentQuestionIndex = 0;
   int? spinningHeroIndex;
+  int? currentShowStarIndex;
 
   List<double> barrierX = [2, 2 + 1.5];
   List<String> barrierImageUrls = [
@@ -355,7 +356,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
         if (mounted && status == AnimationStatus.completed) {
           Future.delayed(Duration(milliseconds: 1000), () {
             this.setState(() {
-              isShowPlusPoint = false;
+              currentShowStarIndex = null;
             });
             Future.delayed(Duration(milliseconds: 500), () {
               this._scaleAnimationController.reset();
@@ -532,17 +533,17 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
               this.setState(() {
                 spinningHeroIndex = i;
                 isShooting = false;
-                isShowPlusPoint = true;
               });
               this._scaleAnimationController.reset();
-              this._moveUpAnimationController.reset();
               this._scaleAnimationController.forward();
-              this._moveUpAnimationController.forward();
               this.setState(() {
                 result = true;
                 isScroll = false;
                 if (!isWrongAnswer) {
+                  currentShowStarIndex = i;
                   rightAnswerCount += 1;
+                  this._moveUpAnimationController.reset();
+                  this._moveUpAnimationController.forward();
                 }
                 isWrongAnswer = false;
               });
@@ -655,24 +656,6 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
     final body = Stack(
       fit: StackFit.expand,
       children: [
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Transform.translate(
-            offset: Offset(0, 0),
-            child: Transform.translate(
-              offset: Offset(0, -100 * _moveUpAnimation.value),
-              child: AnimatedOpacity(
-                duration: Duration(milliseconds: 500),
-                opacity: isShowPlusPoint ? 1 : 0,
-                child: Icon(
-                  Icons.star,
-                  color: Colors.amberAccent,
-                  size: 50,
-                ),
-              ),
-            ),
-          ),
-        ),
         Align(
           alignment: Alignment(-1, -1),
           child: Container(
@@ -958,6 +941,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                           : Offset(0, 0),
                       scaleAnimation:
                           spinningHeroIndex == i ? _heroScaleAnimation : null,
+                      starY: _moveUpAnimation.value,
+                      isShowStar: currentShowStarIndex == i,
                     ),
                   ),
                 ],
@@ -981,6 +966,8 @@ class _Barrier extends StatelessWidget {
   final Animation<double>? scaleAnimation;
   final int value;
   final Offset bouncingAnimation;
+  final double? starY;
+  final bool? isShowStar;
 
   _Barrier({
     required this.barrierHeight,
@@ -991,64 +978,69 @@ class _Barrier extends StatelessWidget {
     this.scaleAnimation,
     required this.value,
     required this.bouncingAnimation,
+    this.starY,
+    this.isShowStar,
   });
 
   @override
   Widget build(context) {
     return Container(
       alignment:
-          Alignment((2 * barrierX + barrierWidth) / (2 - barrierWidth), 1),
+      Alignment((2 * barrierX + barrierWidth) / (2 - barrierWidth), 1),
       child: Container(
         width: (MediaQuery.of(context).size.width / 2) * barrierWidth,
         height: (MediaQuery.of(context).size.height / 2) * barrierHeight,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: Stack(
+          fit: StackFit.expand,
           children: [
-            Container(
-              width: (MediaQuery.of(context).size.width / 2) * barrierWidth,
-              height: (MediaQuery.of(context).size.height / 2) *
-                  barrierHeight *
-                  0.4,
-              child: FittedBox(
-                child: Text(
-                  "${this.value}",
-                  textScaleFactor: 1.0,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 60,
+            Align(
+              alignment: Alignment.topCenter,
+              child:
+              Transform.translate(
+                offset: Offset(0, 0),
+                child: Transform.translate(
+                  offset: Offset(0, -40 * (starY ?? 0)),
+                  child: AnimatedOpacity(
+                    duration: Duration(milliseconds: 500),
+                    opacity: (isShowStar ?? false) ? 1 : 0,
+                    child: Icon(
+                      Icons.star,
+                      color: Colors.amberAccent,
+                      size: 50,
+                    ),
                   ),
                 ),
               ),
             ),
-            Transform.translate(
-              offset: bouncingAnimation,
-              child: Transform.rotate(
-                angle: rotateAngle,
-                child: scaleAnimation != null
-                    ? (ScaleTransition(
-                        scale: scaleAnimation!,
-                        child: Image.network(
-                          imageUrl,
-                          width: (MediaQuery.of(context).size.width / 2) *
-                              barrierWidth,
-                          height: (MediaQuery.of(context).size.height / 2) *
-                              barrierHeight *
-                              0.6,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stack) => Image.asset(
-                            KAssets.IMG_TAMAGO_LIGHT_1,
-                            width: (MediaQuery.of(context).size.width / 2) *
-                                barrierWidth,
-                            height: (MediaQuery.of(context).size.height / 2) *
-                                barrierHeight *
-                                0.6,
-                            package: 'app_core',
-                          ),
-                        ),
-                      ))
-                    : (Image.network(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  width: (MediaQuery.of(context).size.width / 2) * barrierWidth,
+                  height: (MediaQuery.of(context).size.height / 2) *
+                      barrierHeight *
+                      0.4,
+                  child: FittedBox(
+                    child: Text(
+                      "${this.value}",
+                      textScaleFactor: 1.0,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 60,
+                      ),
+                    ),
+                  ),
+                ),
+                Transform.translate(
+                  offset: bouncingAnimation,
+                  child: Transform.rotate(
+                    angle: rotateAngle,
+                    child: scaleAnimation != null
+                        ? (ScaleTransition(
+                      scale: scaleAnimation!,
+                      child: Image.network(
                         imageUrl,
                         width: (MediaQuery.of(context).size.width / 2) *
                             barrierWidth,
@@ -1065,8 +1057,29 @@ class _Barrier extends StatelessWidget {
                               0.6,
                           package: 'app_core',
                         ),
-                      )),
-              ),
+                      ),
+                    ))
+                        : (Image.network(
+                      imageUrl,
+                      width: (MediaQuery.of(context).size.width / 2) *
+                          barrierWidth,
+                      height: (MediaQuery.of(context).size.height / 2) *
+                          barrierHeight *
+                          0.6,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stack) => Image.asset(
+                        KAssets.IMG_TAMAGO_LIGHT_1,
+                        width: (MediaQuery.of(context).size.width / 2) *
+                            barrierWidth,
+                        height: (MediaQuery.of(context).size.height / 2) *
+                            barrierHeight *
+                            0.6,
+                        package: 'app_core',
+                      ),
+                    )),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
