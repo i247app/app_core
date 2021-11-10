@@ -28,12 +28,13 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
     KAssets.IMG_BG_XMAS_LIGHT,
     KAssets.IMG_BG_XMAS_DARK,
   ];
-  late final String gameBackground = (BG_IMAGES..shuffle()).first;
 
   int? overlayID;
 
   int currentLevel = 0;
   bool isShowIntro = true;
+
+  String get gameBackground => BG_IMAGES[this.currentLevel % BG_IMAGES.length];
 
   void showHeroGameEndOverlay(Function() onFinish) async {
     final heroGameEnd = KHeroGameEnd(
@@ -70,7 +71,7 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
-                  BG_IMAGES[currentLevel],
+                  this.gameBackground,
                   package: 'app_core',
                 ),
                 fit: BoxFit.cover,
