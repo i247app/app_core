@@ -4,6 +4,7 @@ import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/helper/ksnackbar_helper.dart';
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/khero.dart';
+import 'package:app_core/ui/hero/khero_jump_game.dart';
 import 'package:app_core/ui/hero/khero_jump_over_game.dart';
 import 'package:app_core/ui/hero/widget/kegg_hatch_short_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_short_hatch_view.dart';
@@ -17,8 +18,6 @@ import 'package:app_core/ui/hero/khero_training.dart';
 import 'package:app_core/ui/hero/widget/khero_combine_view.dart';
 import 'package:app_core/ui/hero/widget/khero_grid_item.dart';
 import 'package:app_core/ui/widget/kstopwatch_label.dart';
-
-import 'khero_jump_game.dart';
 
 final GlobalKey _draggableKey = GlobalKey();
 
@@ -93,8 +92,8 @@ class _KHeroListingState extends State<KHeroListing> {
       KOverlayHelper.removeOverlay(this.overlayID!);
       this.overlayID = null;
     }
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (ctx) => KHeroShootingGame(hero: hero)));
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (ctx) => KHeroShootingGame(hero: hero)));
   }
 
   void onPlayJumpGame(KHero? hero) {
@@ -416,16 +415,12 @@ class _KHeroListingState extends State<KHeroListing> {
       fit: StackFit.expand,
       children: [
         content,
-        if (isShowIntro) ...[
-          Container(
-            color: Theme.of(context).backgroundColor.withOpacity(1),
-          ),
-          KEggHatchShortIntro(onFinish: () {
-            this.setState(() => this.isShowIntro = false);
-          }),
-          // HeroIntro(onFinish: () {
-          //   this.setState(() => this.isShowIntro = false);
-          // }),
+        if (this.isShowIntro) ...[
+          Container(color: Theme.of(context).backgroundColor.withOpacity(1)),
+          KEggHatchShortIntro(
+              onFinish: () => setState(() => this.isShowIntro = false)),
+          GestureDetector(
+              onTap: () => setState(() => this.isShowIntro = false)),
         ],
         if (this.isHatchingHero) IgnorePointer(),
       ],
