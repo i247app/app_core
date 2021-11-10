@@ -163,7 +163,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   double initialPos = 0;
   double height = 0;
   double time = 0;
-  double gravity = -6.0;
+  double gravity = -8.0;
   double velocity = 3.5;
   Timer? _timer;
   bool isStart = false;
@@ -746,14 +746,14 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                       width: heroWidth,
                       height: heroHeight,
                       errorBuilder: (context, error, stack) => Image.asset(
-                        KAssets.IMG_TAMAGO_LIGHT_1,
+                        KAssets.IMG_TAMAGO_CHAN,
                         width: heroWidth,
                         height: heroHeight,
                         package: 'app_core',
                       ),
                     )
                   : Image.asset(
-                      KAssets.IMG_TAMAGO_LIGHT_1,
+                      KAssets.IMG_TAMAGO_CHAN,
                       width: heroWidth,
                       height: heroHeight,
                       package: 'app_core',
@@ -1034,7 +1034,7 @@ class _Barrier extends StatelessWidget {
                               0.6,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stack) => Image.asset(
-                            KAssets.IMG_TAMAGO_LIGHT_1,
+                            KAssets.IMG_TAMAGO_CHAN,
                             width: (MediaQuery.of(context).size.width / 2) *
                                 barrierWidth,
                             height: (MediaQuery.of(context).size.height / 2) *
@@ -1053,7 +1053,7 @@ class _Barrier extends StatelessWidget {
                             0.6,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stack) => Image.asset(
-                          KAssets.IMG_TAMAGO_LIGHT_1,
+                          KAssets.IMG_TAMAGO_CHAN,
                           width: (MediaQuery.of(context).size.width / 2) *
                               barrierWidth,
                           height: (MediaQuery.of(context).size.height / 2) *
