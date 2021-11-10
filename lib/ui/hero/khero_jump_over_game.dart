@@ -180,8 +180,10 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   double initialPos = 0;
   double height = 0;
   double time = 0;
-  double gravity = -4;
-  double velocity = 1.8;
+  // double gravity = -4;
+  // double velocity = 1.8;
+  double gravity = -8.0;
+  double velocity = 2.0;
   Timer? _timer;
   bool isStart = false;
   double heroHeight = 80;
