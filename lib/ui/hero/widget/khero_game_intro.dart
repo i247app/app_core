@@ -19,10 +19,12 @@ class KGameIntro extends StatefulWidget {
 
 class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
   late Animation<Offset> _bouncingAnimation;
-  late Animation<double> _shakeTheTopAnimation,
+  late Animation<double> _barrelScaleAnimation,
+      _shakeTheTopAnimation,
       _barrelMovingAnimation,
       _barrelHeroMovingAnimation;
-  late AnimationController _shakeTheTopAnimationController,
+  late AnimationController _barrelScaleAnimationController,
+      _shakeTheTopAnimationController,
       _bouncingAnimationController,
       _barrelMovingAnimationController,
       _barrelHeroMovingAnimationController,
@@ -48,6 +50,22 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
+    _barrelScaleAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    )
+      ..addListener(() => setState(() {}))
+      ..addStatusListener((status) {
+        if (mounted && status == AnimationStatus.completed) {
+          this._barrelScaleAnimationController.reverse();
+        } else if (mounted && status == AnimationStatus.dismissed) {}
+      });
+    _barrelScaleAnimation = new Tween(
+      begin: 1.0,
+      end: 0.9,
+    ).animate(new CurvedAnimation(
+        parent: _barrelScaleAnimationController, curve: Curves.bounceOut));
 
     _bouncingAnimationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 100))
@@ -182,6 +200,7 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
   @override
   void dispose() {
     _timer?.cancel();
+    _barrelScaleAnimationController.dispose();
     _shakeTheTopAnimationController.dispose();
     _barrelMovingAnimationController.dispose();
     _barrelHeroMovingAnimationController.dispose();
@@ -192,6 +211,9 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
 
   void fire() {
     if (!isShooting && bulletsY.length < 3) {
+      if (!_barrelScaleAnimationController.isAnimating) {
+        _barrelScaleAnimationController.forward();
+      }
       setState(() {
         bulletsY = [
           ...bulletsY,
@@ -264,11 +286,14 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
           child: Container(
             width: heroWidth * 2,
             height: heroHeight * 2,
-            child: Image.asset(
-              KAssets.IMG_CANNON_BARREL,
-              width: heroWidth * 2,
-              height: heroHeight * 2,
-              package: 'app_core',
+            child: ScaleTransition(
+              scale: _barrelScaleAnimation,
+              child: Image.asset(
+                KAssets.IMG_CANNON_BARREL,
+                width: heroWidth * 2,
+                height: heroHeight * 2,
+                package: 'app_core',
+              ),
             ),
           ),
         ),

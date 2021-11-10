@@ -141,8 +141,12 @@ class _KGameScreen extends StatefulWidget {
 class _KGameScreenState extends State<_KGameScreen>
     with TickerProviderStateMixin {
   late Animation<Offset> _bouncingAnimation;
-  late Animation<double> _scaleAnimation, _moveUpAnimation, _heroScaleAnimation;
-  late AnimationController _heroScaleAnimationController,
+  late Animation<double> _barrelScaleAnimation,
+      _scaleAnimation,
+      _moveUpAnimation,
+      _heroScaleAnimation;
+  late AnimationController _barrelScaleAnimationController,
+      _heroScaleAnimationController,
       _bouncingAnimationController,
       _scaleAnimationController,
       _moveUpAnimationController,
@@ -247,6 +251,23 @@ class _KGameScreenState extends State<_KGameScreen>
       this.getRandomAnswer,
       this.getRandomAnswer,
     ];
+
+    _barrelScaleAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    )
+      ..addListener(() => setState(() {}))
+      ..addStatusListener((status) {
+        if (mounted && status == AnimationStatus.completed) {
+          this._barrelScaleAnimationController.reverse();
+        } else if (mounted && status == AnimationStatus.dismissed) {
+        }
+      });
+    _barrelScaleAnimation = new Tween(
+      begin: 1.0,
+      end: 0.9,
+    ).animate(new CurvedAnimation(
+        parent: _barrelScaleAnimationController, curve: Curves.bounceOut));
 
     _heroScaleAnimationController = AnimationController(
       duration: const Duration(milliseconds: 200),
@@ -385,6 +406,7 @@ class _KGameScreenState extends State<_KGameScreen>
   @override
   void dispose() {
     _timer?.cancel();
+    _barrelScaleAnimationController.dispose();
     _heroScaleAnimationController.dispose();
     _bouncingAnimationController.dispose();
     _scaleAnimationController.dispose();
@@ -400,6 +422,9 @@ class _KGameScreenState extends State<_KGameScreen>
 
   void fire() {
     if (!isShooting && bulletsY.length < 3) {
+      if (!_barrelScaleAnimationController.isAnimating) {
+        _barrelScaleAnimationController.forward();
+      }
       setState(() {
         bulletsY = [
           ...bulletsY,
@@ -718,7 +743,7 @@ class _KGameScreenState extends State<_KGameScreen>
         ...List.generate(
           bulletsY.length,
           (i) => Align(
-            alignment: Alignment(0, bulletsY[i]),
+            alignment: Alignment(0, bulletsY[i] - 0.1),
             child: Container(
               width: bulletWidth,
               height: bulletWidth,
@@ -809,11 +834,14 @@ class _KGameScreenState extends State<_KGameScreen>
           child: Container(
             width: heroWidth * 2,
             height: heroHeight * 2,
-            child: Image.asset(
-              KAssets.IMG_CANNON_BARREL,
-              width: heroWidth * 2,
-              height: heroHeight * 2,
-              package: 'app_core',
+            child: ScaleTransition(
+              scale: _barrelScaleAnimation,
+              child: Image.asset(
+                KAssets.IMG_CANNON_BARREL,
+                width: heroWidth * 2,
+                height: heroHeight * 2,
+                package: 'app_core',
+              ),
             ),
           ),
         ),
