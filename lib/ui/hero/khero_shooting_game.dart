@@ -22,33 +22,18 @@ class KHeroShootingGame extends StatefulWidget {
 }
 
 class _KHeroShootingGameState extends State<KHeroShootingGame> {
-  int? overlayID;
-  int currentLevel = 0;
-  bool isShowIntro = true;
-  List<String> levelBackground = [
+  static const List<String> BG_IMAGES = [
     KAssets.IMG_BG_SPACE_LIGHT,
     KAssets.IMG_BG_SPACE_DARK,
     KAssets.IMG_BG_XMAS_LIGHT,
     KAssets.IMG_BG_XMAS_DARK,
   ];
+  late final String gameBackground = (BG_IMAGES..shuffle()).first;
 
-  String gameBackground = Math.Random().nextDouble() >= 0.5
-      ? KAssets.IMG_BG_SPACE_LIGHT
-      : KAssets.IMG_BG_SPACE_DARK;
+  int? overlayID;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // this.showHeroGameEndOverlay(
-    //       () {
-    //     if (this.overlayID != null) {
-    //       KOverlayHelper.removeOverlay(this.overlayID!);
-    //       this.overlayID = null;
-    //     }
-    //   },
-    // );
-  }
+  int currentLevel = 0;
+  bool isShowIntro = true;
 
   void showHeroGameEndOverlay(Function() onFinish) async {
     final heroGameEnd = KHeroGameEnd(
@@ -70,10 +55,7 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
       fit: StackFit.expand,
       children: [
         Container(color: Colors.black.withOpacity(0.6)),
-        Align(
-          alignment: Alignment.topCenter,
-          child: view,
-        ),
+        Align(alignment: Alignment.topCenter, child: view),
       ],
     );
     this.overlayID = KOverlayHelper.addOverlay(overlay);
@@ -88,7 +70,7 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
-                  levelBackground[currentLevel],
+                  BG_IMAGES[currentLevel],
                   package: 'app_core',
                 ),
                 fit: BoxFit.cover,
@@ -99,35 +81,19 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 15,
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                  BackButton(),
                   Expanded(
                     child: isShowIntro
                         ? KGameIntro(
                             hero: widget.hero,
-                            onFinish: () {
-                              this.setState(() {
-                                this.isShowIntro = false;
-                              });
-                            },
+                            onFinish: () =>
+                                this.setState(() => this.isShowIntro = false),
                           )
                         : _KGameScreen(
                             hero: widget.hero,
                             onFinishLevel: (level) {
                               if (level <= 3) {
-                                this.showHeroGameLevelOverlay(
+                                showHeroGameLevelOverlay(
                                   () {
                                     if (this.overlayID != null) {
                                       KOverlayHelper.removeOverlay(
@@ -138,11 +104,8 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
                                 );
                               }
                             },
-                            onChangeLevel: (level) => this.setState(
-                              () {
-                                this.currentLevel = Math.Random().nextInt(4);
-                              },
-                            ),
+                            onChangeLevel: (_) => this.setState(() =>
+                                this.currentLevel = Math.Random().nextInt(4)),
                           ),
                   ),
                 ],
@@ -153,10 +116,7 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
       ],
     );
 
-    return Scaffold(
-      // appBar: AppBar(title: Text("Play game")),
-      body: body,
-    );
+    return Scaffold(body: body);
   }
 }
 
@@ -850,12 +810,7 @@ class _KGameScreenState extends State<_KGameScreen>
             ),
           ),
         ),
-        GestureDetector(
-            onTap: isStart
-                ? fire
-                : (result == null
-                    ? start
-                    : (canRestartGame ? restartGame : () {}))),
+
         Align(
           alignment: Alignment.topCenter,
           child: Transform.translate(
@@ -1000,6 +955,13 @@ class _KGameScreenState extends State<_KGameScreen>
               ),
             ),
           ),
+        GestureDetector(
+          onTap: isStart
+              ? fire
+              : (result == null
+                  ? start
+                  : (canRestartGame ? restartGame : () {})),
+        ),
       ],
     );
 
