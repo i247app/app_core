@@ -217,7 +217,7 @@ class _KHeroPortraitState extends State<KHeroPortrait>
           widget.hero.eggImageURL ?? "",
           color: Theme.of(context).iconTheme.color,
           errorBuilder: (context, error, stack) => Image.asset(
-            KAssets.HERO_EGG,
+            KAssets.IMG_HERO_EGG,
             package: 'app_core',
           ),
         ),
@@ -232,7 +232,7 @@ class _KHeroPortraitState extends State<KHeroPortrait>
         child: Image.network(
           widget.hero.imageURL ?? "",
           errorBuilder: (context, error, stack) => Image.asset(
-            KAssets.HERO_EGG,
+            KAssets.IMG_HERO_EGG,
             package: 'app_core',
           ),
         ),

@@ -45,7 +45,7 @@ class KHeroGridItemState extends State<KHeroGridItem>
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stack) {
                   return Image.asset(
-                    KAssets.HERO_EGG,
+                    KAssets.IMG_HERO_EGG,
                     package: 'app_core',
                   );
                 },

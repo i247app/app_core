@@ -196,7 +196,7 @@ class _KHeroHatchViewState extends State<KHeroHatchView>
         opacity: this.showEgg ? 1.0 : 0.0,
         child: Image.network(widget.hero.eggImageURL ?? "",
             errorBuilder: (context, error, stack) => Image.asset(
-                  KAssets.HERO_EGG,
+                  KAssets.IMG_HERO_EGG,
                   package: 'app_core',
                   height: MediaQuery.of(context).size.height * 0.6,
                 )

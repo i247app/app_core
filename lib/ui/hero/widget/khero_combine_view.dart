@@ -195,7 +195,7 @@ class _KHeroCombineViewState extends State<KHeroCombineView>
                 widget.dragHero.imageURL ?? "",
                 height: this.heroSize,
                 errorBuilder: (context, error, stack) => Image.asset(
-                  KAssets.HERO_EGG,
+                  KAssets.IMG_HERO_EGG,
                   height: this.heroSize,
                   package: 'app_core',
                 ),
@@ -226,7 +226,7 @@ class _KHeroCombineViewState extends State<KHeroCombineView>
                 widget.hero.imageURL ?? "",
                 height: this.heroSize,
                 errorBuilder: (context, error, stack) => Image.asset(
-                  KAssets.HERO_EGG,
+                  KAssets.IMG_HERO_EGG,
                   height: this.heroSize,
                   package: 'app_core',
                 ),

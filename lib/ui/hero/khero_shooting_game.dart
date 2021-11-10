@@ -26,15 +26,15 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
   int currentLevel = 0;
   bool isShowIntro = true;
   List<String> levelBackground = [
-    KAssets.MOON_LIGHT,
-    KAssets.MOON_DARK,
-    KAssets.GAME_BACKGROUND_LIGHT,
-    KAssets.GAME_BACKGROUND_DARK,
+    KAssets.IMG_BG_SPACE_LIGHT,
+    KAssets.IMG_BG_SPACE_DARK,
+    KAssets.IMG_BG_XMAS_LIGHT,
+    KAssets.IMG_BG_XMAS_DARK,
   ];
 
   String gameBackground = Math.Random().nextDouble() >= 0.5
-      ? KAssets.MOON_LIGHT
-      : KAssets.MOON_DARK;
+      ? KAssets.IMG_BG_SPACE_LIGHT
+      : KAssets.IMG_BG_SPACE_DARK;
 
   @override
   void initState() {

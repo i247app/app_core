@@ -96,7 +96,7 @@ class _KHeroEggViewState extends State<KHeroEggView>
         child: Image.network(
           widget.hero.eggImageURL ?? "",
           errorBuilder: (context, error, stack) => Image.asset(
-            KAssets.HERO_EGG,
+            KAssets.IMG_HERO_EGG,
             package: 'app_core',
           ),
           // color: Theme.of(context).iconTheme.color,

@@ -182,7 +182,7 @@ class _DropBounceShakeImageState extends State<DropBounceShakeImage>
                     imageUrls[imageIndex],
                     height: heroSize,
                     errorBuilder: (context, error, stack) => Image.asset(
-                      KAssets.HERO_EGG,
+                      KAssets.IMG_HERO_EGG,
                       height: heroSize,
                       package: 'app_core',
                     ),

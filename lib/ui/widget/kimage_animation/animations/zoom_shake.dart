@@ -162,7 +162,7 @@ class _ZoomShakeImageState extends State<ZoomShakeImage>
                     imageUrls[imageIndex],
                     height: heroSize,
                     errorBuilder: (context, error, stack) => Image.asset(
-                      widget.imageUrls.length > 0 ? widget.imageUrls[0] : KAssets.HERO_EGG,
+                      widget.imageUrls.length > 0 ? widget.imageUrls[0] : KAssets.IMG_HERO_EGG,
                       height: heroSize,
                       package: 'app_core',
                     ),

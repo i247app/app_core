@@ -21,32 +21,17 @@ class KHeroJumpGame extends StatefulWidget {
 }
 
 class _KHeroJumpGameState extends State<KHeroJumpGame> {
-  int? overlayID;
-  int currentLevel = 0;
-  List<String> levelBackground = [
-    KAssets.MOON_LIGHT,
-    KAssets.MOON_DARK,
-    KAssets.GAME_BACKGROUND_LIGHT,
-    KAssets.GAME_BACKGROUND_DARK,
+  static const List<String> BACKGROUND_IMAGES = [
+    KAssets.IMG_BG_SPACE_LIGHT,
+    KAssets.IMG_BG_SPACE_DARK,
+    KAssets.IMG_BG_XMAS_LIGHT,
+    KAssets.IMG_BG_XMAS_DARK,
   ];
+  late final String gameBackground = (BACKGROUND_IMAGES..shuffle()).first;
 
-  String gameBackground = Math.Random().nextDouble() >= 0.5
-      ? KAssets.MOON_LIGHT
-      : KAssets.MOON_DARK;
+  int? overlayID;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // this.showHeroGameEndOverlay(
-    //       () {
-    //     if (this.overlayID != null) {
-    //       KOverlayHelper.removeOverlay(this.overlayID!);
-    //       this.overlayID = null;
-    //     }
-    //   },
-    // );
-  }
+  int currentLevel = 0;
 
   void showHeroGameEndOverlay(Function() onFinish) async {
     final heroGameEnd = KHeroGameEnd(
@@ -57,9 +42,7 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
   }
 
   void showHeroGameLevelOverlay(Function() onFinish) async {
-    final heroGameLevel = KHeroGameLevel(
-      onFinish: onFinish,
-    );
+    final heroGameLevel = KHeroGameLevel(onFinish: onFinish);
     showCustomOverlay(heroGameLevel);
   }
 
@@ -86,7 +69,7 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
-                  levelBackground[currentLevel],
+                  BACKGROUND_IMAGES[currentLevel],
                   package: 'app_core',
                 ),
                 fit: BoxFit.cover,

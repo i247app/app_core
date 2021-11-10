@@ -511,7 +511,7 @@ class _HeroDetailState extends State<_HeroDetail> {
                 : widget.hero!.imageURL!,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stack) => Image.asset(
-              KAssets.HERO_EGG,
+              KAssets.IMG_HERO_EGG,
               package: 'app_core',
             ),
             // color: KHeroHelper.isEgg(widget.hero!)
