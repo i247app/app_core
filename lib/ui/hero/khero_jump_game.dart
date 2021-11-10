@@ -795,7 +795,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                         ),
                       ),
                       if (currentLevel < levelIconAssets.length &&
-                          levelIconAssets[currentLevel] != null)
+                          levelIconAssets[currentLevel].isNotEmpty)
                         Positioned(
                           left: -40,
                           top: -15,
