@@ -88,10 +88,12 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
                         ? GestureDetector(
                             onTap: () =>
                                 this.setState(() => this.isShowIntro = false),
-                            child: KGameIntro(
-                              hero: widget.hero,
-                              onFinish: () =>
-                                  this.setState(() => this.isShowIntro = false),
+                            child: Container(
+                              child: KGameIntro(
+                                hero: widget.hero,
+                                onFinish: () => this
+                                    .setState(() => this.isShowIntro = false),
+                              ),
                             ),
                           )
                         : _KGameScreen(
