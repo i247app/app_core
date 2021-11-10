@@ -84,11 +84,15 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
                 children: [
                   BackButton(),
                   Expanded(
-                    child: isShowIntro
-                        ? KGameIntro(
-                            hero: widget.hero,
-                            onFinish: () =>
+                    child: this.isShowIntro
+                        ? GestureDetector(
+                            onTap: () =>
                                 this.setState(() => this.isShowIntro = false),
+                            child: KGameIntro(
+                              hero: widget.hero,
+                              onFinish: () =>
+                                  this.setState(() => this.isShowIntro = false),
+                            ),
                           )
                         : _KGameScreen(
                             hero: widget.hero,
