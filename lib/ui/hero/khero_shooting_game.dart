@@ -23,6 +23,8 @@ class KHeroShootingGame extends StatefulWidget {
 
 class _KHeroShootingGameState extends State<KHeroShootingGame> {
   static const List<String> BG_IMAGES = [
+    KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
+    KAssets.IMG_BG_COUNTRYSIDE_DARK,
     KAssets.IMG_BG_SPACE_LIGHT,
     KAssets.IMG_BG_SPACE_DARK,
     KAssets.IMG_BG_XMAS_LIGHT,

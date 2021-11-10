@@ -22,6 +22,8 @@ class KHeroJumpGame extends StatefulWidget {
 
 class _KHeroJumpGameState extends State<KHeroJumpGame> {
   static const List<String> BACKGROUND_IMAGES = [
+    KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
+    KAssets.IMG_BG_COUNTRYSIDE_DARK,
     KAssets.IMG_BG_SPACE_LIGHT,
     KAssets.IMG_BG_SPACE_DARK,
     KAssets.IMG_BG_XMAS_LIGHT,

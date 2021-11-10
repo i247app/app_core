@@ -24,6 +24,8 @@ class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
   int? overlayID;
   int currentLevel = 0;
   List<String> levelBackground = [
+    KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
+    KAssets.IMG_BG_COUNTRYSIDE_DARK,
     KAssets.IMG_BG_SPACE_LIGHT,
     KAssets.IMG_BG_SPACE_DARK,
     KAssets.IMG_BG_XMAS_LIGHT,
