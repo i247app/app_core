@@ -190,7 +190,7 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
     );
 
     final eggStep2 = AnimatedOpacity(
-      duration: Duration(milliseconds: 700),
+      duration: Duration(milliseconds: 250),
       opacity: this.eggBreakStep == 2 ? 1.0 : 0.0,
       child: this.eggBreakStep == 2
           ? Transform.scale(
@@ -204,7 +204,7 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
     );
 
     final eggStep3 = AnimatedOpacity(
-      duration: Duration(milliseconds: 700),
+      duration: Duration(milliseconds: 250),
       opacity: this.eggBreakStep == 3 ? 1.0 : 0.0,
       child: this.eggBreakStep == 3
           ? Transform.scale(
@@ -218,7 +218,7 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
     );
 
     final eggStep4 = AnimatedOpacity(
-      duration: Duration(milliseconds: 700),
+      duration: Duration(milliseconds: 250),
       opacity: this.eggBreakStep == 4 ? 1.0 : 0.0,
       child: this.eggBreakStep == 4
           ? Transform.scale(
