@@ -70,6 +70,22 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
             if (introShakeTime - 1 == 0) {
               this.setState(() {
                 this.eggBreakStep = this.eggBreakStep + 1;
+                Future.delayed(Duration(milliseconds: 750), () {
+                  this.setState(() {
+                    this.eggBreakStep = this.eggBreakStep + 1;
+                  });
+
+                  Future.delayed(Duration(milliseconds: 1000), () {
+                    this.setState(() {
+                      this.eggBreakStep = this.eggBreakStep + 1;
+                    });
+
+                    Future.delayed(Duration(milliseconds: 1000), () {
+                      if (this.widget.onFinish != null)
+                        this.widget.onFinish!();
+                    });
+                  });
+                });
               });
             }
             _shakeTheTopAnimationController.reverse();
@@ -159,7 +175,7 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
 
   @override
   Widget build(BuildContext context) {
-    final eggStep0 = AnimatedOpacity(
+    final eggStep1 = AnimatedOpacity(
       duration: Duration(milliseconds: 700),
       opacity: this.eggBreakStep == 0 ? 1.0 : 0.0,
       child: this.eggBreakStep == 0
@@ -168,48 +184,6 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
               child: Image.asset(
                 KAssets.IMG_TAMAGO_1,
                 package: 'app_core',
-              ),
-            )
-          : Container(),
-    );
-
-    final eggStep1 = AnimatedOpacity(
-      duration: Duration(milliseconds: 700),
-      opacity: this.eggBreakStep == 1 ? 1.0 : 0.0,
-      child: this.eggBreakStep == 1
-          ? Transform.scale(
-              scale: 0.5,
-              child: KImageAnimation(
-                animationType: KImageAnimationType.SHAKE_THE_TOP,
-                imageUrls: [
-                  KAssets.IMG_TAMAGO_1,
-                ],
-                isAssetImage: true,
-                maxLoop: 2,
-                onFinish: () {
-                  Future.delayed(Duration(milliseconds: 750), () {
-                    this.setState(() {
-                      this.eggBreakStep = this.eggBreakStep + 1;
-                    });
-
-                    Future.delayed(Duration(milliseconds: 1000), () {
-                      this.setState(() {
-                        this.eggBreakStep = this.eggBreakStep + 1;
-                      });
-
-                      Future.delayed(Duration(milliseconds: 1000), () {
-                        this.setState(() {
-                          this.eggBreakStep = this.eggBreakStep + 1;
-                        });
-
-                        Future.delayed(Duration(milliseconds: 1500), () {
-                          if (this.widget.onFinish != null)
-                            this.widget.onFinish!();
-                        });
-                      });
-                    });
-                  });
-                },
               ),
             )
           : Container(),
@@ -285,14 +259,6 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
                 ),
               ),
             ),
-          ),
-        ),
-        Align(
-          alignment: Alignment(_barrelMovingAnimation.value, 0),
-          child: Container(
-            width: heroWidth * 4,
-            height: heroHeight * 4,
-            child: eggStep0,
           ),
         ),
         Align(
