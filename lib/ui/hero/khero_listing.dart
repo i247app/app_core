@@ -20,6 +20,8 @@ import 'package:app_core/ui/hero/widget/khero_combine_view.dart';
 import 'package:app_core/ui/hero/widget/khero_grid_item.dart';
 import 'package:app_core/ui/widget/kstopwatch_label.dart';
 
+import 'khero_jump_multirow_game.dart';
+
 final GlobalKey _draggableKey = GlobalKey();
 
 class KHeroListing extends StatefulWidget {
@@ -102,8 +104,10 @@ class _KHeroListingState extends State<KHeroListing> {
       KOverlayHelper.removeOverlay(this.overlayID!);
       this.overlayID = null;
     }
+    // Navigator.of(context)
+    //     .push(MaterialPageRoute(builder: (ctx) => KHeroJumpGame(hero: hero)));
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (ctx) => KHeroJumpGame(hero: hero)));
+        .push(MaterialPageRoute(builder: (ctx) => KHeroJumpMultiRowGame(hero: hero)));
   }
 
   void onPlayJumpOverGame(KHero? hero) {
