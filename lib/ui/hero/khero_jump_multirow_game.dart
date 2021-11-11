@@ -11,19 +11,17 @@ import 'package:flutter/widgets.dart';
 import 'package:app_core/ui/hero/widget/khero_game_level.dart';
 import 'package:app_core/header/kassets.dart';
 
-class KHeroJumpOverGame extends StatefulWidget {
+class KHeroJumpMultiRowGame extends StatefulWidget {
   final KHero? hero;
 
-  const KHeroJumpOverGame({this.hero});
+  const KHeroJumpMultiRowGame({this.hero});
 
   @override
-  _KHeroJumpOverGameState createState() => _KHeroJumpOverGameState();
+  _KHeroJumpMultiRowGameState createState() => _KHeroJumpMultiRowGameState();
 }
 
-class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
-  int? overlayID;
-  int currentLevel = 0;
-  List<String> levelBackground = [
+class _KHeroJumpMultiRowGameState extends State<KHeroJumpMultiRowGame> {
+  static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
     KAssets.IMG_BG_COUNTRYSIDE_DARK,
     KAssets.IMG_BG_SPACE_LIGHT,
@@ -31,24 +29,11 @@ class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
     KAssets.IMG_BG_XMAS_LIGHT,
     KAssets.IMG_BG_XMAS_DARK,
   ];
+  late final String gameBackground = (BACKGROUND_IMAGES..shuffle()).first;
 
-  String gameBackground = Math.Random().nextDouble() >= 0.5
-      ? KAssets.IMG_BG_SPACE_LIGHT
-      : KAssets.IMG_BG_SPACE_DARK;
+  int? overlayID;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    // this.showHeroGameEndOverlay(
-    //       () {
-    //     if (this.overlayID != null) {
-    //       KOverlayHelper.removeOverlay(this.overlayID!);
-    //       this.overlayID = null;
-    //     }
-    //   },
-    // );
-  }
+  int currentLevel = 0;
 
   void showHeroGameEndOverlay(Function() onFinish) async {
     final heroGameEnd = KHeroGameEnd(
@@ -59,9 +44,7 @@ class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
   }
 
   void showHeroGameLevelOverlay(Function() onFinish) async {
-    final heroGameLevel = KHeroGameLevel(
-      onFinish: onFinish,
-    );
+    final heroGameLevel = KHeroGameLevel(onFinish: onFinish);
     showCustomOverlay(heroGameLevel);
   }
 
@@ -88,7 +71,7 @@ class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
-                  levelBackground[currentLevel],
+                  BACKGROUND_IMAGES[currentLevel],
                   package: 'app_core',
                 ),
                 fit: BoxFit.cover,
@@ -182,8 +165,6 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   double initialPos = 0;
   double height = 0;
   double time = 0;
-  // double gravity = -4;
-  // double velocity = 1.8;
   double gravity = -8.0;
   double velocity = 2.0;
   Timer? _timer;
@@ -242,11 +223,17 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   int? spinningHeroIndex;
   int? currentShowStarIndex;
 
-  List<double> barrierX = [2, 2 + 1.5];
+  List<double> BARRIER_Y_BASE = [-0.3, 0.35, 1];
+  List<double> barrierX = [2, 3.5, 5];
+  List<double> barrierY = [1, -0.3, 0.35];
   List<String> barrierImageUrls = [
     KImageAnimationHelper.randomImage,
     KImageAnimationHelper.randomImage,
+    KImageAnimationHelper.randomImage,
   ];
+
+  double get randomBarrierY => BARRIER_Y_BASE[Math.Random().nextInt(BARRIER_Y_BASE.length)];
+  double get randomBarrierX => Math.Random().nextDouble()*3.5 + 2;
 
   int get getRandomAnswer => rightAnswers[currentQuestionIndex] <= 4
       ? (Math.Random().nextInt(4) + rightAnswers[currentQuestionIndex])
@@ -262,6 +249,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   List<List<double>> barrierHeight = [
     [0.6, 0.4],
     [0.6, 0.4],
+    [0.6, 0.4],
   ];
 
   double topBoundary = -2.1;
@@ -271,6 +259,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
     super.initState();
 
     barrierValues = [
+      this.getRandomAnswer,
       this.getRandomAnswer,
       this.getRandomAnswer,
     ];
@@ -400,15 +389,16 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
     _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
       if (isStart) {
         height = (gravity * 0.5) * time * time + velocity * time;
-        final pos = initialPos - height;
+        double pos = initialPos - height;
 
         setState(() {
           if (pos <= topBoundary) {
             time += 0.08;
           } else if (pos <= 0) {
             heroY = pos;
-          } else
+          } else {
             heroY = 0;
+          }
         });
 
         // if (isReachTarget() &&
@@ -479,7 +469,13 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
 
         if (barrierX[i] <= -1.5) {
           setState(() {
-            barrierX[i] += 3;
+            barrierX[i] = this.randomBarrierX;
+            if (i > 0 && barrierX[i - 1] >= 1.5) {
+              barrierX[i] = barrierX[i] + 1.5;
+            } else if (i == 0 && barrierX[barrierX.length - 1] >= 1.5) {
+              barrierX[i] = barrierX[i] + 1.5;
+            }
+            barrierY[i] = this.randomBarrierY;
             // points += 1;
             barrierValues[i] = this.getRandomAnswer;
           });
@@ -495,7 +491,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
             (MediaQuery.of(context).size.width / 2) * barrierWidth / 2 - 10;
         double _barrierHeight = (MediaQuery.of(context).size.height / 2) *
             barrierHeight[i][1] *
-            0.4;
+            0.3;
+
         double leftBarrier =
             (((2 * barrierX[i] + barrierWidth) / (2 - barrierWidth)) *
                         MediaQuery.of(context).size.width) /
@@ -507,13 +504,18 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                     2 +
                 (_barrierWidth / 2);
 
-        double bottomBarrier = 0;
-        double topBarrier = -_barrierHeight;
+        double bottomBarrier =
+            ((-0.8 + barrierY[i]) * MediaQuery.of(context).size.height / 2) / 2;
+        double topBarrier =
+            ((-0.8 + barrierY[i]) * MediaQuery.of(context).size.height / 2) / 2 -
+                _barrierHeight;
 
         double bottomBulletY =
-            (heroY * MediaQuery.of(context).size.height / 2) / 2;
+            (heroY * MediaQuery.of(context).size.height / 2) / 2 +
+                (heroHeight / 2);
         double topBulletY =
-            (heroY * MediaQuery.of(context).size.height / 2) / 2 - (heroHeight);
+            (heroY * MediaQuery.of(context).size.height / 2) / 2 -
+                (heroHeight / 2);
 
         if ((leftBarrier < -heroWidth / 2 && rightBarrier >= heroWidth / 2 ||
                 leftBarrier <= -heroWidth / 2 &&
@@ -525,81 +527,89 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                 topBulletY <= topBarrier &&
                     bottomBulletY <= bottomBarrier &&
                     bottomBulletY >= topBarrier)) {
-          if (spinningHeroIndex != i) {
-            this._bouncingAnimationController.forward();
-            bool isTrueAnswer =
-                barrierValues[i] == rightAnswers[currentQuestionIndex];
-            if (isTrueAnswer) {
-              this.setState(() {
-                spinningHeroIndex = i;
-                isShooting = false;
-              });
-              this._scaleAnimationController.reset();
-              this._scaleAnimationController.forward();
-              this.setState(() {
-                result = true;
-                isScroll = false;
-                if (!isWrongAnswer) {
-                  currentShowStarIndex = i;
-                  rightAnswerCount += 1;
-                  this._moveUpAnimationController.reset();
-                  this._moveUpAnimationController.forward();
-                }
-                isWrongAnswer = false;
-              });
+          this._bouncingAnimationController.forward();
+          bool isTrueAnswer =
+              barrierValues[i] == rightAnswers[currentQuestionIndex];
+          if (isTrueAnswer) {
+            this.setState(() {
+              spinningHeroIndex = i;
+              isShooting = false;
+            });
+            this._scaleAnimationController.reset();
+            this._scaleAnimationController.forward();
+            this.setState(() {
+              result = true;
+              points = points + 5;
+              isScroll = false;
+              if (!isWrongAnswer) {
+                currentShowStarIndex = i;
+                rightAnswerCount += 1;
+                this._moveUpAnimationController.reset();
+                this._moveUpAnimationController.forward();
+              }
+              isWrongAnswer = false;
+            });
 
-              Future.delayed(Duration(milliseconds: 1500), () {
-                if (currentQuestionIndex + 1 < questions.length) {
+            Future.delayed(Duration(milliseconds: 1500), () {
+              if (currentQuestionIndex + 1 < questions.length) {
+                this.setState(() {
+                  currentQuestionIndex = currentQuestionIndex + 1;
+                  this.barrierX = [this.randomBarrierX, this.randomBarrierX, this.randomBarrierX];
+                  this.barrierY = [this.randomBarrierY, this.randomBarrierY, this.randomBarrierY];
+                  barrierImageUrls = [
+                    KImageAnimationHelper.randomImage,
+                    KImageAnimationHelper.randomImage,
+                    KImageAnimationHelper.randomImage,
+                  ];
+                  barrierValues = [
+                    this.getRandomAnswer,
+                    this.getRandomAnswer,
+                    this.getRandomAnswer,
+                  ];
+                });
+                Future.delayed(Duration(milliseconds: 50), () {
                   this.setState(() {
-                    currentQuestionIndex = currentQuestionIndex + 1;
-                    barrierX = [2, 2 + 1.5];
-                    barrierImageUrls = [
-                      KImageAnimationHelper.randomImage,
-                      KImageAnimationHelper.randomImage
-                    ];
-                    barrierValues = [
-                      this.getRandomAnswer,
-                      this.getRandomAnswer,
-                    ];
-                  });
-                  Future.delayed(Duration(milliseconds: 50), () {
                     isScroll = true;
                   });
-                } else {
-                  this.setState(() {
-                    if (rightAnswerCount / questions.length >=
-                        levelHardness[currentLevel]) {
-                      eggReceive = eggReceive + 1;
-                      if (currentLevel + 1 < levelHardness.length) {
-                        canAdvance = true;
-                        if (widget.onFinishLevel != null) {
-                          widget.onFinishLevel!(currentLevel + 1);
-                        }
+                });
+              } else {
+                this.setState(() {
+                  if (rightAnswerCount / questions.length >=
+                      levelHardness[currentLevel]) {
+                    eggReceive = eggReceive + 1;
+                    if (currentLevel + 1 < levelHardness.length) {
+                      canAdvance = true;
+                      if (widget.onFinishLevel != null) {
+                        widget.onFinishLevel!(currentLevel + 1);
                       }
                     }
-                    isStart = false;
-                    barrierX = [2, 2 + 1.5];
-                    barrierImageUrls = [
-                      KImageAnimationHelper.randomImage,
-                      KImageAnimationHelper.randomImage
-                    ];
-                    barrierValues = [
-                      this.getRandomAnswer,
-                      this.getRandomAnswer,
-                    ];
-                  });
-                }
-              });
-            } else {
-              _playerScaleAnimationController.forward();
-              this.setState(() {
-                result = false;
-                if (!isWrongAnswer) {
-                  wrongAnswerCount += 1;
-                  isWrongAnswer = true;
-                }
-              });
-            }
+                  }
+                  isStart = false;
+                  this.barrierX = [this.randomBarrierX, this.randomBarrierX, this.randomBarrierX];
+                  this.barrierY = [this.randomBarrierY, this.randomBarrierY, this.randomBarrierY];
+                  barrierImageUrls = [
+                    KImageAnimationHelper.randomImage,
+                    KImageAnimationHelper.randomImage,
+                    KImageAnimationHelper.randomImage,
+                  ];
+                  barrierValues = [
+                    this.getRandomAnswer,
+                    this.getRandomAnswer,
+                    this.getRandomAnswer,
+                  ];
+                });
+              }
+            });
+          } else {
+            _playerScaleAnimationController.forward();
+            this.setState(() {
+              result = false;
+              points = points > 0 ? points - 1 : 0;
+              if (!isWrongAnswer) {
+                wrongAnswerCount += 1;
+                isWrongAnswer = true;
+              }
+            });
           }
         }
       }
@@ -636,18 +646,25 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
       this.isScroll = true;
       this.isShooting = false;
       this.result = null;
+      this.points = 0;
       this.currentQuestionIndex = 0;
       this.spinningHeroIndex = null;
-      this.barrierX = [2, 2 + 1.5];
+      this.barrierX = [this.randomBarrierX, this.randomBarrierX, this.randomBarrierX];
+      this.barrierY = [this.randomBarrierY, this.randomBarrierY, this.randomBarrierY];
       this.barrierImageUrls = [
         KImageAnimationHelper.randomImage,
         KImageAnimationHelper.randomImage,
+        KImageAnimationHelper.randomImage,
+      ];
+      this.barrierValues = [
+        this.getRandomAnswer,
+        this.getRandomAnswer,
+        this.getRandomAnswer,
       ];
       isWrongAnswer = false;
       rightAnswerCount = 0;
       wrongAnswerCount = 0;
       canAdvance = false;
-      this.barrierValues = [getRandomAnswer, getRandomAnswer];
     });
   }
 
@@ -657,15 +674,15 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
       fit: StackFit.expand,
       children: [
         Align(
-          alignment: Alignment(-1, -1),
+          alignment: Alignment(-1, 1),
           child: Container(
             width: MediaQuery.of(context).size.width * 0.3,
             height: MediaQuery.of(context).size.height * 0.5,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 4),
@@ -686,11 +703,11 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                       }),
                     ),
                   ),
-                  // Image.asset(
-                  //   KAssets.IMG_NEST,
-                  //   fit: BoxFit.fitWidth,
-                  //   package: 'app_core',
-                  // ),
+                  Image.asset(
+                    KAssets.IMG_NEST,
+                    fit: BoxFit.fitWidth,
+                    package: 'app_core',
+                  ),
                 ],
               ),
             ),
@@ -752,27 +769,34 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
             angle: -this._playerSpinAnimationController.value * 4 * Math.pi,
             child: ScaleTransition(
               scale: _playerScaleAnimation,
-              child: Image.network(
-                widget.hero?.imageURL ?? "",
-                width: heroWidth,
-                height: heroHeight,
-                errorBuilder: (context, error, stack) => Image.asset(
-                  KAssets.IMG_TAMAGO_CHAN,
-                  width: heroWidth,
-                  height: heroHeight,
-                  package: 'app_core',
-                ),
-              ),
+              child: widget.hero?.imageURL != null
+                  ? Image.network(
+                      widget.hero!.imageURL!,
+                      width: heroWidth,
+                      height: heroHeight,
+                      errorBuilder: (context, error, stack) => Image.asset(
+                        KAssets.IMG_TAMAGO_CHAN,
+                        width: heroWidth,
+                        height: heroHeight,
+                        package: 'app_core',
+                      ),
+                    )
+                  : Image.asset(
+                      KAssets.IMG_TAMAGO_CHAN,
+                      width: heroWidth,
+                      height: heroHeight,
+                      package: 'app_core',
+                    ),
             ),
           ),
         ),
         Align(
-          alignment: Alignment.topRight,
+          alignment: Alignment.bottomRight,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 if (isStart || result != null)
                   Stack(
@@ -800,7 +824,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                         ),
                       ),
                       if (currentLevel < levelIconAssets.length &&
-                          levelIconAssets[currentLevel] != null)
+                          levelIconAssets[currentLevel].isNotEmpty)
                         Positioned(
                           left: -40,
                           top: -15,
@@ -889,7 +913,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
         //   ),
         if (isStart) ...[
           Align(
-            alignment: Alignment(0, -0.6),
+            alignment: Alignment.topCenter,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
               child: Container(
@@ -929,6 +953,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                     barrierValues.length,
                     (i) => _Barrier(
                       barrierX: barrierX[i],
+                      barrierY: barrierY[i],
                       barrierWidth: barrierWidth,
                       barrierHeight: barrierHeight[i][1],
                       imageUrl: barrierImageUrls[i],
@@ -961,6 +986,7 @@ class _Barrier extends StatelessWidget {
   final double barrierWidth;
   final double barrierHeight;
   final double barrierX;
+  final double barrierY;
   final String imageUrl;
   final double rotateAngle;
   final Animation<double>? scaleAnimation;
@@ -973,6 +999,7 @@ class _Barrier extends StatelessWidget {
     required this.barrierHeight,
     required this.barrierWidth,
     required this.barrierX,
+    required this.barrierY,
     required this.imageUrl,
     required this.rotateAngle,
     this.scaleAnimation,
@@ -986,7 +1013,7 @@ class _Barrier extends StatelessWidget {
   Widget build(context) {
     return Container(
       alignment:
-      Alignment((2 * barrierX + barrierWidth) / (2 - barrierWidth), 1),
+          Alignment((2 * barrierX + barrierWidth) / (2 - barrierWidth), barrierY),
       child: Container(
         width: (MediaQuery.of(context).size.width / 2) * barrierWidth,
         height: (MediaQuery.of(context).size.height / 2) * barrierHeight,
@@ -995,8 +1022,7 @@ class _Barrier extends StatelessWidget {
           children: [
             Align(
               alignment: Alignment.topCenter,
-              child:
-              Transform.translate(
+              child: Transform.translate(
                 offset: Offset(0, 0),
                 child: Transform.translate(
                   offset: Offset(0, -40 * (starY ?? 0)),
@@ -1039,44 +1065,47 @@ class _Barrier extends StatelessWidget {
                     angle: rotateAngle,
                     child: scaleAnimation != null
                         ? (ScaleTransition(
-                      scale: scaleAnimation!,
-                      child: Image.network(
-                        imageUrl,
-                        width: (MediaQuery.of(context).size.width / 2) *
-                            barrierWidth,
-                        height: (MediaQuery.of(context).size.height / 2) *
-                            barrierHeight *
-                            0.6,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stack) => Image.asset(
-                          KAssets.IMG_TAMAGO_LIGHT_1,
-                          width: (MediaQuery.of(context).size.width / 2) *
-                              barrierWidth,
-                          height: (MediaQuery.of(context).size.height / 2) *
-                              barrierHeight *
-                              0.6,
-                          package: 'app_core',
-                        ),
-                      ),
-                    ))
+                            scale: scaleAnimation!,
+                            child: Image.network(
+                              imageUrl,
+                              width: (MediaQuery.of(context).size.width / 2) *
+                                  barrierWidth,
+                              height: (MediaQuery.of(context).size.height / 2) *
+                                  barrierHeight *
+                                  0.6,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stack) =>
+                                  Image.asset(
+                                KAssets.IMG_TAMAGO_LIGHT_1,
+                                width: (MediaQuery.of(context).size.width / 2) *
+                                    barrierWidth,
+                                height:
+                                    (MediaQuery.of(context).size.height / 2) *
+                                        barrierHeight *
+                                        0.6,
+                                package: 'app_core',
+                              ),
+                            ),
+                          ))
                         : (Image.network(
-                      imageUrl,
-                      width: (MediaQuery.of(context).size.width / 2) *
-                          barrierWidth,
-                      height: (MediaQuery.of(context).size.height / 2) *
-                          barrierHeight *
-                          0.6,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stack) => Image.asset(
-                        KAssets.IMG_TAMAGO_LIGHT_1,
-                        width: (MediaQuery.of(context).size.width / 2) *
-                            barrierWidth,
-                        height: (MediaQuery.of(context).size.height / 2) *
-                            barrierHeight *
-                            0.6,
-                        package: 'app_core',
-                      ),
-                    )),
+                            imageUrl,
+                            width: (MediaQuery.of(context).size.width / 2) *
+                                barrierWidth,
+                            height: (MediaQuery.of(context).size.height / 2) *
+                                barrierHeight *
+                                0.6,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stack) =>
+                                Image.asset(
+                              KAssets.IMG_TAMAGO_LIGHT_1,
+                              width: (MediaQuery.of(context).size.width / 2) *
+                                  barrierWidth,
+                              height: (MediaQuery.of(context).size.height / 2) *
+                                  barrierHeight *
+                                  0.6,
+                              package: 'app_core',
+                            ),
+                          )),
                   ),
                 ),
               ],

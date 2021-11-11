@@ -23,6 +23,8 @@ class KHeroShootingGame extends StatefulWidget {
 
 class _KHeroShootingGameState extends State<KHeroShootingGame> {
   static const List<String> BG_IMAGES = [
+    KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
+    KAssets.IMG_BG_COUNTRYSIDE_DARK,
     KAssets.IMG_BG_SPACE_LIGHT,
     KAssets.IMG_BG_SPACE_DARK,
     KAssets.IMG_BG_XMAS_LIGHT,
@@ -141,8 +143,12 @@ class _KGameScreen extends StatefulWidget {
 class _KGameScreenState extends State<_KGameScreen>
     with TickerProviderStateMixin {
   late Animation<Offset> _bouncingAnimation;
-  late Animation<double> _scaleAnimation, _moveUpAnimation, _heroScaleAnimation;
-  late AnimationController _heroScaleAnimationController,
+  late Animation<double> _barrelScaleAnimation,
+      _scaleAnimation,
+      _moveUpAnimation,
+      _heroScaleAnimation;
+  late AnimationController _barrelScaleAnimationController,
+      _heroScaleAnimationController,
       _bouncingAnimationController,
       _scaleAnimationController,
       _moveUpAnimationController,
@@ -215,6 +221,7 @@ class _KGameScreenState extends State<_KGameScreen>
   ];
   int currentQuestionIndex = 0;
   int? spinningHeroIndex;
+  int? currentShowStarIndex;
 
   List<double> barrierX = [2, 2 + 1.5];
   List<String> barrierImageUrls = [
@@ -247,6 +254,23 @@ class _KGameScreenState extends State<_KGameScreen>
       this.getRandomAnswer,
       this.getRandomAnswer,
     ];
+
+    _barrelScaleAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    )
+      ..addListener(() => setState(() {}))
+      ..addStatusListener((status) {
+        if (mounted && status == AnimationStatus.completed) {
+          this._barrelScaleAnimationController.reverse();
+        } else if (mounted && status == AnimationStatus.dismissed) {
+        }
+      });
+    _barrelScaleAnimation = new Tween(
+      begin: 1.0,
+      end: 0.9,
+    ).animate(new CurvedAnimation(
+        parent: _barrelScaleAnimationController, curve: Curves.bounceOut));
 
     _heroScaleAnimationController = AnimationController(
       duration: const Duration(milliseconds: 200),
@@ -303,7 +327,7 @@ class _KGameScreenState extends State<_KGameScreen>
         if (mounted && status == AnimationStatus.completed) {
           Future.delayed(Duration(milliseconds: 1000), () {
             this.setState(() {
-              isShowPlusPoint = false;
+              currentShowStarIndex = null;
             });
             Future.delayed(Duration(milliseconds: 500), () {
               this._scaleAnimationController.reset();
@@ -385,6 +409,7 @@ class _KGameScreenState extends State<_KGameScreen>
   @override
   void dispose() {
     _timer?.cancel();
+    _barrelScaleAnimationController.dispose();
     _heroScaleAnimationController.dispose();
     _bouncingAnimationController.dispose();
     _scaleAnimationController.dispose();
@@ -400,6 +425,9 @@ class _KGameScreenState extends State<_KGameScreen>
 
   void fire() {
     if (!isShooting && bulletsY.length < 3) {
+      if (!_barrelScaleAnimationController.isAnimating) {
+        _barrelScaleAnimationController.forward();
+      }
       setState(() {
         bulletsY = [
           ...bulletsY,
@@ -494,19 +522,17 @@ class _KGameScreenState extends State<_KGameScreen>
           bool isTrueAnswer =
               barrierValues[i] == rightAnswers[currentQuestionIndex];
           if (isTrueAnswer) {
-            this.setState(() {
-              isShowPlusPoint = true;
-            });
             this._scaleAnimationController.reset();
-            this._moveUpAnimationController.reset();
             this._scaleAnimationController.forward();
-            this._moveUpAnimationController.forward();
             this.setState(() {
               result = true;
               points = points + 5;
               isScroll = false;
               if (!isWrongAnswer) {
+                currentShowStarIndex = i;
                 rightAnswerCount += 1;
+                this._moveUpAnimationController.reset();
+                this._moveUpAnimationController.forward();
               }
               isWrongAnswer = false;
             });
@@ -703,22 +729,10 @@ class _KGameScreenState extends State<_KGameScreen>
               ),
             ),
           ),
-        // Align(
-        //   alignment: Alignment(0, heroY),
-        //   child: Container(
-        //     width: heroWidth,
-        //     height: heroHeight,
-        //     child: Image.asset(
-        //       Assets.IMG_TAMAGO_LIGHT_4,
-        //       width: heroWidth,
-        //       height: heroHeight,
-        //     ),
-        //   ),
-        // ),
         ...List.generate(
           bulletsY.length,
           (i) => Align(
-            alignment: Alignment(0, bulletsY[i]),
+            alignment: Alignment(0, bulletsY[i] - 0.1),
             child: Container(
               width: bulletWidth,
               height: bulletWidth,
@@ -739,23 +753,6 @@ class _KGameScreenState extends State<_KGameScreen>
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                // Container(
-                //   width: MediaQuery.of(context).size.width * 0.3,
-                //   height: 40,
-                //   padding:
-                //       EdgeInsets.only(top: 5, bottom: 5, left: 30, right: 10),
-                //   decoration: BoxDecoration(
-                //     color: Color(0xffa167df),
-                //     borderRadius: BorderRadius.circular(5),
-                //   ),
-                //   child: Text(
-                //     "Level ${currentLevel + 1}",
-                //     style: TextStyle(
-                //       color: Colors.white,
-                //       fontSize: 18,
-                //     ),
-                //   ),
-                // ),
                 SizedBox(
                   height: 10,
                 ),
@@ -809,95 +806,17 @@ class _KGameScreenState extends State<_KGameScreen>
           child: Container(
             width: heroWidth * 2,
             height: heroHeight * 2,
-            child: Image.asset(
-              KAssets.IMG_CANNON_BARREL,
-              width: heroWidth * 2,
-              height: heroHeight * 2,
-              package: 'app_core',
-            ),
-          ),
-        ),
-
-        Align(
-          alignment: Alignment.topCenter,
-          child: Transform.translate(
-            offset: Offset(0, 170),
-            child: Transform.translate(
-              offset: Offset(0, -80 * _moveUpAnimation.value),
-              child: AnimatedOpacity(
-                duration: Duration(milliseconds: 500),
-                opacity: isShowPlusPoint ? 1 : 0,
-                child: Icon(
-                  Icons.star,
-                  color: Colors.amberAccent,
-                  size: 50,
-                ),
+            child: ScaleTransition(
+              scale: _barrelScaleAnimation,
+              child: Image.asset(
+                KAssets.IMG_CANNON_BARREL,
+                width: heroWidth * 2,
+                height: heroHeight * 2,
+                package: 'app_core',
               ),
             ),
           ),
         ),
-        // if (isStart && result != null)
-        //   Align(
-        //     alignment: Alignment(0, -0.6),
-        //     child: Padding(
-        //       padding: EdgeInsets.symmetric(horizontal: 10),
-        //       child: Text(
-        //         result! ? "Right answer!" : "Wrong answer",
-        //         style: TextStyle(
-        //           fontSize: 30,
-        //           color: result! ? Colors.green : Colors.red,
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // if (isStart || result != null)
-        //   Align(
-        //     alignment: Alignment.topRight,
-        //     child: Container(
-        //       width: 80,
-        //       height: 80,
-        //       padding: EdgeInsets.symmetric(horizontal: 0, vertical: 15),
-        //       decoration: BoxDecoration(
-        //         image: DecorationImage(
-        //           image: AssetImage(Assets.IMG_TARGET_ORANGE),
-        //           fit: BoxFit.contain,
-        //         ),
-        //       ),
-        //       child: Text(
-        //         "${this.rightAnswerCount}",
-        //         textScaleFactor: 1.0,
-        //         textAlign: TextAlign.center,
-        //         style: Theme.of(context).textTheme.bodyText1!.copyWith(
-        //               color: Colors.white,
-        //               fontSize: 35,
-        //               fontWeight: FontWeight.bold,
-        //             ),
-        //       ),
-        //     ),
-        //   ),
-        // if (isStart || result != null)
-        //   Align(
-        //     alignment: Alignment.bottomRight,
-        //     child: Container(
-        //       width: 80,
-        //       height: 80,
-        //       padding: EdgeInsets.symmetric(horizontal: 0, vertical: 15),
-        //       decoration: BoxDecoration(
-        //         image: DecorationImage(
-        //           image: AssetImage(Assets.TARGET_ORANGE),
-        //           fit: BoxFit.contain,
-        //         ),
-        //       ),
-        //       child: Text(
-        //         "${this.points}",
-        //         textAlign: TextAlign.center,
-        //         style: Theme.of(context).textTheme.bodyText1!.copyWith(
-        //               fontSize: 35,
-        //               fontWeight: FontWeight.bold,
-        //             ),
-        //       ),
-        //     ),
-        //   ),
         if (isStart)
           Align(
             alignment: Alignment.topCenter,
@@ -954,6 +873,8 @@ class _KGameScreenState extends State<_KGameScreen>
                           scaleAnimation: spinningHeroIndex == i
                               ? _heroScaleAnimation
                               : null,
+                          starY: _moveUpAnimation.value,
+                          isShowStar: currentShowStarIndex == i,
                         ),
                       ),
                     ],
@@ -985,6 +906,8 @@ class _Barrier extends StatelessWidget {
   final Animation<double>? scaleAnimation;
   final int value;
   final Offset bouncingAnimation;
+  final double? starY;
+  final bool? isShowStar;
 
   _Barrier({
     required this.barrierHeight,
@@ -995,6 +918,8 @@ class _Barrier extends StatelessWidget {
     this.scaleAnimation,
     required this.value,
     required this.bouncingAnimation,
+    this.starY,
+    this.isShowStar,
   });
 
   @override
@@ -1005,54 +930,57 @@ class _Barrier extends StatelessWidget {
       child: Container(
         width: (MediaQuery.of(context).size.width / 2) * barrierWidth,
         height: (MediaQuery.of(context).size.height / 2) * barrierHeight,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: Stack(
+          fit: StackFit.expand,
           children: [
-            Container(
-              width: (MediaQuery.of(context).size.width / 2) * barrierWidth,
-              height: (MediaQuery.of(context).size.height / 2) *
-                  barrierHeight *
-                  0.4,
-              child: FittedBox(
-                child: Text(
-                  "${this.value}",
-                  textScaleFactor: 1.0,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 60,
+            Align(
+              alignment: Alignment.topCenter,
+              child:
+              Transform.translate(
+                offset: Offset(0, 0),
+                child: Transform.translate(
+                  offset: Offset(0, -40 * (starY ?? 0)),
+                  child: AnimatedOpacity(
+                    duration: Duration(milliseconds: 500),
+                    opacity: (isShowStar ?? false) ? 1 : 0,
+                    child: Icon(
+                      Icons.star,
+                      color: Colors.amberAccent,
+                      size: 50,
+                    ),
                   ),
                 ),
               ),
             ),
-            Transform.translate(
-              offset: bouncingAnimation,
-              child: Transform.rotate(
-                angle: rotateAngle,
-                child: scaleAnimation != null
-                    ? (ScaleTransition(
-                        scale: scaleAnimation!,
-                        child: Image.network(
-                          imageUrl,
-                          width: (MediaQuery.of(context).size.width / 2) *
-                              barrierWidth,
-                          height: (MediaQuery.of(context).size.height / 2) *
-                              barrierHeight *
-                              0.6,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stack) => Image.asset(
-                            KAssets.IMG_TAMAGO_LIGHT_1,
-                            width: (MediaQuery.of(context).size.width / 2) *
-                                barrierWidth,
-                            height: (MediaQuery.of(context).size.height / 2) *
-                                barrierHeight *
-                                0.6,
-                            package: 'app_core',
-                          ),
-                        ),
-                      ))
-                    : (Image.network(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  width: (MediaQuery.of(context).size.width / 2) * barrierWidth,
+                  height: (MediaQuery.of(context).size.height / 2) *
+                      barrierHeight *
+                      0.4,
+                  child: FittedBox(
+                    child: Text(
+                      "${this.value}",
+                      textScaleFactor: 1.0,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 60,
+                      ),
+                    ),
+                  ),
+                ),
+                Transform.translate(
+                  offset: bouncingAnimation,
+                  child: Transform.rotate(
+                    angle: rotateAngle,
+                    child: scaleAnimation != null
+                        ? (ScaleTransition(
+                      scale: scaleAnimation!,
+                      child: Image.network(
                         imageUrl,
                         width: (MediaQuery.of(context).size.width / 2) *
                             barrierWidth,
@@ -1069,8 +997,29 @@ class _Barrier extends StatelessWidget {
                               0.6,
                           package: 'app_core',
                         ),
-                      )),
-              ),
+                      ),
+                    ))
+                        : (Image.network(
+                      imageUrl,
+                      width: (MediaQuery.of(context).size.width / 2) *
+                          barrierWidth,
+                      height: (MediaQuery.of(context).size.height / 2) *
+                          barrierHeight *
+                          0.6,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stack) => Image.asset(
+                        KAssets.IMG_TAMAGO_LIGHT_1,
+                        width: (MediaQuery.of(context).size.width / 2) *
+                            barrierWidth,
+                        height: (MediaQuery.of(context).size.height / 2) *
+                            barrierHeight *
+                            0.6,
+                        package: 'app_core',
+                      ),
+                    )),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

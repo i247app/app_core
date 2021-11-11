@@ -7,24 +7,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/header/kassets.dart';
 
-class KGameIntro extends StatefulWidget {
-  final KHero? hero;
+class KEggHatchNewShortIntro extends StatefulWidget {
   final Function? onFinish;
 
-  const KGameIntro({this.hero, this.onFinish});
+  const KEggHatchNewShortIntro({this.onFinish});
 
   @override
-  _KGameIntroState createState() => _KGameIntroState();
+  _KEggHatchNewShortIntroState createState() => _KEggHatchNewShortIntroState();
 }
 
-class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
+class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
+    with TickerProviderStateMixin {
   late Animation<Offset> _bouncingAnimation;
-  late Animation<double> _barrelScaleAnimation,
-      _shakeTheTopAnimation,
+  late Animation<double> _shakeTheTopAnimation,
       _barrelMovingAnimation,
       _barrelHeroMovingAnimation;
-  late AnimationController _barrelScaleAnimationController,
-      _shakeTheTopAnimationController,
+  late AnimationController _shakeTheTopAnimationController,
       _bouncingAnimationController,
       _barrelMovingAnimationController,
       _barrelHeroMovingAnimationController,
@@ -36,36 +34,16 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
   double gravity = 0.0;
   double velocity = 3.5;
   Timer? _timer;
-  double bulletWidth = 40;
-  double bulletHeight = 40;
   double heroHeight = 40;
   double heroWidth = 40;
-  double bulletSpeed = 0.01;
   bool isShooting = false;
-  List<double> bulletsY = [];
-  List<double> bulletsTime = [];
+  int eggBreakStep = 0;
 
   int introShakeTime = 2;
 
   @override
   void initState() {
     super.initState();
-
-    _barrelScaleAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    )
-      ..addListener(() => setState(() {}))
-      ..addStatusListener((status) {
-        if (mounted && status == AnimationStatus.completed) {
-          this._barrelScaleAnimationController.reverse();
-        } else if (mounted && status == AnimationStatus.dismissed) {}
-      });
-    _barrelScaleAnimation = new Tween(
-      begin: 1.0,
-      end: 0.9,
-    ).animate(new CurvedAnimation(
-        parent: _barrelScaleAnimationController, curve: Curves.bounceOut));
 
     _bouncingAnimationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 100))
@@ -90,7 +68,25 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
         if (introShakeTime > 0 && mounted) {
           if (status == AnimationStatus.completed) {
             if (introShakeTime - 1 == 0) {
-              this.fire();
+              this.setState(() {
+                this.eggBreakStep = this.eggBreakStep + 1;
+                Future.delayed(Duration(milliseconds: 750), () {
+                  this.setState(() {
+                    this.eggBreakStep = this.eggBreakStep + 1;
+                  });
+
+                  Future.delayed(Duration(milliseconds: 1000), () {
+                    this.setState(() {
+                      this.eggBreakStep = this.eggBreakStep + 1;
+                    });
+
+                    Future.delayed(Duration(milliseconds: 1000), () {
+                      if (this.widget.onFinish != null)
+                        this.widget.onFinish!();
+                    });
+                  });
+                });
+              });
             }
             _shakeTheTopAnimationController.reverse();
           } else if (status == AnimationStatus.dismissed) {
@@ -130,7 +126,7 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
         } else if (mounted && status == AnimationStatus.dismissed) {}
       });
     _barrelMovingAnimation = new Tween(
-      begin: -1.5,
+      begin: -2.0,
       end: 0.0,
     ).animate(new CurvedAnimation(
         parent: _barrelMovingAnimationController, curve: Curves.linear));
@@ -145,11 +141,10 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
         } else if (mounted && status == AnimationStatus.dismissed) {
           this._barrelHeroSpinAnimationController.stop();
           this._barrelHeroSpinAnimationController.reset();
-          if (this.widget.onFinish != null) this.widget.onFinish!();
         }
       });
     _barrelHeroMovingAnimation = new Tween(
-      begin: -1.5,
+      begin: -2.0,
       end: 0.0,
     ).animate(new CurvedAnimation(
         parent: _barrelHeroMovingAnimationController, curve: Curves.linear));
@@ -162,35 +157,6 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
             } else if (status == AnimationStatus.dismissed) {}
           });
 
-    _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
-      for (int i = 0; i < bulletsY.length; i++) {
-        double bulletY = bulletsY[i];
-        double bulletTime = bulletsTime[i];
-
-        height = gravity * bulletTime * bulletTime + velocity * bulletTime;
-        final pos = initialPos - height;
-        if (pos <= -2) {
-          setState(() {
-            bulletsY.removeAt(i);
-            bulletsTime.removeAt(i);
-          });
-          return;
-        } else if (pos < 1) {
-          setState(() {
-            bulletsY[i] = pos;
-          });
-        } else {
-          setState(() {
-            bulletsY[i] = 1;
-          });
-        }
-
-        setState(() {
-          bulletsTime[i] += bulletSpeed;
-        });
-      }
-    });
-
     Future.delayed(Duration(milliseconds: 1500), () {
       this._barrelMovingAnimationController.forward();
       this._barrelHeroMovingAnimationController.forward();
@@ -199,8 +165,6 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _timer?.cancel();
-    _barrelScaleAnimationController.dispose();
     _shakeTheTopAnimationController.dispose();
     _barrelMovingAnimationController.dispose();
     _barrelHeroMovingAnimationController.dispose();
@@ -209,53 +173,69 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void fire() {
-    if (!isShooting && bulletsY.length < 3) {
-      if (!_barrelScaleAnimationController.isAnimating) {
-        _barrelScaleAnimationController.forward();
-      }
-      setState(() {
-        bulletsY = [
-          ...bulletsY,
-          1,
-        ];
-        bulletsTime = [
-          ...bulletsTime,
-          0,
-        ];
-        isShooting = true;
-      });
-      Future.delayed(Duration(milliseconds: 10), () {
-        setState(() {
-          isShooting = false;
-        });
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final eggStep1 = AnimatedOpacity(
+      duration: Duration(milliseconds: 700),
+      opacity: this.eggBreakStep == 0 ? 1.0 : 0.0,
+      child: this.eggBreakStep == 0
+          ? Transform.scale(
+              scale: 0.5,
+              child: Image.asset(
+                KAssets.IMG_TAMAGO_1,
+                package: 'app_core',
+              ),
+            )
+          : Container(),
+    );
+
+    final eggStep2 = AnimatedOpacity(
+      duration: Duration(milliseconds: 250),
+      opacity: this.eggBreakStep == 2 ? 1.0 : 0.0,
+      child: this.eggBreakStep == 2
+          ? Transform.scale(
+              scale: 0.5,
+              child: Image.asset(
+                KAssets.IMG_TAMAGO_2,
+                package: 'app_core',
+              ),
+            )
+          : Container(),
+    );
+
+    final eggStep3 = AnimatedOpacity(
+      duration: Duration(milliseconds: 250),
+      opacity: this.eggBreakStep == 3 ? 1.0 : 0.0,
+      child: this.eggBreakStep == 3
+          ? Transform.scale(
+              scale: 0.5,
+              child: Image.asset(
+                KAssets.IMG_TAMAGO_3,
+                package: 'app_core',
+              ),
+            )
+          : Container(),
+    );
+
+    final eggStep4 = AnimatedOpacity(
+      duration: Duration(milliseconds: 250),
+      opacity: this.eggBreakStep == 4 ? 1.0 : 0.0,
+      child: this.eggBreakStep == 4
+          ? Transform.scale(
+              scale: 0.5,
+              child: Image.asset(
+                KAssets.IMG_TAMAGO_4,
+                package: 'app_core',
+              ),
+            )
+          : Container(),
+    );
+
     final body = Stack(
       fit: StackFit.expand,
       children: [
-        ...List.generate(
-          bulletsY.length,
-          (i) => Align(
-            alignment: Alignment(0, bulletsY[i]),
-            child: Container(
-              width: bulletWidth,
-              height: bulletWidth,
-              child: Image.asset(
-                KAssets.IMG_TAMAGO_LIGHT_4,
-                width: bulletWidth,
-                height: bulletWidth,
-                package: 'app_core',
-              ),
-            ),
-          ),
-        ),
         Align(
-          alignment: Alignment(_barrelHeroMovingAnimation.value, 1),
+          alignment: Alignment(_barrelHeroMovingAnimation.value, 0),
           child: Transform.translate(
             offset: Offset(-heroWidth * 2 + 15, 0),
             child: Transform.translate(
@@ -282,19 +262,35 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
           ),
         ),
         Align(
-          alignment: Alignment(_barrelMovingAnimation.value, 1),
+          alignment: Alignment(_barrelMovingAnimation.value, 0),
           child: Container(
-            width: heroWidth * 2,
-            height: heroHeight * 2,
-            child: ScaleTransition(
-              scale: _barrelScaleAnimation,
-              child: Image.asset(
-                KAssets.IMG_CANNON_BARREL,
-                width: heroWidth * 2,
-                height: heroHeight * 2,
-                package: 'app_core',
-              ),
-            ),
+            width: heroWidth * 4,
+            height: heroHeight * 4,
+            child: eggStep1,
+          ),
+        ),
+        Align(
+          alignment: Alignment(_barrelMovingAnimation.value, 0),
+          child: Container(
+            width: heroWidth * 4,
+            height: heroHeight * 4,
+            child: eggStep2,
+          ),
+        ),
+        Align(
+          alignment: Alignment(_barrelMovingAnimation.value, 0),
+          child: Container(
+            width: heroWidth * 4,
+            height: heroHeight * 4,
+            child: eggStep3,
+          ),
+        ),
+        Align(
+          alignment: Alignment(_barrelMovingAnimation.value, 0),
+          child: Container(
+            width: heroWidth * 4,
+            height: heroHeight * 4,
+            child: eggStep4,
           ),
         ),
       ],

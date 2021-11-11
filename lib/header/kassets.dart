@@ -19,6 +19,8 @@ abstract class KAssets {
   static const String IMG_TARGET_ORANGE = "$IMG_BASE/target_orange.png";
   static const String IMG_CANNON_BARREL = "$IMG_BASE/cannon_barrel.png";
   static const String IMG_BROADCAST = "$IMG_BASE/broadcast.png";
+  static const String IMG_BG_COUNTRYSIDE_LIGHT = "$IMG_BASE/bg_countryside_light.png";
+  static const String IMG_BG_COUNTRYSIDE_DARK = "$IMG_BASE/bg_countryside_dark.png";
   static const String IMG_BG_XMAS_LIGHT = "$IMG_BASE/bg_xmas_light.png";
   static const String IMG_BG_XMAS_DARK = "$IMG_BASE/bg_xmas_dark.png";
   static const String IMG_BG_SPACE_LIGHT = "$IMG_BASE/bg_space_light.png";
