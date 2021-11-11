@@ -26,28 +26,28 @@ abstract class KUtil {
   static Future<String> getDeviceID() async => KDeviceIDHelper.deviceID;
 
   static Future<String> getDeviceBrand() async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     return Platform.isAndroid ? (await deviceInfo.androidInfo).brand : 'Apple';
   }
 
   static Future<String> getDeviceModel() async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     return Platform.isAndroid
         ? (await deviceInfo.androidInfo).model
         : (await deviceInfo.iosInfo).name;
   }
 
   static Future<String> getDeviceVersion() async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     return Platform.isAndroid
         ? (await deviceInfo.androidInfo).version.release
         : (await deviceInfo.iosInfo).systemVersion;
   }
 
   static Future<String> getDeviceName() async {
-    String brand = await getDeviceBrand();
-    String model = await getDeviceModel();
-    String version = await getDeviceVersion();
+    final brand = await getDeviceBrand();
+    final model = await getDeviceModel();
+    final version = await getDeviceVersion();
     return "$brand-$model $version";
   }
 
@@ -67,9 +67,9 @@ abstract class KUtil {
       getRandom().nextInt(0xFF), getRandom().nextInt(0xFF), 0x01);
 
   static Color colorFromString(String z) {
-    int num = 0;
-    for (int i = 0; i < z.length; i++) num += z.codeUnitAt(i);
-    return Colors.primaries[num % Colors.primaries.length];
+    int n = 0;
+    for (int i = 0; i < z.length; i++) n += z.codeUnitAt(i);
+    return Colors.primaries[n % Colors.primaries.length];
   }
 
   static String prettyJSON(final data) {
@@ -82,15 +82,14 @@ abstract class KUtil {
       !KHostConfig.isProductionHost(KHostConfig.defaultHost);
 
   static Future<bool> isTabletDevice(BuildContext context) async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     return KTabletDetector.isTablet(MediaQuery.of(context)) ||
         (Platform.isIOS &&
             (await deviceInfo.iosInfo).name.toLowerCase().contains("ipad"));
   }
 
   static String prettyXFRDescription({String? lineType, String? xfrType}) {
-    String z = "";
-
+    String z;
     switch (xfrType) {
       case "DXFR":
         z = "Direct Transfer";
@@ -114,31 +113,32 @@ abstract class KUtil {
         z = "Genesis";
         break;
       default:
+        z = "";
         break;
     }
-
     return z;
   }
 
   static String maskedFone(String fone) {
-    if (fone.length <= 4) {
+    if (fone.length <= 4)
       return fone.replaceAll(RegExp(r'.'), 'x');
-    }
-    return fone.replaceAll(RegExp(r'.'), 'x').substring(0, fone.length - 4) +
-        fone.substring(fone.length - 4);
+    else
+      return fone.replaceAll(RegExp(r'.'), 'x').substring(0, fone.length - 4) +
+          fone.substring(fone.length - 4);
   }
 
   static String prettyFone({String foneCode = "", String number = ""}) {
     foneCode = foneCode.replaceAll("+", "");
-    String prefix = KStringHelper.isExist(foneCode) ? "+" + foneCode + " " : "";
+    final String prefix =
+        KStringHelper.isExist(foneCode) ? "+" + foneCode + " " : "";
     return prefix + number;
   }
 
   // TODO VN - last, middle first else first middle last
   static String? prettyName({String? fnm, String? mnm, String? lnm}) {
     if (fnm == null && mnm == null && lnm == null) return null;
-    String? title;
 
+    String? title;
     try {
       title = KStringHelper.capitalize(fnm ?? "");
 
@@ -241,15 +241,15 @@ abstract class KUtil {
     String? tokenName,
     bool useCurrencySymbol = true,
     bool useCurrencyName = false,
-    bool accepetZero = true,
+    bool acceptZero = true,
   }) {
     if (amount == null) return "";
+
     double dAmount = double.tryParse(amount) ?? 0;
     String pretty = "0";
-    String upercaseToken = tokenName?.toUpperCase() ?? "";
-
+    String uppercaseToken = tokenName?.toUpperCase() ?? "";
     try {
-      switch (upercaseToken) {
+      switch (uppercaseToken) {
         case "USD":
           if (useCurrencyName) // USD1,234.56 or USD1,234.00
             pretty = NumberFormat.currency(locale: "en").format(dAmount);
@@ -294,24 +294,21 @@ abstract class KUtil {
   // USD - dot separator   - 24,500 or 24,500.55
   // null tokenName, default dot separator format
   static String? prettyNumber({String? number, String? tokenName}) {
+    if ((number ?? "").isEmpty) return null;
+
     String pretty;
-
-    if (number == "" || number == null) {
-      return null;
-    }
-
     try {
       switch (tokenName) {
         case "VND":
           pretty =
-              NumberFormat("###.##", "vi_VN").format(double.tryParse(number));
+              NumberFormat("###.##", "vi_VN").format(double.tryParse(number!));
           break;
         case "USD":
           pretty =
-              NumberFormat("##0.00", "en_US").format(double.tryParse(number));
+              NumberFormat("##0.00", "en_US").format(double.tryParse(number!));
           break;
         default:
-          pretty = NumberFormat("###.##").format(double.tryParse(number));
+          pretty = NumberFormat("###.##").format(double.tryParse(number!));
           break;
       }
     } catch (e) {
@@ -323,7 +320,6 @@ abstract class KUtil {
 
   static String dotSeparatorNumbers({String? amount = ""}) {
     String z = "";
-
     try {
       // Normalize input
       amount = double.parse(amount ?? "").toString();
@@ -561,9 +557,9 @@ abstract class KUtil {
 
   /// Returns a string in the format hh:mm:ss
   static String prettyStopwatch(Duration duration) {
-    int h = duration.inHours % 24;
-    int m = duration.inMinutes % 60;
-    int s = duration.inSeconds % 60;
+    final int h = duration.inHours % 24;
+    final int m = duration.inMinutes % 60;
+    final int s = duration.inSeconds % 60;
 
     String prettyElapsed = "";
     // Hours
@@ -612,7 +608,7 @@ abstract class KUtil {
   }
 
   static String fileToBase64(File file) {
-    List<int> bytes = file.readAsBytesSync();
+    final List<int> bytes = file.readAsBytesSync();
     return base64Encode(bytes);
   }
 
@@ -620,4 +616,16 @@ abstract class KUtil {
       List<int>.generate(length, (i) => i + 1)
           .map((e) => String.fromCharCode(KUtil.getRandom().nextInt(57) + 65))
           .join();
+}
+
+extension KList<T> on List<T> {
+  List intersperse(T t, {bool addToEnd = false}) {
+    final result = [];
+    for (int i = 0; i < this.length; i++) {
+      result.add(this[i]);
+      final isLastItem = i == (this.length - 1);
+      if (!isLastItem || addToEnd) result.add(t);
+    }
+    return result;
+  }
 }
