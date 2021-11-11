@@ -224,14 +224,16 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   int? currentShowStarIndex;
 
   List<double> BARRIER_Y_BASE = [-0.3, 0.35, 1];
-  List<double> barrierX = [2, 2 + 1.5];
-  List<double> barrierY = [1, -0.3];
+  List<double> barrierX = [2, 3.5, 5];
+  List<double> barrierY = [1, -0.3, 0.35];
   List<String> barrierImageUrls = [
+    KImageAnimationHelper.randomImage,
     KImageAnimationHelper.randomImage,
     KImageAnimationHelper.randomImage,
   ];
 
   double get randomBarrierY => BARRIER_Y_BASE[Math.Random().nextInt(BARRIER_Y_BASE.length)];
+  double get randomBarrierX => Math.Random().nextDouble()*3.5 + 2;
 
   int get getRandomAnswer => rightAnswers[currentQuestionIndex] <= 4
       ? (Math.Random().nextInt(4) + rightAnswers[currentQuestionIndex])
@@ -247,6 +249,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   List<List<double>> barrierHeight = [
     [0.6, 0.4],
     [0.6, 0.4],
+    [0.6, 0.4],
   ];
 
   double topBoundary = -2.1;
@@ -256,6 +259,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
     super.initState();
 
     barrierValues = [
+      this.getRandomAnswer,
       this.getRandomAnswer,
       this.getRandomAnswer,
     ];
@@ -465,7 +469,12 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
 
         if (barrierX[i] <= -1.5) {
           setState(() {
-            barrierX[i] += 3;
+            barrierX[i] = this.randomBarrierX;
+            if (i > 0 && barrierX[i - 1] >= 1.5) {
+              barrierX[i] = barrierX[i] + 1.5;
+            } else if (i == 0 && barrierX[barrierX.length - 1] >= 1.5) {
+              barrierX[i] = barrierX[i] + 1.5;
+            }
             barrierY[i] = this.randomBarrierY;
             // points += 1;
             barrierValues[i] = this.getRandomAnswer;
@@ -545,13 +554,15 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
               if (currentQuestionIndex + 1 < questions.length) {
                 this.setState(() {
                   currentQuestionIndex = currentQuestionIndex + 1;
-                  barrierX = [2, 2 + 1.5];
-                  this.barrierY = [this.randomBarrierY, this.randomBarrierY];
+                  this.barrierX = [this.randomBarrierX, this.randomBarrierX, this.randomBarrierX];
+                  this.barrierY = [this.randomBarrierY, this.randomBarrierY, this.randomBarrierY];
                   barrierImageUrls = [
                     KImageAnimationHelper.randomImage,
-                    KImageAnimationHelper.randomImage
+                    KImageAnimationHelper.randomImage,
+                    KImageAnimationHelper.randomImage,
                   ];
                   barrierValues = [
+                    this.getRandomAnswer,
                     this.getRandomAnswer,
                     this.getRandomAnswer,
                   ];
@@ -574,13 +585,15 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                     }
                   }
                   isStart = false;
-                  barrierX = [2, 2 + 1.5];
-                  this.barrierY = [this.randomBarrierY, this.randomBarrierY];
+                  this.barrierX = [this.randomBarrierX, this.randomBarrierX, this.randomBarrierX];
+                  this.barrierY = [this.randomBarrierY, this.randomBarrierY, this.randomBarrierY];
                   barrierImageUrls = [
                     KImageAnimationHelper.randomImage,
-                    KImageAnimationHelper.randomImage
+                    KImageAnimationHelper.randomImage,
+                    KImageAnimationHelper.randomImage,
                   ];
                   barrierValues = [
+                    this.getRandomAnswer,
                     this.getRandomAnswer,
                     this.getRandomAnswer,
                   ];
@@ -636,17 +649,22 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
       this.points = 0;
       this.currentQuestionIndex = 0;
       this.spinningHeroIndex = null;
-      this.barrierX = [2, 2 + 1.5];
-      this.barrierY = [this.randomBarrierY, this.randomBarrierY];
+      this.barrierX = [this.randomBarrierX, this.randomBarrierX, this.randomBarrierX];
+      this.barrierY = [this.randomBarrierY, this.randomBarrierY, this.randomBarrierY];
       this.barrierImageUrls = [
         KImageAnimationHelper.randomImage,
         KImageAnimationHelper.randomImage,
+        KImageAnimationHelper.randomImage,
+      ];
+      this.barrierValues = [
+        this.getRandomAnswer,
+        this.getRandomAnswer,
+        this.getRandomAnswer,
       ];
       isWrongAnswer = false;
       rightAnswerCount = 0;
       wrongAnswerCount = 0;
       canAdvance = false;
-      this.barrierValues = [getRandomAnswer, getRandomAnswer];
     });
   }
 
