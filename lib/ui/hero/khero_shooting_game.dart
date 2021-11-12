@@ -72,10 +72,7 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
           child: Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                  this.gameBackground,
-                  package: 'app_core',
-                ),
+                image: AssetImage(this.gameBackground, package: 'app_core'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -263,8 +260,7 @@ class _KGameScreenState extends State<_KGameScreen>
       ..addStatusListener((status) {
         if (mounted && status == AnimationStatus.completed) {
           this._barrelScaleAnimationController.reverse();
-        } else if (mounted && status == AnimationStatus.dismissed) {
-        }
+        } else if (mounted && status == AnimationStatus.dismissed) {}
       });
     _barrelScaleAnimation = new Tween(
       begin: 1.0,
@@ -935,8 +931,7 @@ class _Barrier extends StatelessWidget {
           children: [
             Align(
               alignment: Alignment.topCenter,
-              child:
-              Transform.translate(
+              child: Transform.translate(
                 offset: Offset(0, 0),
                 child: Transform.translate(
                   offset: Offset(0, -40 * (starY ?? 0)),
@@ -979,44 +974,47 @@ class _Barrier extends StatelessWidget {
                     angle: rotateAngle,
                     child: scaleAnimation != null
                         ? (ScaleTransition(
-                      scale: scaleAnimation!,
-                      child: Image.network(
-                        imageUrl,
-                        width: (MediaQuery.of(context).size.width / 2) *
-                            barrierWidth,
-                        height: (MediaQuery.of(context).size.height / 2) *
-                            barrierHeight *
-                            0.6,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stack) => Image.asset(
-                          KAssets.IMG_TAMAGO_LIGHT_1,
-                          width: (MediaQuery.of(context).size.width / 2) *
-                              barrierWidth,
-                          height: (MediaQuery.of(context).size.height / 2) *
-                              barrierHeight *
-                              0.6,
-                          package: 'app_core',
-                        ),
-                      ),
-                    ))
+                            scale: scaleAnimation!,
+                            child: Image.network(
+                              imageUrl,
+                              width: (MediaQuery.of(context).size.width / 2) *
+                                  barrierWidth,
+                              height: (MediaQuery.of(context).size.height / 2) *
+                                  barrierHeight *
+                                  0.6,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stack) =>
+                                  Image.asset(
+                                KAssets.IMG_TAMAGO_LIGHT_1,
+                                width: (MediaQuery.of(context).size.width / 2) *
+                                    barrierWidth,
+                                height:
+                                    (MediaQuery.of(context).size.height / 2) *
+                                        barrierHeight *
+                                        0.6,
+                                package: 'app_core',
+                              ),
+                            ),
+                          ))
                         : (Image.network(
-                      imageUrl,
-                      width: (MediaQuery.of(context).size.width / 2) *
-                          barrierWidth,
-                      height: (MediaQuery.of(context).size.height / 2) *
-                          barrierHeight *
-                          0.6,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stack) => Image.asset(
-                        KAssets.IMG_TAMAGO_LIGHT_1,
-                        width: (MediaQuery.of(context).size.width / 2) *
-                            barrierWidth,
-                        height: (MediaQuery.of(context).size.height / 2) *
-                            barrierHeight *
-                            0.6,
-                        package: 'app_core',
-                      ),
-                    )),
+                            imageUrl,
+                            width: (MediaQuery.of(context).size.width / 2) *
+                                barrierWidth,
+                            height: (MediaQuery.of(context).size.height / 2) *
+                                barrierHeight *
+                                0.6,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stack) =>
+                                Image.asset(
+                              KAssets.IMG_TAMAGO_LIGHT_1,
+                              width: (MediaQuery.of(context).size.width / 2) *
+                                  barrierWidth,
+                              height: (MediaQuery.of(context).size.height / 2) *
+                                  barrierHeight *
+                                  0.6,
+                              package: 'app_core',
+                            ),
+                          )),
                   ),
                 ),
               ],
