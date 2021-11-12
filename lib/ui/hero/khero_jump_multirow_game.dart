@@ -223,7 +223,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   int? spinningHeroIndex;
   int? currentShowStarIndex;
 
-  List<double> BARRIER_Y_BASE = [-0.3, 0.35, 1];
+  static const List<double> BARRIER_Y_BASE = [-0.3, 0.35, 1];
   List<double> barrierX = [2, 3.5, 5];
   List<double> barrierY = [1, -0.3, 0.35];
   List<String> barrierImageUrls = [

@@ -4,10 +4,9 @@ import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/helper/ksnackbar_helper.dart';
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/khero.dart';
-import 'package:app_core/ui/hero/khero_jump_game.dart';
+import 'package:app_core/ui/hero/khero_jump_multirow_game.dart';
 import 'package:app_core/ui/hero/khero_jump_over_game.dart';
 import 'package:app_core/ui/hero/widget/kegg_hatch_new_short_intro.dart';
-import 'package:app_core/ui/hero/widget/kegg_hatch_short_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_short_hatch_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -19,8 +18,6 @@ import 'package:app_core/ui/hero/khero_training.dart';
 import 'package:app_core/ui/hero/widget/khero_combine_view.dart';
 import 'package:app_core/ui/hero/widget/khero_grid_item.dart';
 import 'package:app_core/ui/widget/kstopwatch_label.dart';
-
-import 'khero_jump_multirow_game.dart';
 
 final GlobalKey _draggableKey = GlobalKey();
 
@@ -106,8 +103,8 @@ class _KHeroListingState extends State<KHeroListing> {
     }
     // Navigator.of(context)
     //     .push(MaterialPageRoute(builder: (ctx) => KHeroJumpGame(hero: hero)));
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (ctx) => KHeroJumpMultiRowGame(hero: hero)));
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (ctx) => KHeroJumpMultiRowGame(hero: hero)));
   }
 
   void onPlayJumpOverGame(KHero? hero) {
