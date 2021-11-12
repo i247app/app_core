@@ -20,6 +20,8 @@ import 'package:app_core/ui/hero/widget/khero_combine_view.dart';
 import 'package:app_core/ui/hero/widget/khero_grid_item.dart';
 import 'package:app_core/ui/widget/kstopwatch_label.dart';
 
+import 'khero_jump_game.dart';
+
 final GlobalKey _draggableKey = GlobalKey();
 
 class KHeroHome extends StatefulWidget {
@@ -88,16 +90,25 @@ class _KHeroHomeState extends State<KHeroHome> {
         .push(MaterialPageRoute(builder: (ctx) => KHeroTraining(hero: hero)));
   }
 
-  void onPlayGame(KHero? hero) {
+  void onPlayJumpOverGame(KHero? hero) {
     if (this.overlayID != null) {
       KOverlayHelper.removeOverlay(this.overlayID!);
       this.overlayID = null;
     }
     Navigator.of(context).push(
-        MaterialPageRoute(builder: (ctx) => KHeroMultiGame(hero: hero)));
+        MaterialPageRoute(builder: (ctx) => KHeroJumpOverGame(hero: hero)));
   }
 
   void onPlayJumpGame(KHero? hero) {
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (ctx) => KHeroJumpGame(hero: hero)));
+  }
+
+  void onPlayJumpMultiRowGame(KHero? hero) {
     if (this.overlayID != null) {
       KOverlayHelper.removeOverlay(this.overlayID!);
       this.overlayID = null;
@@ -108,13 +119,22 @@ class _KHeroHomeState extends State<KHeroHome> {
         MaterialPageRoute(builder: (ctx) => KHeroJumpMultiRowGame(hero: hero)));
   }
 
-  void onPlayJumpOverGame(KHero? hero) {
+  void onPlayShootingGame(KHero? hero) {
     if (this.overlayID != null) {
       KOverlayHelper.removeOverlay(this.overlayID!);
       this.overlayID = null;
     }
     Navigator.of(context).push(
-        MaterialPageRoute(builder: (ctx) => KHeroJumpOverGame(hero: hero)));
+        MaterialPageRoute(builder: (ctx) => KHeroShootingGame(hero: hero)));
+  }
+
+  void onPlayMultiGame(KHero? hero) {
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (ctx) => KHeroMultiGame(hero: hero)));
   }
 
   void onHeroClick(KHero hero) {
@@ -128,7 +148,7 @@ class _KHeroHomeState extends State<KHeroHome> {
         onDrop: onHeroDrop,
         onSetAvatar: onSetAvatarClick,
         onTraining: onTraining,
-        onPlayGame: onPlayGame,
+        onPlayGame: onPlayMultiGame,
         onPlayJumpGame: onPlayJumpGame,
         isAvatar: this.avatarHero?.id == this.selectedHero?.id,
       );
@@ -320,7 +340,7 @@ class _KHeroHomeState extends State<KHeroHome> {
                 SizedBox(width: 18),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => onPlayGame(null),
+                    onPressed: () => onPlayJumpOverGame(null),
                     style: KStyles.squaredButton(
                       KStyles.colorPrimary,
                       textColor: Colors.white,
@@ -356,7 +376,43 @@ class _KHeroHomeState extends State<KHeroHome> {
                 SizedBox(width: 18),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () => onPlayJumpOverGame(null),
+                    onPressed: () => onPlayJumpMultiRowGame(null),
+                    style: KStyles.squaredButton(
+                      KStyles.colorPrimary,
+                      textColor: Colors.white,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("🏆"),
+                        // SizedBox(width: 10),
+                        // Text("Game"),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 18),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => onPlayShootingGame(null),
+                    style: KStyles.squaredButton(
+                      KStyles.colorPrimary,
+                      textColor: Colors.white,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("🔫"),
+                        // SizedBox(width: 10),
+                        // Text("Game"),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 18),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => onPlayMultiGame(null),
                     style: KStyles.squaredButton(
                       KStyles.colorPrimary,
                       textColor: Colors.white,
