@@ -355,7 +355,20 @@ class _KHeroHomeState extends State<KHeroHome> {
                     ),
                   ),
                 ),
-                SizedBox(width: 18),
+              ],
+            ),
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(8),
+          child: DefaultTextStyle(
+            style: Theme.of(context)
+                .textTheme
+                .bodyText1!
+                .copyWith(color: Colors.white),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () => onPlayJumpGame(null),
