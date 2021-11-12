@@ -6,6 +6,7 @@ import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/ui/hero/khero_jump_multirow_game.dart';
 import 'package:app_core/ui/hero/khero_jump_over_game.dart';
+import 'package:app_core/ui/hero/khero_multi_game.dart';
 import 'package:app_core/ui/hero/widget/kegg_hatch_new_short_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_short_hatch_view.dart';
 import 'package:flutter/material.dart';
@@ -21,12 +22,12 @@ import 'package:app_core/ui/widget/kstopwatch_label.dart';
 
 final GlobalKey _draggableKey = GlobalKey();
 
-class KHeroListing extends StatefulWidget {
+class KHeroHome extends StatefulWidget {
   @override
-  _KHeroListingState createState() => _KHeroListingState();
+  _KHeroHomeState createState() => _KHeroHomeState();
 }
 
-class _KHeroListingState extends State<KHeroListing> {
+class _KHeroHomeState extends State<KHeroHome> {
   int? overlayID;
   List<KHero>? heroes;
   KHero? avatarHero;
@@ -93,7 +94,7 @@ class _KHeroListingState extends State<KHeroListing> {
       this.overlayID = null;
     }
     Navigator.of(context).push(
-        MaterialPageRoute(builder: (ctx) => KHeroShootingGame(hero: hero)));
+        MaterialPageRoute(builder: (ctx) => KHeroMultiGame(hero: hero)));
   }
 
   void onPlayJumpGame(KHero? hero) {

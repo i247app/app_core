@@ -97,7 +97,7 @@ class _KHeroJumpMultiRowGameState extends State<KHeroJumpMultiRowGame> {
                     ),
                   ),
                   Expanded(
-                    child: _KJumpGameScreen(
+                    child: KJumpMultiRowGameScreen(
                       hero: widget.hero,
                       onFinishLevel: (level) {
                         if (level <= 3) {
@@ -133,18 +133,18 @@ class _KHeroJumpMultiRowGameState extends State<KHeroJumpMultiRowGame> {
   }
 }
 
-class _KJumpGameScreen extends StatefulWidget {
+class KJumpMultiRowGameScreen extends StatefulWidget {
   final KHero? hero;
   final Function(int)? onChangeLevel;
   final Function? onFinishLevel;
 
-  const _KJumpGameScreen({this.hero, this.onChangeLevel, this.onFinishLevel});
+  const KJumpMultiRowGameScreen({this.hero, this.onChangeLevel, this.onFinishLevel});
 
   @override
-  _KJumpGameScreenState createState() => _KJumpGameScreenState();
+  KJumpMultiRowGameScreenState createState() => KJumpMultiRowGameScreenState();
 }
 
-class _KJumpGameScreenState extends State<_KJumpGameScreen>
+class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
     with TickerProviderStateMixin {
   late Animation<Offset> _bouncingAnimation;
   late Animation<double> _playerScaleAnimation,
