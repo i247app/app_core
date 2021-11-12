@@ -819,12 +819,6 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
             ),
           ),
         ),
-        GestureDetector(
-            onTap: isStart
-                ? jump
-                : (result == null
-                    ? start
-                    : (canRestartGame ? restartGame : () {}))),
         // if (isStart && result != null)
         //   Align(
         //     alignment: Alignment(0, -0.6),
@@ -949,6 +943,12 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
               ),
             ),
           ),
+          GestureDetector(
+              onTap: isStart
+                  ? jump
+                  : (result == null
+                  ? start
+                  : (canRestartGame ? restartGame : () {}))),
         ],
       ],
     );
