@@ -37,7 +37,7 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
   double heroHeight = 40;
   double heroWidth = 40;
   bool isShooting = false;
-  int eggBreakStep = 0;
+  int eggBreakStep = 1;
 
   int introShakeTime = 2;
 
@@ -70,20 +70,21 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
             if (introShakeTime - 1 == 0) {
               this.setState(() {
                 this.eggBreakStep = this.eggBreakStep + 1;
-                Future.delayed(Duration(milliseconds: 750), () {
+              });
+
+              Future.delayed(Duration(milliseconds: 1000), () {
+                this.setState(() {
+                  this.eggBreakStep = this.eggBreakStep + 1;
+                });
+
+                Future.delayed(Duration(milliseconds: 1000), () {
                   this.setState(() {
                     this.eggBreakStep = this.eggBreakStep + 1;
                   });
 
                   Future.delayed(Duration(milliseconds: 1000), () {
-                    this.setState(() {
-                      this.eggBreakStep = this.eggBreakStep + 1;
-                    });
-
-                    Future.delayed(Duration(milliseconds: 1000), () {
-                      if (this.widget.onFinish != null)
-                        this.widget.onFinish!();
-                    });
+                    if (this.widget.onFinish != null)
+                      this.widget.onFinish!();
                   });
                 });
               });
@@ -176,9 +177,9 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
   @override
   Widget build(BuildContext context) {
     final eggStep1 = AnimatedOpacity(
-      duration: Duration(milliseconds: 700),
-      opacity: this.eggBreakStep == 0 ? 1.0 : 0.0,
-      child: this.eggBreakStep == 0
+      duration: Duration(milliseconds: 250),
+      opacity: this.eggBreakStep == 1 ? 1.0 : 0.0,
+      child: this.eggBreakStep == 1
           ? Transform.scale(
               scale: 0.5,
               child: Image.asset(

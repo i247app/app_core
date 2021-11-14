@@ -51,9 +51,9 @@ class _KHeroTrainingState extends State<KHeroTraining>
           this.setState(() {
             isShowPlusPoint = false;
           });
-          Future.delayed(Duration(milliseconds: 500), () {
-            this._scaleAnimationController.reset();
-          });
+          // Future.delayed(Duration(milliseconds: 500), () {
+          //   if (!this._scaleAnimationController.isAnimating) this._scaleAnimationController.reset();
+          // });
         } else if (mounted && status == AnimationStatus.dismissed) {}
       });
     _scaleAnimation = new Tween(
@@ -79,11 +79,13 @@ class _KHeroTrainingState extends State<KHeroTraining>
             (lastGetPointTime == null ||
                 lastGetPointTime!.difference(DateTime.now()).inMilliseconds <
                     -1000)) {
-          this._scaleAnimationController.reset();
           this.setState(() {
             isShowPlusPoint = true;
           });
-          this._scaleAnimationController.forward();
+          if (!this._scaleAnimationController.isAnimating) {
+            this._scaleAnimationController.reset();
+            this._scaleAnimationController.forward();
+          }
           setState(() {
             // resetPos = true;
             lastGetPointTime = DateTime.now();
@@ -142,24 +144,6 @@ class _KHeroTrainingState extends State<KHeroTraining>
               child: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Transform.translate(
-                      offset: Offset(0, 80),
-                      child: Transform.translate(
-                        offset: Offset(0, -80 * (_scaleAnimation.value - 1)),
-                        child: AnimatedOpacity(
-                          duration: Duration(milliseconds: 500),
-                          opacity: isShowPlusPoint ? 1 : 0,
-                          child: Icon(
-                            Icons.star,
-                            color: Colors.amberAccent,
-                            size: 50,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                   Align(
                     alignment: Alignment.topRight,
                     child: Container(
@@ -231,6 +215,24 @@ class _KHeroTrainingState extends State<KHeroTraining>
                     //     ),
                     //   ),
                     // ),
+                  ),
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: Transform.translate(
+                      offset: Offset(0, 80),
+                      child: Transform.translate(
+                        offset: Offset(0, -80 * (_scaleAnimation.value - 1)),
+                        child: AnimatedOpacity(
+                          duration: Duration(milliseconds: 500),
+                          opacity: isShowPlusPoint ? 1 : 0,
+                          child: Icon(
+                            Icons.star,
+                            color: Colors.amberAccent,
+                            size: 50,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                   Container(
                       width: 80,

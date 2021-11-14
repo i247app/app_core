@@ -114,7 +114,7 @@ class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
                     ),
                   ),
                   Expanded(
-                    child: _KJumpGameScreen(
+                    child: KJumpGameScreen(
                       hero: widget.hero,
                       onFinishLevel: (level) {
                         if (level <= 3) {
@@ -150,18 +150,18 @@ class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
   }
 }
 
-class _KJumpGameScreen extends StatefulWidget {
+class KJumpGameScreen extends StatefulWidget {
   final KHero? hero;
   final Function(int)? onChangeLevel;
   final Function? onFinishLevel;
 
-  const _KJumpGameScreen({this.hero, this.onChangeLevel, this.onFinishLevel});
+  const KJumpGameScreen({this.hero, this.onChangeLevel, this.onFinishLevel});
 
   @override
-  _KJumpGameScreenState createState() => _KJumpGameScreenState();
+  KJumpGameScreenState createState() => KJumpGameScreenState();
 }
 
-class _KJumpGameScreenState extends State<_KJumpGameScreen>
+class KJumpGameScreenState extends State<KJumpGameScreen>
     with TickerProviderStateMixin {
   late Animation<Offset> _bouncingAnimation;
   late Animation<double> _playerScaleAnimation,
@@ -527,8 +527,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                     bottomBulletY >= topBarrier)) {
           if (spinningHeroIndex != i) {
             this._bouncingAnimationController.forward();
-            bool isTrueAnswer =
-                barrierValues[i] == rightAnswers[currentQuestionIndex];
+            bool isTrueAnswer = true;
+                // barrierValues[i] == rightAnswers[currentQuestionIndex];
             if (isTrueAnswer) {
               this.setState(() {
                 spinningHeroIndex = i;
@@ -819,12 +819,6 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
             ),
           ),
         ),
-        GestureDetector(
-            onTap: isStart
-                ? jump
-                : (result == null
-                    ? start
-                    : (canRestartGame ? restartGame : () {}))),
         // if (isStart && result != null)
         //   Align(
         //     alignment: Alignment(0, -0.6),
@@ -949,6 +943,12 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
               ),
             ),
           ),
+          GestureDetector(
+              onTap: isStart
+                  ? jump
+                  : (result == null
+                  ? start
+                  : (canRestartGame ? restartGame : () {}))),
         ],
       ],
     );

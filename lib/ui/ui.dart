@@ -30,5 +30,5 @@ export 'hero/widget/khero_grid_item.dart';
 export 'hero/widget/khero_portrait.dart';
 export 'hero/khero_basic_picker.dart';
 export 'hero/khero_shooting_game.dart';
-export 'hero/khero_listing.dart';
+export 'hero/khero_home.dart';
 export 'hero/khero_training.dart';

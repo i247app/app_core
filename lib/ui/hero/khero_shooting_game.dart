@@ -95,7 +95,7 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
                               ),
                             ),
                           )
-                        : _KGameScreen(
+                        : KShootingGameScreen(
                             hero: widget.hero,
                             onFinishLevel: (level) {
                               if (level <= 3) {
@@ -126,18 +126,18 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
   }
 }
 
-class _KGameScreen extends StatefulWidget {
+class KShootingGameScreen extends StatefulWidget {
   final KHero? hero;
   final Function(int)? onChangeLevel;
   final Function? onFinishLevel;
 
-  const _KGameScreen({this.hero, this.onChangeLevel, this.onFinishLevel});
+  const KShootingGameScreen({this.hero, this.onChangeLevel, this.onFinishLevel});
 
   @override
-  _KGameScreenState createState() => _KGameScreenState();
+  KShootingGameScreenState createState() => KShootingGameScreenState();
 }
 
-class _KGameScreenState extends State<_KGameScreen>
+class KShootingGameScreenState extends State<KShootingGameScreen>
     with TickerProviderStateMixin {
   late Animation<Offset> _bouncingAnimation;
   late Animation<double> _barrelScaleAnimation,
