@@ -244,7 +244,6 @@ abstract class KUtil {
     bool acceptZero = true,
   }) {
     if (amount == null) return "";
-
     double dAmount = double.tryParse(amount) ?? 0;
     String pretty = "0";
     String uppercaseToken = tokenName?.toUpperCase() ?? "";
@@ -266,21 +265,8 @@ abstract class KUtil {
           else // 1.234,56 or 1.234
             pretty = NumberFormat("#,###.##", "vi_VN").format(dAmount);
           break;
-        case "CHAO": // for vnd and eur
-          if (useCurrencyName) // 1.234,56 VND or 1.234 VND
-            pretty = NumberFormat.currency(locale: "vi").format(dAmount);
-          else if (useCurrencySymbol) // 1.234,56 d or 1.234 d
-            pretty = NumberFormat.simpleCurrency(locale: "vi").format(dAmount);
-          else // 1.234,56 or 1.234
-            pretty = NumberFormat("#,###.##", "vi_VN").format(dAmount);
-          break;
         default: // default locale most likely en or vi
-          if (useCurrencyName) // 1.234,56 VND or 1.234 VND
-            pretty = NumberFormat.currency().format(dAmount);
-          if (useCurrencySymbol) // 1.234,56 d or 1.234 d
-            pretty = NumberFormat.simpleCurrency().format(dAmount);
-          else // 1.234,56 or 1.234
-            pretty = NumberFormat("#,###.##").format(dAmount);
+          pretty = NumberFormat("#,###.##").format(dAmount);
           break;
       }
     } catch (e) {
