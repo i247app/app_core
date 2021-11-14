@@ -1,6 +1,6 @@
 import 'dart:convert';
+import 'dart:math';
 
-import 'package:app_core/header/kassets.dart';
 import 'package:app_core/helper/khost_config.dart';
 import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/helper/ktoast_helper.dart';
@@ -9,7 +9,6 @@ import 'package:app_core/model/kfull_notification.dart';
 import 'package:app_core/model/knotif_data.dart';
 import 'package:app_core/model/kpush_data.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'dart:math';
 
 abstract class KLocalNotifHelper {
   static const bool BLOCKED_BANNERS_AS_TOAST = false;
@@ -49,11 +48,13 @@ abstract class KLocalNotifHelper {
       "LocalNotifHelper :: banner block depth - ${_blockedBannersDepth[app]}");
 
   static Future<void> setupLocalNotifications(
-      {SelectNotificationCallback? onSelectNotification}) async {
+    String androidIcon, {
+    SelectNotificationCallback? onSelectNotification,
+  }) async {
     print("fcm_helper => setupLocalNotifications fired");
 
     _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    final android = AndroidInitializationSettings(KAssets.NOTIF_ICON);
+    final android = AndroidInitializationSettings(androidIcon);
     final ios = IOSInitializationSettings();
     final platform = InitializationSettings(android: android, iOS: ios);
 
@@ -64,12 +65,13 @@ abstract class KLocalNotifHelper {
   }
 
   static void showNotification(
-    KFullNotification? msg, {
+    KFullNotification msg, {
+    required String androidIcon,
     SelectNotificationCallback? onSelectNotification,
     bool obeyBlacklist = false,
   }) async {
-    KNotifData? notif = msg?.notification;
-    String? app = msg?.app;
+    final KNotifData? notif = msg.notification;
+    final String? app = msg.app;
     if (notif == null || app == null) return;
 
     /// Pretty hacky but FOR NOW don't display blocked banners
@@ -106,14 +108,16 @@ abstract class KLocalNotifHelper {
     if (KStringHelper.isExist(notif.title ?? "")) {
       if (_flutterLocalNotificationsPlugin == null)
         await setupLocalNotifications(
-            onSelectNotification: onSelectNotification);
+          androidIcon,
+          onSelectNotification: onSelectNotification,
+        );
       var rng = new Random();
       await _flutterLocalNotificationsPlugin!.show(
         rng.nextInt(100000),
         notif.title,
         notif.body,
         platform,
-        payload: jsonEncode(msg?.data ?? {}),
+        payload: jsonEncode(msg.data ?? {}),
       );
 
       print("LocalNotifHelper - DISPLAYING NOTIFICATION BANNER");
