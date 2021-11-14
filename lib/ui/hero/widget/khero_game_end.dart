@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
-import 'package:app_core/helper/kflash_helper.dart';
 import 'package:app_core/helper/kimage_animation_helper.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/header/kassets.dart';
@@ -83,38 +82,39 @@ class _KHeroGameEndState extends State<KHeroGameEnd>
       opacity: this.eggBreakStep == 1 ? 1.0 : 0.0,
       child: this.eggBreakStep == 1
           ? Transform.scale(
-        scale: 0.5,
-        child: KImageAnimation(
-          animationType: KImageAnimationType.ZOOM_SHAKE,
-          imageUrls: [
-            KAssets.IMG_TAMAGO_1,
-          ],
-          isAssetImage: true,
-          maxLoop: 1,
-          onFinish: () {
-            Future.delayed(Duration(milliseconds: 750), () {
-              this.setState(() {
-                this.eggBreakStep = this.eggBreakStep + 1;
-              });
-
-              Future.delayed(Duration(milliseconds: 1000), () {
-                this.setState(() {
-                  this.eggBreakStep = this.eggBreakStep + 1;
-                });
-
-                Future.delayed(Duration(milliseconds: 1000), () {
-                  if (widget.hero != null && KStringHelper.isExist(widget.hero!.imageURL)) {
+              scale: 0.5,
+              child: KImageAnimation(
+                animationType: KImageAnimationType.ZOOM_SHAKE,
+                imageUrls: [
+                  KAssets.IMG_TAMAGO_1,
+                ],
+                isAssetImage: true,
+                maxLoop: 1,
+                onFinish: () {
+                  Future.delayed(Duration(milliseconds: 750), () {
                     this.setState(() {
                       this.eggBreakStep = this.eggBreakStep + 1;
                     });
-                  } else if (this.widget.onFinish != null)
-                    this.widget.onFinish!();
-                });
-              });
-            });
-          },
-        ),
-      )
+
+                    Future.delayed(Duration(milliseconds: 1000), () {
+                      this.setState(() {
+                        this.eggBreakStep = this.eggBreakStep + 1;
+                      });
+
+                      Future.delayed(Duration(milliseconds: 1000), () {
+                        if (widget.hero != null &&
+                            KStringHelper.isExist(widget.hero!.imageURL)) {
+                          this.setState(() {
+                            this.eggBreakStep = this.eggBreakStep + 1;
+                          });
+                        } else if (this.widget.onFinish != null)
+                          this.widget.onFinish!();
+                      });
+                    });
+                  });
+                },
+              ),
+            )
           : Container(),
     );
 
@@ -123,12 +123,12 @@ class _KHeroGameEndState extends State<KHeroGameEnd>
       opacity: this.eggBreakStep == 2 ? 1.0 : 0.0,
       child: this.eggBreakStep == 2
           ? Transform.scale(
-        scale: 0.5,
-        child: Image.asset(
-          KAssets.IMG_TAMAGO_2,
-          package: 'app_core',
-        ),
-      )
+              scale: 0.5,
+              child: Image.asset(
+                KAssets.IMG_TAMAGO_2,
+                package: 'app_core',
+              ),
+            )
           : Container(),
     );
 
@@ -137,33 +137,34 @@ class _KHeroGameEndState extends State<KHeroGameEnd>
       opacity: this.eggBreakStep == 3 ? 1.0 : 0.0,
       child: this.eggBreakStep == 3
           ? Transform.scale(
-        scale: 0.5,
-        child: Image.asset(
-          KAssets.IMG_TAMAGO_3,
-          package: 'app_core',
-        ),
-      )
+              scale: 0.5,
+              child: Image.asset(
+                KAssets.IMG_TAMAGO_3,
+                package: 'app_core',
+              ),
+            )
           : Container(),
     );
 
     final heroStep = AnimatedOpacity(
       duration: Duration(milliseconds: 700),
       opacity: this.eggBreakStep == 4 ? 1.0 : 0.0,
-      child: this.eggBreakStep == 4 && widget.hero != null && KStringHelper.isExist(widget.hero!.imageURL)
+      child: this.eggBreakStep == 4 &&
+              widget.hero != null &&
+              KStringHelper.isExist(widget.hero!.imageURL)
           ? Transform.scale(
-        scale: 0.5,
-        child: KImageAnimation(
-          animationType: KImageAnimationType.ZOOM_SHAKE,
-          imageUrls: [
-            widget.hero!.imageURL!,
-          ],
-          maxLoop: 1,
-          onFinish: () {
-            if (this.widget.onFinish != null)
-              this.widget.onFinish!();
-          },
-        ),
-      )
+              scale: 0.5,
+              child: KImageAnimation(
+                animationType: KImageAnimationType.ZOOM_SHAKE,
+                imageUrls: [
+                  widget.hero!.imageURL!,
+                ],
+                maxLoop: 1,
+                onFinish: () {
+                  if (this.widget.onFinish != null) this.widget.onFinish!();
+                },
+              ),
+            )
           : Container(),
     );
 

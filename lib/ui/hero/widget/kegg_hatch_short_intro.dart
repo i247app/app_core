@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math' as Math;
 
 import 'package:app_core/header/kassets.dart';
 import 'package:app_core/ui/widget/kimage_animation/kimage_animation.dart';

@@ -182,6 +182,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
   double initialPos = 0;
   double height = 0;
   double time = 0;
+
   // double gravity = -4;
   // double velocity = 1.8;
   double gravity = -8.0;
@@ -528,7 +529,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
           if (spinningHeroIndex != i) {
             this._bouncingAnimationController.forward();
             bool isTrueAnswer = true;
-                // barrierValues[i] == rightAnswers[currentQuestionIndex];
+            // barrierValues[i] == rightAnswers[currentQuestionIndex];
             if (isTrueAnswer) {
               this.setState(() {
                 spinningHeroIndex = i;
@@ -947,8 +948,8 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
               onTap: isStart
                   ? jump
                   : (result == null
-                  ? start
-                  : (canRestartGame ? restartGame : () {}))),
+                      ? start
+                      : (canRestartGame ? restartGame : () {}))),
         ],
       ],
     );
@@ -986,7 +987,7 @@ class _Barrier extends StatelessWidget {
   Widget build(context) {
     return Container(
       alignment:
-      Alignment((2 * barrierX + barrierWidth) / (2 - barrierWidth), 1),
+          Alignment((2 * barrierX + barrierWidth) / (2 - barrierWidth), 1),
       child: Container(
         width: (MediaQuery.of(context).size.width / 2) * barrierWidth,
         height: (MediaQuery.of(context).size.height / 2) * barrierHeight,
@@ -995,8 +996,7 @@ class _Barrier extends StatelessWidget {
           children: [
             Align(
               alignment: Alignment.topCenter,
-              child:
-              Transform.translate(
+              child: Transform.translate(
                 offset: Offset(0, 0),
                 child: Transform.translate(
                   offset: Offset(0, -40 * (starY ?? 0)),
@@ -1039,44 +1039,47 @@ class _Barrier extends StatelessWidget {
                     angle: rotateAngle,
                     child: scaleAnimation != null
                         ? (ScaleTransition(
-                      scale: scaleAnimation!,
-                      child: Image.network(
-                        imageUrl,
-                        width: (MediaQuery.of(context).size.width / 2) *
-                            barrierWidth,
-                        height: (MediaQuery.of(context).size.height / 2) *
-                            barrierHeight *
-                            0.6,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stack) => Image.asset(
-                          KAssets.IMG_TAMAGO_LIGHT_1,
-                          width: (MediaQuery.of(context).size.width / 2) *
-                              barrierWidth,
-                          height: (MediaQuery.of(context).size.height / 2) *
-                              barrierHeight *
-                              0.6,
-                          package: 'app_core',
-                        ),
-                      ),
-                    ))
+                            scale: scaleAnimation!,
+                            child: Image.network(
+                              imageUrl,
+                              width: (MediaQuery.of(context).size.width / 2) *
+                                  barrierWidth,
+                              height: (MediaQuery.of(context).size.height / 2) *
+                                  barrierHeight *
+                                  0.6,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stack) =>
+                                  Image.asset(
+                                KAssets.IMG_TAMAGO_LIGHT_1,
+                                width: (MediaQuery.of(context).size.width / 2) *
+                                    barrierWidth,
+                                height:
+                                    (MediaQuery.of(context).size.height / 2) *
+                                        barrierHeight *
+                                        0.6,
+                                package: 'app_core',
+                              ),
+                            ),
+                          ))
                         : (Image.network(
-                      imageUrl,
-                      width: (MediaQuery.of(context).size.width / 2) *
-                          barrierWidth,
-                      height: (MediaQuery.of(context).size.height / 2) *
-                          barrierHeight *
-                          0.6,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stack) => Image.asset(
-                        KAssets.IMG_TAMAGO_LIGHT_1,
-                        width: (MediaQuery.of(context).size.width / 2) *
-                            barrierWidth,
-                        height: (MediaQuery.of(context).size.height / 2) *
-                            barrierHeight *
-                            0.6,
-                        package: 'app_core',
-                      ),
-                    )),
+                            imageUrl,
+                            width: (MediaQuery.of(context).size.width / 2) *
+                                barrierWidth,
+                            height: (MediaQuery.of(context).size.height / 2) *
+                                barrierHeight *
+                                0.6,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stack) =>
+                                Image.asset(
+                              KAssets.IMG_TAMAGO_LIGHT_1,
+                              width: (MediaQuery.of(context).size.width / 2) *
+                                  barrierWidth,
+                              height: (MediaQuery.of(context).size.height / 2) *
+                                  barrierHeight *
+                                  0.6,
+                              package: 'app_core',
+                            ),
+                          )),
                   ),
                 ),
               ],
