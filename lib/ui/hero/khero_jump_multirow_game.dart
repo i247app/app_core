@@ -968,13 +968,13 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
               ),
             ),
           ),
-          GestureDetector(
-              onTap: isStart
-                  ? jump
-                  : (result == null
-                  ? start
-                  : (canRestartGame ? restartGame : () {}))),
         ],
+        GestureDetector(
+            onTap: isStart
+                ? jump
+                : (result == null
+                ? start
+                : (canRestartGame ? restartGame : () {}))),
       ],
     );
 

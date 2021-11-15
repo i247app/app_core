@@ -21,6 +21,7 @@ import 'package:app_core/ui/hero/widget/khero_grid_item.dart';
 import 'package:app_core/ui/widget/kstopwatch_label.dart';
 
 import 'khero_jump_game.dart';
+import 'khero_tap_game.dart';
 
 final GlobalKey _draggableKey = GlobalKey();
 
@@ -88,6 +89,15 @@ class _KHeroHomeState extends State<KHeroHome> {
     }
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (ctx) => KHeroTraining(hero: hero)));
+  }
+
+  void onPlayTapGame(KHero? hero) {
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (ctx) => KHeroTapGame(hero: hero)));
   }
 
   void onPlayJumpOverGame(KHero? hero) {
@@ -341,6 +351,24 @@ class _KHeroHomeState extends State<KHeroHome> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () => onPlayJumpOverGame(null),
+                    style: KStyles.squaredButton(
+                      KStyles.colorPrimary,
+                      textColor: Colors.white,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("👾️"),
+                        // SizedBox(width: 10),
+                        // Text("Game"),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 18),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => onPlayTapGame(null),
                     style: KStyles.squaredButton(
                       KStyles.colorPrimary,
                       textColor: Colors.white,

@@ -266,6 +266,7 @@ abstract class KUtil {
             pretty = NumberFormat("#,###.##", "vi_VN").format(dAmount);
           break;
         default: // default locale most likely en or vi
+          // 1.234,56 or 1.234
           pretty = NumberFormat("#,###.##").format(dAmount);
           break;
       }

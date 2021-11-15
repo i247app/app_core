@@ -11,16 +11,16 @@ import 'package:flutter/widgets.dart';
 import 'package:app_core/ui/hero/widget/khero_game_level.dart';
 import 'package:app_core/header/kassets.dart';
 
-class KHeroJumpGame extends StatefulWidget {
+class KHeroTapGame extends StatefulWidget {
   final KHero? hero;
 
-  const KHeroJumpGame({this.hero});
+  const KHeroTapGame({this.hero});
 
   @override
-  _KHeroJumpGameState createState() => _KHeroJumpGameState();
+  _KHeroTapGameState createState() => _KHeroTapGameState();
 }
 
-class _KHeroJumpGameState extends State<KHeroJumpGame> {
+class _KHeroTapGameState extends State<KHeroTapGame> {
   static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
     KAssets.IMG_BG_COUNTRYSIDE_DARK,
@@ -97,7 +97,7 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
                     ),
                   ),
                   Expanded(
-                    child: _KJumpGameScreen(
+                    child: _KTapGameScreen(
                       hero: widget.hero,
                       onFinishLevel: (level) {
                         if (level <= 3) {
@@ -133,18 +133,18 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
   }
 }
 
-class _KJumpGameScreen extends StatefulWidget {
+class _KTapGameScreen extends StatefulWidget {
   final KHero? hero;
   final Function(int)? onChangeLevel;
   final Function? onFinishLevel;
 
-  const _KJumpGameScreen({this.hero, this.onChangeLevel, this.onFinishLevel});
+  const _KTapGameScreen({this.hero, this.onChangeLevel, this.onFinishLevel});
 
   @override
-  _KJumpGameScreenState createState() => _KJumpGameScreenState();
+  _KTapGameScreenState createState() => _KTapGameScreenState();
 }
 
-class _KJumpGameScreenState extends State<_KJumpGameScreen>
+class _KTapGameScreenState extends State<_KTapGameScreen>
     with TickerProviderStateMixin {
   late Animation<Offset> _bouncingAnimation;
   late Animation<double> _playerScaleAnimation,
@@ -223,15 +223,14 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   int? spinningHeroIndex;
   int? currentShowStarIndex;
 
-  List<double> barrierX = [2, 2 + 1.5];
-  List<String> barrierImageUrls = [
-    KImageAnimationHelper.randomImage,
-    KImageAnimationHelper.randomImage,
-  ];
+  List<double> barrierX = [0, 0, 0, 0];
+  List<double> barrierY = [0, 0, 0, 0];
+
+  Math.Random rand = new Math.Random();
 
   int get getRandomAnswer => rightAnswers[currentQuestionIndex] <= 4
-      ? (Math.Random().nextInt(4) + rightAnswers[currentQuestionIndex])
-      : (Math.Random().nextInt(4) + rightAnswers[currentQuestionIndex] - 3);
+      ? (rand.nextInt(4) + rightAnswers[currentQuestionIndex])
+      : (rand.nextInt(4) + rightAnswers[currentQuestionIndex] - 3);
 
   bool get canRestartGame =>
       currentLevel + 1 < levelHardness.length ||
@@ -239,48 +238,11 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
           (rightAnswerCount / questions.length) < levelHardness[currentLevel]);
 
   List<int> barrierValues = [];
-  double barrierWidth = 0.5;
-  List<List<double>> barrierHeight = [
-    [0.6, 0.4],
-    [0.6, 0.4],
-  ];
-
   double topBoundary = -2.1;
 
   @override
   void initState() {
     super.initState();
-
-    barrierValues = [
-      this.getRandomAnswer,
-      this.getRandomAnswer,
-    ];
-
-    _playerScaleAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    )
-      ..addListener(() => setState(() {}))
-      ..addStatusListener((status) {
-        if (mounted && status == AnimationStatus.completed) {
-          this._playerSpinAnimationController.forward();
-        } else if (mounted && status == AnimationStatus.dismissed) {}
-      });
-    _playerScaleAnimation = new Tween(
-      begin: 1.0,
-      end: 1.2,
-    ).animate(new CurvedAnimation(
-        parent: _playerScaleAnimationController, curve: Curves.bounceOut));
-
-    _playerSpinAnimationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500))
-          ..addListener(() => setState(() {}))
-          ..addStatusListener((status) {
-            if (mounted && status == AnimationStatus.completed) {
-              this._playerSpinAnimationController.reset();
-              this._playerScaleAnimationController.reverse();
-            } else if (status == AnimationStatus.dismissed) {}
-          });
 
     _heroScaleAnimationController = AnimationController(
       duration: const Duration(milliseconds: 200),
@@ -357,18 +319,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
       vsync: this,
     )
       ..addListener(() => setState(() {}))
-      ..addStatusListener((status) {
-        // if (mounted && status == AnimationStatus.completed) {
-        //   Future.delayed(Duration(milliseconds: 500), () {
-        //     this.setState(() {
-        //       isShowPlusPoint = false;
-        //     });
-        //     Future.delayed(Duration(milliseconds: 500), () {
-        //       this._scaleAnimationController.reset();
-        //     });
-        //   });
-        // } else if (mounted && status == AnimationStatus.dismissed) {}
-      });
+      ..addStatusListener((status) {});
     _moveUpAnimation = new Tween(
       begin: 0.0,
       end: 1.0,
@@ -380,45 +331,11 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
 
     _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
       if (isStart) {
-        height = (gravity * 0.5) * time * time + velocity * time;
-        double pos = initialPos - height;
-
-        setState(() {
-          if (pos <= topBoundary) {
-            time += 0.08;
-          } else if (pos <= 0) {
-            heroY = pos;
-          } else {
-            heroY = 0;
-          }
-        });
-
-        // if (isReachTarget() &&
-        //     (lastGetPointTime == null ||
-        //         lastGetPointTime!.difference(DateTime.now()).inMilliseconds <
-        //             -1000)) {
-        //   this._scaleAnimationController.reset();
-        //   this.setState(() {
-        //     isShowPlusPoint = true;
-        //   });
-        //   this._scaleAnimationController.forward();
-        //   setState(() {
-        //     // resetPos = true;
-        //     lastGetPointTime = DateTime.now();
-        //     points = points + 1;
-        //   });
-        // }
-        if (isScroll) {
-          checkResult();
-        }
-
-        this.setState(() {
-          time += 0.01;
-        });
-
-        moveMap();
       }
     });
+
+    randomBoxPosition();
+    getListAnswer();
   }
 
   @override
@@ -435,165 +352,50 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
     super.dispose();
   }
 
+  void getListAnswer() {
+    final currentRightAnswer = rightAnswers[currentQuestionIndex];
+
+    if (currentRightAnswer <= 4) {
+      this.barrierValues = [
+        currentRightAnswer,
+        currentRightAnswer + 1,
+        currentRightAnswer + 2,
+        currentRightAnswer + 3,
+      ];
+      this.barrierValues.shuffle();
+    } else {
+      this.barrierValues = [
+        currentRightAnswer,
+        currentRightAnswer - 1,
+        currentRightAnswer - 2,
+        currentRightAnswer - 3,
+      ];
+      this.barrierValues.shuffle();
+    }
+  }
+
+  void randomBoxPosition() {
+    Math.Random rand = new Math.Random();
+    double topLeftX = rand.nextDouble() * 0.7 - 1;
+    double topLeftY = rand.nextDouble() * 0.7 - 1;
+    double topRightX = rand.nextDouble() * 0.7 + 0.3;
+    double topRightY = rand.nextDouble() * 0.7 - 1;
+    double bottomLeftX = rand.nextDouble() * 0.7 - 1;
+    double bottomLeftY = rand.nextDouble() * 0.7 + 0.3;
+    double bottomRightX = rand.nextDouble() * 0.7 + 0.3;
+    double bottomRightY = rand.nextDouble() * 0.7 + 0.3;
+    barrierX[0] = topLeftX;
+    barrierY[0] = topLeftY;
+    barrierX[1] = topRightX;
+    barrierY[1] = topRightY;
+    barrierX[2] = bottomLeftX;
+    barrierY[2] = bottomLeftY;
+    barrierX[3] = bottomRightX;
+    barrierY[3] = bottomRightY;
+  }
+
   bool isReachTarget() {
     return false;
-  }
-
-  void jump() {
-    setState(() {
-      if (isStart) {
-        time = 0;
-        initialPos = heroY;
-      }
-    });
-  }
-
-  void moveMap() {
-    if (isScroll) {
-      for (int i = 0; i < barrierX.length; i++) {
-        double speed = scrollSpeed;
-        if (currentLevel < levelHardness.length) {
-          speed += scrollSpeed * levelHardness[currentLevel];
-        }
-        setState(() {
-          barrierX[i] -= scrollSpeed;
-        });
-
-        if (barrierX[i] <= -1.5) {
-          setState(() {
-            barrierX[i] += 3;
-            // points += 1;
-            barrierValues[i] = this.getRandomAnswer;
-          });
-        }
-      }
-    }
-  }
-
-  void checkResult() {
-    if (isScroll) {
-      for (int i = 0; i < barrierX.length; i++) {
-        double _barrierWidth =
-            (MediaQuery.of(context).size.width / 2) * barrierWidth / 2 - 10;
-        double _barrierHeight = (MediaQuery.of(context).size.height / 2) *
-            barrierHeight[i][1] *
-            0.35;
-
-        double leftBarrier =
-            (((2 * barrierX[i] + barrierWidth) / (2 - barrierWidth)) *
-                        MediaQuery.of(context).size.width) /
-                    2 -
-                (_barrierWidth / 2);
-        double rightBarrier =
-            (((2 * barrierX[i] + barrierWidth) / (2 - barrierWidth)) *
-                        MediaQuery.of(context).size.width) /
-                    2 +
-                (_barrierWidth / 2);
-
-        double bottomBarrier =
-            (-1.0 * MediaQuery.of(context).size.height / 2) / 2;
-        double topBarrier =
-            (-1.0 * MediaQuery.of(context).size.height / 2) / 2 -
-                _barrierHeight;
-
-        double bottomBulletY =
-            (heroY * MediaQuery.of(context).size.height / 2) / 2 +
-                (heroHeight / 2);
-        double topBulletY =
-            (heroY * MediaQuery.of(context).size.height / 2) / 2 -
-                (heroHeight / 2);
-
-        if ((leftBarrier < -heroWidth / 2 && rightBarrier >= heroWidth / 2 ||
-                leftBarrier <= -heroWidth / 2 &&
-                    rightBarrier >= -heroWidth / 2 ||
-                leftBarrier <= heroWidth / 2 &&
-                    rightBarrier >= heroWidth / 2) &&
-            (topBulletY <= bottomBarrier && bottomBulletY >= bottomBarrier ||
-                topBulletY >= topBarrier && bottomBulletY <= bottomBarrier ||
-                topBulletY <= topBarrier &&
-                    bottomBulletY <= bottomBarrier &&
-                    bottomBulletY >= topBarrier)) {
-          this._bouncingAnimationController.forward();
-          bool isTrueAnswer =
-              barrierValues[i] == rightAnswers[currentQuestionIndex];
-          if (isTrueAnswer) {
-            this.setState(() {
-              spinningHeroIndex = i;
-              isShooting = false;
-            });
-            this._scaleAnimationController.reset();
-            this._scaleAnimationController.forward();
-            this.setState(() {
-              result = true;
-              points = points + 5;
-              isScroll = false;
-              if (!isWrongAnswer) {
-                currentShowStarIndex = i;
-                rightAnswerCount += 1;
-                this._moveUpAnimationController.reset();
-                this._moveUpAnimationController.forward();
-              }
-              isWrongAnswer = false;
-            });
-
-            Future.delayed(Duration(milliseconds: 1500), () {
-              if (currentQuestionIndex + 1 < questions.length) {
-                this.setState(() {
-                  currentQuestionIndex = currentQuestionIndex + 1;
-                  barrierX = [2, 2 + 1.5];
-                  barrierImageUrls = [
-                    KImageAnimationHelper.randomImage,
-                    KImageAnimationHelper.randomImage
-                  ];
-                  barrierValues = [
-                    this.getRandomAnswer,
-                    this.getRandomAnswer,
-                  ];
-                });
-                Future.delayed(Duration(milliseconds: 50), () {
-                  this.setState(() {
-                    isScroll = true;
-                  });
-                });
-              } else {
-                this.setState(() {
-                  if (rightAnswerCount / questions.length >=
-                      levelHardness[currentLevel]) {
-                    eggReceive = eggReceive + 1;
-                    if (currentLevel + 1 < levelHardness.length) {
-                      canAdvance = true;
-                      if (widget.onFinishLevel != null) {
-                        widget.onFinishLevel!(currentLevel + 1);
-                      }
-                    }
-                  }
-                  isStart = false;
-                  barrierX = [2, 2 + 1.5];
-                  barrierImageUrls = [
-                    KImageAnimationHelper.randomImage,
-                    KImageAnimationHelper.randomImage
-                  ];
-                  barrierValues = [
-                    this.getRandomAnswer,
-                    this.getRandomAnswer,
-                  ];
-                });
-              }
-            });
-          } else {
-            _playerScaleAnimationController.forward();
-            this.setState(() {
-              result = false;
-              points = points > 0 ? points - 1 : 0;
-              if (!isWrongAnswer) {
-                wrongAnswerCount += 1;
-                isWrongAnswer = true;
-              }
-            });
-          }
-        }
-      }
-    }
   }
 
   void start() {
@@ -609,6 +411,72 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
           time = 0;
         });
       }
+    }
+  }
+
+  void handlePickAnswer(int answer, int answerIndex) {
+    bool isTrueAnswer = answer == rightAnswers[currentQuestionIndex];
+
+    this.setState(() {
+      spinningHeroIndex = answerIndex;
+      isShooting = false;
+    });
+    this._heroScaleAnimationController.reset();
+    this._heroScaleAnimationController.forward();
+
+    if (isTrueAnswer) {
+      this.setState(() {
+        result = true;
+        points = points + 5;
+        isScroll = false;
+        if (!isWrongAnswer) {
+          currentShowStarIndex = answerIndex;
+          rightAnswerCount += 1;
+          // this._moveUpAnimationController.reset();
+          // this._moveUpAnimationController.forward();
+        }
+        isWrongAnswer = false;
+      });
+
+      Future.delayed(Duration(milliseconds: 1500), () {
+        if (currentQuestionIndex + 1 < questions.length) {
+          this.setState(() {
+            currentQuestionIndex = currentQuestionIndex + 1;
+            randomBoxPosition();
+            getListAnswer();
+          });
+          Future.delayed(Duration(milliseconds: 50), () {
+            this.setState(() {
+              isScroll = true;
+            });
+          });
+        } else {
+          this.setState(() {
+            if (rightAnswerCount / questions.length >=
+                levelHardness[currentLevel]) {
+              eggReceive = eggReceive + 1;
+              if (currentLevel + 1 < levelHardness.length) {
+                canAdvance = true;
+                if (widget.onFinishLevel != null) {
+                  widget.onFinishLevel!(currentLevel + 1);
+                }
+              }
+            }
+            isStart = false;
+            randomBoxPosition();
+            getListAnswer();
+          });
+        }
+      });
+    } else {
+      this.setState(() {
+        result = false;
+        points = points > 0 ? points - 1 : 0;
+        if (!isWrongAnswer) {
+          wrongAnswerCount += 1;
+          isWrongAnswer = true;
+        }
+      });
     }
   }
 
@@ -629,11 +497,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
       this.points = 0;
       this.currentQuestionIndex = 0;
       this.spinningHeroIndex = null;
-      this.barrierX = [2, 2 + 1.5];
-      this.barrierImageUrls = [
-        KImageAnimationHelper.randomImage,
-        KImageAnimationHelper.randomImage,
-      ];
+      this.barrierX = [0, 0, 0, 0];
+      this.barrierY = [0, 0, 0, 0];
       isWrongAnswer = false;
       rightAnswerCount = 0;
       wrongAnswerCount = 0;
@@ -735,35 +600,11 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
               ),
             ),
           ),
-        Container(
-          width: heroWidth,
-          height: heroHeight,
-          alignment: Alignment(0, heroY + 1),
-          child: Transform.rotate(
-            angle: -this._playerSpinAnimationController.value * 4 * Math.pi,
-            child: ScaleTransition(
-              scale: _playerScaleAnimation,
-              child: widget.hero?.imageURL != null
-                  ? Image.network(
-                      widget.hero!.imageURL!,
-                      width: heroWidth,
-                      height: heroHeight,
-                      errorBuilder: (context, error, stack) => Image.asset(
-                        KAssets.IMG_TAMAGO_CHAN,
-                        width: heroWidth,
-                        height: heroHeight,
-                        package: 'app_core',
-                      ),
-                    )
-                  : Image.asset(
-                      KAssets.IMG_TAMAGO_CHAN,
-                      width: heroWidth,
-                      height: heroHeight,
-                      package: 'app_core',
-                    ),
-            ),
-          ),
-        ),
+        if (!isStart)
+          GestureDetector(
+              onTap: result == null
+                  ? start
+                  : (canRestartGame ? restartGame : () {})),
         Align(
           alignment: Alignment.bottomRight,
           child: Padding(
@@ -817,71 +658,38 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
             ),
           ),
         ),
-        // if (isStart && result != null)
-        //   Align(
-        //     alignment: Alignment(0, -0.6),
-        //     child: Padding(
-        //       padding: EdgeInsets.symmetric(horizontal: 10),
-        //       child: Text(
-        //         result! ? "Right answer!" : "Wrong answer",
-        //         style: TextStyle(
-        //           fontSize: 30,
-        //           color: result! ? Colors.green : Colors.red,
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // if (isStart || result != null)
-        //   Align(
-        //     alignment: Alignment.topRight,
-        //     child: Container(
-        //       width: 80,
-        //       height: 80,
-        //       padding: EdgeInsets.symmetric(horizontal: 0, vertical: 15),
-        //       decoration: BoxDecoration(
-        //         image: DecorationImage(
-        //           image: AssetImage(Assets.IMG_TARGET_ORANGE),
-        //           fit: BoxFit.contain,
-        //         ),
-        //       ),
-        //       child: Text(
-        //         "${this.rightAnswerCount}",
-        //         textScaleFactor: 1.0,
-        //         textAlign: TextAlign.center,
-        //         style: Theme.of(context).textTheme.bodyText1!.copyWith(
-        //               color: Colors.white,
-        //               fontSize: 35,
-        //               fontWeight: FontWeight.bold,
-        //             ),
-        //       ),
-        //     ),
-        //   ),
-        // if (isStart || result != null)
-        //   Align(
-        //     alignment: Alignment.bottomRight,
-        //     child: Container(
-        //       width: 80,
-        //       height: 80,
-        //       padding: EdgeInsets.symmetric(horizontal: 0, vertical: 15),
-        //       decoration: BoxDecoration(
-        //         image: DecorationImage(
-        //           image: AssetImage(Assets.TARGET_ORANGE),
-        //           fit: BoxFit.contain,
-        //         ),
-        //       ),
-        //       child: Text(
-        //         "${this.points}",
-        //         textAlign: TextAlign.center,
-        //         style: Theme.of(context).textTheme.bodyText1!.copyWith(
-        //               fontSize: 35,
-        //               fontWeight: FontWeight.bold,
-        //             ),
-        //       ),
-        //     ),
-        //   ),
         if (isStart) ...[
           Align(
-            alignment: Alignment.topCenter,
+            alignment: Alignment.center,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+              child: Stack(
+                children: [
+                  ...List.generate(
+                    barrierValues.length,
+                    (i) => _Barrier(
+                      onTap: (int answer) => handlePickAnswer(answer, i),
+                      barrierX: barrierX[i],
+                      barrierY: barrierY[i],
+                      value: barrierValues[i],
+                      rotateAngle: spinningHeroIndex == i
+                          ? -this._spinAnimationController.value * 4 * Math.pi
+                          : 0,
+                      bouncingAnimation: spinningHeroIndex == i
+                          ? _bouncingAnimation.value
+                          : Offset(0, 0),
+                      scaleAnimation:
+                          spinningHeroIndex == i ? _heroScaleAnimation : null,
+                      starY: _moveUpAnimation.value,
+                      isShowStar: currentShowStarIndex == i,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
               child: Container(
@@ -911,43 +719,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.center,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-              child: Stack(
-                children: [
-                  ...List.generate(
-                    barrierValues.length,
-                    (i) => _Barrier(
-                      barrierX: barrierX[i],
-                      barrierWidth: barrierWidth,
-                      barrierHeight: barrierHeight[i][1],
-                      imageUrl: barrierImageUrls[i],
-                      value: barrierValues[i],
-                      rotateAngle: spinningHeroIndex == i
-                          ? -this._spinAnimationController.value * 4 * Math.pi
-                          : 0,
-                      bouncingAnimation: spinningHeroIndex == i
-                          ? _bouncingAnimation.value
-                          : Offset(0, 0),
-                      scaleAnimation:
-                          spinningHeroIndex == i ? _heroScaleAnimation : null,
-                      starY: _moveUpAnimation.value,
-                      isShowStar: currentShowStarIndex == i,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
         ],
-        GestureDetector(
-            onTap: isStart
-                ? jump
-                : (result == null
-                ? start
-                : (canRestartGame ? restartGame : () {}))),
       ],
     );
 
@@ -956,38 +728,61 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
 }
 
 class _Barrier extends StatelessWidget {
-  final double barrierWidth;
-  final double barrierHeight;
   final double barrierX;
-  final String imageUrl;
+  final double barrierY;
   final double rotateAngle;
   final Animation<double>? scaleAnimation;
   final int value;
   final Offset bouncingAnimation;
   final double? starY;
   final bool? isShowStar;
+  final Function(int value) onTap;
 
   _Barrier({
-    required this.barrierHeight,
-    required this.barrierWidth,
     required this.barrierX,
-    required this.imageUrl,
+    required this.barrierY,
     required this.rotateAngle,
     this.scaleAnimation,
     required this.value,
     required this.bouncingAnimation,
     this.starY,
     this.isShowStar,
+    required this.onTap,
   });
 
   @override
   Widget build(context) {
-    return Container(
-      alignment:
-          Alignment((2 * barrierX + barrierWidth) / (2 - barrierWidth), -0.3),
+    final box = InkWell(
+      onTap: () {
+        onTap(value);
+      },
       child: Container(
-        width: (MediaQuery.of(context).size.width / 2) * barrierWidth,
-        height: (MediaQuery.of(context).size.height / 2) * barrierHeight,
+        width: 80,
+        height: 80,
+        decoration: BoxDecoration(
+          color: Color(0xff2c1c44),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: FittedBox(
+          child: Text(
+            "${this.value}",
+            textScaleFactor: 1.0,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 60,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    return Container(
+      alignment: Alignment(barrierX, barrierY),
+      child: Container(
+        width: 80,
+        height: 80,
         child: Stack(
           fit: StackFit.expand,
           children: [
@@ -1009,77 +804,17 @@ class _Barrier extends StatelessWidget {
                 ),
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  width: (MediaQuery.of(context).size.width / 2) * barrierWidth,
-                  height: (MediaQuery.of(context).size.height / 2) *
-                      barrierHeight *
-                      0.4,
-                  child: FittedBox(
-                    child: Text(
-                      "${this.value}",
-                      textScaleFactor: 1.0,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 60,
-                      ),
-                    ),
-                  ),
-                ),
-                Transform.translate(
-                  offset: bouncingAnimation,
-                  child: Transform.rotate(
-                    angle: rotateAngle,
-                    child: scaleAnimation != null
-                        ? (ScaleTransition(
-                            scale: scaleAnimation!,
-                            child: Image.network(
-                              imageUrl,
-                              width: (MediaQuery.of(context).size.width / 2) *
-                                  barrierWidth,
-                              height: (MediaQuery.of(context).size.height / 2) *
-                                  barrierHeight *
-                                  0.6,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stack) =>
-                                  Image.asset(
-                                KAssets.IMG_TAMAGO_LIGHT_1,
-                                width: (MediaQuery.of(context).size.width / 2) *
-                                    barrierWidth,
-                                height:
-                                    (MediaQuery.of(context).size.height / 2) *
-                                        barrierHeight *
-                                        0.6,
-                                package: 'app_core',
-                              ),
-                            ),
-                          ))
-                        : (Image.network(
-                            imageUrl,
-                            width: (MediaQuery.of(context).size.width / 2) *
-                                barrierWidth,
-                            height: (MediaQuery.of(context).size.height / 2) *
-                                barrierHeight *
-                                0.6,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stack) =>
-                                Image.asset(
-                              KAssets.IMG_TAMAGO_LIGHT_1,
-                              width: (MediaQuery.of(context).size.width / 2) *
-                                  barrierWidth,
-                              height: (MediaQuery.of(context).size.height / 2) *
-                                  barrierHeight *
-                                  0.6,
-                              package: 'app_core',
-                            ),
-                          )),
-                  ),
-                ),
-              ],
+            Transform.translate(
+              offset: bouncingAnimation,
+              child: Transform.rotate(
+                angle: rotateAngle,
+                child: scaleAnimation != null
+                    ? (ScaleTransition(
+                        scale: scaleAnimation!,
+                        child: box,
+                      ))
+                    : box,
+              ),
             ),
           ],
         ),
