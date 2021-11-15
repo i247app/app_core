@@ -29,6 +29,11 @@ abstract class KLocaleHelper {
 
   static KLocale get currentLocale => _getLocale();
 
+  static bool get isUSA => currentLocale.country == KLocaleHelper.COUNTRY_US;
+
+  static bool get isVietnam =>
+      currentLocale.country == KLocaleHelper.COUNTRY_VN;
+
   static KLocale _getLocale() {
     String lang = LANGUAGE_EN;
     String ctry = COUNTRY_US;
