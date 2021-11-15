@@ -183,6 +183,7 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
   int currentLevel = 0;
   bool canAdvance = false;
   List<double> levelHardness = [0.7, 0.8, 0.9, 1.0];
+  List<int> levelPlayTimes = [0, 0, 0, 0];
   List<String> levelIconAssets = [
     KAssets.BULLET_BALL_GREEN,
     KAssets.BULLET_BALL_BLUE,
@@ -329,8 +330,13 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
     // this.screenHeight = MediaQuery.of(context).size.height;
     // this.screenWidth = MediaQuery.of(context).size.width;
 
-    _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
       if (isStart) {
+        if (currentLevel < 4) {
+          this.setState(() {
+            this.levelPlayTimes[currentLevel] += 1;
+          });
+        }
       }
     });
 
@@ -497,8 +503,8 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
       this.points = 0;
       this.currentQuestionIndex = 0;
       this.spinningHeroIndex = null;
-      this.barrierX = [0, 0, 0, 0];
-      this.barrierY = [0, 0, 0, 0];
+      randomBoxPosition();
+      getListAnswer();
       isWrongAnswer = false;
       rightAnswerCount = 0;
       wrongAnswerCount = 0;
@@ -512,6 +518,10 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
     final body = Stack(
       fit: StackFit.expand,
       children: [
+        Align(
+          alignment: Alignment(0, -1),
+          child: currentLevel < 4 ? Text(KUtil.prettyStopwatch(Duration(seconds: levelPlayTimes[currentLevel]))) : Container(),
+        ),
         Align(
           alignment: Alignment(-1, 1),
           child: Container(
