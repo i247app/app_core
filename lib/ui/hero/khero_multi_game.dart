@@ -141,7 +141,6 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BackButton(),
                   Expanded(
                     child: this.isShowShootingIntro
                         ? GestureDetector(

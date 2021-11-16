@@ -146,6 +146,29 @@ class _KHeroTrainingState extends State<KHeroTraining>
                 children: [
                   Align(
                     alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: InkWell(
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          padding: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(40),
+                          ),
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.red,
+                            size: 30,
+                          ),
+                        ),
+                        onTap: () => Navigator.of(context).pop(),
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
                     child: Container(
                       width: 80,
                       height: 80,
@@ -273,8 +296,10 @@ class _KHeroTrainingState extends State<KHeroTraining>
     );
 
     return Scaffold(
-      appBar: AppBar(title: Text("Hero Training")),
-      body: body,
+      // appBar: AppBar(title: Text("Hero Training")),
+      body: SafeArea(
+        child: body,
+      ),
     );
   }
 }
