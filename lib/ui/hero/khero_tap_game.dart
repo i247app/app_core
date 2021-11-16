@@ -506,7 +506,6 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
       rightAnswerCount = 0;
       wrongAnswerCount = 0;
       canAdvance = false;
-      this.barrierValues = [getRandomAnswer, getRandomAnswer];
     });
   }
 
