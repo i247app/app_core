@@ -82,20 +82,20 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 15,
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: EdgeInsets.only(
+                  //     left: 15,
+                  //   ),
+                  //   child: GestureDetector(
+                  //     onTap: () {
+                  //       Navigator.of(context).pop();
+                  //     },
+                  //     child: Icon(
+                  //       Icons.arrow_back_ios,
+                  //       color: Colors.white,
+                  //     ),
+                  //   ),
+                  // ),
                   Expanded(
                     child: _KTapGameScreen(
                       hero: widget.hero,
@@ -152,12 +152,10 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
       _moveUpAnimation,
       _heroScaleAnimation;
   late AnimationController _heroScaleAnimationController,
-      _playerScaleAnimationController,
       _bouncingAnimationController,
       _scaleAnimationController,
       _moveUpAnimationController,
-      _spinAnimationController,
-      _playerSpinAnimationController;
+      _spinAnimationController;
 
   double screenWidth = 0;
   double screenHeight = 0;
@@ -348,12 +346,10 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
   void dispose() {
     _timer?.cancel();
     _heroScaleAnimationController.dispose();
-    _playerScaleAnimationController.dispose();
     _bouncingAnimationController.dispose();
     _scaleAnimationController.dispose();
     _moveUpAnimationController.dispose();
     _spinAnimationController.dispose();
-    _playerSpinAnimationController.dispose();
     // TODO: implement dispose
     super.dispose();
   }
@@ -519,81 +515,83 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
     final body = Stack(
       fit: StackFit.expand,
       children: [
-        Align(
-          alignment: Alignment(-1, -1),
-          child: currentLevel < 4
-              ? Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                  child: Container(
-                    height: 50,
-                    padding: EdgeInsets.only(
-                        top: 5, bottom: 5, left: 10, right: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          KUtil.prettyStopwatch(
-                            Duration(seconds: levelPlayTimes[currentLevel]),
+        if (isStart)
+          Align(
+            alignment: Alignment(-1, -1),
+            child: currentLevel < 4
+                ? Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                    child: Container(
+                      height: 50,
+                      padding: EdgeInsets.only(
+                          top: 5, bottom: 5, left: 10, right: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            KUtil.prettyStopwatch(
+                              Duration(seconds: levelPlayTimes[currentLevel]),
+                            ),
+                            textScaleFactor: 1.0,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 28,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                          textScaleFactor: 1.0,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                )
-              : Container(),
-        ),
-        Align(
-          alignment: Alignment(-1, 1),
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.3,
-            height: MediaQuery.of(context).size.height * 0.5,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4),
-                    child: GridView.count(
-                      shrinkWrap: true,
-                      crossAxisCount: 3,
-                      reverse: true,
-                      children: List.generate(eggReceive, (index) {
-                        return Padding(
-                          padding: EdgeInsets.only(top: 4),
-                          child: Image.asset(
-                            KAssets.IMG_EGG,
-                            width: 32,
-                            height: 32,
-                            package: 'app_core',
-                          ),
-                        );
-                      }),
+                  )
+                : Container(),
+          ),
+        if (isStart)
+          Align(
+            alignment: Alignment(-1, 1),
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.3,
+              height: MediaQuery.of(context).size.height * 0.5,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4),
+                      child: GridView.count(
+                        shrinkWrap: true,
+                        crossAxisCount: 3,
+                        reverse: true,
+                        children: List.generate(eggReceive, (index) {
+                          return Padding(
+                            padding: EdgeInsets.only(top: 4),
+                            child: Image.asset(
+                              KAssets.IMG_EGG,
+                              width: 32,
+                              height: 32,
+                              package: 'app_core',
+                            ),
+                          );
+                        }),
+                      ),
                     ),
-                  ),
-                  Image.asset(
-                    KAssets.IMG_NEST,
-                    fit: BoxFit.fitWidth,
-                    package: 'app_core',
-                  ),
-                ],
+                    Image.asset(
+                      KAssets.IMG_NEST,
+                      fit: BoxFit.fitWidth,
+                      package: 'app_core',
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
         if (!isStart)
           Align(
             alignment: Alignment.center,
@@ -648,11 +646,11 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
                   ? start
                   : (canRestartGame ? restartGame : () {})),
         Align(
-          alignment: Alignment.topRight,
+          alignment: Alignment.bottomRight,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 if (isStart || result != null)
@@ -762,6 +760,29 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
             ),
           ),
         ],
+        Align(
+          alignment: Alignment.topRight,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: InkWell(
+              child: Container(
+                width: 50,
+                height: 50,
+                padding: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.red,
+                  size: 30,
+                ),
+              ),
+              onTap: () => Navigator.of(context).pop(),
+            ),
+          ),
+        ),
       ],
     );
 
