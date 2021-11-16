@@ -328,7 +328,7 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
     // this.screenHeight = MediaQuery.of(context).size.height;
     // this.screenWidth = MediaQuery.of(context).size.width;
 
-    _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
       if (isStart) {
         if (currentLevel < 4) {
           this.setState(() {
@@ -533,8 +533,8 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            KUtil.prettyStopwatch(
-                              Duration(seconds: levelPlayTimes[currentLevel]),
+                            KUtil.prettyStopwatchWithFraction(
+                              Duration(milliseconds: levelPlayTimes[currentLevel]),
                             ),
                             textScaleFactor: 1.0,
                             textAlign: TextAlign.center,

@@ -561,6 +561,29 @@ abstract class KUtil {
     return prettyElapsed;
   }
 
+  /// Returns a string in the format hh:mm:ss.
+  static String prettyStopwatchWithFraction(Duration duration) {
+    final int h = duration.inHours % 24;
+    final int m = duration.inMinutes % 60;
+    final int s = duration.inSeconds % 60;
+    final int f = duration.inMilliseconds % 1000;
+// print(f);
+    String prettyElapsed = "";
+    // Hours
+    if (h > 0) prettyElapsed = "${h.toString().padLeft(2, '0')}";
+    // Minutes
+    if (KStringHelper.isExist(prettyElapsed)) prettyElapsed = "$prettyElapsed:";
+    prettyElapsed = "$prettyElapsed${m.toString().padLeft(2, '0')}";
+    // Seconds
+    if (KStringHelper.isExist(prettyElapsed)) prettyElapsed = "$prettyElapsed:";
+    prettyElapsed = "$prettyElapsed${s.toString().padLeft(2, '0')}";
+    //
+    if (KStringHelper.isExist(prettyElapsed)) prettyElapsed = "$prettyElapsed.";
+    prettyElapsed = "$prettyElapsed${f.toString().padLeft(3, '0')}";
+
+    return prettyElapsed;
+  }
+
   static String getOSCode() =>
       Platform.operatingSystem; //Platform.isIOS ? "ios" : "android";
 
