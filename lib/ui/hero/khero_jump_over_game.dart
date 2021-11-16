@@ -214,6 +214,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
   bool resetPos = false;
   bool isShowPlusPoint = false;
   DateTime? lastGetPointTime;
+  Timer? _timerFinishGame, _resetStarTimer;
 
   List<String> questions = [
     "1 + 1",
@@ -355,7 +356,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
       ..addListener(() => setState(() {}))
       ..addStatusListener((status) {
         if (mounted && status == AnimationStatus.completed) {
-          Future.delayed(Duration(milliseconds: 1000), () {
+          _resetStarTimer = Timer(Duration(milliseconds: 1000), () {
             this.setState(() {
               currentShowStarIndex = null;
             });
@@ -450,6 +451,8 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
     _moveUpAnimationController.dispose();
     _spinAnimationController.dispose();
     _playerSpinAnimationController.dispose();
+    _timerFinishGame?.cancel();
+    _resetStarTimer?.cancel();
     // TODO: implement dispose
     super.dispose();
   }
@@ -548,8 +551,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
                 }
                 isWrongAnswer = false;
               });
-
-              Future.delayed(Duration(milliseconds: 1500), () {
+              _timerFinishGame = Timer(Duration(milliseconds: 1500), () {
                 if (currentQuestionIndex + 1 < questions.length) {
                   this.setState(() {
                     currentQuestionIndex = currentQuestionIndex + 1;
@@ -949,8 +951,8 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
             onTap: isStart
                 ? jump
                 : (result == null
-                ? start
-                : (canRestartGame ? restartGame : () {}))),
+                    ? start
+                    : (canRestartGame ? restartGame : () {}))),
       ],
     );
 
