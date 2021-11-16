@@ -152,7 +152,7 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
       _moveUpAnimation,
       _heroScaleAnimation;
   late AnimationController _heroScaleAnimationController,
-      _playerScaleAnimationController,
+      // _playerScaleAnimationController,
       _bouncingAnimationController,
       _scaleAnimationController,
       _moveUpAnimationController,
@@ -330,8 +330,7 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
     // this.screenWidth = MediaQuery.of(context).size.width;
 
     _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
-      if (isStart) {
-      }
+      if (isStart) {}
     });
 
     randomBoxPosition();
@@ -342,7 +341,7 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
   void dispose() {
     _timer?.cancel();
     _heroScaleAnimationController.dispose();
-    _playerScaleAnimationController.dispose();
+    // _playerScaleAnimationController.dispose();
     _bouncingAnimationController.dispose();
     _scaleAnimationController.dispose();
     _moveUpAnimationController.dispose();
