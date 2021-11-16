@@ -246,7 +246,7 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
     super.initState();
 
     _heroScaleAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 0),
       vsync: this,
     )
       ..addListener(() => setState(() {}))
@@ -382,14 +382,15 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
 
   void randomBoxPosition() {
     Math.Random rand = new Math.Random();
-    double topLeftX = rand.nextDouble() * 0.7 - 1;
-    double topLeftY = rand.nextDouble() * 0.7 - 1;
-    double topRightX = rand.nextDouble() * 0.7 + 0.3;
-    double topRightY = rand.nextDouble() * 0.7 - 1;
-    double bottomLeftX = rand.nextDouble() * 0.7 - 1;
-    double bottomLeftY = rand.nextDouble() * 0.7 + 0.3;
-    double bottomRightX = rand.nextDouble() * 0.7 + 0.3;
-    double bottomRightY = rand.nextDouble() * 0.7 + 0.3;
+    //rand.nextDouble() * (max - min) + min
+    double topLeftX = rand.nextDouble() * (-0.3 - -1) + -1;
+    double topLeftY = rand.nextDouble() * (-0.3 - -0.8) - 0.8;
+    double topRightX = rand.nextDouble() * (1 - 0.3) + 0.3;
+    double topRightY = rand.nextDouble() * (-0.3 - -0.8) - 0.8;
+    double bottomLeftX = rand.nextDouble() * (-0.3 - -1) + -1;
+    double bottomLeftY = rand.nextDouble() * (0.8 - 0.3) + 0.3;
+    double bottomRightX = rand.nextDouble() * (1 - 0.3) + 0.3;
+    double bottomRightY = rand.nextDouble() * (0.8 - 0.3) + 0.3;
     barrierX[0] = topLeftX;
     barrierY[0] = topLeftY;
     barrierX[1] = topRightX;
@@ -427,8 +428,8 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
       spinningHeroIndex = answerIndex;
       isShooting = false;
     });
-    this._heroScaleAnimationController.reset();
-    this._heroScaleAnimationController.forward();
+    this._spinAnimationController.reset();
+    this._spinAnimationController.forward();
 
     if (isTrueAnswer) {
       this.setState(() {
@@ -444,7 +445,7 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
         isWrongAnswer = false;
       });
 
-      Future.delayed(Duration(milliseconds: 1500), () {
+      Future.delayed(Duration(milliseconds: 500), () {
         if (currentQuestionIndex + 1 < questions.length) {
           this.setState(() {
             currentQuestionIndex = currentQuestionIndex + 1;
@@ -519,8 +520,46 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
       fit: StackFit.expand,
       children: [
         Align(
-          alignment: Alignment(0, -1),
-          child: currentLevel < 4 ? Text(KUtil.prettyStopwatch(Duration(seconds: levelPlayTimes[currentLevel]))) : Container(),
+          alignment: Alignment(-1, -1),
+          child: currentLevel < 4
+              ? Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                  child: Container(
+                    width: 80,
+                    height: 80,
+                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(100),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.5),
+                          blurRadius: 8,
+                          offset: Offset(2, 6),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          KUtil.prettyStopwatch(
+                            Duration(seconds: levelPlayTimes[currentLevel]),
+                          ),
+                          textScaleFactor: 1.0,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 25,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : Container(),
         ),
         Align(
           alignment: Alignment(-1, 1),
@@ -616,11 +655,11 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
                   ? start
                   : (canRestartGame ? restartGame : () {})),
         Align(
-          alignment: Alignment.bottomRight,
+          alignment: Alignment.topRight,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 if (isStart || result != null)
