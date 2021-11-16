@@ -147,10 +147,11 @@ class _KTapGameScreen extends StatefulWidget {
 class _KTapGameScreenState extends State<_KTapGameScreen>
     with TickerProviderStateMixin {
   late Animation<Offset> _bouncingAnimation;
-  late Animation<double> _playerScaleAnimation,
-      _scaleAnimation,
+  late Animation<double>
+      _scaleAnimation, // what is this?
       _moveUpAnimation,
       _heroScaleAnimation;
+
   late AnimationController _heroScaleAnimationController,
       _bouncingAnimationController,
       _scaleAnimationController,
@@ -307,6 +308,7 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
           });
         } else if (mounted && status == AnimationStatus.dismissed) {}
       });
+
     _scaleAnimation = new Tween(
       begin: 1.0,
       end: 2.0,
@@ -347,7 +349,8 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
     _timer?.cancel();
     _heroScaleAnimationController.dispose();
     _bouncingAnimationController.dispose();
-    _scaleAnimationController.dispose();
+    try { _scaleAnimationController.dispose(); }
+    catch(e) { print(e); }
     _moveUpAnimationController.dispose();
     _spinAnimationController.dispose();
     // TODO: implement dispose
@@ -534,7 +537,8 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
                         children: [
                           Text(
                             KUtil.prettyStopwatchWithFraction(
-                              Duration(milliseconds: levelPlayTimes[currentLevel]),
+                              Duration(
+                                  milliseconds: levelPlayTimes[currentLevel]),
                             ),
                             textScaleFactor: 1.0,
                             textAlign: TextAlign.center,
