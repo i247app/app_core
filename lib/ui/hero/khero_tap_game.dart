@@ -525,19 +525,12 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
               ? Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                   child: Container(
-                    width: 80,
-                    height: 80,
-                    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 5),
+                    height: 50,
+                    padding: EdgeInsets.only(
+                        top: 5, bottom: 5, left: 10, right: 10),
                     decoration: BoxDecoration(
                       color: Colors.red,
-                      borderRadius: BorderRadius.circular(100),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.5),
-                          blurRadius: 8,
-                          offset: Offset(2, 6),
-                        ),
-                      ],
+                      borderRadius: BorderRadius.circular(40),
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -551,7 +544,7 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 25,
+                            fontSize: 28,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -673,7 +666,7 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
                             top: 5, bottom: 5, left: 30, right: 10),
                         decoration: BoxDecoration(
                           color: Color(0xff2c1c44),
-                          borderRadius: BorderRadius.circular(5),
+                          borderRadius: BorderRadius.circular(40),
                         ),
                         child: Text(
                           "${this.rightAnswerCount}",
@@ -690,7 +683,7 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
                       if (currentLevel < levelIconAssets.length &&
                           levelIconAssets[currentLevel].isNotEmpty)
                         Positioned(
-                          left: -40,
+                          left: -30,
                           top: -15,
                           child: SizedBox(
                             height: 80,
