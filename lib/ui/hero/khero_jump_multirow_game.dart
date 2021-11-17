@@ -82,20 +82,6 @@ class _KHeroJumpMultiRowGameState extends State<KHeroJumpMultiRowGame> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 15,
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
                   Expanded(
                     child: KJumpMultiRowGameScreen(
                       hero: widget.hero,
@@ -138,7 +124,8 @@ class KJumpMultiRowGameScreen extends StatefulWidget {
   final Function(int)? onChangeLevel;
   final Function? onFinishLevel;
 
-  const KJumpMultiRowGameScreen({this.hero, this.onChangeLevel, this.onFinishLevel});
+  const KJumpMultiRowGameScreen(
+      {this.hero, this.onChangeLevel, this.onFinishLevel});
 
   @override
   KJumpMultiRowGameScreenState createState() => KJumpMultiRowGameScreenState();
@@ -232,8 +219,10 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
     KImageAnimationHelper.randomImage,
   ];
 
-  double get randomBarrierY => BARRIER_Y_BASE[Math.Random().nextInt(BARRIER_Y_BASE.length)];
-  double get randomBarrierX => Math.Random().nextDouble()*3.5 + 2;
+  double get randomBarrierY =>
+      BARRIER_Y_BASE[Math.Random().nextInt(BARRIER_Y_BASE.length)];
+
+  double get randomBarrierX => Math.Random().nextDouble() * 3.5 + 2;
 
   int get getRandomAnswer => rightAnswers[currentQuestionIndex] <= 4
       ? (Math.Random().nextInt(4) + rightAnswers[currentQuestionIndex])
@@ -507,7 +496,8 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
         double bottomBarrier =
             ((-0.8 + barrierY[i]) * MediaQuery.of(context).size.height / 2) / 2;
         double topBarrier =
-            ((-0.8 + barrierY[i]) * MediaQuery.of(context).size.height / 2) / 2 -
+            ((-0.8 + barrierY[i]) * MediaQuery.of(context).size.height / 2) /
+                    2 -
                 _barrierHeight;
 
         double bottomBulletY =
@@ -554,8 +544,16 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
               if (currentQuestionIndex + 1 < questions.length) {
                 this.setState(() {
                   currentQuestionIndex = currentQuestionIndex + 1;
-                  this.barrierX = [this.randomBarrierX, this.randomBarrierX, this.randomBarrierX];
-                  this.barrierY = [this.randomBarrierY, this.randomBarrierY, this.randomBarrierY];
+                  this.barrierX = [
+                    this.randomBarrierX,
+                    this.randomBarrierX,
+                    this.randomBarrierX
+                  ];
+                  this.barrierY = [
+                    this.randomBarrierY,
+                    this.randomBarrierY,
+                    this.randomBarrierY
+                  ];
                   barrierImageUrls = [
                     KImageAnimationHelper.randomImage,
                     KImageAnimationHelper.randomImage,
@@ -585,8 +583,16 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
                     }
                   }
                   isStart = false;
-                  this.barrierX = [this.randomBarrierX, this.randomBarrierX, this.randomBarrierX];
-                  this.barrierY = [this.randomBarrierY, this.randomBarrierY, this.randomBarrierY];
+                  this.barrierX = [
+                    this.randomBarrierX,
+                    this.randomBarrierX,
+                    this.randomBarrierX
+                  ];
+                  this.barrierY = [
+                    this.randomBarrierY,
+                    this.randomBarrierY,
+                    this.randomBarrierY
+                  ];
                   barrierImageUrls = [
                     KImageAnimationHelper.randomImage,
                     KImageAnimationHelper.randomImage,
@@ -649,8 +655,16 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
       this.points = 0;
       this.currentQuestionIndex = 0;
       this.spinningHeroIndex = null;
-      this.barrierX = [this.randomBarrierX, this.randomBarrierX, this.randomBarrierX];
-      this.barrierY = [this.randomBarrierY, this.randomBarrierY, this.randomBarrierY];
+      this.barrierX = [
+        this.randomBarrierX,
+        this.randomBarrierX,
+        this.randomBarrierX
+      ];
+      this.barrierY = [
+        this.randomBarrierY,
+        this.randomBarrierY,
+        this.randomBarrierY
+      ];
       this.barrierImageUrls = [
         KImageAnimationHelper.randomImage,
         KImageAnimationHelper.randomImage,
@@ -907,7 +921,7 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
         //   ),
         if (isStart) ...[
           Align(
-            alignment: Alignment.topCenter,
+            alignment: Alignment(0, -0.8),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
               child: Container(
@@ -973,8 +987,31 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
             onTap: isStart
                 ? jump
                 : (result == null
-                ? start
-                : (canRestartGame ? restartGame : () {}))),
+                    ? start
+                    : (canRestartGame ? restartGame : () {}))),
+        Align(
+          alignment: Alignment.topRight,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: InkWell(
+              child: Container(
+                width: 50,
+                height: 50,
+                padding: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.red,
+                  size: 30,
+                ),
+              ),
+              onTap: () => Navigator.of(context).pop(),
+            ),
+          ),
+        ),
       ],
     );
 
@@ -1012,8 +1049,8 @@ class _Barrier extends StatelessWidget {
   @override
   Widget build(context) {
     return Container(
-      alignment:
-          Alignment((2 * barrierX + barrierWidth) / (2 - barrierWidth), barrierY),
+      alignment: Alignment(
+          (2 * barrierX + barrierWidth) / (2 - barrierWidth), barrierY),
       child: Container(
         width: (MediaQuery.of(context).size.width / 2) * barrierWidth,
         height: (MediaQuery.of(context).size.height / 2) * barrierHeight,

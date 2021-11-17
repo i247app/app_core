@@ -81,7 +81,7 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BackButton(),
+                  // BackButton(),
                   Expanded(
                     child: this.isShowIntro
                         ? GestureDetector(
@@ -817,7 +817,7 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+              padding: EdgeInsets.only(left: 10, right: 10, top: 50,),
               child: Column(
                 children: [
                   Container(
@@ -885,6 +885,29 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
               : (result == null
                   ? start
                   : (canRestartGame ? restartGame : () {})),
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: InkWell(
+              child: Container(
+                width: 50,
+                height: 50,
+                padding: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.red,
+                  size: 30,
+                ),
+              ),
+              onTap: () => Navigator.of(context).pop(),
+            ),
+          ),
         ),
       ],
     );

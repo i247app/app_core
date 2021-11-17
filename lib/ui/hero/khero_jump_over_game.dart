@@ -99,20 +99,6 @@ class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 15,
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
                   Expanded(
                     child: KJumpGameScreen(
                       hero: widget.hero,
@@ -356,6 +342,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
       ..addListener(() => setState(() {}))
       ..addStatusListener((status) {
         if (mounted && status == AnimationStatus.completed) {
+          // Future.delayed(Duration(milliseconds: 1000), () {
           _resetStarTimer = Timer(Duration(milliseconds: 1000), () {
             this.setState(() {
               currentShowStarIndex = null;
@@ -531,8 +518,8 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
                     bottomBulletY >= topBarrier)) {
           if (spinningHeroIndex != i) {
             this._bouncingAnimationController.forward();
-            bool isTrueAnswer = true;
-            // barrierValues[i] == rightAnswers[currentQuestionIndex];
+            bool isTrueAnswer =
+                barrierValues[i] == rightAnswers[currentQuestionIndex];
             if (isTrueAnswer) {
               this.setState(() {
                 spinningHeroIndex = i;
@@ -551,6 +538,8 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
                 }
                 isWrongAnswer = false;
               });
+
+              // Future.delayed(Duration(milliseconds: 1500), () {
               _timerFinishGame = Timer(Duration(milliseconds: 1500), () {
                 if (currentQuestionIndex + 1 < questions.length) {
                   this.setState(() {
@@ -660,42 +649,95 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
       fit: StackFit.expand,
       children: [
         Align(
-          alignment: Alignment(-1, -1),
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.3,
-            height: MediaQuery.of(context).size.height * 0.5,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
+          alignment: Alignment.topLeft,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (isStart || result != null)
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4),
-                    child: GridView.count(
-                      shrinkWrap: true,
-                      crossAxisCount: 3,
-                      reverse: true,
-                      children: List.generate(eggReceive, (index) {
-                        return Padding(
-                          padding: EdgeInsets.only(top: 4),
-                          child: Image.asset(
-                            KAssets.IMG_EGG,
-                            width: 32,
-                            height: 32,
-                            package: 'app_core',
+                    padding: EdgeInsets.symmetric(horizontal: 30),
+                    child: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.25,
+                          height: 50,
+                          padding: EdgeInsets.only(
+                              top: 5, bottom: 5, left: 30, right: 10),
+                          decoration: BoxDecoration(
+                            color: Color(0xff2c1c44),
+                            borderRadius: BorderRadius.circular(5),
                           ),
-                        );
-                      }),
+                          child: Text(
+                            "${this.rightAnswerCount}",
+                            textScaleFactor: 1.0,
+                            textAlign: TextAlign.center,
+                            style:
+                                Theme.of(context).textTheme.bodyText1!.copyWith(
+                                      color: Color(0xfffdcd3a),
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                          ),
+                        ),
+                        if (currentLevel < levelIconAssets.length &&
+                            levelIconAssets[currentLevel] != null)
+                          Positioned(
+                            left: -40,
+                            top: -15,
+                            child: SizedBox(
+                              height: 80,
+                              child: Image.asset(
+                                levelIconAssets[currentLevel],
+                                fit: BoxFit.contain,
+                                package: 'app_core',
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
-                  // Image.asset(
-                  //   KAssets.IMG_NEST,
-                  //   fit: BoxFit.fitWidth,
-                  //   package: 'app_core',
-                  // ),
-                ],
-              ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.3,
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 4),
+                        child: GridView.count(
+                          shrinkWrap: true,
+                          crossAxisCount: 3,
+                          reverse: true,
+                          children: List.generate(eggReceive, (index) {
+                            return Padding(
+                              padding: EdgeInsets.only(top: 4),
+                              child: Image.asset(
+                                KAssets.IMG_EGG,
+                                width: 32,
+                                height: 32,
+                                package: 'app_core',
+                              ),
+                            );
+                          }),
+                        ),
+                      ),
+                      // Image.asset(
+                      //   KAssets.IMG_NEST,
+                      //   fit: BoxFit.fitWidth,
+                      //   package: 'app_core',
+                      // ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -766,59 +808,6 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
                   package: 'app_core',
                 ),
               ),
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.topRight,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (isStart || result != null)
-                  Stack(
-                    clipBehavior: Clip.none,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.25,
-                        height: 50,
-                        padding: EdgeInsets.only(
-                            top: 5, bottom: 5, left: 30, right: 10),
-                        decoration: BoxDecoration(
-                          color: Color(0xff2c1c44),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: Text(
-                          "${this.rightAnswerCount}",
-                          textScaleFactor: 1.0,
-                          textAlign: TextAlign.center,
-                          style:
-                              Theme.of(context).textTheme.bodyText1!.copyWith(
-                                    color: Color(0xfffdcd3a),
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                        ),
-                      ),
-                      if (currentLevel < levelIconAssets.length &&
-                          levelIconAssets[currentLevel] != null)
-                        Positioned(
-                          left: -40,
-                          top: -15,
-                          child: SizedBox(
-                            height: 80,
-                            child: Image.asset(
-                              levelIconAssets[currentLevel],
-                              fit: BoxFit.contain,
-                              package: 'app_core',
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-              ],
             ),
           ),
         ),
@@ -953,6 +942,29 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
                 : (result == null
                     ? start
                     : (canRestartGame ? restartGame : () {}))),
+        Align(
+          alignment: Alignment.topRight,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: InkWell(
+              child: Container(
+                width: 50,
+                height: 50,
+                padding: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.red,
+                  size: 30,
+                ),
+              ),
+              onTap: () => Navigator.of(context).pop(),
+            ),
+          ),
+        ),
       ],
     );
 

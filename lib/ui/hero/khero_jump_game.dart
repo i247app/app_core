@@ -82,20 +82,6 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      left: 15,
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
                   Expanded(
                     child: _KJumpGameScreen(
                       hero: widget.hero,
@@ -881,7 +867,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
         //   ),
         if (isStart) ...[
           Align(
-            alignment: Alignment.topCenter,
+            alignment: Alignment(0, -0.8),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
               child: Container(
@@ -946,8 +932,31 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
             onTap: isStart
                 ? jump
                 : (result == null
-                ? start
-                : (canRestartGame ? restartGame : () {}))),
+                    ? start
+                    : (canRestartGame ? restartGame : () {}))),
+        Align(
+          alignment: Alignment.topRight,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: InkWell(
+              child: Container(
+                width: 50,
+                height: 50,
+                padding: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                child: Icon(
+                  Icons.close,
+                  color: Colors.red,
+                  size: 30,
+                ),
+              ),
+              onTap: () => Navigator.of(context).pop(),
+            ),
+          ),
+        ),
       ],
     );
 
