@@ -148,13 +148,11 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
     with TickerProviderStateMixin {
   late Animation<Offset> _bouncingAnimation;
   late Animation<double>
-      _scaleAnimation, // what is this?
       _moveUpAnimation,
       _heroScaleAnimation;
 
   late AnimationController _heroScaleAnimationController,
       _bouncingAnimationController,
-      _scaleAnimationController,
       _moveUpAnimationController,
       _spinAnimationController;
 
@@ -290,37 +288,21 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
             } else if (status == AnimationStatus.dismissed) {}
           });
 
-    _scaleAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 1000),
+    _moveUpAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 500),
       vsync: this,
     )
       ..addListener(() => setState(() {}))
       ..addStatusListener((status) {
         if (mounted && status == AnimationStatus.completed) {
-          Future.delayed(Duration(milliseconds: 1000), () {
-            this.setState(() {
-              currentShowStarIndex = null;
-            });
-            Future.delayed(Duration(milliseconds: 500), () {
-              this._scaleAnimationController.reset();
-              this._moveUpAnimationController.reset();
-            });
+          this.setState(() {
+            isShowPlusPoint = false;
           });
-        } else if (mounted && status == AnimationStatus.dismissed) {}
+          Future.delayed(Duration(milliseconds: 50), () {
+            this._moveUpAnimationController.reset();
+          });
+        }
       });
-
-    _scaleAnimation = new Tween(
-      begin: 1.0,
-      end: 2.0,
-    ).animate(new CurvedAnimation(
-        parent: _scaleAnimationController, curve: Curves.bounceOut));
-
-    _moveUpAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 1000),
-      vsync: this,
-    )
-      ..addListener(() => setState(() {}))
-      ..addStatusListener((status) {});
     _moveUpAnimation = new Tween(
       begin: 0.0,
       end: 1.0,
@@ -349,8 +331,6 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
     _timer?.cancel();
     _heroScaleAnimationController.dispose();
     _bouncingAnimationController.dispose();
-    try { _scaleAnimationController.dispose(); }
-    catch(e) { print(e); }
     _moveUpAnimationController.dispose();
     _spinAnimationController.dispose();
     // TODO: implement dispose
@@ -438,8 +418,10 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
         if (!isWrongAnswer) {
           currentShowStarIndex = answerIndex;
           rightAnswerCount += 1;
-          // this._moveUpAnimationController.reset();
-          // this._moveUpAnimationController.forward();
+          if (!_moveUpAnimationController.isAnimating) {
+            this._moveUpAnimationController.reset();
+            this._moveUpAnimationController.forward();
+          }
         }
         isWrongAnswer = false;
       });
@@ -857,7 +839,7 @@ class _Barrier extends StatelessWidget {
               child: Transform.translate(
                 offset: Offset(0, 0),
                 child: Transform.translate(
-                  offset: Offset(0, -40 * (starY ?? 0)),
+                  offset: Offset(0, -60 * (starY ?? 0)),
                   child: AnimatedOpacity(
                     duration: Duration(milliseconds: 500),
                     opacity: (isShowStar ?? false) ? 1 : 0,
