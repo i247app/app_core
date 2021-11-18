@@ -124,14 +124,15 @@ abstract class TLSHelper {
 
     // Replace stack with Splash in case of BAD SESSION response
     try {
-      if (result["kstatus"] == "${KCoreCode.BAD_SESSION}" &&
-          KSessionData.hasActiveSession) {
+      final condition = (result["kstatus"] == KCoreCode.BAD_SESSION) &&
+          KSessionData.hasActiveSession;
+      if (condition) {
         KSessionData.wipeSession();
         // TODO: Check for schoolbird
         // KSessionHelper.hardReload();
         KToastHelper.show("Session terminated");
       }
-    } catch (e) {}
+    } catch (_) {}
 
     return result as Map<String, dynamic>;
   }

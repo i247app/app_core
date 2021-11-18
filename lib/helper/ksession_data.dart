@@ -16,8 +16,7 @@ abstract class KSessionData {
   static KUserSession? kUserSession;
 
   // // // // // system
-  static bool get hasActiveSession =>
-      KStringHelper.isExist(getSessionToken() ?? "");
+  static bool get hasActiveSession => getSessionToken() != null;
 
   static String? getSessionToken() => kSessionToken;
 
