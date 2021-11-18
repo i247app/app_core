@@ -79,6 +79,7 @@ dependencies:
 
   get: ^4.3.8
   get_storage: ^2.0.3
+  audioplayers: 0.20.1
 
 dev_dependencies:
   flutter_test:
@@ -97,6 +98,7 @@ flutter:
  assets:
    - assets/
    - assets/img/
+   - assets/sounds/
 #
 # For details regarding assets in packages, see
 # https://flutter.dev/assets-and-images/#from-packages
