@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
@@ -485,9 +486,9 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
   void playSound(bool isTrueAnswer) async {
     try {
       if (isTrueAnswer) {
-        await FlutterBeep.beep();
+        await FlutterBeep.playSysSound(Platform.isIOS ? iOSSoundIDs.SystemSoundPreview : AndroidSoundIDs.TONE_CDMA_SOFT_ERROR_LITE);
       } else {
-        await FlutterBeep.beep(false);
+        await FlutterBeep.playSysSound(Platform.isIOS ? iOSSoundIDs.SMSReceived : AndroidSoundIDs.TONE_CDMA_PIP);
       }
     } catch (e) {}
     this.setState(() {
