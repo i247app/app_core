@@ -98,7 +98,6 @@ flutter:
  assets:
    - assets/
    - assets/img/
-   - assets/sounds/
 #
 # For details regarding assets in packages, see
 # https://flutter.dev/assets-and-images/#from-packages

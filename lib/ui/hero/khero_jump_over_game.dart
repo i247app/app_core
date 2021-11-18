@@ -532,9 +532,9 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
                 barrierValues[i] == rightAnswers[currentQuestionIndex];
 
             if (isTrueAnswer) {
-              this.audioCache.play(
-                  isTrueAnswer ? KAssets.SOUND_CORRECT : KAssets.SOUND_WRONG,
-                  mode: PlayerMode.LOW_LATENCY);
+              // this.audioCache.play(
+              //     isTrueAnswer ? KAssets.SOUND_CORRECT : KAssets.SOUND_WRONG,
+              //     mode: PlayerMode.LOW_LATENCY);
               this.setState(() {
                 spinningHeroIndex = i;
                 isShooting = false;
