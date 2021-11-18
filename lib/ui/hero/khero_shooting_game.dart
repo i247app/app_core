@@ -778,7 +778,7 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
                         ),
                       ),
                       if (currentLevel < levelIconAssets.length &&
-                          levelIconAssets[currentLevel] != null)
+                          levelIconAssets[currentLevel].isNotEmpty)
                         Positioned(
                           left: -40,
                           top: -15,
