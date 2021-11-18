@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/ui/hero/widget/khero_game_level.dart';
 import 'package:app_core/header/kassets.dart';
+import 'package:flutter_beep/flutter_beep.dart';
 
 class KHeroJumpOverGame extends StatefulWidget {
   final KHero? hero;
@@ -494,15 +495,17 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
   void playSound(bool isTrueAnswer) async {
     try {
       if (isTrueAnswer) {
-        await this.audioCache.play(
-              KAssets.SOUND_CORRECT,
-              mode: PlayerMode.LOW_LATENCY,
-            );
+        await FlutterBeep.beep();
+        // await this.audioCache.play(
+        //       KAssets.SOUND_CORRECT,
+        //       mode: PlayerMode.LOW_LATENCY,
+        //     );
       } else {
-        await this.audioCache.play(
-              KAssets.SOUND_WRONG,
-              mode: PlayerMode.LOW_LATENCY,
-            );
+        await FlutterBeep.beep(false);
+        // await this.audioCache.play(
+        //       KAssets.SOUND_WRONG,
+        //       mode: PlayerMode.LOW_LATENCY,
+        //     );
       }
     } catch (e) {}
     this.setState(() {
