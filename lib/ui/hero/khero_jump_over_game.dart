@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
@@ -6,6 +7,7 @@ import 'package:app_core/helper/kimage_animation_helper.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/ui/hero/widget/khero_game_level.dart';
@@ -149,6 +151,8 @@ class KJumpGameScreen extends StatefulWidget {
 
 class KJumpGameScreenState extends State<KJumpGameScreen>
     with TickerProviderStateMixin {
+  AudioCache audioCache = AudioCache(prefix: KAssets.SOUND_BASE);
+
   late Animation<Offset> _bouncingAnimation;
   late Animation<double> _playerScaleAnimation,
       _scaleAnimation,
@@ -257,6 +261,11 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
   @override
   void initState() {
     super.initState();
+
+    if (Platform.isIOS) {
+      audioCache.fixedPlayer?.notificationService.startHeadlessService();
+    }
+    audioCache.loadAll([KAssets.SOUND_CORRECT, KAssets.SOUND_WRONG]);
 
     barrierValues = [
       this.getRandomAnswer,
@@ -440,6 +449,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
     _playerSpinAnimationController.dispose();
     _timerFinishGame?.cancel();
     _resetStarTimer?.cancel();
+    audioCache.clearAll();
     // TODO: implement dispose
     super.dispose();
   }
@@ -520,7 +530,11 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
             this._bouncingAnimationController.forward();
             bool isTrueAnswer =
                 barrierValues[i] == rightAnswers[currentQuestionIndex];
+
             if (isTrueAnswer) {
+              this.audioCache.play(
+                  isTrueAnswer ? KAssets.SOUND_CORRECT : KAssets.SOUND_WRONG,
+                  mode: PlayerMode.LOW_LATENCY);
               this.setState(() {
                 spinningHeroIndex = i;
                 isShooting = false;
