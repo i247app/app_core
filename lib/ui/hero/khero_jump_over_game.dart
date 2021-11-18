@@ -233,6 +233,8 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
   int currentQuestionIndex = 0;
   int? spinningHeroIndex;
   int? currentShowStarIndex;
+  int? currentCollisionIndex;
+  bool isPlaySound = false;
 
   List<double> barrierX = [2, 2 + 1.5];
   List<String> barrierImageUrls = [
@@ -489,6 +491,25 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
     }
   }
 
+  void playSound(bool isTrueAnswer) async {
+    try {
+      if (isTrueAnswer) {
+        await this.audioCache.play(
+              KAssets.SOUND_CORRECT,
+              mode: PlayerMode.LOW_LATENCY,
+            );
+      } else {
+        await this.audioCache.play(
+              KAssets.SOUND_WRONG,
+              mode: PlayerMode.LOW_LATENCY,
+            );
+      }
+    } catch (e) {}
+    this.setState(() {
+      this.isPlaySound = false;
+    });
+  }
+
   void checkResult() {
     if (isScroll) {
       for (int i = 0; i < barrierX.length; i++) {
@@ -531,10 +552,20 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
             bool isTrueAnswer =
                 barrierValues[i] == rightAnswers[currentQuestionIndex];
 
+            if (this.currentCollisionIndex == null || this.currentCollisionIndex != i) {
+              if (!isPlaySound) {
+                this.setState(() {
+                  this.isPlaySound = true;
+                });
+                playSound(isTrueAnswer);
+              }
+            }
+
+            this.setState(() {
+              this.currentCollisionIndex = i;
+            });
+
             if (isTrueAnswer) {
-              this.audioCache.play(
-                  isTrueAnswer ? KAssets.SOUND_CORRECT : KAssets.SOUND_WRONG,
-                  mode: PlayerMode.LOW_LATENCY);
               this.setState(() {
                 spinningHeroIndex = i;
                 isShooting = false;
@@ -567,6 +598,8 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
                       this.getRandomAnswer,
                       this.getRandomAnswer,
                     ];
+                    this.currentCollisionIndex = null;
+                    this.isPlaySound = false;
                   });
                   Future.delayed(Duration(milliseconds: 50), () {
                     isScroll = true;
@@ -593,6 +626,8 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
                       this.getRandomAnswer,
                       this.getRandomAnswer,
                     ];
+                    this.currentCollisionIndex = null;
+                    this.isPlaySound = false;
                   });
                 }
               });
@@ -638,6 +673,8 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
       });
     }
     this.setState(() {
+      this.currentCollisionIndex = null;
+      this.isPlaySound = false;
       this.isStart = true;
       this.isScroll = true;
       this.isShooting = false;
