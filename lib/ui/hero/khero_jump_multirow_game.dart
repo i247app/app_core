@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/ui/hero/widget/khero_game_level.dart';
 import 'package:app_core/header/kassets.dart';
+import 'package:flutter_beep/flutter_beep.dart';
 
 class KHeroJumpMultiRowGame extends StatefulWidget {
   final KHero? hero;
@@ -209,6 +211,8 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
   int currentQuestionIndex = 0;
   int? spinningHeroIndex;
   int? currentShowStarIndex;
+  int? currentCollisionIndex;
+  bool isPlaySound = false;
 
   static const List<double> BARRIER_Y_BASE = [-0.3, 0.35, 1];
   List<double> barrierX = [2, 3.5, 5];
@@ -473,6 +477,19 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
     }
   }
 
+  void playSound(bool isTrueAnswer) async {
+    try {
+      if (isTrueAnswer) {
+        await FlutterBeep.playSysSound(Platform.isIOS ? iOSSoundIDs.SystemSoundPreview : AndroidSoundIDs.TONE_CDMA_SOFT_ERROR_LITE);
+      } else {
+        await FlutterBeep.playSysSound(Platform.isIOS ? iOSSoundIDs.SMSReceived : AndroidSoundIDs.TONE_CDMA_PIP);
+      }
+    } catch (e) {}
+    this.setState(() {
+      this.isPlaySound = false;
+    });
+  }
+
   void checkResult() {
     if (isScroll) {
       for (int i = 0; i < barrierX.length; i++) {
@@ -520,6 +537,20 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
           this._bouncingAnimationController.forward();
           bool isTrueAnswer =
               barrierValues[i] == rightAnswers[currentQuestionIndex];
+
+          if (this.currentCollisionIndex == null || this.currentCollisionIndex != i) {
+            if (!isPlaySound) {
+              this.setState(() {
+                this.isPlaySound = true;
+              });
+              playSound(isTrueAnswer);
+            }
+          }
+
+          this.setState(() {
+            this.currentCollisionIndex = i;
+          });
+
           if (isTrueAnswer) {
             this.setState(() {
               spinningHeroIndex = i;
@@ -564,6 +595,8 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
                     this.getRandomAnswer,
                     this.getRandomAnswer,
                   ];
+                  this.currentCollisionIndex = null;
+                  this.isPlaySound = false;
                 });
                 Future.delayed(Duration(milliseconds: 50), () {
                   this.setState(() {
@@ -603,6 +636,8 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
                     this.getRandomAnswer,
                     this.getRandomAnswer,
                   ];
+                  this.currentCollisionIndex = null;
+                  this.isPlaySound = false;
                 });
               }
             });
@@ -648,6 +683,8 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
       });
     }
     this.setState(() {
+      this.currentCollisionIndex = null;
+      this.isPlaySound = false;
       this.isStart = true;
       this.isScroll = true;
       this.isShooting = false;

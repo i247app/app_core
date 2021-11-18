@@ -13,16 +13,16 @@ import 'package:app_core/ui/hero/widget/khero_game_level.dart';
 import 'package:app_core/header/kassets.dart';
 import 'package:flutter_beep/flutter_beep.dart';
 
-class KHeroTapGame extends StatefulWidget {
+class KHeroMovingTapGame extends StatefulWidget {
   final KHero? hero;
 
-  const KHeroTapGame({this.hero});
+  const KHeroMovingTapGame({this.hero});
 
   @override
-  _KHeroTapGameState createState() => _KHeroTapGameState();
+  _KHeroMovingTapGameState createState() => _KHeroMovingTapGameState();
 }
 
-class _KHeroTapGameState extends State<KHeroTapGame> {
+class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
   static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
     KAssets.IMG_BG_COUNTRYSIDE_DARK,
@@ -99,7 +99,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                   //   ),
                   // ),
                   Expanded(
-                    child: _KTapGameScreen(
+                    child: _KMovingTapGameScreen(
                       hero: widget.hero,
                       onFinishLevel: (level) {
                         if (level <= 3) {
@@ -135,25 +135,25 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
   }
 }
 
-class _KTapGameScreen extends StatefulWidget {
+class _KMovingTapGameScreen extends StatefulWidget {
   final KHero? hero;
   final Function(int)? onChangeLevel;
   final Function? onFinishLevel;
 
-  const _KTapGameScreen({this.hero, this.onChangeLevel, this.onFinishLevel});
+  const _KMovingTapGameScreen(
+      {this.hero, this.onChangeLevel, this.onFinishLevel});
 
   @override
-  _KTapGameScreenState createState() => _KTapGameScreenState();
+  _KMovingTapGameScreenState createState() => _KMovingTapGameScreenState();
 }
 
-class _KTapGameScreenState extends State<_KTapGameScreen>
+class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
     with TickerProviderStateMixin {
   late Animation<Offset> _bouncingAnimation;
-  late Animation<double>
-      _moveUpAnimation,
-      _heroScaleAnimation;
+  late Animation<double> _moveUpAnimation, _heroScaleAnimation;
 
-  late AnimationController _heroScaleAnimationController,
+  late AnimationController _barrierMovingAnimationController,
+      _heroScaleAnimationController,
       _bouncingAnimationController,
       _moveUpAnimationController,
       _spinAnimationController;
@@ -315,6 +315,11 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
     // this.screenHeight = MediaQuery.of(context).size.height;
     // this.screenWidth = MediaQuery.of(context).size.width;
 
+    _barrierMovingAnimationController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+
     _timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
       if (isStart) {
         if (currentLevel < 4) {
@@ -332,6 +337,7 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
   @override
   void dispose() {
     _timer?.cancel();
+    _barrierMovingAnimationController.dispose();
     _heroScaleAnimationController.dispose();
     _bouncingAnimationController.dispose();
     _moveUpAnimationController.dispose();
@@ -340,47 +346,59 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
     super.dispose();
   }
 
+  void resetListAnswer() {
+    this.setState(() {
+      this.barrierValues = [];
+      this.barrierX = [0, 0, 0, 0];
+      this.barrierY = [0, 0, 0, 0];
+    });
+  }
+
   void getListAnswer() {
     final currentRightAnswer = rightAnswers[currentQuestionIndex];
 
-    if (currentRightAnswer <= 4) {
-      this.barrierValues = [
-        currentRightAnswer,
-        currentRightAnswer + 1,
-        currentRightAnswer + 2,
-        currentRightAnswer + 3,
-      ];
-      this.barrierValues.shuffle();
-    } else {
-      this.barrierValues = [
-        currentRightAnswer,
-        currentRightAnswer - 1,
-        currentRightAnswer - 2,
-        currentRightAnswer - 3,
-      ];
-      this.barrierValues.shuffle();
-    }
+    this.setState(() {
+      if (currentRightAnswer <= 4) {
+        this.barrierValues = [
+          currentRightAnswer,
+          currentRightAnswer + 1,
+          currentRightAnswer + 2,
+          currentRightAnswer + 3,
+        ];
+        this.barrierValues.shuffle();
+      } else {
+        this.barrierValues = [
+          currentRightAnswer,
+          currentRightAnswer - 1,
+          currentRightAnswer - 2,
+          currentRightAnswer - 3,
+        ];
+        this.barrierValues.shuffle();
+      }
+    });
   }
 
   void randomBoxPosition() {
     Math.Random rand = new Math.Random();
     //rand.nextDouble() * (max - min) + min
-    double topLeftX = rand.nextDouble() * (-0.3 - -1) + -1;
-    double topLeftY = rand.nextDouble() * (-0.3 - -0.8) - 0.8;
-    double topRightX = rand.nextDouble() * (1 - 0.3) + 0.3;
-    double topRightY = rand.nextDouble() * (-0.3 - -0.8) - 0.8;
-    double bottomLeftX = rand.nextDouble() * (-0.3 - -1) + -1;
-    double bottomLeftY = rand.nextDouble() * (0.8 - 0.3) + 0.3;
-    double bottomRightX = rand.nextDouble() * (1 - 0.3) + 0.3;
-    double bottomRightY = rand.nextDouble() * (0.8 - 0.3) + 0.3;
-    barrierX[0] = topLeftX;
-    barrierY[0] = topLeftY;
-    barrierX[1] = topRightX;
-    barrierY[1] = topRightY;
-    barrierX[2] = bottomLeftX;
-    barrierY[2] = bottomLeftY;
-    barrierX[3] = bottomRightX;
-    barrierY[3] = bottomRightY;
+    double topLeftX = rand.nextDouble() * (-3.0 - -1.5) + -1.5;
+    double topLeftY = rand.nextDouble() * (-3.0 - -1.5) + -1.5;
+    double topRightX = rand.nextDouble() * (3.0 - 1.5) + 1.5;
+    double topRightY = rand.nextDouble() * (-3.0 - -1.5) + -1.5;
+    double bottomLeftX = rand.nextDouble() * (-3.0 - -1.5) + -1.5;
+    double bottomLeftY = rand.nextDouble() * (3.0 - 1.5) + 1.5;
+    double bottomRightX = rand.nextDouble() * (3.0 - 1.5) + 1.5;
+    double bottomRightY = rand.nextDouble() * (3.0 - 1.5) + 1.5;
+    this.setState(() {
+      barrierX[0] = topLeftX;
+      barrierY[0] = topLeftY;
+      barrierX[1] = topRightX;
+      barrierY[1] = topRightY;
+      barrierX[2] = bottomLeftX;
+      barrierY[2] = bottomLeftY;
+      barrierX[3] = bottomRightX;
+      barrierY[3] = bottomRightY;
+    });
   }
 
   bool isReachTarget() {
@@ -453,8 +471,11 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
         if (currentQuestionIndex + 1 < questions.length) {
           this.setState(() {
             currentQuestionIndex = currentQuestionIndex + 1;
-            randomBoxPosition();
-            getListAnswer();
+            resetListAnswer();
+            Future.delayed(Duration(milliseconds: 50), () {
+              randomBoxPosition();
+              getListAnswer();
+            });
           });
           Future.delayed(Duration(milliseconds: 50), () {
             this.setState(() {
@@ -474,8 +495,11 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
               }
             }
             isStart = false;
-            randomBoxPosition();
-            getListAnswer();
+            resetListAnswer();
+            Future.delayed(Duration(milliseconds: 50), () {
+              randomBoxPosition();
+              getListAnswer();
+            });
           });
         }
       });
@@ -501,7 +525,6 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
       });
     }
     this.setState(() {
-      this.isPlaySound = false;
       this.isStart = true;
       this.isScroll = true;
       this.isShooting = false;
@@ -509,8 +532,11 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
       this.points = 0;
       this.currentQuestionIndex = 0;
       this.spinningHeroIndex = null;
-      randomBoxPosition();
-      getListAnswer();
+      resetListAnswer();
+      Future.delayed(Duration(milliseconds: 50), () {
+        randomBoxPosition();
+        getListAnswer();
+      });
       isWrongAnswer = false;
       rightAnswerCount = 0;
       wrongAnswerCount = 0;
@@ -713,10 +739,12 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
               child: Stack(
-                children: [
+                key: Key("${barrierValues.join("_")}"),
+                children: barrierValues.length > 0 ? [
                   ...List.generate(
                     barrierValues.length,
                     (i) => _Barrier(
+                      animationController: _barrierMovingAnimationController,
                       onTap: (int answer) => handlePickAnswer(answer, i),
                       barrierX: barrierX[i],
                       barrierY: barrierY[i],
@@ -729,11 +757,11 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
                           : Offset(0, 0),
                       scaleAnimation:
                           spinningHeroIndex == i ? _heroScaleAnimation : null,
-                      starY: _moveUpAnimation.value,
+                      starY: spinningHeroIndex == i ? _moveUpAnimation.value : 0.0,
                       isShowStar: currentShowStarIndex == i,
                     ),
                   ),
-                ],
+                ] : [],
               ),
             ),
           ),
@@ -799,7 +827,8 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
   }
 }
 
-class _Barrier extends StatelessWidget {
+class _Barrier extends StatefulWidget {
+  final AnimationController animationController;
   final double barrierX;
   final double barrierY;
   final double rotateAngle;
@@ -811,6 +840,7 @@ class _Barrier extends StatelessWidget {
   final Function(int value) onTap;
 
   _Barrier({
+    required this.animationController,
     required this.barrierX,
     required this.barrierY,
     required this.rotateAngle,
@@ -823,10 +853,46 @@ class _Barrier extends StatelessWidget {
   });
 
   @override
+  _BarrierState createState() => _BarrierState();
+}
+
+class _BarrierState extends State<_Barrier>
+    with SingleTickerProviderStateMixin {
+  late Animation<Offset> _movingAnimation;
+
+  late AnimationController _movingAnimationController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _movingAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 7000))
+      ..addListener(() => setState(() {}))
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+        } else if (status == AnimationStatus.dismissed) {
+          // _bouncingAnimationController.forward(from: 0.0);
+        }
+      });
+    _movingAnimation = Tween(begin: Offset(0, 0), end: Offset(widget.barrierX, widget.barrierY))
+        .animate(_movingAnimationController);
+
+    _movingAnimationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _movingAnimationController.dispose();
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   Widget build(context) {
     final box = InkWell(
       onTap: () {
-        onTap(value);
+        widget.onTap(widget.value);
       },
       child: Container(
         width: 80,
@@ -837,7 +903,7 @@ class _Barrier extends StatelessWidget {
         ),
         child: FittedBox(
           child: Text(
-            "${this.value}",
+            "${widget.value}",
             textScaleFactor: 1.0,
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -851,7 +917,7 @@ class _Barrier extends StatelessWidget {
     );
 
     return Container(
-      alignment: Alignment(barrierX, barrierY),
+      alignment: Alignment(_movingAnimation.value.dx, _movingAnimation.value.dy),
       child: Container(
         width: 80,
         height: 80,
@@ -863,10 +929,10 @@ class _Barrier extends StatelessWidget {
               child: Transform.translate(
                 offset: Offset(0, 0),
                 child: Transform.translate(
-                  offset: Offset(0, -60 * (starY ?? 0)),
+                  offset: Offset(0, -60 * (widget.starY ?? 0)),
                   child: AnimatedOpacity(
                     duration: Duration(milliseconds: 500),
-                    opacity: (isShowStar ?? false) ? 1 : 0,
+                    opacity: (widget.isShowStar ?? false) ? 1 : 0,
                     child: Icon(
                       Icons.star,
                       color: Colors.amberAccent,
@@ -877,14 +943,14 @@ class _Barrier extends StatelessWidget {
               ),
             ),
             Transform.translate(
-              offset: bouncingAnimation,
+              offset: widget.bouncingAnimation,
               child: Transform.rotate(
-                angle: rotateAngle,
-                child: scaleAnimation != null
+                angle: widget.rotateAngle,
+                child: widget.scaleAnimation != null
                     ? (ScaleTransition(
-                        scale: scaleAnimation!,
-                        child: box,
-                      ))
+                  scale: widget.scaleAnimation!,
+                  child: box,
+                ))
                     : box,
               ),
             ),

@@ -2,7 +2,7 @@ name: app_core
 
 description: App core package
 
-version: 0.9.88
+version: 0.9.93
 
 homepage: none
 
@@ -79,6 +79,7 @@ dependencies:
 
   get: ^4.3.8
   get_storage: ^2.0.3
+  flutter_beep: 1.0.0
 
 dev_dependencies:
   flutter_test:

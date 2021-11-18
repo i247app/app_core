@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/ui/hero/widget/khero_game_level.dart';
 import 'package:app_core/header/kassets.dart';
+import 'package:flutter_beep/flutter_beep.dart';
 
 class KHeroShootingGame extends StatefulWidget {
   final KHero? hero;
@@ -191,6 +193,7 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
   bool resetPos = false;
   bool isShowPlusPoint = false;
   DateTime? lastGetPointTime;
+  bool isPlaySound = false;
 
   List<String> questions = [
     "1 + 1",
@@ -419,8 +422,9 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
     return false;
   }
 
-  void fire() {
+  void fire() async {
     if (!isShooting && bulletsY.length < 3) {
+      await FlutterBeep.playSysSound(Platform.isIOS ? iOSSoundIDs.SystemSoundPreview : AndroidSoundIDs.TONE_CDMA_SOFT_ERROR_LITE);
       if (!_barrelScaleAnimationController.isAnimating) {
         _barrelScaleAnimationController.forward();
       }
@@ -463,6 +467,19 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
         }
       }
     }
+  }
+
+  void playSound(bool isTrueAnswer) async {
+    try {
+      if (isTrueAnswer) {
+        await FlutterBeep.playSysSound(Platform.isIOS ? iOSSoundIDs.SystemSoundPreview : AndroidSoundIDs.TONE_CDMA_SOFT_ERROR_LITE);
+      } else {
+        await FlutterBeep.playSysSound(Platform.isIOS ? iOSSoundIDs.SMSReceived : AndroidSoundIDs.TONE_CDMA_PIP);
+      }
+    } catch (e) {}
+    this.setState(() {
+      this.isPlaySound = false;
+    });
   }
 
   void checkResult(double bulletY, int bulletIndex) {
@@ -517,6 +534,14 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
           });
           bool isTrueAnswer =
               barrierValues[i] == rightAnswers[currentQuestionIndex];
+
+          if (!isPlaySound) {
+            this.setState(() {
+              isPlaySound = true;
+            });
+            playSound(isTrueAnswer);
+          }
+
           if (isTrueAnswer) {
             this._scaleAnimationController.reset();
             this._scaleAnimationController.forward();
@@ -611,6 +636,7 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
     this.setState(() {
       this.bulletsY = [];
       this.bulletsTime = [];
+      this.isPlaySound = true;
       this.isStart = true;
       this.isScroll = true;
       this.isShooting = false;

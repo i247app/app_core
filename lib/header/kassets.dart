@@ -1,6 +1,7 @@
 abstract class KAssets {
   static const String ASSET_BASE = "assets";
   static const String IMG_BASE = "$ASSET_BASE/img";
+  static const String SOUND_BASE = "$ASSET_BASE/audio/";
 
   static const String NOTIF_ICON = IMG_PHONE;
   static const String IMG_TRANSPARENCY = "$IMG_BASE/1x1_transparency.png";
@@ -20,8 +21,10 @@ abstract class KAssets {
   static const String IMG_TARGET_ORANGE = "$IMG_BASE/target_orange.png";
   static const String IMG_CANNON_BARREL = "$IMG_BASE/cannon_barrel.png";
   static const String IMG_BROADCAST = "$IMG_BASE/broadcast.png";
-  static const String IMG_BG_COUNTRYSIDE_LIGHT = "$IMG_BASE/bg_countryside_light.png";
-  static const String IMG_BG_COUNTRYSIDE_DARK = "$IMG_BASE/bg_countryside_dark.png";
+  static const String IMG_BG_COUNTRYSIDE_LIGHT =
+      "$IMG_BASE/bg_countryside_light.png";
+  static const String IMG_BG_COUNTRYSIDE_DARK =
+      "$IMG_BASE/bg_countryside_dark.png";
   static const String IMG_BG_XMAS_LIGHT = "$IMG_BASE/bg_xmas_light.png";
   static const String IMG_BG_XMAS_DARK = "$IMG_BASE/bg_xmas_dark.png";
   static const String IMG_BG_SPACE_LIGHT = "$IMG_BASE/bg_space_light.png";
@@ -37,4 +40,8 @@ abstract class KAssets {
   static const String IMG_TAMAGO_LIGHT_4 = "$IMG_BASE/tamago_light_04.png";
   static const String IMG_NEST = "$IMG_BASE/nest.png";
   static const String IMG_EGG = "$IMG_BASE/heroegg_without_space.png";
+
+  // Sounds
+  static const String SOUND_CORRECT = "correct.mp3";
+  static const String SOUND_WRONG = "wrong.mp3";
 }
