@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/ui/hero/widget/khero_game_level.dart';
 import 'package:app_core/header/kassets.dart';
+import 'package:flutter_beep/flutter_beep.dart';
 
 class KHeroShootingGame extends StatefulWidget {
   final KHero? hero;
@@ -191,6 +192,7 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
   bool resetPos = false;
   bool isShowPlusPoint = false;
   DateTime? lastGetPointTime;
+  bool isPlaySound = false;
 
   List<String> questions = [
     "1 + 1",
@@ -465,6 +467,19 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
     }
   }
 
+  void playSound(bool isTrueAnswer) async {
+    try {
+      if (isTrueAnswer) {
+        await FlutterBeep.beep();
+      } else {
+        await FlutterBeep.beep(false);
+      }
+    } catch (e) {}
+    this.setState(() {
+      this.isPlaySound = false;
+    });
+  }
+
   void checkResult(double bulletY, int bulletIndex) {
     if (isScroll) {
       for (int i = 0; i < barrierX.length; i++) {
@@ -517,6 +532,14 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
           });
           bool isTrueAnswer =
               barrierValues[i] == rightAnswers[currentQuestionIndex];
+
+          if (!isPlaySound) {
+            this.setState(() {
+              isPlaySound = true;
+            });
+            playSound(isTrueAnswer);
+          }
+
           if (isTrueAnswer) {
             this._scaleAnimationController.reset();
             this._scaleAnimationController.forward();
@@ -611,6 +634,7 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
     this.setState(() {
       this.bulletsY = [];
       this.bulletsTime = [];
+      this.isPlaySound = true;
       this.isStart = true;
       this.isScroll = true;
       this.isShooting = false;

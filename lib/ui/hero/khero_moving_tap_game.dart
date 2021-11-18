@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/ui/hero/widget/khero_game_level.dart';
 import 'package:app_core/header/kassets.dart';
+import 'package:flutter_beep/flutter_beep.dart';
 
 class KHeroMovingTapGame extends StatefulWidget {
   final KHero? hero;
@@ -220,6 +221,7 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
   int currentQuestionIndex = 0;
   int? spinningHeroIndex;
   int? currentShowStarIndex;
+  bool isPlaySound = false;
 
   List<double> barrierX = [0, 0, 0, 0];
   List<double> barrierY = [0, 0, 0, 0];
@@ -418,8 +420,28 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
     }
   }
 
+  void playSound(bool isTrueAnswer) async {
+    try {
+      if (isTrueAnswer) {
+        await FlutterBeep.beep();
+      } else {
+        await FlutterBeep.beep(false);
+      }
+    } catch (e) {}
+    this.setState(() {
+      this.isPlaySound = false;
+    });
+  }
+
   void handlePickAnswer(int answer, int answerIndex) {
     bool isTrueAnswer = answer == rightAnswers[currentQuestionIndex];
+
+    if (!isPlaySound) {
+      this.setState(() {
+        this.isPlaySound = true;
+      });
+      playSound(isTrueAnswer);
+    }
 
     this.setState(() {
       spinningHeroIndex = answerIndex;

@@ -4,6 +4,7 @@ import 'package:app_core/model/khero.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/header/kassets.dart';
+import 'package:flutter_beep/flutter_beep.dart';
 
 class KHeroTraining extends StatefulWidget {
   final KHero? hero;
@@ -27,6 +28,7 @@ class _KHeroTrainingState extends State<KHeroTraining>
   double velocity = 1.8;
   Timer? _timer;
   bool isStart = false;
+  bool isPlaySound = false;
 
   int points = 0;
   bool resetPos = false;
@@ -83,6 +85,12 @@ class _KHeroTrainingState extends State<KHeroTraining>
             isShowPlusPoint = true;
           });
           if (!this._scaleAnimationController.isAnimating) {
+            if (!isPlaySound) {
+              this.setState(() {
+                this.isPlaySound = true;
+              });
+              playSound(true);
+            }
             this._scaleAnimationController.reset();
             this._scaleAnimationController.forward();
           }
@@ -110,6 +118,19 @@ class _KHeroTrainingState extends State<KHeroTraining>
     _scaleAnimationController.dispose();
     // TODO: implement dispose
     super.dispose();
+  }
+
+  void playSound(bool isTrueAnswer) async {
+    try {
+      if (isTrueAnswer) {
+        await FlutterBeep.beep();
+      } else {
+        await FlutterBeep.beep(false);
+      }
+    } catch (e) {}
+    this.setState(() {
+      this.isPlaySound = false;
+    });
   }
 
   bool isReachTarget() {
