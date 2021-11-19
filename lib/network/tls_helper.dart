@@ -238,7 +238,7 @@ abstract class TLSHelper {
     KPacketHeader? responseHeader;
 
     // Setup response read loop
-    final Completer respCompleter = Completer<List<int>>();
+    final Completer<Null> respCompleter = Completer<Null>();
     final streamSub = socketResource.stream.listen((List<int> bytes) {
       responseBytes.addAll(bytes);
 
