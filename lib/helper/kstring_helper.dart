@@ -1,3 +1,5 @@
+import 'package:tiengviet/tiengviet.dart';
+
 abstract class KStringHelper {
   static const String TRUE = "T";
   static const String FALSE = "F";
@@ -80,10 +82,14 @@ abstract class KStringHelper {
     return z;
   }
 
-  static String sanitize(String z, String pattern) =>
+  static String normalizeForSearch(String z) =>
+      KStringHelper.stripVietnameseAccents(z).toLowerCase();
+
+  static String removePattern(String z, String pattern) =>
       z.replaceAll(RegExp("[^$pattern]"), "");
 
-  static bool validate(String z, String pattern) => z == sanitize(z, pattern);
+  static bool validate(String z, String pattern) =>
+      z == removePattern(z, pattern);
 
   static String capitalize(String z) {
     String result = z;
@@ -125,4 +131,6 @@ abstract class KStringHelper {
     RegExp exp = RegExp(r"<[^>]*>", multiLine: true, caseSensitive: true);
     return z.replaceAll(exp, '');
   }
+
+  static String stripVietnameseAccents(String z) => TiengViet.parse(z);
 }

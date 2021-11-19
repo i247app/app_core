@@ -13,6 +13,7 @@ import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/khost_info.dart';
 import 'package:app_core/model/klat_lng.dart';
 import 'package:app_core/model/response/simple_response.dart';
+import 'package:app_core/network/kpacket_header.dart';
 import 'package:app_core/network/ksocket_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +62,7 @@ abstract class TLSHelper {
       socketResource = await KSocketManager.getSocket(hostInfo);
       final List<int> raw =
           await writeToSocket(socketResource, utf8.encode(json));
-      answer = utf8.decode(raw);
+      answer = utf8.decode(raw, allowMalformed: false);
 
       _log(
         reqID,
@@ -199,16 +200,6 @@ abstract class TLSHelper {
     return {...data, "metadata": data};
   }
 
-  static List<int> getHeaderLengthBytes(int value) {
-    final header = [
-      (value >> 24) & 0xFF,
-      (value >> 16) & 0xFF,
-      (value >> 8) & 0xFF,
-      (value) & 0xFF
-    ];
-    return header;
-  }
-
   static String compactLog(String message) {
     final data = jsonDecode(message);
     String? kstatus = data["kstatus"];
@@ -238,22 +229,33 @@ abstract class TLSHelper {
   ) async {
     final List<int> body = zip(data);
 
-    final bb = BytesBuilder();
-    bb.add([0xC1, 0xA0]); // Magic number
-    bb.add(getHeaderLengthBytes(body.length)); // Header
-    bb.add([0, 0, 0, 1]); // Keep Alive
-    bb.add([0, 0, 0, 0, 0, 0]); // Reserved bytes
-    bb.add(body); // Body
+    final sendHeader = KPacketHeader(bodyLength: body.length);
+    final sendBytes = BytesBuilder();
+    sendBytes.add(sendHeader.toBytes()); // Packet header
+    sendBytes.add(body); // Body
 
-    final Completer<List<int>> completer = Completer<List<int>>();
-    final streamSub = socketResource.stream.listen((bytes) {
-      completer.complete(bytes);
+    final responseBytes = <int>[];
+    KPacketHeader? responseHeader;
+
+    // Setup response read loop
+    final Completer respCompleter = Completer<List<int>>();
+    final streamSub = socketResource.stream.listen((List<int> bytes) {
+      responseBytes.addAll(bytes);
+
+      // Read in the header
+      if (responseHeader == null)
+        responseHeader = KPacketHeader.fromBytes(bytes.sublist(0, 16));
+
+      // Only complete the completer once ALL bytes are read
+      if (responseHeader?.bodyAndHeaderLength == responseBytes.length)
+        respCompleter.complete();
     });
 
-    final Uint8List rawBytes = bb.toBytes();
-    socketResource.socket.add(rawBytes);
+    // Write my message on the socket
+    socketResource.socket.add(sendBytes.toBytes());
 
-    final Uint8List rawResponse = Uint8List.fromList(await completer.future);
+    final Uint8List rawResponse = await respCompleter.future
+        .then((_) => Uint8List.fromList(responseBytes));
     streamSub.cancel();
 
     return unzip(rawResponse.sublist(16).toList());

@@ -73,6 +73,9 @@ dependencies:
   wakelock: 0.5.6 # ^0.5.1
   uuid: ^3.0.4
 
+  # Vietnamese language parsing
+  tiengviet: ^0.5.0
+
   sliding_up_panel: 2.0.0+1
 
   confetti: ^0.6.0-nullsafety
