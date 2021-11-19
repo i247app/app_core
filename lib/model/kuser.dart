@@ -76,6 +76,9 @@ class KUser {
   @JsonKey(name: "heroAvatar")
   String? heroAvatarURL;
 
+  @JsonKey(name: "note")
+  String? note;
+
   @JsonKey(ignore: true)
   String? get contactName {
     if (kunm == null) return this.fullName;
