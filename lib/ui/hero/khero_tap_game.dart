@@ -1,17 +1,20 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as Math;
+import 'dart:typed_data';
 
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kimage_animation_helper.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/ui/hero/widget/khero_game_level.dart';
 import 'package:app_core/header/kassets.dart';
-import 'package:flutter_beep/flutter_beep.dart';
+import 'package:path_provider/path_provider.dart';
 
 class KHeroTapGame extends StatefulWidget {
   final KHero? hero;
@@ -148,6 +151,10 @@ class _KTapGameScreen extends StatefulWidget {
 
 class _KTapGameScreenState extends State<_KTapGameScreen>
     with TickerProviderStateMixin {
+  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  String? correctAudioFileUri;
+  String? wrongAudioFileUri;
+
   late Animation<Offset> _bouncingAnimation;
   late Animation<double>
       _moveUpAnimation,
@@ -244,6 +251,8 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
   @override
   void initState() {
     super.initState();
+
+    loadAudioAsset();
 
     _heroScaleAnimationController = AnimationController(
       duration: const Duration(milliseconds: 0),
@@ -403,12 +412,32 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
     }
   }
 
+  void loadAudioAsset() async {
+    try {
+      Directory tempDir = await getTemporaryDirectory();
+
+      ByteData correctAudioFileData = await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
+      ByteData wrongAudioFileData = await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
+
+      File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
+      await correctAudioTempFile.writeAsBytes(correctAudioFileData.buffer.asUint8List(), flush: true);
+
+      File wrongAudioTempFile = File('${tempDir.path}/wrong.mp3');
+      await wrongAudioTempFile.writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
+
+      this.setState(() {
+        this.correctAudioFileUri = correctAudioTempFile.uri.toString();
+        this.wrongAudioFileUri = wrongAudioTempFile.uri.toString();
+      });
+    } catch(e) {}
+  }
+
   void playSound(bool isTrueAnswer) async {
     try {
       if (isTrueAnswer) {
-        await FlutterBeep.playSysSound(Platform.isIOS ? iOSSoundIDs.SystemSoundPreview : AndroidSoundIDs.TONE_CDMA_SOFT_ERROR_LITE);
+        await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
       } else {
-        await FlutterBeep.playSysSound(Platform.isIOS ? iOSSoundIDs.SMSReceived : AndroidSoundIDs.TONE_CDMA_PIP);
+        await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
       }
     } catch (e) {}
     this.setState(() {

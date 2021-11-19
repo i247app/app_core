@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:app_core/model/khero.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/header/kassets.dart';
-import 'package:flutter_beep/flutter_beep.dart';
+import 'package:path_provider/path_provider.dart';
 
 class KHeroTraining extends StatefulWidget {
   final KHero? hero;
@@ -18,6 +20,9 @@ class KHeroTraining extends StatefulWidget {
 
 class _KHeroTrainingState extends State<KHeroTraining>
     with TickerProviderStateMixin {
+  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  String? correctAudioFileUri;
+
   late Animation<double> _scaleAnimation;
   late AnimationController _scaleAnimationController;
 
@@ -43,6 +48,8 @@ class _KHeroTrainingState extends State<KHeroTraining>
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    loadAudioAsset();
 
     _scaleAnimationController = AnimationController(
       duration: const Duration(milliseconds: 500),
@@ -121,12 +128,26 @@ class _KHeroTrainingState extends State<KHeroTraining>
     super.dispose();
   }
 
+  void loadAudioAsset() async {
+    try {
+      Directory tempDir = await getTemporaryDirectory();
+
+      ByteData correctAudioFileData = await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
+
+      File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
+      await correctAudioTempFile.writeAsBytes(correctAudioFileData.buffer.asUint8List(), flush: true);
+
+      this.setState(() {
+        this.correctAudioFileUri = correctAudioTempFile.uri.toString();
+      });
+    } catch(e) {}
+  }
+
   void playSound(bool isTrueAnswer) async {
     try {
       if (isTrueAnswer) {
-        await FlutterBeep.playSysSound(Platform.isIOS ? iOSSoundIDs.SystemSoundPreview : AndroidSoundIDs.TONE_CDMA_SOFT_ERROR_LITE);
+        await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
       } else {
-        await FlutterBeep.playSysSound(Platform.isIOS ? iOSSoundIDs.SMSReceived : AndroidSoundIDs.TONE_CDMA_PIP);
       }
     } catch (e) {}
     this.setState(() {
