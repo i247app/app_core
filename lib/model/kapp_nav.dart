@@ -1,6 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/model/response/base_response.dart';
 
+part 'kapp_nav.g.dart';
+
 // ignore: non_constant_identifier_names
 int? zzz_tryatoi(dynamic num) {
   try {
@@ -20,6 +22,7 @@ class KAppNavStatus {
   static const int READONLY = 1;
 }
 
+@JsonSerializable()
 class KAppNav {
   static const String SPLASH_MODE = "splashMode";
 
