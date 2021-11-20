@@ -18,6 +18,7 @@ dependencies:
 
   # Core
   async: ^2.6.1
+  url_launcher: ^6.0.4 # ^5.0.2
   device_info: ^2.0.1
   package_info: ^2.0.0
   permission_handler: ^7.2.0
