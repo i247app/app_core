@@ -4,7 +4,7 @@ import 'package:app_core/app_core.dart';
 
 class KDetailView extends StatelessWidget {
   final Widget header;
-  final List<KDetailItem> detailItems;
+  final List<Widget> detailItems;
   final Color? headerColor;
   final List<Widget>? actions;
 
@@ -76,9 +76,9 @@ class KDetailItem extends StatelessWidget {
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(this.label, style: Theme.of(context).textTheme.subtitle1),
+        Text(this.label, style: KStyles.detailText),
         SizedBox(height: 2),
-        Text(this.value ?? "-", style: Theme.of(context).textTheme.bodyText1),
+        Text(this.value ?? "-", style: KStyles.normalText),
       ],
     );
 
@@ -100,18 +100,12 @@ class KDetailHeader extends StatelessWidget {
       children: [
         Text(
           this.line1,
-          style: Theme.of(context)
-              .textTheme
-              .caption
-              ?.copyWith(color: Colors.white),
+          style: KStyles.largeText.copyWith(color: Colors.white),
         ),
         if (this.line2 != null)
           Text(
             this.line2!,
-            style: Theme.of(context)
-                .textTheme
-                .headline3
-                ?.copyWith(color: Colors.white),
+            style: KStyles.detailText.copyWith(color: Colors.white),
           ),
       ],
     );
