@@ -64,6 +64,7 @@ class KChat {
     return '';
   }
 
+  // JSON
   KChat();
 
   factory KChat.fromJson(Map<String, dynamic> json) => _$KChatFromJson(json);

@@ -21,7 +21,9 @@ class KNotifData {
         ..title = notification?.title ?? ""
         ..body = notification?.body ?? "";
 
+  // KNotifData
   KNotifData();
+
   factory KNotifData.fromJson(Map<String, dynamic> json) =>
       _$KNotifDataFromJson(json);
 

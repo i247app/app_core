@@ -28,4 +28,12 @@ class KAppNav {
 
   @JsonKey(name: SPLASH_MODE, toJson: zzz_itoa, fromJson: zzz_tryatoi)
   int? splashMode;
+
+  // JSON
+  KAppNav();
+
+  factory KAppNav.fromJson(Map<String, dynamic> json) =>
+      _$KAppNavFromJson(json);
+
+  Map<String, dynamic> toJson() => _$KAppNavToJson(this);
 }

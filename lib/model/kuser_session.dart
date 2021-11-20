@@ -3,6 +3,9 @@ import 'package:app_core/model/ksystem_host_data.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+part 'kuser_session.g.dart';
+
+@JsonSerializable()
 class KUserSession {
   static const String KTOKEN = "ktoken";
   static const String PUID = "puid";
@@ -22,11 +25,16 @@ class KUserSession {
   KAppNav? appCoreAppNav;
 
   @JsonKey(ignore: true)
-  KUser? appCoreUser;
+  KUser? user;
 
   @JsonKey(name: HOST_DATA)
   KSystemHostData? hostData;
 
   // JSON
   KUserSession();
+
+  factory KUserSession.fromJson(Map<String, dynamic> json) =>
+      _$KUserSessionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$KUserSessionToJson(this);
 }

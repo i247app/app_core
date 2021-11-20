@@ -61,6 +61,8 @@ class KChatMessage {
 
   static String generateLocalID() => KUtil.buildRandomString(8);
 
+
+  // JSON
   KChatMessage();
 
   factory KChatMessage.fromJson(Map<String, dynamic> json) =>

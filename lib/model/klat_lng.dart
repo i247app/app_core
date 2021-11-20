@@ -44,29 +44,11 @@ class KLatLng {
   KLatLng add(double lat, double lng) =>
       KLatLng.raw((this.lat ?? 0) + lat, (this.lng ?? 0) + lng);
 
-  /// Hacky methods for custom serialization
-  // ignore: non_constant_identifier_names
-  static Map<String, dynamic>? zzz_latLngTJ(latLng) {
-    try {
-      return latLng.toJson();
-    } catch (e) {
-      return null;
-    }
-  }
-
-  // ignore: non_constant_identifier_names
-  static KLatLng? zzz_latLngFJ(json) {
-    try {
-      return KLatLng.fromJson(json);
-    } catch (e) {
-      return null;
-    }
-  }
+  /// Methods
+  KLatLng.raw(this.lat, this.lng);
 
   // JSON
   KLatLng();
-
-  KLatLng.raw(this.lat, this.lng);
 
   factory KLatLng.fromJson(Map<String, dynamic> json) =>
       _$KLatLngFromJson(json);
