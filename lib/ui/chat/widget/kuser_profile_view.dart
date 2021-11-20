@@ -116,9 +116,8 @@ class _ConcreteKUserProfileView extends StatelessWidget {
         value: user.gradeLevel,
       ),
       KDetailItem(
-        label: "Active Date",
-        value:
-            user.activeDate == null ? null : KUtil.prettyDate(user.activeDate),
+        label: "Join Date",
+        value: user.joinDate == null ? null : KUtil.prettyDate(user.joinDate),
       ),
       KDetailItem(
         label: "Note",
