@@ -64,11 +64,13 @@ class _ConcreteKUserProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final header = DefaultTextStyle(
-      style: TextStyle(color: Colors.white),
-      child: Container(
-        height: 60,
-        child: KGigUserLabel(this.user),
+    final header = IgnorePointer(
+      child: DefaultTextStyle(
+        style: TextStyle(color: Colors.white),
+        child: Container(
+          height: 60,
+          child: KGigUserLabel(this.user),
+        ),
       ),
     );
 
