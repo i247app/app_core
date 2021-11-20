@@ -131,8 +131,8 @@ class KUser extends KObject {
   @JsonKey(name: "studentIDData")
   String? studentIDData;
 
-  @JsonKey(name: "activeDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
-  DateTime? activeDate;
+  @JsonKey(name: "joinDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
+  DateTime? joinDate;
 
   @JsonKey(name: "latLng")
   KLatLng? currentLatLng;
