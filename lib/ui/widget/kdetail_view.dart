@@ -5,14 +5,20 @@ import 'package:app_core/app_core.dart';
 class KDetailView extends StatelessWidget {
   final Widget header;
   final List<KDetailItem> detailItems;
+  final Color? headerColor;
   final List<Widget>? actions;
 
-  const KDetailView(this.header, this.detailItems, {this.actions});
+  const KDetailView({
+    required this.header,
+    required this.detailItems,
+    this.headerColor,
+    this.actions,
+  });
 
   @override
   Widget build(BuildContext context) {
     final header = Container(
-      color: Theme.of(context).colorScheme.primary,
+      color: this.headerColor ?? Theme.of(context).colorScheme.primary,
       width: double.infinity,
       child: SafeArea(
         child: Column(
