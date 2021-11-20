@@ -77,6 +77,7 @@ class KChatMember {
     ..lastName = user.lastName
     ..middleName = user.middleName;
 
+  // JSON
   KChatMember();
 
   factory KChatMember.fromJson(Map<String, dynamic> json) =>

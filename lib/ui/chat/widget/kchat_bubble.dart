@@ -82,7 +82,7 @@ class KChatBubble extends StatelessWidget {
     Navigator.of(ctx).push(
       MaterialPageRoute(
         builder: (c) =>
-            Scaffold(body: KImageViewer(imageURL: this.chat.message)),
+            Scaffold(body: KImageViewer.network(this.chat.user?.avatarURL)),
       ),
     );
   }
@@ -155,7 +155,7 @@ class KChatBubble extends StatelessWidget {
                   SizedBox(width: 10),
                   Flexible(
                     child: Text(
-                      "Video call from ${this.chat.kUser?.firstName ?? "user"}",
+                      "Video call from ${this.chat.user?.firstName ?? "user"}",
                       style: theme.textTheme.subtitle1!
                           .copyWith(color: chatForegroundColor),
                     ),
@@ -190,12 +190,12 @@ class KChatBubble extends StatelessWidget {
     }
 
     final userIcon = GestureDetector(
-      onTap: () => this.onAvatarClick?.call(this.chat.kUser!),
+      onTap: () => this.onAvatarClick?.call(this.chat.user!),
       child: ClipOval(
         child: Container(
           width: GUTTER_SIZE,
           height: GUTTER_SIZE,
-          child: KUserAvatar.fromUser(this.chat.kUser),
+          child: KUserAvatar.fromUser(this.chat.user),
         ),
       ),
     );

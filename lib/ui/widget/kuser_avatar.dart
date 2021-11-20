@@ -45,24 +45,20 @@ class KUserAvatar extends StatelessWidget {
       KUserAvatar.fromUser(KSessionData.me, imagePlaceHolder: imagePlaceHolder);
 
   Image get placeholderImage =>
-      this.imagePlaceHolder ?? Image.asset(KAssets.IMG_TRANSPARENCY);
+      imagePlaceHolder ?? Image.asset(KAssets.IMG_TRANSPARENCY);
 
   @override
   Widget build(BuildContext context) {
-    var brightness = MediaQuery.of(context).platformBrightness;
-    bool isDarkMode = brightness == Brightness.dark;
-
-    final raw = this.imageURL == null || !KStringHelper.isExist(this.imageURL)
-        ? this.initial == null
-            ? this.placeholderImage
+    final raw = (imageURL ?? "").isEmpty
+        ? (initial ?? "").isEmpty
+            ? placeholderImage
             : FittedBox(
                 fit: BoxFit.contain,
                 child: CircleAvatar(
-                  backgroundColor:
-                      isDarkMode ? Colors.blueGrey[800] : Colors.grey.shade200,
-                  foregroundColor: Theme.of(context).accentColor,
+                  backgroundColor: Theme.of(context).primaryColor,
+                  foregroundColor: Theme.of(context).backgroundColor,
                   child: Text(
-                    KStringHelper.substring(this.initial!, 0, 2).toUpperCase(),
+                    KStringHelper.substring(initial!, 0, 2).toUpperCase(),
                     textAlign: TextAlign.center,
                     style: Theme.of(context)
                         .textTheme
@@ -73,12 +69,12 @@ class KUserAvatar extends StatelessWidget {
               )
         : FadeInImage.assetNetwork(
             placeholder: KAssets.IMG_TRANSPARENCY,
-            image: this.imageURL!,
+            image: imageURL!,
             fit: BoxFit.cover,
             fadeInDuration: Duration(milliseconds: 100),
             imageErrorBuilder: (BuildContext context, Object exception,
                 StackTrace? stackTrace) {
-              return this.placeholderImage;
+              return placeholderImage;
             },
           );
 

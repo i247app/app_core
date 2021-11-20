@@ -6,14 +6,20 @@ part of 'knotif_data.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-KNotifData _$KNotifDataFromJson(Map<String, dynamic> json) {
-  return KNotifData()
-    ..title = json['title'] as String?
-    ..body = json['body'] as String?;
-}
+KNotifData _$KNotifDataFromJson(Map<String, dynamic> json) => KNotifData()
+  ..title = json['title'] as String?
+  ..body = json['body'] as String?;
 
-Map<String, dynamic> _$KNotifDataToJson(KNotifData instance) =>
-    <String, dynamic>{
-      'title': instance.title,
-      'body': instance.body,
-    };
+Map<String, dynamic> _$KNotifDataToJson(KNotifData instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('title', instance.title);
+  writeNotNull('body', instance.body);
+  return val;
+}

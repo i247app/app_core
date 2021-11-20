@@ -8,6 +8,7 @@ class KSystemHostData {
   @JsonKey(name: "webRTCHostInfo")
   KHostInfo? webRtcHostInfo;
 
+  // JSON
   KSystemHostData();
 
   factory KSystemHostData.fromJson(Map<String, dynamic> json) =>

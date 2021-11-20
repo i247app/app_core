@@ -1,5 +1,7 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kutil.dart';
+import 'package:app_core/model/kaddress.dart';
+import 'package:app_core/model/keducation.dart';
 import 'package:app_core/model/kobject.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -77,13 +79,79 @@ class KUser extends KObject {
   @JsonKey(name: "heroAvatar")
   String? heroAvatarURL;
 
+  // Schoolbird 'user.dart' data
+  @JsonKey(name: "gradeLevel")
+  String? gradeLevel;
+
+  @JsonKey(name: "schoolName")
+  String? schoolName;
+
+  @JsonKey(name: "businessName")
+  String? businessName;
+
+  @JsonKey(name: "userRating")
+  String? userRating;
+
+  @JsonKey(name: "userRatingCount")
+  String? userRatingCount;
+
+  @JsonKey(name: "bankID")
+  String? bankID;
+
+  @JsonKey(name: "bankName")
+  String? bankName;
+
+  @JsonKey(name: "bankAccName")
+  String? bankAccName;
+
+  @JsonKey(name: "bankAccNumber")
+  String? bankAccNumber;
+
+  @JsonKey(name: "educations")
+  List<KEducation>? educations;
+
+  @JsonKey(name: "addresses")
+  List<KAddress>? addresses;
+
+  @JsonKey(name: "officialIDNumber")
+  String? officialIDNumber;
+
+  @JsonKey(name: "officialIDURL")
+  String? officialIDURL;
+
+  @JsonKey(name: "officialIDData")
+  String? officialIDData;
+
+  @JsonKey(name: "studentIDNumber")
+  String? studentIDNumber;
+
+  @JsonKey(name: "studentIDURL")
+  String? studentIDURL;
+
+  @JsonKey(name: "studentIDData")
+  String? studentIDData;
+
   @JsonKey(name: "joinDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
   DateTime? joinDate;
 
+  @JsonKey(name: "latLng")
+  KLatLng? currentLatLng;
+
+  /// Methods
   @JsonKey(ignore: true)
-  String? get contactName {
-    if (kunm == null) return this.fullName;
-    return "@${kunm!} ${this.fullName}";
+  String get sbContactName =>
+      this.kunm == null ? (this.fullName ?? "") : "@${this.kunm}";
+
+  @JsonKey(ignore: true)
+  String? get sbFullName =>
+      this.businessName ??
+      KUtil.prettyName(fnm: firstName, mnm: middleName, lnm: lastName) ??
+      this.phone;
+
+  @JsonKey(ignore: true)
+  String get contactName {
+    if (kunm == null) return fullName ?? "";
+    return "@$kunm $fullName";
   }
 
   // TODO - fix reward user (non-regis phone only)
@@ -97,6 +165,7 @@ class KUser extends KObject {
 
   String get firstInitial => firstName?.substring(0, 1) ?? "";
 
+  // JSON
   KUser();
 
   factory KUser.fromJson(Map<String, dynamic> json) => _$KUserFromJson(json);

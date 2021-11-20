@@ -60,7 +60,7 @@ abstract class KSessionData {
       // PrefHelper.put("puid", data.initUserSession?.user?.puid);
       // PrefHelper.put("firstName", data.initUserSession?.user?.firstName);
       KPrefHelper.put(
-          KPrefHelper.CACHED_USER, data.initUserSession?.appCoreUser);
+          KPrefHelper.CACHED_USER, data.initUserSession?.user);
     }
   }
 
@@ -90,7 +90,7 @@ abstract class KSessionData {
 
   static KUserSession? get userSession => kUserSession;
 
-  static KUser? get me => userSession?.appCoreUser;
+  static KUser? get me => userSession?.user;
 
   static KAppNav? get appNav => userSession?.appCoreAppNav;
 

@@ -47,7 +47,7 @@ class KChatMessage {
   String? refID;
 
   @JsonKey(name: "user")
-  KUser? kUser;
+  KUser? user;
 
   // Helper
   @JsonKey(ignore: true)
@@ -61,6 +61,7 @@ class KChatMessage {
 
   static String generateLocalID() => KUtil.buildRandomString(8);
 
+  // JSON
   KChatMessage();
 
   factory KChatMessage.fromJson(Map<String, dynamic> json) =>

@@ -1,17 +1,15 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'kvoip_call_info.dart';
+part of 'kapp_nav.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-KVoipCallInfo _$KVoipCallInfoFromJson(Map<String, dynamic> json) =>
-    KVoipCallInfo()
-      ..uuid = json['uuid'] as String?
-      ..callID = json['callID'] as String?;
+KAppNav _$KAppNavFromJson(Map<String, dynamic> json) =>
+    KAppNav()..splashMode = zzz_tryatoi(json['splashMode']);
 
-Map<String, dynamic> _$KVoipCallInfoToJson(KVoipCallInfo instance) {
+Map<String, dynamic> _$KAppNavToJson(KAppNav instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {
@@ -20,7 +18,6 @@ Map<String, dynamic> _$KVoipCallInfoToJson(KVoipCallInfo instance) {
     }
   }
 
-  writeNotNull('uuid', instance.uuid);
-  writeNotNull('callID', instance.callID);
+  writeNotNull('splashMode', zzz_itoa(instance.splashMode));
   return val;
 }

@@ -118,8 +118,8 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
   }
 
   void onOtherPersonClick(KUser user) {
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (ctx) => UserProfileView(user: user)));
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (ctx) => KUserProfileView.fromUser(user)));
   }
 
   @override
