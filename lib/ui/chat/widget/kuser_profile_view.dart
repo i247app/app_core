@@ -69,11 +69,13 @@ class _ConcreteKUserProfileView extends StatelessWidget {
       onTap: () => Navigator.of(context).push(MaterialPageRoute(
           builder: (_) => KImageViewer.network(user.avatarURL))),
       behavior: HitTestBehavior.opaque,
-      child: DefaultTextStyle(
-        style: TextStyle(color: Colors.white),
-        child: Container(
-          height: 60,
-          child: KGigUserLabel(this.user),
+      child: IgnorePointer(
+        child: DefaultTextStyle(
+          style: TextStyle(color: Colors.white),
+          child: Container(
+            height: 60,
+            child: KGigUserLabel(this.user),
+          ),
         ),
       ),
     );
