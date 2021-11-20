@@ -79,6 +79,9 @@ class KUser {
   @JsonKey(name: "note")
   String? note;
 
+  @JsonKey(name: "joinDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
+  DateTime? joinDate;
+
   @JsonKey(ignore: true)
   String? get contactName {
     if (kunm == null) return this.fullName;

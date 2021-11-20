@@ -30,7 +30,8 @@ KUser _$KUserFromJson(Map<String, dynamic> json) {
     ..avatarURL = json['avatar'] as String?
     ..avatarImageData = json['avatarData'] as String?
     ..heroAvatarURL = json['heroAvatar'] as String?
-    ..note = json['note'] as String?;
+    ..note = json['note'] as String?
+    ..joinDate = zzz_str2Date(json['joinDate'] as String?);
 }
 
 Map<String, dynamic> _$KUserToJson(KUser instance) => <String, dynamic>{
@@ -57,4 +58,5 @@ Map<String, dynamic> _$KUserToJson(KUser instance) => <String, dynamic>{
       'avatarData': instance.avatarImageData,
       'heroAvatar': instance.heroAvatarURL,
       'note': instance.note,
+      'joinDate': zzz_date2Str(instance.joinDate),
     };
