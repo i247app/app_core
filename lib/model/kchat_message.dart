@@ -47,7 +47,7 @@ class KChatMessage {
   String? refID;
 
   @JsonKey(name: "user")
-  KUser? kUser;
+  KUser? user;
 
   // Helper
   @JsonKey(ignore: true)
@@ -60,7 +60,6 @@ class KChatMessage {
   bool get isMe => this.puid == KSessionData.me?.puid;
 
   static String generateLocalID() => KUtil.buildRandomString(8);
-
 
   // JSON
   KChatMessage();

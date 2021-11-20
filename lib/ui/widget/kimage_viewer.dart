@@ -12,10 +12,9 @@ class KImageViewer extends StatefulWidget {
   final String? imageURL;
   final File? imageFile;
 
-  const KImageViewer({
-    this.imageURL,
-    this.imageFile,
-  });
+  KImageViewer.network(this.imageURL) : imageFile = null;
+
+  KImageViewer.file(this.imageFile) : imageURL = null;
 
   @override
   State<StatefulWidget> createState() => _KImageViewerState();

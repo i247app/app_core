@@ -6,6 +6,7 @@ import 'package:app_core/model/klink_helper.dart';
 import 'package:app_core/ui/chat/kchat_screen.dart';
 import 'package:app_core/ui/chat/widget/kgig_user_label.dart';
 import 'package:app_core/ui/widget/kdetail_view.dart';
+import 'package:app_core/ui/widget/kimage_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -64,12 +65,16 @@ class _ConcreteKUserProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final header = IgnorePointer(
-      child: DefaultTextStyle(
-        style: TextStyle(color: Colors.white),
-        child: Container(
-          height: 60,
-          child: KGigUserLabel(this.user),
+    final header = GestureDetector(
+      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => KImageViewer.network(user.avatarURL))),
+      child: IgnorePointer(
+        child: DefaultTextStyle(
+          style: TextStyle(color: Colors.white),
+          child: Container(
+            height: 60,
+            child: KGigUserLabel(this.user),
+          ),
         ),
       ),
     );
