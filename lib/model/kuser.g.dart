@@ -12,9 +12,9 @@ KUser _$KUserFromJson(Map<String, dynamic> json) => KUser()
   ..knote = json['note'] as String?
   ..kstatusCode = json['statusCode'] as String?
   ..kcreateID = json['createID'] as String?
-  ..kcreateDate = json['createDate'] as String?
+  ..kcreateDate = zzz_str2Date(json['createDate'] as String?)
   ..kmodifyID = json['modifyID'] as String?
-  ..kmodifyDate = json['modifyDate'] as String?
+  ..kmodifyDate = zzz_str2Date(json['modifyDate'] as String?)
   ..kisValid = json['isValid'] as String?
   ..kaction = json['action'] as String?
   ..korderBy = json['orderBy'] as String?
@@ -45,7 +45,6 @@ KUser _$KUserFromJson(Map<String, dynamic> json) => KUser()
   ..avatarURL = json['avatar'] as String?
   ..avatarImageData = json['avatarData'] as String?
   ..heroAvatarURL = json['heroAvatar'] as String?
-  ..joinDate = zzz_str2Date(json['joinDate'] as String?)
   ..gradeLevel = json['gradeLevel'] as String?
   ..schoolName = json['schoolName'] as String?
   ..businessName = json['businessName'] as String?
@@ -86,9 +85,9 @@ Map<String, dynamic> _$KUserToJson(KUser instance) {
   writeNotNull('note', instance.knote);
   writeNotNull('statusCode', instance.kstatusCode);
   writeNotNull('createID', instance.kcreateID);
-  writeNotNull('createDate', instance.kcreateDate);
+  writeNotNull('createDate', zzz_date2Str(instance.kcreateDate));
   writeNotNull('modifyID', instance.kmodifyID);
-  writeNotNull('modifyDate', instance.kmodifyDate);
+  writeNotNull('modifyDate', zzz_date2Str(instance.kmodifyDate));
   writeNotNull('isValid', instance.kisValid);
   writeNotNull('action', instance.kaction);
   writeNotNull('orderBy', instance.korderBy);
@@ -119,7 +118,6 @@ Map<String, dynamic> _$KUserToJson(KUser instance) {
   writeNotNull('avatar', instance.avatarURL);
   writeNotNull('avatarData', instance.avatarImageData);
   writeNotNull('heroAvatar', instance.heroAvatarURL);
-  writeNotNull('joinDate', zzz_date2Str(instance.joinDate));
   writeNotNull('gradeLevel', instance.gradeLevel);
   writeNotNull('schoolName', instance.schoolName);
   writeNotNull('businessName', instance.businessName);

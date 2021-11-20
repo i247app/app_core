@@ -79,9 +79,6 @@ class KUser extends KObject {
   @JsonKey(name: "heroAvatar")
   String? heroAvatarURL;
 
-  @JsonKey(name: "joinDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
-  DateTime? joinDate;
-
   // Schoolbird 'user.dart' data
   @JsonKey(name: "gradeLevel")
   String? gradeLevel;

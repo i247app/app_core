@@ -1,3 +1,4 @@
+import 'package:app_core/app_core.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 abstract class KObject {
@@ -37,14 +38,14 @@ abstract class KObject {
   @JsonKey(name: CREATE_ID)
   String? kcreateID;
 
-  @JsonKey(name: CREATE_DATE)
-  String? kcreateDate;
+  @JsonKey(name: CREATE_DATE, fromJson: zzz_str2Date, toJson: zzz_date2Str)
+  DateTime? kcreateDate;
 
   @JsonKey(name: MODIFY_ID)
   String? kmodifyID;
 
-  @JsonKey(name: MODIFY_DATE)
-  String? kmodifyDate;
+  @JsonKey(name: MODIFY_DATE, fromJson: zzz_str2Date, toJson: zzz_date2Str)
+  DateTime? kmodifyDate;
 
   @JsonKey(name: IS_VALID)
   String? kisValid;
