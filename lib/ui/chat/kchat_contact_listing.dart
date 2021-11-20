@@ -205,7 +205,7 @@ class _SearchField extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      su.fullName ?? su.contactName ?? "",
+                      su.fullName ?? su.contactName,
                       style: Theme.of(context)
                           .textTheme
                           .bodyText1
