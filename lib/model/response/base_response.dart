@@ -43,7 +43,7 @@ abstract class BaseResponse {
   static const String KTOKEN = "ktoken";
   static const String KSTATUS = "kstatus";
   static const String ERRNO = "errno";
-  static const String KMSG = "kmessage"; //"kerrmsg";
+  static const String KMSG = "kmessage";
 
   @JsonKey(name: KSTATUS, toJson: zzz_itoa, fromJson: zzz_parseInt)
   int? kstatus;
