@@ -1,11 +1,12 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kutil.dart';
+import 'package:app_core/model/kobject.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'kuser.g.dart';
 
 @JsonSerializable()
-class KUser {
+class KUser extends KObject {
   @JsonKey(name: "puid")
   String? puid;
 
@@ -75,9 +76,6 @@ class KUser {
 
   @JsonKey(name: "heroAvatar")
   String? heroAvatarURL;
-
-  @JsonKey(name: "note")
-  String? note;
 
   @JsonKey(name: "joinDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
   DateTime? joinDate;
