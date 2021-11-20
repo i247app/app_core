@@ -67,6 +67,7 @@ KUser _$KUserFromJson(Map<String, dynamic> json) => KUser()
   ..studentIDNumber = json['studentIDNumber'] as String?
   ..studentIDURL = json['studentIDURL'] as String?
   ..studentIDData = json['studentIDData'] as String?
+  ..activeDate = zzz_str2Date(json['activeDate'] as String?)
   ..currentLatLng = json['latLng'] == null
       ? null
       : KLatLng.fromJson(json['latLng'] as Map<String, dynamic>);
@@ -138,6 +139,7 @@ Map<String, dynamic> _$KUserToJson(KUser instance) {
   writeNotNull('studentIDNumber', instance.studentIDNumber);
   writeNotNull('studentIDURL', instance.studentIDURL);
   writeNotNull('studentIDData', instance.studentIDData);
+  writeNotNull('activeDate', zzz_date2Str(instance.activeDate));
   writeNotNull('latLng', instance.currentLatLng?.toJson());
   return val;
 }
