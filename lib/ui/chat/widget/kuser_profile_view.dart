@@ -40,13 +40,13 @@ class _KUserProfileViewState extends State<KUserProfileView> {
     } catch (e) {
       val = null;
     }
-    this.completer.complete(val);
+    completer.complete(val);
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: this.completer.future,
+      future: completer.future,
       builder: (ctx, snapshot) {
         if (snapshot.hasData) {
           return _ConcreteKUserProfileView(snapshot.data as KUser);
@@ -74,7 +74,7 @@ class _ConcreteKUserProfileView extends StatelessWidget {
           style: TextStyle(color: Colors.white),
           child: Container(
             height: 60,
-            child: KGigUserLabel(this.user),
+            child: KGigUserLabel(user),
           ),
         ),
       ),
@@ -83,47 +83,52 @@ class _ConcreteKUserProfileView extends StatelessWidget {
     final detailItems = [
       KDetailItem(
         label: "ID",
-        value: this.user.puid,
+        value: user.puid,
       ),
       KDetailItem(
         label: "Full Name",
-        value: this.user.fullName,
+        value: user.fullName,
       ),
       KDetailItem(
         label: "Username",
-        value: this.user.kunm == null ? null : "@${this.user.kunm}",
+        value: user.kunm == null ? null : "@${user.kunm}",
       ),
       GestureDetector(
-        onTap: () => KLinkHelper.openEmail(this.user.email ?? ""),
+        onTap: () => KLinkHelper.openEmail(user.email ?? ""),
         child: KDetailItem(
           label: "Email",
-          value: this.user.email,
+          value: user.email,
         ),
       ),
       GestureDetector(
-        onTap: () => KLinkHelper.openPhone(this.user.phone ?? ""),
+        onTap: () => KLinkHelper.openPhone(user.phone ?? ""),
         child: KDetailItem(
           label: "Phone Number",
-          value: this.user.phone == null ? null : this.user.prettyFone,
+          value: user.phone == null ? null : user.prettyFone,
         ),
       ),
       KDetailItem(
         label: "School Name",
-        value: this.user.schoolName,
+        value: user.schoolName,
       ),
       KDetailItem(
         label: "Grade Level",
-        value: this.user.gradeLevel,
+        value: user.gradeLevel,
+      ),
+      KDetailItem(
+        label: "Active Date",
+        value:
+            user.activeDate == null ? null : KUtil.prettyDate(user.activeDate),
       ),
       KDetailItem(
         label: "Note",
-        value: this.user.knote,
+        value: user.knote,
       ),
       // KDetailItem(
       //   label: "Start date",
-      //   value: this.user.startDate == null
+      //   value: user.startDate == null
       //       ? null
-      //       : KUtil.prettyDate(this.user.startDate, showTime: true),
+      //       : KUtil.prettyDate(user.startDate, showTime: true),
       // ),
     ];
 
@@ -131,7 +136,7 @@ class _ConcreteKUserProfileView extends StatelessWidget {
       IconButton(
         onPressed: () => Navigator.of(context).push(MaterialPageRoute(
             builder: (_) =>
-                KChatScreen(members: [KChatMember.fromUser(this.user)]))),
+                KChatScreen(members: [KChatMember.fromUser(user)]))),
         icon: Icon(Icons.chat, color: Colors.white),
       ),
     ];
