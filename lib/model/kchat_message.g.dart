@@ -17,7 +17,7 @@ KChatMessage _$KChatMessageFromJson(Map<String, dynamic> json) => KChatMessage()
   ..imageData = json['imgData'] as String?
   ..refApp = json['refApp'] as String?
   ..refID = json['refID'] as String?
-  ..kUser = json['user'] == null
+  ..user = json['user'] == null
       ? null
       : KUser.fromJson(json['user'] as Map<String, dynamic>);
 
@@ -40,6 +40,6 @@ Map<String, dynamic> _$KChatMessageToJson(KChatMessage instance) {
   writeNotNull('imgData', instance.imageData);
   writeNotNull('refApp', instance.refApp);
   writeNotNull('refID', instance.refID);
-  writeNotNull('user', instance.kUser?.toJson());
+  writeNotNull('user', instance.user?.toJson());
   return val;
 }
