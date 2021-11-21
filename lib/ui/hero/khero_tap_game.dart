@@ -552,7 +552,7 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
     final body = Stack(
       fit: StackFit.expand,
       children: [
-        if (isStart)
+        if (isStart || result != null)
           Align(
             alignment: Alignment(-1, -1),
             child: currentLevel < 4
