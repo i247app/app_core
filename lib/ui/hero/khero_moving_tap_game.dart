@@ -601,7 +601,7 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
     final body = Stack(
       fit: StackFit.expand,
       children: [
-        if (isStart)
+        if (isStart || result != null)
           Align(
             alignment: Alignment(-1, -1),
             child: currentLevel < 4
