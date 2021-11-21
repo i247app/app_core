@@ -6,7 +6,7 @@ import 'package:app_core/helper/kfile_helper.dart';
 import 'package:app_core/helper/ktoast_helper.dart';
 import 'package:app_core/header/kstyles.dart';
 
-enum _ImageViewerType { url, file }
+enum _ImageViewerType { url, file, none }
 
 class KImageViewer extends StatefulWidget {
   final String? imageURL;
@@ -29,7 +29,7 @@ class _KImageViewerState extends State<KImageViewer> {
     else if (widget.imageFile != null)
       return _ImageViewerType.file;
     else
-      return _ImageViewerType.file;
+      return _ImageViewerType.none;
   }
 
   @override
@@ -42,6 +42,8 @@ class _KImageViewerState extends State<KImageViewer> {
         break;
       case _ImageViewerType.file:
         this.imageProvider = FileImage(widget.imageFile!);
+        break;
+      case _ImageViewerType.none:
         break;
     }
   }

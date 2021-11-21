@@ -66,8 +66,10 @@ class _ConcreteKUserProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final header = GestureDetector(
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(
-          builder: (_) => KImageViewer.network(user.avatarURL))),
+      onTap: user.avatarURL == null
+          ? null
+          : () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => KImageViewer.network(user.avatarURL))),
       behavior: HitTestBehavior.opaque,
       child: IgnorePointer(
         child: DefaultTextStyle(
