@@ -49,7 +49,7 @@ class KUser extends KObject {
    * Address
    */
   @JsonKey(name: "addressLine1")
-  String? address;
+  String? address1;
 
   @JsonKey(name: "addressLine2")
   String? address2;
