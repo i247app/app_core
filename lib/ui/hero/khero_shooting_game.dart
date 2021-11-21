@@ -6,6 +6,7 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kimage_animation_helper.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
+import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_intro.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -135,7 +136,8 @@ class KShootingGameScreen extends StatefulWidget {
   final Function(int)? onChangeLevel;
   final Function? onFinishLevel;
 
-  const KShootingGameScreen({this.hero, this.onChangeLevel, this.onFinishLevel});
+  const KShootingGameScreen(
+      {this.hero, this.onChangeLevel, this.onFinishLevel});
 
   @override
   KShootingGameScreenState createState() => KShootingGameScreenState();
@@ -172,6 +174,7 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
   bool isStart = false;
   double heroHeight = 40;
   double heroWidth = 40;
+  bool isShowCountDown = false;
   int trueAnswer = 2;
   double bulletSpeed = 0.01;
   bool? result;
@@ -252,6 +255,8 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
     [0.6, 0.4],
   ];
   int introShakeTime = 2;
+
+  int? overlayID;
 
   @override
   void initState() {
@@ -423,33 +428,81 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
     _scaleAnimationController.dispose();
     _moveUpAnimationController.dispose();
     _spinAnimationController.dispose();
+
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+
     // TODO: implement dispose
     super.dispose();
+  }
+
+  void showCountDownOverlay() {
+    this.setState(() {
+      this.isShowCountDown = true;
+    });
+    final view = KGameCountDownIntro(
+      onFinish: () {
+        this.setState(() {
+          this.isShowCountDown = false;
+        });
+
+        if (this.overlayID != null) {
+          KOverlayHelper.removeOverlay(this.overlayID!);
+          this.overlayID = null;
+        }
+
+        if (!isStart && currentLevel == 0) {
+          setState(() {
+            isStart = true;
+            time = 0;
+          });
+        }
+      },
+    );
+    final overlay = Stack(
+      fit: StackFit.expand,
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: view,
+        ),
+      ],
+    );
+    this.overlayID = KOverlayHelper.addOverlay(overlay);
   }
 
   void loadAudioAsset() async {
     try {
       Directory tempDir = await getTemporaryDirectory();
 
-      ByteData correctAudioFileData = await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
-      ByteData wrongAudioFileData = await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
-      ByteData shootingAudioFileData = await rootBundle.load("packages/app_core/assets/audio/gun_fire.mp3");
+      ByteData correctAudioFileData =
+          await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
+      ByteData wrongAudioFileData =
+          await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
+      ByteData shootingAudioFileData =
+          await rootBundle.load("packages/app_core/assets/audio/gun_fire.mp3");
 
       File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
-      await correctAudioTempFile.writeAsBytes(correctAudioFileData.buffer.asUint8List(), flush: true);
+      await correctAudioTempFile
+          .writeAsBytes(correctAudioFileData.buffer.asUint8List(), flush: true);
 
       File wrongAudioTempFile = File('${tempDir.path}/wrong.mp3');
-      await wrongAudioTempFile.writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
+      await wrongAudioTempFile
+          .writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
 
       File shootingAudioTempFile = File('${tempDir.path}/gun_fire.mp3');
-      await shootingAudioTempFile.writeAsBytes(shootingAudioFileData.buffer.asUint8List(), flush: true);
+      await shootingAudioTempFile.writeAsBytes(
+          shootingAudioFileData.buffer.asUint8List(),
+          flush: true);
 
       this.setState(() {
         this.correctAudioFileUri = correctAudioTempFile.uri.toString();
         this.wrongAudioFileUri = wrongAudioTempFile.uri.toString();
         this.shootingAudioFileUri = shootingAudioTempFile.uri.toString();
       });
-    } catch(e) {}
+    } catch (e) {}
   }
 
   bool isReachTarget() {
@@ -460,7 +513,7 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
     if (!isShooting && bulletsY.length < 3) {
       try {
         await audioPlayer.play(shootingAudioFileUri ?? "", isLocal: true);
-      } catch(e) {}
+      } catch (e) {}
       if (!_barrelScaleAnimationController.isAnimating) {
         _barrelScaleAnimationController.forward();
       }
@@ -653,10 +706,14 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
 
   void start() {
     if (!isStart) {
-      setState(() {
-        isStart = true;
-        time = 0;
-      });
+      if (currentLevel == 0) {
+        showCountDownOverlay();
+      } else {
+        setState(() {
+          isStart = true;
+          time = 0;
+        });
+      }
     }
   }
 
@@ -739,7 +796,7 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
               ),
             ),
           ),
-        if (!isStart)
+        if (!isStart && !isShowCountDown)
           Align(
             alignment: Alignment.center,
             child: Padding(
@@ -752,9 +809,34 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
                       "Level ${currentLevel + 1}",
                       style: TextStyle(fontSize: 30, color: Colors.white),
                     ),
-                    Text(
-                      "Tap To Start",
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(40),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.5),
+                            blurRadius: 8,
+                            offset: Offset(2, 6),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        "START",
+                        textScaleFactor: 1.0,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                   if (currentLevel >= 0 &&
@@ -879,7 +961,11 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
-              padding: EdgeInsets.only(left: 10, right: 10, top: 50,),
+              padding: EdgeInsets.only(
+                left: 10,
+                right: 10,
+                top: 50,
+              ),
               child: Column(
                 children: [
                   Container(
@@ -942,11 +1028,13 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
             ),
           ),
         GestureDetector(
-          onTap: isStart
-              ? fire
-              : (result == null
-                  ? start
-                  : (canRestartGame ? restartGame : () {})),
+          onTap: isShowCountDown
+              ? () {}
+              : (isStart
+                  ? fire
+                  : (result == null
+                      ? start
+                      : (canRestartGame ? restartGame : () {}))),
         ),
         Align(
           alignment: Alignment.topRight,

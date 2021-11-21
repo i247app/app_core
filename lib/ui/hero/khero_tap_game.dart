@@ -7,6 +7,7 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kimage_animation_helper.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
+import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -156,9 +157,7 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
   String? wrongAudioFileUri;
 
   late Animation<Offset> _bouncingAnimation;
-  late Animation<double>
-      _moveUpAnimation,
-      _heroScaleAnimation;
+  late Animation<double> _moveUpAnimation, _heroScaleAnimation;
 
   late AnimationController _heroScaleAnimationController,
       _bouncingAnimationController,
@@ -175,6 +174,7 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
   double velocity = 2.0;
   Timer? _timer;
   bool isStart = false;
+  bool isShowCountDown = false;
   double heroHeight = 80;
   double heroWidth = 80;
   int trueAnswer = 2;
@@ -247,6 +247,8 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
 
   List<int> barrierValues = [];
   double topBoundary = -2.1;
+
+  int? overlayID;
 
   @override
   void initState() {
@@ -345,8 +347,49 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
     _bouncingAnimationController.dispose();
     _moveUpAnimationController.dispose();
     _spinAnimationController.dispose();
+
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+
     // TODO: implement dispose
     super.dispose();
+  }
+
+  void showCountDownOverlay() {
+    this.setState(() {
+      this.isShowCountDown = true;
+    });
+    final view = KGameCountDownIntro(
+      onFinish: () {
+        this.setState(() {
+          this.isShowCountDown = false;
+        });
+
+        if (this.overlayID != null) {
+          KOverlayHelper.removeOverlay(this.overlayID!);
+          this.overlayID = null;
+        }
+
+        if (!isStart && currentLevel == 0) {
+          setState(() {
+            isStart = true;
+            time = 0;
+          });
+        }
+      },
+    );
+    final overlay = Stack(
+      fit: StackFit.expand,
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: view,
+        ),
+      ],
+    );
+    this.overlayID = KOverlayHelper.addOverlay(overlay);
   }
 
   void getListAnswer() {
@@ -399,10 +442,7 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
   void start() {
     if (!isStart) {
       if (currentLevel == 0) {
-        setState(() {
-          isStart = true;
-          time = 0;
-        });
+        showCountDownOverlay();
       } else {
         setState(() {
           isStart = true;
@@ -416,20 +456,24 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
     try {
       Directory tempDir = await getTemporaryDirectory();
 
-      ByteData correctAudioFileData = await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
-      ByteData wrongAudioFileData = await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
+      ByteData correctAudioFileData =
+          await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
+      ByteData wrongAudioFileData =
+          await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
 
       File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
-      await correctAudioTempFile.writeAsBytes(correctAudioFileData.buffer.asUint8List(), flush: true);
+      await correctAudioTempFile
+          .writeAsBytes(correctAudioFileData.buffer.asUint8List(), flush: true);
 
       File wrongAudioTempFile = File('${tempDir.path}/wrong.mp3');
-      await wrongAudioTempFile.writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
+      await wrongAudioTempFile
+          .writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
 
       this.setState(() {
         this.correctAudioFileUri = correctAudioTempFile.uri.toString();
         this.wrongAudioFileUri = wrongAudioTempFile.uri.toString();
       });
-    } catch(e) {}
+    } catch (e) {}
   }
 
   void playSound(bool isTrueAnswer) async {
@@ -630,7 +674,7 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
               ),
             ),
           ),
-        if (!isStart)
+        if (!isStart && !isShowCountDown)
           Align(
             alignment: Alignment.center,
             child: Padding(
@@ -643,9 +687,34 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
                       "Level ${currentLevel + 1}",
                       style: TextStyle(fontSize: 30, color: Colors.white),
                     ),
-                    Text(
-                      "Tap To Start",
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(40),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.5),
+                            blurRadius: 8,
+                            offset: Offset(2, 6),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        "START",
+                        textScaleFactor: 1.0,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                   if (currentLevel >= 0 &&
@@ -680,9 +749,11 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
           ),
         if (!isStart)
           GestureDetector(
-              onTap: result == null
-                  ? start
-                  : (canRestartGame ? restartGame : () {})),
+              onTap: isShowCountDown
+                  ? () {}
+                  : (result == null
+                      ? start
+                      : (canRestartGame ? restartGame : () {}))),
         Align(
           alignment: Alignment.bottomRight,
           child: Padding(

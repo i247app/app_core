@@ -1,11 +1,16 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as Math;
+import 'dart:typed_data';
 
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/khero.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/header/kassets.dart';
+import 'package:path_provider/path_provider.dart';
 
 class KGameIntro extends StatefulWidget {
   final KHero? hero;
@@ -18,6 +23,9 @@ class KGameIntro extends StatefulWidget {
 }
 
 class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
+  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  String? shootingAudioFileUri;
+
   late Animation<Offset> _bouncingAnimation;
   late Animation<double> _barrelScaleAnimation,
       _shakeTheTopAnimation,
@@ -50,6 +58,8 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
+    loadAudioAsset();
 
     _barrelScaleAnimationController = AnimationController(
       duration: const Duration(milliseconds: 200),
@@ -209,8 +219,29 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void fire() {
+  void loadAudioAsset() async {
+    try {
+      Directory tempDir = await getTemporaryDirectory();
+
+      ByteData shootingAudioFileData =
+          await rootBundle.load("packages/app_core/assets/audio/gun_fire.mp3");
+
+      File shootingAudioTempFile = File('${tempDir.path}/gun_fire.mp3');
+      await shootingAudioTempFile.writeAsBytes(
+          shootingAudioFileData.buffer.asUint8List(),
+          flush: true);
+
+      this.setState(() {
+        this.shootingAudioFileUri = shootingAudioTempFile.uri.toString();
+      });
+    } catch (e) {}
+  }
+
+  void fire() async {
     if (!isShooting && bulletsY.length < 3) {
+      try {
+        await audioPlayer.play(shootingAudioFileUri ?? "", isLocal: true);
+      } catch (e) {}
       if (!_barrelScaleAnimationController.isAnimating) {
         _barrelScaleAnimationController.forward();
       }

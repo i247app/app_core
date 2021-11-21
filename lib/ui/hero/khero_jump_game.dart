@@ -9,6 +9,7 @@ import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -161,6 +162,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   double height = 0;
   double time = 0;
   double gravity = -8.0;
+  bool isShowCountDown = false;
   double velocity = 2.0;
   Timer? _timer;
   bool isStart = false;
@@ -243,6 +245,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   ];
 
   double topBoundary = -2.1;
+
+  int? overlayID;
 
   @override
   void initState() {
@@ -430,28 +434,73 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
     _moveUpAnimationController.dispose();
     _spinAnimationController.dispose();
     _playerSpinAnimationController.dispose();
+
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+
     // TODO: implement dispose
     super.dispose();
+  }
+
+  void showCountDownOverlay() {
+    this.setState(() {
+      this.isShowCountDown = true;
+    });
+    final view = KGameCountDownIntro(
+      onFinish: () {
+        this.setState(() {
+          this.isShowCountDown = false;
+        });
+
+        if (this.overlayID != null) {
+          KOverlayHelper.removeOverlay(this.overlayID!);
+          this.overlayID = null;
+        }
+
+        if (!isStart && currentLevel == 0) {
+          setState(() {
+            isStart = true;
+            time = 0;
+          });
+        }
+      },
+    );
+    final overlay = Stack(
+      fit: StackFit.expand,
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: view,
+        ),
+      ],
+    );
+    this.overlayID = KOverlayHelper.addOverlay(overlay);
   }
 
   void loadAudioAsset() async {
     try {
       Directory tempDir = await getTemporaryDirectory();
 
-      ByteData correctAudioFileData = await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
-      ByteData wrongAudioFileData = await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
+      ByteData correctAudioFileData =
+          await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
+      ByteData wrongAudioFileData =
+          await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
 
       File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
-      await correctAudioTempFile.writeAsBytes(correctAudioFileData.buffer.asUint8List(), flush: true);
+      await correctAudioTempFile
+          .writeAsBytes(correctAudioFileData.buffer.asUint8List(), flush: true);
 
       File wrongAudioTempFile = File('${tempDir.path}/wrong.mp3');
-      await wrongAudioTempFile.writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
+      await wrongAudioTempFile
+          .writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
 
       this.setState(() {
         this.correctAudioFileUri = correctAudioTempFile.uri.toString();
         this.wrongAudioFileUri = wrongAudioTempFile.uri.toString();
       });
-    } catch(e) {}
+    } catch (e) {}
   }
 
   bool isReachTarget() {
@@ -549,7 +598,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
           bool isTrueAnswer =
               barrierValues[i] == rightAnswers[currentQuestionIndex];
 
-          if (this.currentCollisionIndex == null || this.currentCollisionIndex != i) {
+          if (this.currentCollisionIndex == null ||
+              this.currentCollisionIndex != i) {
             if (!isPlaySound) {
               this.setState(() {
                 this.isPlaySound = true;
@@ -649,10 +699,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   void start() {
     if (!isStart) {
       if (currentLevel == 0) {
-        setState(() {
-          isStart = true;
-          time = 0;
-        });
+        showCountDownOverlay();
       } else {
         setState(() {
           isStart = true;
@@ -739,7 +786,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
             ),
           ),
         ),
-        if (!isStart)
+        if (!isStart && !isShowCountDown)
           Align(
             alignment: Alignment.center,
             child: Padding(
@@ -752,9 +799,34 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                       "Level ${currentLevel + 1}",
                       style: TextStyle(fontSize: 30, color: Colors.white),
                     ),
-                    Text(
-                      "Tap To Start",
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    SizedBox(
+                      height: 16,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(40),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.5),
+                            blurRadius: 8,
+                            offset: Offset(2, 6),
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        "START",
+                        textScaleFactor: 1.0,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                   if (currentLevel >= 0 &&
@@ -995,11 +1067,13 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
           ),
         ],
         GestureDetector(
-            onTap: isStart
-                ? jump
-                : (result == null
-                    ? start
-                    : (canRestartGame ? restartGame : () {}))),
+            onTap: isShowCountDown
+                ? () {}
+                : (isStart
+                    ? jump
+                    : (result == null
+                        ? start
+                        : (canRestartGame ? restartGame : () {})))),
         Align(
           alignment: Alignment.topRight,
           child: Padding(
