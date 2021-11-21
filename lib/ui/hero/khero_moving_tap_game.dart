@@ -174,6 +174,7 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
   double gravity = -8.0;
   double velocity = 2.0;
   Timer? _timer;
+  Timer? _gameTimer;
   bool isStart = false;
   double heroHeight = 80;
   double heroWidth = 80;
@@ -233,6 +234,7 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
 
   List<double> barrierX = [0, 0, 0, 0];
   List<double> barrierY = [0, 0, 0, 0];
+  List<bool> barrierOutSide = [false, false, false, false];
 
   Math.Random rand = new Math.Random();
 
@@ -330,10 +332,25 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
     )..repeat(reverse: true);
 
     _timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
-      if (isStart) {
+      if (isStart && mounted) {
         if (currentLevel < 4) {
           this.setState(() {
             this.levelPlayTimes[currentLevel] += 1;
+          });
+        }
+      }
+    });
+
+    _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
+      if (isStart && mounted) {
+        if (barrierOutSide[0] &&
+            barrierOutSide[1] &&
+            barrierOutSide[2] &&
+            barrierOutSide[3]) {
+          resetListAnswer();
+          Future.delayed(Duration(milliseconds: 50), () {
+            randomBoxPosition();
+            getListAnswer();
           });
         }
       }
@@ -346,6 +363,7 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
   @override
   void dispose() {
     _timer?.cancel();
+    _gameTimer?.cancel();
     _barrierMovingAnimationController.dispose();
     _heroScaleAnimationController.dispose();
     _bouncingAnimationController.dispose();
@@ -360,6 +378,7 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
       this.barrierValues = [];
       this.barrierX = [0, 0, 0, 0];
       this.barrierY = [0, 0, 0, 0];
+      this.barrierOutSide = [false, false, false, false];
     });
   }
 
@@ -434,20 +453,24 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
     try {
       Directory tempDir = await getTemporaryDirectory();
 
-      ByteData correctAudioFileData = await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
-      ByteData wrongAudioFileData = await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
+      ByteData correctAudioFileData =
+          await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
+      ByteData wrongAudioFileData =
+          await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
 
       File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
-      await correctAudioTempFile.writeAsBytes(correctAudioFileData.buffer.asUint8List(), flush: true);
+      await correctAudioTempFile
+          .writeAsBytes(correctAudioFileData.buffer.asUint8List(), flush: true);
 
       File wrongAudioTempFile = File('${tempDir.path}/wrong.mp3');
-      await wrongAudioTempFile.writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
+      await wrongAudioTempFile
+          .writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
 
       this.setState(() {
         this.correctAudioFileUri = correctAudioTempFile.uri.toString();
         this.wrongAudioFileUri = wrongAudioTempFile.uri.toString();
       });
-    } catch(e) {}
+    } catch (e) {}
   }
 
   void playSound(bool isTrueAnswer) async {
@@ -769,28 +792,43 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
               child: Stack(
                 key: Key("${barrierValues.join("_")}"),
-                children: barrierValues.length > 0 ? [
-                  ...List.generate(
-                    barrierValues.length,
-                    (i) => _Barrier(
-                      animationController: _barrierMovingAnimationController,
-                      onTap: (int answer) => handlePickAnswer(answer, i),
-                      barrierX: barrierX[i],
-                      barrierY: barrierY[i],
-                      value: barrierValues[i],
-                      rotateAngle: spinningHeroIndex == i
-                          ? -this._spinAnimationController.value * 4 * Math.pi
-                          : 0,
-                      bouncingAnimation: spinningHeroIndex == i
-                          ? _bouncingAnimation.value
-                          : Offset(0, 0),
-                      scaleAnimation:
-                          spinningHeroIndex == i ? _heroScaleAnimation : null,
-                      starY: spinningHeroIndex == i ? _moveUpAnimation.value : 0.0,
-                      isShowStar: currentShowStarIndex == i,
-                    ),
-                  ),
-                ] : [],
+                children: barrierValues.length > 0
+                    ? [
+                        ...List.generate(
+                          barrierValues.length,
+                          (i) => _Barrier(
+                            animationController:
+                                _barrierMovingAnimationController,
+                            onTap: (int answer) => handlePickAnswer(answer, i),
+                            onOutSide: () {
+                              if (!this.barrierOutSide[i]) {
+                                this.setState(() {
+                                  this.barrierOutSide[i] = true;
+                                });
+                              }
+                            },
+                            barrierX: barrierX[i],
+                            barrierY: barrierY[i],
+                            value: barrierValues[i],
+                            rotateAngle: spinningHeroIndex == i
+                                ? -this._spinAnimationController.value *
+                                    4 *
+                                    Math.pi
+                                : 0,
+                            bouncingAnimation: spinningHeroIndex == i
+                                ? _bouncingAnimation.value
+                                : Offset(0, 0),
+                            scaleAnimation: spinningHeroIndex == i
+                                ? _heroScaleAnimation
+                                : null,
+                            starY: spinningHeroIndex == i
+                                ? _moveUpAnimation.value
+                                : 0.0,
+                            isShowStar: currentShowStarIndex == i,
+                          ),
+                        ),
+                      ]
+                    : [],
               ),
             ),
           ),
@@ -867,6 +905,7 @@ class _Barrier extends StatefulWidget {
   final double? starY;
   final bool? isShowStar;
   final Function(int value) onTap;
+  final Function() onOutSide;
 
   _Barrier({
     required this.animationController,
@@ -879,6 +918,7 @@ class _Barrier extends StatefulWidget {
     this.starY,
     this.isShowStar,
     required this.onTap,
+    required this.onOutSide,
   });
 
   @override
@@ -896,15 +936,18 @@ class _BarrierState extends State<_Barrier>
     // TODO: implement initState
     super.initState();
 
-    _movingAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 7000))
-      ..addListener(() => setState(() {}))
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-        } else if (status == AnimationStatus.dismissed) {
-          // _bouncingAnimationController.forward(from: 0.0);
-        }
-      });
-    _movingAnimation = Tween(begin: Offset(0, 0), end: Offset(widget.barrierX, widget.barrierY))
+    _movingAnimationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 7000))
+          ..addListener(() => setState(() {}))
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              widget.onOutSide();
+            } else if (status == AnimationStatus.dismissed) {
+              // _bouncingAnimationController.forward(from: 0.0);
+            }
+          });
+    _movingAnimation = Tween(
+            begin: Offset(0, 0), end: Offset(widget.barrierX, widget.barrierY))
         .animate(_movingAnimationController);
 
     _movingAnimationController.forward();
@@ -946,7 +989,8 @@ class _BarrierState extends State<_Barrier>
     );
 
     return Container(
-      alignment: Alignment(_movingAnimation.value.dx, _movingAnimation.value.dy),
+      alignment:
+          Alignment(_movingAnimation.value.dx, _movingAnimation.value.dy),
       child: Container(
         width: 80,
         height: 80,
@@ -977,9 +1021,9 @@ class _BarrierState extends State<_Barrier>
                 angle: widget.rotateAngle,
                 child: widget.scaleAnimation != null
                     ? (ScaleTransition(
-                  scale: widget.scaleAnimation!,
-                  child: box,
-                ))
+                        scale: widget.scaleAnimation!,
+                        child: box,
+                      ))
                     : box,
               ),
             ),
