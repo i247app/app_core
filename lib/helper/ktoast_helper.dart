@@ -38,4 +38,8 @@ abstract class KToastHelper {
   /// Display generic success message
   static Future<bool?> success([String? message]) async =>
       show(message ?? "Success", textColor: KStyles.black);
+
+  /// Display generic success message
+  static Future<bool?> fromBool(bool isSuccess) async =>
+      isSuccess ? success() : error();
 }
