@@ -1,3 +1,4 @@
+import 'package:app_core/model/response/base_response.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:app_core/helper/khost_config.dart';
 import 'package:flutter/material.dart';
@@ -41,5 +42,9 @@ abstract class KToastHelper {
 
   /// Display generic success message
   static Future<bool?> fromBool(bool isSuccess) async =>
-      isSuccess ? success() : error();
+      (isSuccess ? success : error).call();
+
+  /// Display generic success message
+  static Future<bool?> fromResponse(BaseResponse response) async =>
+      (response.isSuccess ? success : error).call(response.prettyMessage);
 }
