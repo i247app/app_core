@@ -270,6 +270,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
   double topBoundary = -2.1;
 
   int? overlayID;
+  bool isBackgroundSoundPlaying = false;
 
   @override
   void initState() {
@@ -491,6 +492,9 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
 
         if (!isStart && currentLevel == 0) {
           if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+            this.setState(() {
+              this.isBackgroundSoundPlaying = true;
+            });
             backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
                 isLocal: true);
           }
@@ -579,6 +583,20 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
           });
         }
       }
+    }
+  }
+
+  void toggleBackgroundSound() {
+    if (this.isBackgroundSoundPlaying) {
+      this.setState(() {
+        this.isBackgroundSoundPlaying = false;
+      });
+      this.backgroundAudioPlayer.pause();
+    } else {
+      this.setState(() {
+        this.isBackgroundSoundPlaying = true;
+      });
+      this.backgroundAudioPlayer.resume();
     }
   }
 
@@ -1113,22 +1131,50 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
           alignment: Alignment.topRight,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
-            child: InkWell(
-              child: Container(
-                width: 50,
-                height: 50,
-                padding: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(40),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                if (isStart || result != null)
+                  InkWell(
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      padding:
+                          EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      child: Icon(
+                        this.isBackgroundSoundPlaying
+                            ? Icons.volume_up
+                            : Icons.volume_off,
+                        color: Color(0xff2c1c44),
+                        size: 30,
+                      ),
+                    ),
+                    onTap: () => this.toggleBackgroundSound(),
+                  ),
+                SizedBox(width: 10,),
+                InkWell(
+                  child: Container(
+                    width: 50,
+                    height: 50,
+                    padding:
+                        EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    child: Icon(
+                      Icons.close,
+                      color: Colors.red,
+                      size: 30,
+                    ),
+                  ),
+                  onTap: () => Navigator.of(context).pop(),
                 ),
-                child: Icon(
-                  Icons.close,
-                  color: Colors.red,
-                  size: 30,
-                ),
-              ),
-              onTap: () => Navigator.of(context).pop(),
+              ],
             ),
           ),
         ),
