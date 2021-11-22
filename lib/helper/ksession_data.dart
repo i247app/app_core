@@ -108,8 +108,6 @@ abstract class KSessionData {
 
   static KUser? get me => userSession?.user;
 
-  // static bool get isAdmin => userSession?.isAdminReady ?? false;
-
   static bool get isApprovedTutor => userSession?.isTutorReady ?? false;
 
   static bool get isTutorOnline => userSession?.tutor?.isOnline ?? false;
@@ -160,7 +158,9 @@ abstract class KSessionData {
   static String get activeStoreID =>
       activeStore != null ? activeStore!.storeID ?? "" : "";
 
-  static bool get isAdmin =>
+  static bool get isAdmin => userSession?.isAdminReady ?? false;
+
+  static bool get isChaoAdmin =>
       isBusinessMode &&
       activeMember != null &&
       activeMember!.role == BusinessMember.ROLE_ADMIN;
@@ -169,5 +169,5 @@ abstract class KSessionData {
       // Util.isDebug || // remove this when done testing
       (isBusinessMode && activeMember != null && activeMember!.buid == "808");
 
-  static bool get isBusinessMode => (activeBusiness != null) ? true : false;
+  static bool get isBusinessMode => activeBusiness != null;
 }
