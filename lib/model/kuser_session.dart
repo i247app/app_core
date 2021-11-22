@@ -24,7 +24,7 @@ class KUserSession {
   @JsonKey(ignore: true)
   KAppNav? appCoreAppNav;
 
-  @JsonKey(ignore: true)
+  @JsonKey(name: "user")
   KUser? user;
 
   @JsonKey(name: HOST_DATA)
