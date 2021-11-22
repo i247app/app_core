@@ -2,12 +2,15 @@ import 'package:app_core/helper/kcall_kit_helper.dart';
 import 'package:app_core/helper/kfcm_helper.dart';
 import 'package:app_core/helper/khost_config.dart';
 import 'package:app_core/helper/kpref_helper.dart';
+import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/model/kapp_nav.dart';
+import 'package:app_core/model/kgig_nav.dart';
 import 'package:app_core/model/khost_info.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/model/kuser_session.dart';
 import 'package:app_core/header/ksession_init_data.dart';
+import 'package:app_core/model/tutor.dart';
 
 abstract class KSessionData {
   static String? kSessionToken;
@@ -59,8 +62,7 @@ abstract class KSessionData {
       KPrefHelper.put(KPrefHelper.KTOKEN, data.initSessionToken);
       // PrefHelper.put("puid", data.initUserSession?.user?.puid);
       // PrefHelper.put("firstName", data.initUserSession?.user?.firstName);
-      KPrefHelper.put(
-          KPrefHelper.CACHED_USER, data.initUserSession?.user);
+      KPrefHelper.put(KPrefHelper.CACHED_USER, data.initUserSession?.user);
     }
   }
 
@@ -70,6 +72,13 @@ abstract class KSessionData {
   //       SessionData.getSessionToken(), "SessionData.reload");
   //   SessionData.setup(response);
   // }
+
+  /// Reload the session data
+  static Future reload() async {
+    final response = await KServerHandler.resumeSession(
+        KSessionData.getSessionToken(), "SessionData.reload");
+    KSessionData.setup(response);
+  }
 
   /// Clear the session data
   static Future wipeSession() {
@@ -90,14 +99,23 @@ abstract class KSessionData {
 
   static KUserSession? get userSession => kUserSession;
 
+  static KGigNav? get gigNav => kUserSession?.gigNav;
+
   static KUser? get me => userSession?.user;
+
+  static bool get isAdmin => userSession?.isAdminReady ?? false;
+
+  static bool get isApprovedTutor => userSession?.isTutorReady ?? false;
+
+  static bool get isTutorOnline => userSession?.tutor?.isOnline ?? false;
+
+  static Tutor? get tutor => userSession?.tutor;
 
   static KAppNav? get appNav => userSession?.appCoreAppNav;
 
   // splashy home screen - effect base_screen/bottomNavBar and home_portal
   static bool get isSplashMode =>
-      (userSession?.appCoreAppNav?.splashMode ?? KAppNavStatus.ON) ==
-      KAppNavStatus.ON;
+      (userSession?.appCoreAppNav?.splashMode ?? KAppNav.ON) == KAppNav.ON;
 
   static bool get isGuest => userSession == null;
 }

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/value/kstyles.dart';
 import 'package:app_core/helper/khost_config.dart';
 import 'package:app_core/helper/klocation_helper.dart';
 import 'package:app_core/helper/ksession_data.dart';

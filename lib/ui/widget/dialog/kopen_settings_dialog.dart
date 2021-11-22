@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/value/kstyles.dart';
 
 class KOpenSettingsDialog extends StatelessWidget {
   final String body;

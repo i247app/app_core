@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:app_core/header/kassets.dart';
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/value/kstyles.dart';
 import 'package:app_core/helper/kcall_kit_helper.dart';
 import 'package:app_core/helper/knotif_stream_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';

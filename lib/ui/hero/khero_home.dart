@@ -1,5 +1,5 @@
 import 'package:app_core/header/kassets.dart';
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/value/kstyles.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/helper/ksnackbar_helper.dart';
 import 'package:app_core/helper/kutil.dart';
