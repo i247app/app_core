@@ -77,6 +77,9 @@ dependencies:
   # Vietnamese language parsing
   tiengviet: ^0.5.0
 
+  # QR code generation
+  qr_flutter: ^4.0.0 # ^3.2.0
+
   sliding_up_panel: 2.0.0+1
 
   confetti: ^0.6.0-nullsafety
@@ -100,11 +103,11 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
 
-# To add assets to your package, add an assets section, like this:
- assets:
-   - assets/
-   - assets/img/
-   - assets/audio/
+  # To add assets to your package, add an assets section, like this:
+  assets:
+    - assets/
+    - assets/img/
+    - assets/audio/
 #
 # For details regarding assets in packages, see
 # https://flutter.dev/assets-and-images/#from-packages

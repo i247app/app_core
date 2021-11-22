@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/value/kstyles.dart';
 
 class KIconLabel extends StatelessWidget {
   final String? asset;

@@ -1,4 +1,4 @@
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/widgets.dart';
 
 class KNoticeData {

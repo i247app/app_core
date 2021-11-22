@@ -4,7 +4,7 @@ import 'package:app_core/ui/widget/kimage_animation/kimage_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/khero_helper.dart';
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/value/kstyles.dart';
 
 class KHeroGridItem extends StatefulWidget {
   final KHero hero;

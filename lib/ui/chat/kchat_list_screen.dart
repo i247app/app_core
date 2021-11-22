@@ -13,7 +13,7 @@ import 'package:flutter/widgets.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/ui/chat/kchat_screen.dart';
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/value/kstyles.dart';
 import 'package:app_core/ui/widget/kembed_manager.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 

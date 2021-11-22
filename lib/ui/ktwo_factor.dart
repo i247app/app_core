@@ -1,7 +1,7 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/knotice_data.dart';
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/header/kstyles.dart';
+import 'package:app_core/value/kstyles.dart';
 import 'package:app_core/ui/widget/knumber_pad.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';

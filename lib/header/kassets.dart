@@ -1,12 +1,14 @@
 abstract class KAssets {
   static const String ASSET_BASE = "assets";
   static const String IMG_BASE = "$ASSET_BASE/img";
-  static const String SOUND_BASE = "$ASSET_BASE/audio/";
+  static const String SOUND_BASE = "$ASSET_BASE/audio";
+  static const String JSON_BASE = "$ASSET_BASE/json";
 
   static const String NOTIF_ICON = IMG_PHONE;
   static const String IMG_TRANSPARENCY = "$IMG_BASE/1x1_transparency.png";
   static const String IMG_WHITE = "$IMG_BASE/1x1_white.png";
   static const String IMG_PHONE = "$IMG_BASE/phone.png";
+  static const String IMG_PROFILE = "$IMG_BASE/profile.png";
   static const String IMG_HERO_EGG = "$IMG_BASE/heroegg.png";
   static const String IMG_TAMAGO_OUTLINE = "$IMG_BASE/tamago_outline.png";
   static const String IMG_TAMAGO_CHAN = "$IMG_BASE/tamago_chan.png";
@@ -40,8 +42,15 @@ abstract class KAssets {
   static const String IMG_TAMAGO_LIGHT_4 = "$IMG_BASE/tamago_light_04.png";
   static const String IMG_NEST = "$IMG_BASE/nest.png";
   static const String IMG_EGG = "$IMG_BASE/heroegg_without_space.png";
+  static const String IMG_QR_CODE = "$IMG_BASE/qr_code_small.png";
+  static const String IMG_QR_SCAN = "$IMG_BASE/scan_qr.png";
 
   // Sounds
   static const String SOUND_CORRECT = "correct.mp3";
   static const String SOUND_WRONG = "wrong.mp3";
+
+  /* JSON */
+  static const String JSON_SELF_STUDY_BEGINNER =
+      "$JSON_BASE/self_study_beginner.json";
+  static const String JSON_VIETNAM_BANKS = "$JSON_BASE/vietnam_banks.json";
 }

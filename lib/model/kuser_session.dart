@@ -1,6 +1,10 @@
+import 'package:app_core/model/business.dart';
+import 'package:app_core/model/business_member.dart';
 import 'package:app_core/model/kapp_nav.dart';
+import 'package:app_core/model/kgig_nav.dart';
 import 'package:app_core/model/ksystem_host_data.dart';
 import 'package:app_core/model/kuser.dart';
+import 'package:app_core/model/tutor.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'kuser_session.g.dart';
@@ -9,8 +13,20 @@ part 'kuser_session.g.dart';
 class KUserSession {
   static const String KTOKEN = "ktoken";
   static const String PUID = "puid";
+  static const String USER_MODE = "userMode";
+  static const String ONLINE_MODE = "onlineMode";
   static const String GOOGLE_MAP_API_KEY = "googleMapAPIKey";
+  static const String APP_NAV = "appNav";
+  static const String GIG_NAV = "gigNav";
+  static const String USER = "user";
+  static const String TUTOR = "tutor";
   static const String HOST_DATA = "hostData";
+  static const String IS_ADMIN_READY = "isAdminReady";
+  static const String IS_TUTOR_READY = "isTutorReady";
+  static const String IS_BIZ_READY = "isBizReady";
+  static const String IS_CUSUP_READY = "isCUSUPReady";
+  static const String BUSINESS = "business";
+  static const String BUSINESS_MEMBERS = "businessMembers";
 
   @JsonKey(name: KTOKEN)
   String? ktoken;
@@ -21,14 +37,66 @@ class KUserSession {
   @JsonKey(name: GOOGLE_MAP_API_KEY)
   String? googleMapAPIKey;
 
-  @JsonKey(ignore: true)
-  KAppNav? appCoreAppNav;
+  @JsonKey(name: APP_NAV)
+  KAppNav? appNav;
 
-  @JsonKey(name: "user")
+  @JsonKey(name: GIG_NAV)
+  KGigNav? gigNav;
+
+  @JsonKey(name: USER)
   KUser? user;
+
+  @JsonKey(name: TUTOR)
+  Tutor? tutor;
 
   @JsonKey(name: HOST_DATA)
   KSystemHostData? hostData;
+
+  @JsonKey(name: IS_ADMIN_READY)
+  bool? isAdminReady;
+
+  @JsonKey(name: IS_TUTOR_READY)
+  bool? isTutorReady;
+
+  @JsonKey(name: IS_BIZ_READY)
+  bool? isBizReady;
+
+  @JsonKey(name: IS_CUSUP_READY)
+  bool? isCusupReady;
+
+  @JsonKey(name: BUSINESS)
+  Business? business;
+
+  @JsonKey(name: BUSINESS_MEMBERS)
+  List<BusinessMember>? businessMembers;
+
+  /// Extra
+  @JsonKey(ignore: true)
+  KAppNav? get appCoreAppNav => this.appNav as KAppNav;
+
+  @JsonKey(ignore: true)
+  bool isGuest = false;
+
+  @JsonKey(ignore: true)
+  bool get isTutor =>
+      this.tutor != null && this.tutor!.tutorStatus != Tutor.STATUS_PENDING;
+
+  BusinessMember? getActiveMember() {
+    BusinessMember? activeMember;
+    try {
+      if (businessMembers != null) {
+        for (BusinessMember bm in businessMembers!) {
+          if (bm.isActive()) {
+            activeMember = bm;
+            break;
+          }
+        }
+      }
+    } catch (e) {
+      activeMember = null;
+    }
+    return activeMember;
+  }
 
   // JSON
   KUserSession();

@@ -1,0 +1,31 @@
+import 'package:app_core/helper/kmath_helper.dart';
+import 'package:app_core/helper/kmoney_helper.dart';
+import 'package:app_core/ui/widget/kcount_up.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+
+// large banner at top of screens
+class KCreditBanner extends StatelessWidget {
+  final String amount;
+  final String tokenName;
+
+  KCreditBanner({required this.amount, required this.tokenName});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: KCountUp(
+          begin: 0,
+          end: KMathHelper.parseDouble(this.amount),
+          duration: Duration(milliseconds: 750),
+          separator: this.tokenName == KMoney.USD ? "," : ".",
+          precision: this.tokenName == KMoney.USD ? 2 : 0,
+          style: Theme.of(context).textTheme.headline1,
+        ),
+      ),
+    );
+  }
+}
