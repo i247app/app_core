@@ -153,9 +153,11 @@ class _KMovingTapGameScreen extends StatefulWidget {
 
 class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
     with TickerProviderStateMixin {
+  AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
+  String? backgroundAudioFileUri;
 
   late Animation<Offset> _bouncingAnimation;
   late Animation<double> _moveUpAnimation, _heroScaleAnimation;
@@ -379,6 +381,9 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
       this.overlayID = null;
     }
 
+    audioPlayer.dispose();
+    backgroundAudioPlayer.dispose();
+
     // TODO: implement dispose
     super.dispose();
   }
@@ -399,6 +404,10 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
         }
 
         if (!isStart && currentLevel == 0) {
+          if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+            backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
+                isLocal: true);
+          }
           setState(() {
             isStart = true;
             time = 0;
@@ -493,12 +502,16 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
 
   void loadAudioAsset() async {
     try {
+      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.LOOP);
+
       Directory tempDir = await getTemporaryDirectory();
 
       ByteData correctAudioFileData =
           await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
       ByteData wrongAudioFileData =
           await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
+      ByteData backgroundAudioFileData = await rootBundle
+          .load("packages/app_core/assets/audio/background.mp3");
 
       File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
       await correctAudioTempFile
@@ -508,9 +521,15 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
       await wrongAudioTempFile
           .writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
 
+      File backgroundAudioTempFile = File('${tempDir.path}/background.mp3');
+      await backgroundAudioTempFile.writeAsBytes(
+          backgroundAudioFileData.buffer.asUint8List(),
+          flush: true);
+
       this.setState(() {
         this.correctAudioFileUri = correctAudioTempFile.uri.toString();
         this.wrongAudioFileUri = wrongAudioTempFile.uri.toString();
+        this.backgroundAudioFileUri = backgroundAudioTempFile.uri.toString();
       });
     } catch (e) {}
   }

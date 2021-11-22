@@ -145,10 +145,12 @@ class KShootingGameScreen extends StatefulWidget {
 
 class KShootingGameScreenState extends State<KShootingGameScreen>
     with TickerProviderStateMixin {
+  AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
   String? shootingAudioFileUri;
+  String? backgroundAudioFileUri;
 
   late Animation<Offset> _bouncingAnimation;
   late Animation<double> _barrelScaleAnimation,
@@ -434,6 +436,9 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
       this.overlayID = null;
     }
 
+    audioPlayer.dispose();
+    backgroundAudioPlayer.dispose();
+
     // TODO: implement dispose
     super.dispose();
   }
@@ -454,6 +459,10 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
         }
 
         if (!isStart && currentLevel == 0) {
+          if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+            backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
+                isLocal: true);
+          }
           setState(() {
             isStart = true;
             time = 0;
@@ -475,6 +484,8 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
 
   void loadAudioAsset() async {
     try {
+      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.LOOP);
+
       Directory tempDir = await getTemporaryDirectory();
 
       ByteData correctAudioFileData =
@@ -483,6 +494,8 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
           await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
       ByteData shootingAudioFileData =
           await rootBundle.load("packages/app_core/assets/audio/gun_fire.mp3");
+      ByteData backgroundAudioFileData = await rootBundle
+          .load("packages/app_core/assets/audio/background.mp3");
 
       File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
       await correctAudioTempFile
@@ -491,6 +504,11 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
       File wrongAudioTempFile = File('${tempDir.path}/wrong.mp3');
       await wrongAudioTempFile
           .writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
+
+      File backgroundAudioTempFile = File('${tempDir.path}/background.mp3');
+      await backgroundAudioTempFile.writeAsBytes(
+          backgroundAudioFileData.buffer.asUint8List(),
+          flush: true);
 
       File shootingAudioTempFile = File('${tempDir.path}/gun_fire.mp3');
       await shootingAudioTempFile.writeAsBytes(
@@ -501,6 +519,7 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
         this.correctAudioFileUri = correctAudioTempFile.uri.toString();
         this.wrongAudioFileUri = wrongAudioTempFile.uri.toString();
         this.shootingAudioFileUri = shootingAudioTempFile.uri.toString();
+        this.backgroundAudioFileUri = backgroundAudioTempFile.uri.toString();
       });
     } catch (e) {}
   }
