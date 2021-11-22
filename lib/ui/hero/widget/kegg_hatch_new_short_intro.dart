@@ -172,12 +172,12 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
             } else if (status == AnimationStatus.dismissed) {}
           });
 
+    this._barrelMovingAnimationController.forward();
+    this._barrelHeroMovingAnimationController.forward();
     Future.delayed(Duration(milliseconds: 1500), () {
       try {
         backgroundAudioPlayer.play(introAudioFileUri ?? "", isLocal: true);
       } catch(e) {}
-      this._barrelMovingAnimationController.forward();
-      this._barrelHeroMovingAnimationController.forward();
     });
   }
 
