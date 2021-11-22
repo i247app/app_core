@@ -1,3 +1,5 @@
+import 'package:flutter/widgets.dart';
+
 extension KList<T> on List<T> {
   List<T> intersperse(T t, {bool addToEnd = false}) {
     final result = <T>[];
@@ -8,4 +10,13 @@ extension KList<T> on List<T> {
     }
     return result;
   }
+}
+
+extension KWidget<T> on State<StatefulWidget> {
+  bool isKeyboardVisible() {
+    final insets = MediaQuery.of(this.context).viewInsets;
+    return insets.bottom != 0;
+  }
+
+  bool isKeyboardHidden() => !isKeyboardVisible();
 }
