@@ -160,7 +160,7 @@ abstract class KSessionData {
 
   static bool get isAdmin => userSession?.isAdminReady ?? false;
 
-  static bool get isChaoAdmin =>
+  static bool get isBizAdmin =>
       isBusinessMode &&
       activeMember != null &&
       activeMember!.role == BusinessMember.ROLE_ADMIN;
