@@ -34,6 +34,7 @@ class KIconLabel extends StatelessWidget {
             width: this.assetSize,
             color: this.assetColor,
             fit: BoxFit.contain,
+            package: 'app_core',
           )
         : Icon(this.icon, size: this.assetSize);
 
