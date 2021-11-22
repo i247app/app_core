@@ -9,6 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class CreditHome extends StatefulWidget {
+  final bool showTransferButton;
+
+  const CreditHome({this.showTransferButton = true});
+
   @override
   State<StatefulWidget> createState() => _CreditHomeState();
 }
@@ -56,7 +60,10 @@ class _CreditHomeState extends State<CreditHome> {
 
   @override
   Widget build(BuildContext context) {
-    final body = CreditFeed(defaultTokenName: this.defaultToken);
+    final body = CreditFeed(
+      defaultTokenName: defaultToken,
+      showTransferButton: showTransferButton,
+    );
 
     final showQrButton = IconButton(
       onPressed: showQR,

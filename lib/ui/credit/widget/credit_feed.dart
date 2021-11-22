@@ -14,8 +14,9 @@ import 'package:app_core/app_core.dart';
 
 class CreditFeed extends StatefulWidget {
   final String? defaultTokenName;
+  final bool showTransferButton;
 
-  CreditFeed({this.defaultTokenName});
+  CreditFeed({this.defaultTokenName, this.showTransferButton = true});
 
   @override
   State<StatefulWidget> createState() => _CreditFeedState();
@@ -279,11 +280,13 @@ class _CreditFeedState extends State<CreditFeed> {
                   ),
                   SizedBox(height: 12),
                   actions,
-                  SizedBox(height: 6),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
-                    child: transferButton,
-                  ),
+                  if (widget.showTransferButton) ...[
+                    SizedBox(height: 6),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      child: transferButton,
+                    ),
+                  ],
                   SizedBox(height: 12),
                   transactionList,
                 ],
