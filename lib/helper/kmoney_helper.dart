@@ -8,19 +8,25 @@ class KMoney {
   static const String CHAO = "CHAO";
 
   final String amount;
+  final int decimals; // TODO how many decimal places are available
   final String currency;
 
-  const KMoney({required this.amount, required this.currency});
+  const KMoney({
+    required this.amount,
+    required this.decimals,
+    required this.currency,
+  });
 
   KMoney operator +(KMoney m) => KMoney(
-        amount: KMathHelper.add(this.amount, m.amount),
-        currency: this.currency,
+        amount: KMathHelper.add(amount, m.amount),
+        decimals: decimals,
+        currency: currency,
       );
 
   @override
   String toString() => KMoneyHelper.prettyMoney(
-        amount: this.amount,
-        currency: this.currency,
+        amount: amount,
+        currency: currency,
       );
 }
 
