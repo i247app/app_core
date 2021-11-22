@@ -1,10 +1,15 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as Math;
+import 'dart:typed_data';
 
 import 'package:app_core/app_core.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/header/kassets.dart';
+import 'package:path_provider/path_provider.dart';
 
 class KEggHatchNewShortIntro extends StatefulWidget {
   final Function? onFinish;
@@ -17,6 +22,10 @@ class KEggHatchNewShortIntro extends StatefulWidget {
 
 class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
     with TickerProviderStateMixin {
+  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  String? correctAudioFileUri;
+  String? introAudioFileUri;
+
   late Animation<Offset> _bouncingAnimation;
   late Animation<double> _shakeTheTopAnimation,
       _barrelMovingAnimation,
@@ -36,6 +45,7 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
   double heroHeight = 40;
   double heroWidth = 40;
   bool isShooting = false;
+  bool isPlayIntroSound = true;
   int eggBreakStep = 0;
 
   int introShakeTime = 2;
@@ -43,6 +53,14 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
   @override
   void initState() {
     super.initState();
+
+    audioPlayer.onPlayerCompletion.listen((event) {
+      if (isPlayIntroSound && mounted) {
+        audioPlayer.play(this.introAudioFileUri ?? "", isLocal: true);
+      }
+    });
+
+    loadAudioAsset();
 
     _bouncingAnimationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 100))
@@ -68,6 +86,7 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
           if (status == AnimationStatus.completed) {
             if (introShakeTime - 1 == 0) {
               this.setState(() {
+                this.isPlayIntroSound = false;
                 this.eggBreakStep = this.eggBreakStep + 1;
                 Future.delayed(Duration(milliseconds: 750), () {
                   this.setState(() {
@@ -85,6 +104,10 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
                   });
                 });
               });
+              audioPlayer.stop();
+              try {
+                audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
+              } catch(e) {}
             }
             _shakeTheTopAnimationController.reverse();
           } else if (status == AnimationStatus.dismissed) {
@@ -167,8 +190,34 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
     _barrelMovingAnimationController.dispose();
     _barrelHeroMovingAnimationController.dispose();
     _barrelHeroSpinAnimationController.dispose();
+    audioPlayer.dispose();
     // TODO: implement dispose
     super.dispose();
+  }
+
+  void loadAudioAsset() async {
+    try {
+      Directory tempDir = await getTemporaryDirectory();
+
+      ByteData correctAudioFileData =
+          await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
+      ByteData introAudioFileData =
+          await rootBundle.load("packages/app_core/assets/audio/intro.mp3");
+
+      File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
+      await correctAudioTempFile
+          .writeAsBytes(correctAudioFileData.buffer.asUint8List(), flush: true);
+      File introAudioTempFile = File('${tempDir.path}/intro.mp3');
+      await introAudioTempFile
+          .writeAsBytes(introAudioFileData.buffer.asUint8List(), flush: true);
+
+      this.setState(() {
+        this.correctAudioFileUri = correctAudioTempFile.uri.toString();
+        this.introAudioFileUri = introAudioTempFile.uri.toString();
+      });
+
+      await audioPlayer.play(this.introAudioFileUri ?? "", isLocal: true);
+    } catch (e) {}
   }
 
   @override
