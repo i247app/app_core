@@ -85,7 +85,6 @@ class _CreditFeedState extends State<CreditFeed> {
   }
 
   Future setBalanceIndex(int index) async {
-    print("LOOKING FOR BAL INDEX - $index");
     KBalance bal;
     try {
       bal = this._balancesResponse!.balances![index];

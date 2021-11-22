@@ -72,10 +72,7 @@ class _CreditHomeState extends State<CreditHome> {
           borderRadius: BorderRadius.circular(2),
           color: Colors.white,
         ),
-        child: Image.asset(
-          KAssets.IMG_QR_CODE,
-          package: 'app_core',
-        ),
+        child: Image.asset(KAssets.IMG_QR_CODE, package: 'app_core'),
       ),
     );
 

@@ -24,12 +24,12 @@ class _CreditSendState extends State<CreditSend> {
   final TextEditingController userController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
 
-  bool isBalanceLoaded = false;
-  bool isTransferring = false;
-
   String? balance;
   String? balanceTokenName;
   KUser? selectedUser;
+
+  bool isBalanceLoaded = false;
+  bool isTransferring = false;
 
   @override
   void initState() {
@@ -71,9 +71,12 @@ class _CreditSendState extends State<CreditSend> {
     FocusScope.of(context).requestFocus(FocusNode()); // dismiss keyboard
   }
 
-  void transferCredit(
-      {required String puid, required String amount, String? tokenName}) async {
-    setState(() => this.isTransferring = true);
+  void transferCredit({
+    required String puid,
+    required String amount,
+    String? tokenName,
+  }) async {
+    setState(() => isTransferring = true);
 
     final response = await KServerHandler.transferCredit(
       puid: puid,
@@ -92,7 +95,6 @@ class _CreditSendState extends State<CreditSend> {
             ),
           ));
         }
-
         break;
       case 2104:
         // multiple toast unlti a better solution
@@ -119,13 +121,13 @@ class _CreditSendState extends State<CreditSend> {
               backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
         break;
     }
-    setState(() => this.isTransferring = false);
+    setState(() => isTransferring = false);
   }
 
   void toChooseContact() async {
-    final String? puid = await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (ctx) => OldContactSearch()));
-    if (puid != null) loadUserInfo(puid: puid);
+    final KUser? user = await Navigator.of(context)
+        .push(MaterialPageRoute(builder: (ctx) => KChooseContact()));
+    if (user?.puid != null) loadUserInfo(puid: user!.puid!);
   }
 
   void loadUserInfo({required String puid}) async {
@@ -192,7 +194,10 @@ class _CreditSendState extends State<CreditSend> {
         child: ListView(
           padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
           children: <Widget>[
-            balanceBanner,
+            Container(
+              height: 100,
+              child: balanceBanner,
+            ),
             Text(
               "Balance",
               style: Theme.of(context).textTheme.headline6,
