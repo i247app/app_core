@@ -581,7 +581,7 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
       });
 
       Future.delayed(Duration(milliseconds: 500), () {
-        if (currentQuestionIndex + 1 < questions.length) {
+        if (mounted && currentQuestionIndex + 1 < questions.length) {
           this.setState(() {
             currentQuestionIndex = currentQuestionIndex + 1;
             resetListAnswer();

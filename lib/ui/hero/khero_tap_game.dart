@@ -542,7 +542,7 @@ class _KTapGameScreenState extends State<_KTapGameScreen>
       });
 
       Future.delayed(Duration(milliseconds: 500), () {
-        if (currentQuestionIndex + 1 < questions.length) {
+        if (mounted && currentQuestionIndex + 1 < questions.length) {
           this.setState(() {
             currentQuestionIndex = currentQuestionIndex + 1;
             randomBoxPosition();

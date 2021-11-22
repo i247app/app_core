@@ -341,13 +341,17 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
       ..addStatusListener((status) {
         if (mounted && status == AnimationStatus.completed) {
           Future.delayed(Duration(milliseconds: 1000), () {
-            this.setState(() {
-              currentShowStarIndex = null;
-            });
-            Future.delayed(Duration(milliseconds: 500), () {
-              this._scaleAnimationController.reset();
-              this._moveUpAnimationController.reset();
-            });
+            if (mounted) {
+              this.setState(() {
+                currentShowStarIndex = null;
+              });
+              Future.delayed(Duration(milliseconds: 500), () {
+                if (mounted) {
+                  this._scaleAnimationController.reset();
+                  this._moveUpAnimationController.reset();
+                }
+              });
+            }
           });
         } else if (mounted && status == AnimationStatus.dismissed) {}
       });
@@ -650,7 +654,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
             });
 
             Future.delayed(Duration(milliseconds: 1500), () {
-              if (currentQuestionIndex + 1 < questions.length) {
+              if (mounted && currentQuestionIndex + 1 < questions.length) {
                 this.setState(() {
                   currentQuestionIndex = currentQuestionIndex + 1;
                   barrierX = [2, 2 + 1.5];
