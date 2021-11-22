@@ -23,6 +23,7 @@ class KEggHatchNewShortIntro extends StatefulWidget {
 class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
     with TickerProviderStateMixin {
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
   String? introAudioFileUri;
 
@@ -45,7 +46,6 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
   double heroHeight = 40;
   double heroWidth = 40;
   bool isShooting = false;
-  bool isPlayIntroSound = true;
   int eggBreakStep = 0;
 
   int introShakeTime = 2;
@@ -53,12 +53,6 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
   @override
   void initState() {
     super.initState();
-
-    audioPlayer.onPlayerCompletion.listen((event) {
-      if (isPlayIntroSound && mounted) {
-        audioPlayer.play(this.introAudioFileUri ?? "", isLocal: true);
-      }
-    });
 
     loadAudioAsset();
 
@@ -86,7 +80,6 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
           if (status == AnimationStatus.completed) {
             if (introShakeTime - 1 == 0) {
               this.setState(() {
-                this.isPlayIntroSound = false;
                 this.eggBreakStep = this.eggBreakStep + 1;
                 Future.delayed(Duration(milliseconds: 750), () {
                   this.setState(() {
@@ -104,7 +97,8 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
                   });
                 });
               });
-              audioPlayer.stop();
+              backgroundAudioPlayer.stop();
+              backgroundAudioPlayer.release();
               try {
                 audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
               } catch(e) {}
@@ -179,6 +173,9 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
           });
 
     Future.delayed(Duration(milliseconds: 1500), () {
+      try {
+        backgroundAudioPlayer.play(introAudioFileUri ?? "", isLocal: true);
+      } catch(e) {}
       this._barrelMovingAnimationController.forward();
       this._barrelHeroMovingAnimationController.forward();
     });
@@ -191,12 +188,15 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
     _barrelHeroMovingAnimationController.dispose();
     _barrelHeroSpinAnimationController.dispose();
     audioPlayer.dispose();
+    backgroundAudioPlayer.dispose();
     // TODO: implement dispose
     super.dispose();
   }
 
   void loadAudioAsset() async {
     try {
+      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.LOOP);
+
       Directory tempDir = await getTemporaryDirectory();
 
       ByteData correctAudioFileData =
@@ -215,8 +215,6 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
         this.correctAudioFileUri = correctAudioTempFile.uri.toString();
         this.introAudioFileUri = introAudioTempFile.uri.toString();
       });
-
-      await audioPlayer.play(this.introAudioFileUri ?? "", isLocal: true);
     } catch (e) {}
   }
 
