@@ -367,8 +367,10 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
               currentShowStarIndex = null;
             });
             Future.delayed(Duration(milliseconds: 500), () {
-              this._scaleAnimationController.reset();
-              this._moveUpAnimationController.reset();
+              if (mounted) {
+                this._scaleAnimationController.reset();
+                this._moveUpAnimationController.reset();
+              }
             });
           });
         } else if (mounted && status == AnimationStatus.dismissed) {}
