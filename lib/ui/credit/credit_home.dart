@@ -62,7 +62,7 @@ class _CreditHomeState extends State<CreditHome> {
   Widget build(BuildContext context) {
     final body = CreditFeed(
       defaultTokenName: defaultToken,
-      showTransferButton: showTransferButton,
+      showTransferButton: widget.showTransferButton,
     );
 
     final showQrButton = IconButton(
