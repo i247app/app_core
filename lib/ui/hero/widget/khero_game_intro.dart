@@ -25,6 +25,8 @@ class KGameIntro extends StatefulWidget {
 class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? shootingAudioFileUri;
+  String? introAudioFileUri;
+  String? backgroundAudioFileUri;
 
   late Animation<Offset> _bouncingAnimation;
   late Animation<double> _barrelScaleAnimation,
@@ -225,14 +227,27 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
 
       ByteData shootingAudioFileData =
           await rootBundle.load("packages/app_core/assets/audio/gun_fire.mp3");
+      ByteData introAudioFileData =
+          await rootBundle.load("packages/app_core/assets/audio/intro.mp3");
+      ByteData backgroundAudioFileData = await rootBundle
+          .load("packages/app_core/assets/audio/background.mp3");
 
       File shootingAudioTempFile = File('${tempDir.path}/gun_fire.mp3');
       await shootingAudioTempFile.writeAsBytes(
           shootingAudioFileData.buffer.asUint8List(),
           flush: true);
+      File introAudioTempFile = File('${tempDir.path}/intro.mp3');
+      await introAudioTempFile
+          .writeAsBytes(introAudioFileData.buffer.asUint8List(), flush: true);
+      File backgroundAudioTempFile = File('${tempDir.path}/background.mp3');
+      await backgroundAudioTempFile.writeAsBytes(
+          backgroundAudioFileData.buffer.asUint8List(),
+          flush: true);
 
       this.setState(() {
         this.shootingAudioFileUri = shootingAudioTempFile.uri.toString();
+        this.introAudioFileUri = introAudioTempFile.uri.toString();
+        this.backgroundAudioFileUri = backgroundAudioTempFile.uri.toString();
       });
     } catch (e) {}
   }
