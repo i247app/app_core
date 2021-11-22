@@ -47,6 +47,7 @@ class KCountUp extends StatefulWidget {
 class _KCountUpState extends State<KCountUp> with TickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
+
   double? _latestBegin;
   double? _latestEnd;
 

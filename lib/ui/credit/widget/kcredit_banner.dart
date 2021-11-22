@@ -22,7 +22,7 @@ class KCreditBanner extends StatelessWidget {
           end: KMathHelper.parseDouble(this.amount),
           duration: Duration(milliseconds: 750),
           separator: this.tokenName == KMoney.USD ? "," : ".",
-          precision: this.tokenName == KMoney.USD ? 2 : 0,
+          precision: this.tokenName == KMoney.VND ? 0 : 2,
           style: Theme.of(context).textTheme.headline1,
         ),
       ),
