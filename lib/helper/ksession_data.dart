@@ -1,15 +1,19 @@
+import 'package:app_core/helper/kamp_helper.dart';
 import 'package:app_core/helper/kcall_kit_helper.dart';
 import 'package:app_core/helper/kfcm_helper.dart';
 import 'package:app_core/helper/khost_config.dart';
 import 'package:app_core/helper/kpref_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/helper/kstring_helper.dart';
+import 'package:app_core/model/business.dart';
+import 'package:app_core/model/business_member.dart';
 import 'package:app_core/model/kapp_nav.dart';
 import 'package:app_core/model/kgig_nav.dart';
 import 'package:app_core/model/khost_info.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/model/kuser_session.dart';
 import 'package:app_core/header/ksession_init_data.dart';
+import 'package:app_core/model/store.dart';
 import 'package:app_core/model/tutor.dart';
 
 abstract class KSessionData {
@@ -17,6 +21,7 @@ abstract class KSessionData {
   static String? _fcmToken;
   static String? _voipToken;
   static KUserSession? kUserSession;
+  static Map<String, AMPData> _carts = {};
 
   // // // // // system
   static bool get hasActiveSession => getSessionToken() != null;
@@ -103,7 +108,7 @@ abstract class KSessionData {
 
   static KUser? get me => userSession?.user;
 
-  static bool get isAdmin => userSession?.isAdminReady ?? false;
+  // static bool get isAdmin => userSession?.isAdminReady ?? false;
 
   static bool get isApprovedTutor => userSession?.isTutorReady ?? false;
 
@@ -118,4 +123,51 @@ abstract class KSessionData {
       (userSession?.appCoreAppNav?.splashMode ?? KAppNav.ON) == KAppNav.ON;
 
   static bool get isGuest => userSession == null;
+
+  // // // // // app
+  static Map<String, AMPData> get carts => _carts;
+
+  static void setCart(AMPData ampData) {
+    if (ampData.key != null) carts[ampData.key!] = ampData;
+  }
+
+  static void removeCart(AMPData ampData) {
+    try {
+      carts.removeWhere((k, v) => k == ampData.key);
+    } catch (e) {}
+  }
+
+  static List<BusinessMember>? get businessMembers =>
+      getUserSession()?.businessMembers;
+
+  static Business? get activeBusiness =>
+      getUserSession() != null ? getUserSession()!.business : null;
+
+  static Store? get activeStore =>
+      activeBusiness != null && activeBusiness!.stores != null
+          ? activeBusiness!.stores!.first
+          : null; // should be only one??
+
+  static String get activeTokenName =>
+      activeBusiness != null ? activeBusiness!.tokenName ?? "" : "";
+
+  static String get activeBUID =>
+      activeBusiness != null ? activeBusiness!.buid ?? "" : "";
+
+  static BusinessMember? get activeMember =>
+      userSession != null ? userSession!.getActiveMember() : null;
+
+  static String get activeStoreID =>
+      activeStore != null ? activeStore!.storeID ?? "" : "";
+
+  static bool get isAdmin =>
+      isBusinessMode &&
+      activeMember != null &&
+      activeMember!.role == BusinessMember.ROLE_ADMIN;
+
+  static bool get isGlobalAdmin =>
+      // Util.isDebug || // remove this when done testing
+      (isBusinessMode && activeMember != null && activeMember!.buid == "808");
+
+  static bool get isBusinessMode => (activeBusiness != null) ? true : false;
 }

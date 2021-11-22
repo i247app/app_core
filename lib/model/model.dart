@@ -15,4 +15,7 @@ export 'kuser.dart';
 export 'kuser_session.dart';
 export 'kvoip_call_info.dart';
 export 'kimage_animation_parameters.dart';
-export 'khero.dart';
+export 'business.dart';
+export 'store.dart';
+export 'tutor.dart';
+export 'order.dart';
