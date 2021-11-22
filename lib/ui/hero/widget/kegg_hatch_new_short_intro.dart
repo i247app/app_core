@@ -174,7 +174,7 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
 
     this._barrelMovingAnimationController.forward();
     this._barrelHeroMovingAnimationController.forward();
-    Future.delayed(Duration(milliseconds: 1500), () {
+    Future.delayed(Duration(milliseconds: 1000), () {
       try {
         backgroundAudioPlayer.play(introAudioFileUri ?? "", isLocal: true);
       } catch(e) {}
