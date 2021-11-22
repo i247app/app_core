@@ -222,7 +222,8 @@ class _CreditSendState extends State<CreditSend> {
           onPressed: onScanQR,
           icon: Image.asset(
             KAssets.IMG_QR_SCAN,
-            color: Theme.of(context).accentColor,
+            package: 'app_core',
+            color: Theme.of(context).colorScheme.secondary,
           ),
         )
       ]),
@@ -265,7 +266,8 @@ class _CreditInput extends StatelessWidget {
             padding: EdgeInsets.all(10),
             child: Image.asset(
               this.asset!,
-              color: Theme.of(context).accentColor,
+              package: 'app_core',
+              color: Theme.of(context).colorScheme.secondary,
             ),
           );
 
