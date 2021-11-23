@@ -9,7 +9,7 @@ import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/header/kassets.dart';
 import 'package:app_core/ui/widget/kcontact_name_view.dart';
 import 'package:app_core/ui/widget/kicon_label.dart';
-import 'package:app_core/ui/widget/kkeyboard_killer.dart';
+import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 
 class KChooseContact extends StatefulWidget {

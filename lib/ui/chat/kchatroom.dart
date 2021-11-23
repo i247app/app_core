@@ -15,7 +15,7 @@ import 'package:app_core/helper/kpush_data_helper.dart';
 import 'package:app_core/model/kpush_data.dart';
 import 'package:app_core/header/no_overscroll.dart';
 import 'package:app_core/ui/widget/dialog/kopen_settings_dialog.dart';
-import 'package:app_core/ui/widget/kkeyboard_killer.dart';
+import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:collection/collection.dart';
 
 class KChatroom extends StatefulWidget {

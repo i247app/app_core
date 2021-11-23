@@ -5,7 +5,7 @@ import 'package:app_core/model/kuser.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/ui/chat/kchat_contact_listing.dart';
 import 'package:app_core/ui/widget/kchat_display_name.dart';
-import 'package:app_core/ui/widget/kkeyboard_killer.dart';
+import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
