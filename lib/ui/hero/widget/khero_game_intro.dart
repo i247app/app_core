@@ -23,8 +23,8 @@ class KGameIntro extends StatefulWidget {
 }
 
 class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
-  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
-
+  Completer<AudioPlayer> cAudioPlayer = Completer();
+  Completer<AudioPlayer> cBackgroundAudioPlayer = Completer();
   String? shootingAudioFileUri;
   String? introAudioFileUri;
 
@@ -102,6 +102,10 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
         if (introShakeTime > 0 && mounted) {
           if (status == AnimationStatus.completed) {
             if (introShakeTime - 1 == 0) {
+              cBackgroundAudioPlayer.future.then((ap) {
+                ap.stop();
+                ap.release();
+              });
               this.fire();
             }
             _shakeTheTopAnimationController.reverse();
@@ -205,9 +209,15 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
 
     this._barrelMovingAnimationController.forward();
     this._barrelHeroMovingAnimationController.forward();
-    Future.delayed(Duration(milliseconds: 1500), () async {
-      this.audioPlayer.setReleaseMode(ReleaseMode.LOOP);
-      this.audioPlayer.play(this.introAudioFileUri!);
+    Future.delayed(Duration(milliseconds: 500), () async {
+      try {
+        print("play");
+        final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+        ap.play(introAudioFileUri ?? "", isLocal: true);
+        cBackgroundAudioPlayer.complete(ap);
+      } catch (e) {
+        print(e);
+      }
     });
   }
 
@@ -219,20 +229,29 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
     _barrelMovingAnimationController.dispose();
     _barrelHeroMovingAnimationController.dispose();
     _barrelHeroSpinAnimationController.dispose();
+    cAudioPlayer.future.then((ap) {
+      ap.stop();
+      ap.dispose();
+    });
+    cBackgroundAudioPlayer.future.then((ap) {
+      ap.stop();
+      ap.dispose();
+    });
     // TODO: implement dispose
     super.dispose();
   }
 
   void loadAudioAsset() async {
     try {
+      cBackgroundAudioPlayer.future
+          .then((ap) => ap.setReleaseMode(ReleaseMode.LOOP));
+
       Directory tempDir = await getTemporaryDirectory();
 
       ByteData shootingAudioFileData =
           await rootBundle.load("packages/app_core/assets/audio/gun_fire.mp3");
       ByteData introAudioFileData =
           await rootBundle.load("packages/app_core/assets/audio/intro.mp3");
-      ByteData backgroundAudioFileData = await rootBundle
-          .load("packages/app_core/assets/audio/background.mp3");
 
       File shootingAudioTempFile = File('${tempDir.path}/gun_fire.mp3');
       await shootingAudioTempFile.writeAsBytes(
@@ -241,10 +260,6 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
       File introAudioTempFile = File('${tempDir.path}/intro.mp3');
       await introAudioTempFile
           .writeAsBytes(introAudioFileData.buffer.asUint8List(), flush: true);
-      File backgroundAudioTempFile = File('${tempDir.path}/background.mp3');
-      await backgroundAudioTempFile.writeAsBytes(
-          backgroundAudioFileData.buffer.asUint8List(),
-          flush: true);
 
       this.setState(() {
         this.shootingAudioFileUri = shootingAudioTempFile.uri.toString();
@@ -256,9 +271,9 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
   void fire() async {
     if (!isShooting && bulletsY.length < 3) {
       try {
-        await audioPlayer.release();
-        await audioPlayer.setReleaseMode(ReleaseMode.STOP);
-        await audioPlayer.play(shootingAudioFileUri ?? "", isLocal: true);
+        final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+        ap.play(shootingAudioFileUri ?? "", isLocal: true);
+        cAudioPlayer.complete(ap);
       } catch (e) {}
       if (!_barrelScaleAnimationController.isAnimating) {
         _barrelScaleAnimationController.forward();
