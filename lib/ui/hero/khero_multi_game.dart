@@ -36,6 +36,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
 
   int currentGame = 1;
   bool isShowShootingIntro = false;
+  bool isShowEndLevel = false;
 
   String get gameBackground =>
       BG_IMAGES[Math.Random().nextInt(BG_IMAGES.length)];
@@ -49,6 +50,9 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
   }
 
   void showHeroGameLevelOverlay(Function() onFinish) async {
+    this.setState(() {
+      isShowEndLevel = true;
+    });
     final heroGameLevel = KHeroGameLevel(
       onFinish: onFinish,
     );
@@ -90,9 +94,13 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
 
     final shootingGame = KShootingGameScreen(
       hero: widget.hero,
+      isShowEndLevel: isShowEndLevel,
       onFinishLevel: (level) {
         showHeroGameLevelOverlay(
           () {
+            this.setState(() {
+              isShowEndLevel = false;
+            });
             if (this.overlayID != null) {
               KOverlayHelper.removeOverlay(this.overlayID!);
               this.overlayID = null;
