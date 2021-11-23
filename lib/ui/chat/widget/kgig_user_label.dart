@@ -30,10 +30,7 @@ class KGigUserLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final image = KUserAvatar(
-      initial: this.user.firstName,
-      imageURL: this.user.avatarURL,
-    );
+    final image = KUserAvatar.fromUser(user);
 
     final nameView = FittedBox(
       fit: BoxFit.contain,

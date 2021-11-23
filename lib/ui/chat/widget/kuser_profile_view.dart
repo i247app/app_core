@@ -75,7 +75,7 @@ class _ConcreteKUserProfileView extends StatelessWidget {
         child: DefaultTextStyle(
           style: TextStyle(color: Colors.white),
           child: Container(
-            height: 60,
+            height: 40,
             child: KGigUserLabel(user),
           ),
         ),

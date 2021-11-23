@@ -33,9 +33,12 @@ class KDetailView extends StatelessWidget {
                   ...this.actions!.intersperse(SizedBox(width: 2)),
               ],
             ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 60, vertical: 10),
-              child: this.header,
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 60, vertical: 10),
+                child: this.header,
+              ),
             ),
           ],
         ),

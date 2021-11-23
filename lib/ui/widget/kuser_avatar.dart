@@ -64,8 +64,8 @@ class KUserAvatar extends StatelessWidget {
             : FittedBox(
                 fit: BoxFit.contain,
                 child: CircleAvatar(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  foregroundColor: Theme.of(context).backgroundColor,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
                   child: Text(
                     KStringHelper.substring(initial!, 0, 2).toUpperCase(),
                     textAlign: TextAlign.center,
@@ -89,9 +89,13 @@ class KUserAvatar extends StatelessWidget {
 
     final body = AspectRatio(
       aspectRatio: 1,
-      child: ClipOval(child: raw),
+      child: Container(
+        width: size,
+        height: size,
+        child: Center(child: ClipOval(child: raw)),
+      ),
     );
 
-    return Container(width: size, height: size, child: Center(child: body));
+    return body;
   }
 }
