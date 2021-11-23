@@ -101,7 +101,7 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
               backgroundAudioPlayer.release();
               try {
                 audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
-              } catch(e) {}
+              } catch (e) {}
             }
             _shakeTheTopAnimationController.reverse();
           } else if (status == AnimationStatus.dismissed) {
@@ -177,19 +177,20 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
     Future.delayed(Duration(milliseconds: 500), () {
       try {
         backgroundAudioPlayer.play(introAudioFileUri ?? "", isLocal: true);
-      } catch(e) {}
+      } catch (e) {}
     });
   }
 
   @override
   void dispose() {
+    audioPlayer.stop();
+    audioPlayer.dispose();
+    backgroundAudioPlayer.stop();
+    backgroundAudioPlayer.dispose();
     _shakeTheTopAnimationController.dispose();
     _barrelMovingAnimationController.dispose();
     _barrelHeroMovingAnimationController.dispose();
     _barrelHeroSpinAnimationController.dispose();
-    audioPlayer.dispose();
-    backgroundAudioPlayer.dispose();
-    // TODO: implement dispose
     super.dispose();
   }
 
