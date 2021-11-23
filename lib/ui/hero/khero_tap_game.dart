@@ -107,7 +107,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                   //   ),
                   // ),
                   Expanded(
-                    child: _KTapGameScreen(
+                    child: KTapGameScreen(
                       hero: widget.hero,
                       isShowEndLevel: isShowEndLevel,
                       onFinishLevel: (level) {
@@ -147,13 +147,13 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
   }
 }
 
-class _KTapGameScreen extends StatefulWidget {
+class KTapGameScreen extends StatefulWidget {
   final KHero? hero;
   final Function(int)? onChangeLevel;
   final Function? onFinishLevel;
   final bool isShowEndLevel;
 
-  const _KTapGameScreen({
+  const KTapGameScreen({
     this.hero,
     this.onChangeLevel,
     this.onFinishLevel,
@@ -164,7 +164,7 @@ class _KTapGameScreen extends StatefulWidget {
   _KTapGameScreenState createState() => _KTapGameScreenState();
 }
 
-class _KTapGameScreenState extends State<_KTapGameScreen>
+class _KTapGameScreenState extends State<KTapGameScreen>
     with TickerProviderStateMixin {
   AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);

@@ -6,12 +6,15 @@ import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/ui/hero/khero_jump_multirow_game.dart';
 import 'package:app_core/ui/hero/khero_jump_over_game.dart';
+import 'package:app_core/ui/hero/khero_tap_game.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_intro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/ui/hero/widget/khero_game_level.dart';
 import 'package:app_core/header/kassets.dart';
+
+import 'khero_moving_tap_game.dart';
 
 class KHeroMultiGame extends StatefulWidget {
   final KHero? hero;
@@ -74,9 +77,13 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
   Widget build(BuildContext context) {
     final jumpOverGame = KJumpGameScreen(
       hero: widget.hero,
+      isShowEndLevel: isShowEndLevel,
       onFinishLevel: (level) {
         showHeroGameLevelOverlay(
           () {
+            this.setState(() {
+              isShowEndLevel = false;
+            });
             if (this.overlayID != null) {
               KOverlayHelper.removeOverlay(this.overlayID!);
               this.overlayID = null;
@@ -117,9 +124,13 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
 
     final jumpMultiRowGame = KJumpMultiRowGameScreen(
       hero: widget.hero,
+      isShowEndLevel: isShowEndLevel,
       onFinishLevel: (level) {
         showHeroGameLevelOverlay(
           () {
+            this.setState(() {
+              isShowEndLevel = false;
+            });
             if (this.overlayID != null) {
               KOverlayHelper.removeOverlay(this.overlayID!);
               this.overlayID = null;
@@ -130,6 +141,52 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
       onChangeLevel: (_) => this.setState(() {
         this.setState(() {
           this.currentGame = 4;
+        });
+      }),
+    );
+
+    final tapGame = KTapGameScreen(
+      hero: widget.hero,
+      isShowEndLevel: isShowEndLevel,
+      onFinishLevel: (level) {
+        showHeroGameLevelOverlay(
+          () {
+            this.setState(() {
+              isShowEndLevel = false;
+            });
+            if (this.overlayID != null) {
+              KOverlayHelper.removeOverlay(this.overlayID!);
+              this.overlayID = null;
+            }
+          },
+        );
+      },
+      onChangeLevel: (_) => this.setState(() {
+        this.setState(() {
+          this.currentGame = 5;
+        });
+      }),
+    );
+
+    final tapMovingGame = KMovingTapGameScreen(
+      hero: widget.hero,
+      isShowEndLevel: isShowEndLevel,
+      onFinishLevel: (level) {
+        showHeroGameLevelOverlay(
+          () {
+            this.setState(() {
+              isShowEndLevel = false;
+            });
+            if (this.overlayID != null) {
+              KOverlayHelper.removeOverlay(this.overlayID!);
+              this.overlayID = null;
+            }
+          },
+        );
+      },
+      onChangeLevel: (_) => this.setState(() {
+        this.setState(() {
+          this.currentGame = 6;
         });
       }),
     );
@@ -165,10 +222,14 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
                         : (currentGame == 1
                             ? jumpOverGame
                             : (currentGame == 2
-                                ? shootingGame
+                                ? tapGame
                                 : (currentGame == 3
-                                    ? jumpMultiRowGame
-                                    : Container()))),
+                                    ? shootingGame
+                                    : (currentGame == 4
+                                        ? tapMovingGame
+                                        : (currentGame == 5
+                                            ? jumpMultiRowGame
+                                            : Container()))))),
                   ),
                 ],
               ),
