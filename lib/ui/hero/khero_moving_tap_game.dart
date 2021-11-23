@@ -40,6 +40,7 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
   int? overlayID;
 
   int currentLevel = 0;
+  bool isShowEndLevel = false;
 
   void showHeroGameEndOverlay(Function() onFinish) async {
     final heroGameEnd = KHeroGameEnd(
@@ -50,6 +51,9 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
   }
 
   void showHeroGameLevelOverlay(Function() onFinish) async {
+    this.setState(() {
+      this.isShowEndLevel = true;
+    });
     final heroGameLevel = KHeroGameLevel(onFinish: onFinish);
     showCustomOverlay(heroGameLevel);
   }
@@ -58,7 +62,7 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
     final overlay = Stack(
       fit: StackFit.expand,
       children: [
-        Container(color: Colors.black.withOpacity(0.6)),
+        // Container(color: Colors.black.withOpacity(0.6)),
         Align(
           alignment: Alignment.topCenter,
           child: view,
@@ -105,10 +109,14 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
                   Expanded(
                     child: _KMovingTapGameScreen(
                       hero: widget.hero,
+                      isShowEndLevel: isShowEndLevel,
                       onFinishLevel: (level) {
                         if (level <= 3) {
                           this.showHeroGameLevelOverlay(
                             () {
+                              this.setState(() {
+                                this.isShowEndLevel = false;
+                              });
                               if (this.overlayID != null) {
                                 KOverlayHelper.removeOverlay(this.overlayID!);
                                 this.overlayID = null;
@@ -143,9 +151,14 @@ class _KMovingTapGameScreen extends StatefulWidget {
   final KHero? hero;
   final Function(int)? onChangeLevel;
   final Function? onFinishLevel;
+  final bool isShowEndLevel;
 
-  const _KMovingTapGameScreen(
-      {this.hero, this.onChangeLevel, this.onFinishLevel});
+  const _KMovingTapGameScreen({
+    this.hero,
+    this.onChangeLevel,
+    this.onFinishLevel,
+    required this.isShowEndLevel,
+  });
 
   @override
   _KMovingTapGameScreenState createState() => _KMovingTapGameScreenState();
@@ -510,6 +523,9 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
       if (currentLevel == 0) {
         showCountDownOverlay();
       } else {
+        if (!this.isBackgroundSoundPlaying) {
+          toggleBackgroundSound();
+        }
         setState(() {
           isStart = true;
           time = 0;
@@ -614,6 +630,9 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
             });
           });
         } else {
+          if (this.isBackgroundSoundPlaying) {
+            toggleBackgroundSound();
+          }
           this.setState(() {
             if (rightAnswerCount / questions.length >=
                 levelHardness[currentLevel]) {
@@ -647,6 +666,9 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
   }
 
   void restartGame() {
+    if (!this.isBackgroundSoundPlaying) {
+      toggleBackgroundSound();
+    }
     if (currentLevel + 1 < levelHardness.length &&
         (rightAnswerCount / questions.length) >= levelHardness[currentLevel]) {
       this.setState(() {
@@ -758,7 +780,7 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
               ),
             ),
           ),
-        if (!isStart && !isShowCountDown)
+        if (!isStart && !isShowCountDown && !widget.isShowEndLevel)
           Align(
             alignment: Alignment.center,
             child: Padding(
@@ -812,13 +834,57 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
                       height: 16,
                     ),
                     canAdvance
-                        ? Text(
-                            "Tap To Play Next Level",
-                            style: TextStyle(fontSize: 18, color: Colors.white),
+                        ? Container(
+                            width: MediaQuery.of(context).size.width * 0.75,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 15),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(40),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  blurRadius: 8,
+                                  offset: Offset(2, 6),
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              "NEXT LEVEL",
+                              textScaleFactor: 1.0,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 35,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           )
-                        : Text(
-                            "Tap To Re-play Level",
-                            style: TextStyle(fontSize: 18, color: Colors.white),
+                        : Container(
+                            width: MediaQuery.of(context).size.width * 0.75,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 15),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(40),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  blurRadius: 8,
+                                  offset: Offset(2, 6),
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              "REPLAY LEVEL",
+                              textScaleFactor: 1.0,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 35,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                   ],
                   if (!canRestartGame) ...[
@@ -833,7 +899,7 @@ class _KMovingTapGameScreenState extends State<_KMovingTapGameScreen>
           ),
         if (!isStart)
           GestureDetector(
-              onTap: isShowCountDown
+              onTap: (isShowCountDown || widget.isShowEndLevel)
                   ? () {}
                   : (result == null
                       ? start
