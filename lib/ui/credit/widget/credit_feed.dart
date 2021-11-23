@@ -23,6 +23,9 @@ class CreditFeed extends StatefulWidget {
 }
 
 class _CreditFeedState extends State<CreditFeed> {
+  late final String initialToken = widget.defaultTokenName ??
+      (KLocaleHelper.isUSA ? KMoney.USD : KMoney.VND);
+
   GetBalancesResponse? _balancesResponse;
   GetCreditTransactionsResponse? _transactionsResponse;
 
@@ -34,23 +37,18 @@ class _CreditFeedState extends State<CreditFeed> {
     KBalance dummyBalance = KBalance()
       ..puid = "0"
       ..amount = "0"
-      ..tokenName = this.tokenToLookFor;
+      ..tokenName = initialToken;
     try {
-      return this._balancesResponse?.balances?[this.balanceIndex] ??
-          dummyBalance;
+      return _balancesResponse?.balances?[balanceIndex] ?? dummyBalance;
     } catch (_) {
       return dummyBalance;
     }
   }
 
-  List<KCreditTransaction> get transactions =>
-      this._transactionsResponse?.transactions ?? [];
+  String get tokenToLookFor => balance?.tokenName ?? initialToken;
 
-  String get tokenToLookFor =>
-      widget.defaultTokenName ??
-      (KLocaleHelper.currentLocale.country == KLocaleHelper.COUNTRY_US
-          ? KMoney.USD
-          : KMoney.VND);
+  List<KCreditTransaction> get transactions =>
+      _transactionsResponse?.transactions ?? [];
 
   @override
   void initState() {
@@ -67,21 +65,20 @@ class _CreditFeedState extends State<CreditFeed> {
 
   void loadData() async {
     final response = await KServerHandler.getCreditBalances();
-    if (this.mounted) {
-      setState(() => this._balancesResponse = response);
+    if (mounted) {
+      setState(() => _balancesResponse = response);
 
       int? index;
       try {
-        index = this
-            ._balancesResponse
-            ?.balances
-            ?.indexWhere((b) => b.tokenName == this.tokenToLookFor);
+        index = _balancesResponse?.balances
+            ?.indexWhere((b) => b.tokenName == tokenToLookFor);
       } catch (_) {}
-      setBalanceIndex((index ?? -1) == -1 ? 0 : index!);
+      if ((index ?? -1) == -1) {
+        index = 0;
+      }
+      setBalanceIndex(index!);
     }
-    this.setState(() {
-      this.isLoaded = true;
-    });
+    setState(() => isLoaded = true);
   }
 
   Future setBalanceIndex(int index) async {
