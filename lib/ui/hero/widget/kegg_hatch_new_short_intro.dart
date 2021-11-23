@@ -22,8 +22,8 @@ class KEggHatchNewShortIntro extends StatefulWidget {
 
 class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
     with TickerProviderStateMixin {
-  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
-  AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  Completer<AudioPlayer> cAudioPlayer = Completer();
+  Completer<AudioPlayer> cBackgroundAudioPlayer = Completer();
   String? correctAudioFileUri;
   String? introAudioFileUri;
 
@@ -97,10 +97,14 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
                   });
                 });
               });
-              backgroundAudioPlayer.stop();
-              backgroundAudioPlayer.release();
+              cBackgroundAudioPlayer.future.then((ap) {
+                ap.stop();
+                ap.release();
+              });
               try {
-                audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
+                final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+                ap.play(correctAudioFileUri ?? "", isLocal: true);
+                cAudioPlayer.complete(ap);
               } catch (e) {}
             }
             _shakeTheTopAnimationController.reverse();
@@ -174,19 +178,26 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
 
     this._barrelMovingAnimationController.forward();
     this._barrelHeroMovingAnimationController.forward();
+
     Future.delayed(Duration(milliseconds: 500), () {
       try {
-        backgroundAudioPlayer.play(introAudioFileUri ?? "", isLocal: true);
+        final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+        ap.play(introAudioFileUri ?? "", isLocal: true);
+        cBackgroundAudioPlayer.complete(ap);
       } catch (e) {}
     });
   }
 
   @override
   void dispose() {
-    audioPlayer.stop();
-    audioPlayer.dispose();
-    backgroundAudioPlayer.stop();
-    backgroundAudioPlayer.dispose();
+    cAudioPlayer.future.then((ap) {
+      ap.stop();
+      ap.dispose();
+    });
+    cBackgroundAudioPlayer.future.then((ap) {
+      ap.stop();
+      ap.dispose();
+    });
     _shakeTheTopAnimationController.dispose();
     _barrelMovingAnimationController.dispose();
     _barrelHeroMovingAnimationController.dispose();
@@ -196,7 +207,8 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
 
   void loadAudioAsset() async {
     try {
-      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.LOOP);
+      cBackgroundAudioPlayer.future
+          .then((ap) => ap.setReleaseMode(ReleaseMode.LOOP));
 
       Directory tempDir = await getTemporaryDirectory();
 
