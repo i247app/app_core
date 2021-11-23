@@ -126,48 +126,36 @@ abstract class KSessionData {
   static Map<String, AMPData> get carts => _carts;
 
   static void setCart(AMPData ampData) {
-    if (ampData.key != null) carts[ampData.key!] = ampData;
+    if ((ampData.key ?? "").isNotEmpty) carts[ampData.key!] = ampData;
   }
 
-  static void removeCart(AMPData ampData) {
-    try {
+  static void removeCart(AMPData ampData) =>
       carts.removeWhere((k, v) => k == ampData.key);
-    } catch (e) {}
-  }
 
   static List<BusinessMember>? get businessMembers =>
       getUserSession()?.businessMembers;
 
-  static Business? get activeBusiness =>
-      getUserSession() != null ? getUserSession()!.business : null;
+  static Business? get activeBusiness => getUserSession()?.business;
 
-  static Store? get activeStore =>
-      activeBusiness != null && activeBusiness!.stores != null
-          ? activeBusiness!.stores!.first
-          : null; // should be only one??
+  static Store? get activeStore => (activeBusiness?.stores ?? []).isNotEmpty
+      ? activeBusiness!.stores!.first
+      : null; // should be only one??
 
-  static String get activeTokenName =>
-      activeBusiness != null ? activeBusiness!.tokenName ?? "" : "";
+  static String get activeTokenName => activeBusiness?.tokenName ?? "";
 
-  static String get activeBUID =>
-      activeBusiness != null ? activeBusiness!.buid ?? "" : "";
+  static String get activeBUID => activeBusiness?.buid ?? "";
 
-  static BusinessMember? get activeMember =>
-      userSession != null ? userSession!.getActiveMember() : null;
+  static BusinessMember? get activeMember => userSession?.getActiveMember();
 
-  static String get activeStoreID =>
-      activeStore != null ? activeStore!.storeID ?? "" : "";
+  static String get activeStoreID => activeStore?.storeID ?? "";
 
   static bool get isAdmin => userSession?.isAdminReady ?? false;
 
   static bool get isBizAdmin =>
-      isBusinessMode &&
-      activeMember != null &&
-      activeMember!.role == BusinessMember.ROLE_ADMIN;
+      isBusinessMode && activeMember?.role == BusinessMember.ROLE_ADMIN;
 
   static bool get isGlobalAdmin =>
-      // Util.isDebug || // remove this when done testing
-      (isBusinessMode && activeMember != null && activeMember!.buid == "808");
+      isBusinessMode && activeMember?.buid == "808";
 
   static bool get isBusinessMode => activeBusiness != null;
 }
