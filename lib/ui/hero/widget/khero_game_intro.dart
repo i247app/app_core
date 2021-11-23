@@ -24,9 +24,9 @@ class KGameIntro extends StatefulWidget {
 
 class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+
   String? shootingAudioFileUri;
   String? introAudioFileUri;
-  String? backgroundAudioFileUri;
 
   late Animation<Offset> _bouncingAnimation;
   late Animation<double> _barrelScaleAnimation,
@@ -203,9 +203,11 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
       }
     });
 
-    Future.delayed(Duration(milliseconds: 1500), () {
-      this._barrelMovingAnimationController.forward();
-      this._barrelHeroMovingAnimationController.forward();
+    this._barrelMovingAnimationController.forward();
+    this._barrelHeroMovingAnimationController.forward();
+    Future.delayed(Duration(milliseconds: 1500), () async {
+      this.audioPlayer.setReleaseMode(ReleaseMode.LOOP);
+      this.audioPlayer.play(this.introAudioFileUri!);
     });
   }
 
@@ -247,7 +249,6 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
       this.setState(() {
         this.shootingAudioFileUri = shootingAudioTempFile.uri.toString();
         this.introAudioFileUri = introAudioTempFile.uri.toString();
-        this.backgroundAudioFileUri = backgroundAudioTempFile.uri.toString();
       });
     } catch (e) {}
   }
@@ -255,6 +256,8 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
   void fire() async {
     if (!isShooting && bulletsY.length < 3) {
       try {
+        await audioPlayer.release();
+        await audioPlayer.setReleaseMode(ReleaseMode.STOP);
         await audioPlayer.play(shootingAudioFileUri ?? "", isLocal: true);
       } catch (e) {}
       if (!_barrelScaleAnimationController.isAnimating) {
