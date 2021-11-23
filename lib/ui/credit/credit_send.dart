@@ -5,8 +5,7 @@ import 'package:app_core/header/no_overscroll.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/ui/credit/credit_receipt.dart';
 import 'package:app_core/ui/credit/widget/kcredit_banner.dart';
-import 'package:app_core/ui/widget/kkeyboard_killer.dart';
-import 'package:app_core/ui/widget/old_contact_search.dart';
+import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -100,25 +99,15 @@ class _CreditSendState extends State<CreditSend> {
         // multiple toast unlti a better solution
         KToastHelper.show("Insufficient funds",
             backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
-        KToastHelper.show("Insufficient funds",
-            backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
         // do noting
         break;
       case 400:
         KToastHelper.show("Transfer failed",
             backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
-        KToastHelper.show("Transfer failed",
-            backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
         break;
       default:
-        KToastHelper.show("Transfer failed",
+        KToastHelper.show(response.kmessage ?? "Transfer failed",
             backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
-        if (response.kmessage != null && !response.kmessage!.isEmpty)
-          KToastHelper.show(response.kmessage ?? "",
-              backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
-        else
-          KToastHelper.show("Transfer failed",
-              backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
         break;
     }
     setState(() => isTransferring = false);

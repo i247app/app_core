@@ -1,9 +1,9 @@
+import 'package:app_core/model/kchat.dart';
 import 'package:app_core/model/kchat_member.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/helper/kstring_helper.dart';
-import 'package:app_core/model/kchat.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/header/kassets.dart';
 
@@ -11,41 +11,50 @@ class KUserAvatar extends StatelessWidget {
   final String? initial;
   final String? imageURL;
   final Image? imagePlaceHolder;
+  final double? size;
 
-  const KUserAvatar({this.initial, this.imageURL, this.imagePlaceHolder});
+  Image get placeholderImage =>
+      imagePlaceHolder ?? Image.asset(KAssets.IMG_TRANSPARENCY);
 
-  factory KUserAvatar.fromUser(KUser? user, {Image? imagePlaceHolder}) =>
+  const KUserAvatar({
+    this.initial,
+    this.imageURL,
+    this.imagePlaceHolder,
+    this.size,
+  });
+
+  factory KUserAvatar.fromUser(
+    KUser? user, {
+    Image? imagePlaceHolder,
+    double? size,
+  }) =>
       KUserAvatar(
         initial: user?.firstInitial,
         imageURL: user?.avatarURL,
         imagePlaceHolder: imagePlaceHolder,
+        size: size,
       );
 
-  factory KUserAvatar.fromChatMember(KChatMember? member,
-          {Image? imagePlaceHolder}) =>
+  factory KUserAvatar.fromChatMember(KChatMember? member, {double? size}) =>
       KUserAvatar(
         initial: member?.firstInitial,
         imageURL: member?.avatar,
-        imagePlaceHolder: imagePlaceHolder,
+        size: size,
       );
 
-  factory KUserAvatar.fromChat(KChat? chat, {Image? imagePlaceHolder}) =>
-      KUserAvatar(
+  factory KUserAvatar.fromChat(KChat? chat, {double? size}) => KUserAvatar(
         initial: chat?.chatName,
+        size: size,
         imageURL: (chat?.kMembers ?? []).length < 2
             ? null
             : chat?.kMembers
                 ?.where((member) => member.puid != KSessionData.me?.puid)
                 .first
                 .avatar,
-        imagePlaceHolder: imagePlaceHolder,
       );
 
   factory KUserAvatar.me({Image? imagePlaceHolder}) =>
       KUserAvatar.fromUser(KSessionData.me, imagePlaceHolder: imagePlaceHolder);
-
-  Image get placeholderImage =>
-      imagePlaceHolder ?? Image.asset(KAssets.IMG_TRANSPARENCY);
 
   @override
   Widget build(BuildContext context) {
@@ -55,8 +64,8 @@ class KUserAvatar extends StatelessWidget {
             : FittedBox(
                 fit: BoxFit.contain,
                 child: CircleAvatar(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  foregroundColor: Theme.of(context).backgroundColor,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Colors.white,
                   child: Text(
                     KStringHelper.substring(initial!, 0, 2).toUpperCase(),
                     textAlign: TextAlign.center,
@@ -80,7 +89,11 @@ class KUserAvatar extends StatelessWidget {
 
     final body = AspectRatio(
       aspectRatio: 1,
-      child: ClipOval(child: raw),
+      child: Container(
+        width: size,
+        height: size,
+        child: Center(child: ClipOval(child: raw)),
+      ),
     );
 
     return body;
