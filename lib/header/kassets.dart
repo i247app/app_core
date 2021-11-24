@@ -3,6 +3,11 @@ abstract class KAssets {
   static const String IMG_BASE = "$ASSET_BASE/img";
   static const String SOUND_BASE = "$ASSET_BASE/audio";
   static const String JSON_BASE = "$ASSET_BASE/json";
+  static const String I18N_BASE = "$ASSET_BASE/lingo";
+
+  /* old_lingo */
+  static const String I18N_EN = "$I18N_BASE/en.json";
+  static const String I18N_VN = "$I18N_BASE/vi.json";
 
   static const String NOTIF_ICON = IMG_PHONE;
   static const String IMG_TRANSPARENCY = "$IMG_BASE/1x1_transparency.png";

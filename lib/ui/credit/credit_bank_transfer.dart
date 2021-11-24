@@ -5,6 +5,7 @@ import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/helper/ksnackbar_helper.dart';
 import 'package:app_core/ui/kbank_picker.dart';
 import 'package:app_core/ui/widget/profile_input.dart';
+import 'package:app_core/value/kphrases.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
 
@@ -117,7 +118,7 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
     );
 
     final bank = KProfileInput(
-      heading: "Bank",
+      heading: KPhrases.bank,
       headingWidth: 105,
       readOnly: true,
       customChild: KBankPicker(
@@ -131,8 +132,8 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
       controller: accountNameCtrl,
       headingWidth: 105,
       readOnly: false,
-      heading: "Account Name",
-      hintText: "Account Name",
+      heading: KPhrases.accountName,
+      hintText: KPhrases.accountNamePlaceHolder,
       isRequired: true,
     );
 
@@ -141,8 +142,8 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
       controller: bankAccountNumberCtrl,
       headingWidth: 105,
       readOnly: false,
-      heading: "Account Number",
-      hintText: "Account Number",
+      heading: KPhrases.accountNumber,
+      hintText: KPhrases.accountNumberPlaceHolder,
       isRequired: true,
     );
 
@@ -151,8 +152,8 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
       controller: amountCtrl,
       headingWidth: 105,
       readOnly: false,
-      heading: 'Amount (${widget.tokenName})',
-      hintText: "Amount",
+      heading: '${KPhrases.amount} (${widget.tokenName})',
+      hintText: KPhrases.amountPlaceHolder,
       isRequired: true,
     );
 
@@ -199,8 +200,8 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.action == BankTransferAction.withdraw
-            ? "Withdrawal"
-            : "Deposit"),
+            ? KPhrases.withdrawal
+            : KPhrases.deposit),
       ),
       body: SafeArea(child: body),
     );

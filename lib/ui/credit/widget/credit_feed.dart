@@ -9,6 +9,7 @@ import 'package:app_core/ui/credit/credit_receipt.dart';
 import 'package:app_core/ui/credit/credit_send.dart';
 import 'package:app_core/ui/credit/widget/credit_token_picker.dart';
 import 'package:app_core/ui/credit/widget/kcredit_banner.dart';
+import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
 import 'package:app_core/app_core.dart';
 
@@ -186,7 +187,7 @@ class _CreditFeedState extends State<CreditFeed> {
                 children: [
                   Icon(Icons.download),
                   SizedBox(width: 6),
-                  Text("Deposit"),
+                  Text(KPhrases.deposit),
                 ],
               ),
             ),
@@ -200,7 +201,7 @@ class _CreditFeedState extends State<CreditFeed> {
                 children: [
                   Icon(Icons.account_balance_wallet_outlined),
                   SizedBox(width: 6),
-                  Text("Withdrawal"),
+                  Text(KPhrases.withdrawal),
                 ],
               ),
             ),
