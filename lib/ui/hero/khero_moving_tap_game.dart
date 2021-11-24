@@ -523,9 +523,6 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
       if (currentLevel == 0) {
         showCountDownOverlay();
       } else {
-        if (!this.isBackgroundSoundPlaying) {
-          toggleBackgroundSound();
-        }
         setState(() {
           isStart = true;
           time = 0;
@@ -630,9 +627,6 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
             });
           });
         } else {
-          if (this.isBackgroundSoundPlaying) {
-            toggleBackgroundSound();
-          }
           this.setState(() {
             if (rightAnswerCount / questions.length >=
                 levelHardness[currentLevel]) {
@@ -666,9 +660,6 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
   }
 
   void restartGame() {
-    if (!this.isBackgroundSoundPlaying) {
-      toggleBackgroundSound();
-    }
     if (currentLevel + 1 < levelHardness.length &&
         (rightAnswerCount / questions.length) >= levelHardness[currentLevel]) {
       this.setState(() {

@@ -738,9 +738,6 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
                 });
               } else {
                 this.setState(() {
-                  if (this.isBackgroundSoundPlaying) {
-                    toggleBackgroundSound();
-                  }
                   if (rightAnswerCount / questions.length >=
                       levelHardness[currentLevel]) {
                     eggReceive = eggReceive + 1;
@@ -798,9 +795,6 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
       if (currentLevel == 0) {
         showCountDownOverlay();
       } else {
-        if (!this.isBackgroundSoundPlaying) {
-          toggleBackgroundSound();
-        }
         setState(() {
           isStart = true;
           time = 0;
@@ -810,9 +804,6 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
   }
 
   void restartGame() {
-    if (!this.isBackgroundSoundPlaying) {
-      toggleBackgroundSound();
-    }
     if (currentLevel + 1 < levelHardness.length &&
         (rightAnswerCount / questions.length) >= levelHardness[currentLevel]) {
       this.setState(() {
