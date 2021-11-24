@@ -722,9 +722,6 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
                   isScroll = true;
                 });
               } else {
-                if (this.isBackgroundSoundPlaying) {
-                  toggleBackgroundSound();
-                }
                 this.setState(() {
                   if (rightAnswerCount / questions.length >=
                       levelHardness[currentLevel]) {
@@ -769,9 +766,6 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
       if (currentLevel == 0) {
         showCountDownOverlay();
       } else {
-        if (!this.isBackgroundSoundPlaying) {
-          toggleBackgroundSound();
-        }
         setState(() {
           isStart = true;
           time = 0;
@@ -781,9 +775,6 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
   }
 
   void restartGame() {
-    if (!this.isBackgroundSoundPlaying) {
-      toggleBackgroundSound();
-    }
     if (currentLevel + 1 < levelHardness.length &&
         (rightAnswerCount / questions.length) >= levelHardness[currentLevel]) {
       this.setState(() {
