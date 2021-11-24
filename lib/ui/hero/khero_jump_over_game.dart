@@ -9,6 +9,7 @@ import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
+import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -285,6 +286,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
   double topBoundary = -2.1;
 
   int? overlayID;
+  bool isPause = false;
   bool isBackgroundSoundPlaying = false;
 
   @override
@@ -424,7 +426,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
     // this.screenWidth = MediaQuery.of(context).size.width;
 
     _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
-      if (isStart) {
+      if (isStart && !isPause) {
         height = (gravity * 0.5) * time * time + velocity * time;
         final pos = initialPos - height;
 
@@ -488,6 +490,46 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
 
     // TODO: implement dispose
     super.dispose();
+  }
+
+  void showPauseDialog() {
+    if (this.isBackgroundSoundPlaying) {
+      toggleBackgroundSound();
+    }
+    this.setState(() {
+      this.isPause = true;
+    });
+    final view = KGamePauseDialog(
+      onExit: () {
+        if (this.overlayID != null) {
+          KOverlayHelper.removeOverlay(this.overlayID!);
+          this.overlayID = null;
+        }
+        Navigator.of(context).pop();
+      },
+      onResume: () {
+        if (this.overlayID != null) {
+          KOverlayHelper.removeOverlay(this.overlayID!);
+          this.overlayID = null;
+        }
+        if (!this.isBackgroundSoundPlaying) {
+          toggleBackgroundSound();
+        }
+        this.setState(() {
+          this.isPause = false;
+        });
+      },
+    );
+    final overlay = Stack(
+      fit: StackFit.expand,
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: view,
+        ),
+      ],
+    );
+    this.overlayID = KOverlayHelper.addOverlay(overlay);
   }
 
   void showCountDownOverlay() {
@@ -1188,21 +1230,45 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
           ),
         ],
         GestureDetector(
-            onTap: (isShowCountDown || widget.isShowEndLevel)
+            onTap: (isShowCountDown || widget.isShowEndLevel || isPause)
                 ? () {}
                 : (isStart
                     ? jump
                     : (result == null
                         ? start
                         : (canRestartGame ? restartGame : () {})))),
-        Align(
-          alignment: Alignment.topRight,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (isStart || result != null)
+        if (!isPause)
+          Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (isStart || result != null)
+                    InkWell(
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        padding: EdgeInsets.only(
+                            top: 5, bottom: 5, left: 5, right: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(40),
+                        ),
+                        child: Icon(
+                          this.isBackgroundSoundPlaying
+                              ? Icons.volume_up
+                              : Icons.volume_off,
+                          color: Color(0xff2c1c44),
+                          size: 30,
+                        ),
+                      ),
+                      onTap: () => this.toggleBackgroundSound(),
+                    ),
+                  SizedBox(
+                    width: 10,
+                  ),
                   InkWell(
                     child: Container(
                       width: 50,
@@ -1214,40 +1280,17 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
                         borderRadius: BorderRadius.circular(40),
                       ),
                       child: Icon(
-                        this.isBackgroundSoundPlaying
-                            ? Icons.volume_up
-                            : Icons.volume_off,
-                        color: Color(0xff2c1c44),
+                        Icons.pause,
+                        color: Colors.red,
                         size: 30,
                       ),
                     ),
-                    onTap: () => this.toggleBackgroundSound(),
+                    onTap: () => showPauseDialog(),
                   ),
-                SizedBox(
-                  width: 10,
-                ),
-                InkWell(
-                  child: Container(
-                    width: 50,
-                    height: 50,
-                    padding:
-                        EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.red,
-                      size: 30,
-                    ),
-                  ),
-                  onTap: () => Navigator.of(context).pop(),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
       ],
     );
 

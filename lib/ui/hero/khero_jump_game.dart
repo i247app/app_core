@@ -476,7 +476,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
             this.setState(() {
               this.isBackgroundSoundPlaying = true;
             });
-            backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
+            backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
+                isLocal: true);
           }
           setState(() {
             isStart = true;
@@ -1168,8 +1169,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                       child: Container(
                         width: 50,
                         height: 50,
-                        padding:
-                        EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                        padding: EdgeInsets.only(
+                            top: 5, bottom: 5, left: 5, right: 5),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(40),
@@ -1184,13 +1185,15 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                       ),
                       onTap: () => this.toggleBackgroundSound(),
                     ),
-                  SizedBox(width: 10,),
+                  SizedBox(
+                    width: 10,
+                  ),
                   InkWell(
                     child: Container(
                       width: 50,
                       height: 50,
                       padding:
-                      EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                          EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(40),
