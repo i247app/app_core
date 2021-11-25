@@ -133,4 +133,7 @@ abstract class KStringHelper {
   }
 
   static String stripVietnameseAccents(String z) => TiengViet.parse(z);
+
+  static bool containsVietnameseAccents(String z) =>
+      z != stripVietnameseAccents(z);
 }
