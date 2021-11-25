@@ -1,12 +1,16 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as Math;
 
 import 'package:app_core/helper/kimage_animation_helper.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/header/kassets.dart';
 import 'package:app_core/ui/widget/kimage_animation/kimage_animation.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:vector_math/vector_math_64.dart' as Vector;
 
 class KHeroGameLevel extends StatefulWidget {
@@ -21,6 +25,9 @@ class KHeroGameLevel extends StatefulWidget {
 
 class _KHeroGameLevelState extends State<KHeroGameLevel>
     with TickerProviderStateMixin {
+  Completer<AudioPlayer> cAudioPlayer = Completer();
+  String? correctAudioFileUri;
+
   late Animation _adultShakeAnimation, _adultBouncingAnimation;
   late AnimationController _adultShakeAnimationController,
       _adultBouncingAnimationController;
@@ -41,6 +48,8 @@ class _KHeroGameLevelState extends State<KHeroGameLevel>
   void initState() {
     super.initState();
 
+    loadAudioAsset();
+
     _adultBouncingAnimationController =
         AnimationController(vsync: this, duration: adultBouncingDuration)
           ..addListener(() => setState(() {}));
@@ -59,6 +68,14 @@ class _KHeroGameLevelState extends State<KHeroGameLevel>
       begin: 50.0,
       end: 120.0,
     ).animate(_adultShakeAnimationController);
+
+    Future.delayed(Duration(milliseconds: 500), () {
+      try {
+        final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+        ap.play(correctAudioFileUri ?? "", isLocal: true);
+        cAudioPlayer.complete(ap);
+      } catch (e) {}
+    });
   }
 
   @override
@@ -66,6 +83,23 @@ class _KHeroGameLevelState extends State<KHeroGameLevel>
     this._adultShakeAnimationController.dispose();
     this._adultBouncingAnimationController.dispose();
     super.dispose();
+  }
+
+  void loadAudioAsset() async {
+    try {
+      Directory tempDir = await getTemporaryDirectory();
+
+      ByteData correctAudioFileData =
+      await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
+
+      File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
+      await correctAudioTempFile
+          .writeAsBytes(correctAudioFileData.buffer.asUint8List(), flush: true);
+
+      this.setState(() {
+        this.correctAudioFileUri = correctAudioTempFile.uri.toString();
+      });
+    } catch (e) {}
   }
 
   Vector.Vector3 adultShakeTransformValue() {

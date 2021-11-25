@@ -485,9 +485,6 @@ class _KTapGameScreenState extends State<KTapGameScreen>
       if (currentLevel == 0) {
         showCountDownOverlay();
       } else {
-        if (!this.isBackgroundSoundPlaying) {
-          toggleBackgroundSound();
-        }
         setState(() {
           isStart = true;
           time = 0;
@@ -590,9 +587,6 @@ class _KTapGameScreenState extends State<KTapGameScreen>
           });
         } else {
           this.setState(() {
-            if (this.isBackgroundSoundPlaying) {
-              toggleBackgroundSound();
-            }
             if (rightAnswerCount / questions.length >=
                 levelHardness[currentLevel]) {
               eggReceive = eggReceive + 1;
@@ -622,9 +616,6 @@ class _KTapGameScreenState extends State<KTapGameScreen>
   }
 
   void restartGame() {
-    if (!this.isBackgroundSoundPlaying) {
-      toggleBackgroundSound();
-    }
     if (currentLevel + 1 < levelHardness.length &&
         (rightAnswerCount / questions.length) >= levelHardness[currentLevel]) {
       this.setState(() {
