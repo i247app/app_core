@@ -76,5 +76,7 @@ abstract class KPhrases {
 
   static String get bankTitle => _klingo.yak("bank_title");
 
+  static String get sayHiToX => _klingo.yak("say_hi_to_x");
+
   static String get kstatus808 => _klingo.yak("kstatus_808");
 }
