@@ -23,7 +23,7 @@ abstract class KPhrases {
       ],
       fallbackLanguage: KLocaleHelper.LANGUAGE_EN,
     );
-    await _klingo.load();
+    await _klingo.load(package: 'app_core');
     _isInit = true;
   }
 

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/khost_config.dart';
 import 'package:app_core/helper/klocale_helper.dart';
 import 'package:flutter/services.dart';
@@ -21,7 +22,7 @@ class KLingo {
 
   KLingo(this.dictionaries, {required this.fallbackLanguage});
 
-  Future load() async {
+  Future load({String? package}) async {
     try {
       // // Filename
       // final enLangFile = Assets.I18N_EN;
@@ -33,7 +34,9 @@ class KLingo {
 
       // Load JSON
       for (KLingoDictionary dict in dictionaries) {
-        final dictRawString = await rootBundle.loadString(dict.dictFilepath);
+        final pathPrefix = package == null ? "" : "packages/$package/";
+        final fullPath = "$pathPrefix${dict.dictFilepath}";
+        final dictRawString = await rootBundle.loadString(fullPath);
         final Map<String, dynamic> dictMap = json.decode(dictRawString);
         _wordMaps[dict.language] = dictMap.cast<String, String>();
       }
@@ -60,6 +63,7 @@ class KLingo {
   }
 
   String yak(String name, {String? alt}) {
+    String? dictOfResult;
     String? v;
     try {
       final defaultWordMap = _wordMaps[_currentLang]!;
@@ -67,15 +71,18 @@ class KLingo {
       if (defaultWordMap.containsKey(name)) {
         // First check in default dictionary
         v = defaultWordMap[name];
+        dictOfResult = _currentLang;
       } else if (fallbackWordMap.containsKey(name)) {
         // Then check in fallback dictionary
         v = fallbackWordMap[name];
+        dictOfResult = fallbackLanguage;
       } else {
         // Otherwise loop through all available word maps
         for (final wordMapKey in _wordMaps.keys) {
           final wordMap = _wordMaps[wordMapKey]!;
           if (wordMap.containsKey(name)) {
             v = wordMap[name];
+            dictOfResult = wordMapKey;
             break;
           }
         }
@@ -84,6 +91,8 @@ class KLingo {
       print(e.toString());
       v = null;
     }
+
+    // print("FOUND key $name => $v INSIDE DICT $dictOfResult");
 
     // debug - will print everytime yak() is called
     // print("KLingo [${_currentLocale.language}] $name -> $v");
