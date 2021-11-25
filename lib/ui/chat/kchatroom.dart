@@ -143,7 +143,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
               SizedBox(height: 14),
               IconButton(
                 onPressed: () => widget.controller.sendText(
-                    "Hi ${widget.isSupport ? "" : this.refUser?.firstName!}"),
+                    "${KPhrases.hi} ${widget.isSupport ? "" : refUser?.firstName!}"),
                 icon: Center(child: Text("👋", style: TextStyle(fontSize: 58))),
                 iconSize: 70,
               ),

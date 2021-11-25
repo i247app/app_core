@@ -30,6 +30,8 @@ abstract class KPhrases {
   /// Localized strings
   static String get anErrorOccurred => _klingo.yak("an_error_occurred");
 
+  static String get kstatus808 => _klingo.yak("kstatus_808");
+
   static String get paymentMethod => _klingo.yak("payment_method");
 
   static String get withdrawal => _klingo.yak("withdrawal");
@@ -78,5 +80,5 @@ abstract class KPhrases {
 
   static String get sayHiToX => _klingo.yak("say_hi_to_x");
 
-  static String get kstatus808 => _klingo.yak("kstatus_808");
+  static String get hi => _klingo.yak("hi");
 }
