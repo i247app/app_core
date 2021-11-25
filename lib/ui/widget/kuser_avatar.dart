@@ -96,6 +96,6 @@ class KUserAvatar extends StatelessWidget {
       ),
     );
 
-    return body;
+    return Container(height: size, child: body);
   }
 }
