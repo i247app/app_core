@@ -23,16 +23,22 @@ abstract class KPhrases {
       ],
       fallbackLanguage: KLocaleHelper.LANGUAGE_EN,
     );
-    await _klingo.load();
+    await _klingo.load(package: 'app_core');
     _isInit = true;
   }
 
   /// Localized strings
+  static String get anErrorOccurred => _klingo.yak("an_error_occurred");
+
+  static String get kstatus808 => _klingo.yak("kstatus_808");
+
   static String get paymentMethod => _klingo.yak("payment_method");
 
   static String get withdrawal => _klingo.yak("withdrawal");
 
   static String get deposit => _klingo.yak("deposit");
+
+  static String get transfer => _klingo.yak("transfer");
 
   static String get confirm => _klingo.yak("confirm");
 
@@ -73,4 +79,8 @@ abstract class KPhrases {
   static String get sessionEnded => _klingo.yak("session_ended");
 
   static String get bankTitle => _klingo.yak("bank_title");
+
+  static String get sayHiToX => _klingo.yak("say_hi_to_x");
+
+  static String get hi => _klingo.yak("hi");
 }

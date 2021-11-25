@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/kphoto_helper.dart';
@@ -23,8 +24,11 @@ class KChatroom extends StatefulWidget {
   final bool isReadOnly;
   final bool isSupport;
 
-  const KChatroom(this.controller,
-      {this.isReadOnly = false, this.isSupport = false});
+  const KChatroom(
+    this.controller, {
+    this.isReadOnly = false,
+    this.isSupport = false,
+  });
 
   @override
   _KChatroomState createState() => _KChatroomState();
@@ -132,14 +136,14 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "Say hi to ${widget.isSupport ? "customer support" : this.refUser?.firstName}",
+                "${KPhrases.sayHiToX} ${widget.isSupport ? "customer support" : refUser?.firstName}",
                 style: theme.textTheme.headline4,
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 14),
               IconButton(
                 onPressed: () => widget.controller.sendText(
-                    "Hi ${widget.isSupport ? "" : this.refUser?.firstName!}"),
+                    "${KPhrases.hi} ${widget.isSupport ? "" : refUser?.firstName!}"),
                 icon: Center(child: Text("👋", style: TextStyle(fontSize: 58))),
                 iconSize: 70,
               ),

@@ -29,6 +29,7 @@ abstract class TLSHelper {
     "chat:chat.message.list",
     "bird:tutor.gig.active.list",
     "bird:tutor.gig.list",
+    "bird:tutor.list",
   ];
 
   static int _reqCount = 0;

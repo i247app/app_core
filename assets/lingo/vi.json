@@ -104,6 +104,7 @@
   "payment_method": "Phương thức thanh toán",
   "deposit": "Nạp Tiền",
   "withdrawal": "Rút Tiền",
+  "transfer": "Chuyển Giao",
   "confirm": "Xác Nhận",
   "account_name": "Tên Tài Khoản",
   "account_number": "Số Tài Khoản",
@@ -152,5 +153,8 @@
   "enter_your_child_name": "Nhập tên con/học sinh",
   "over_13": "Trên 13 tuổi",
   "over_13_info": "Người dùng trên 13 tuổi",
-  "help_with_hw": "Kèm học/Dạy học"
+  "help_with_hw": "Kèm học/Dạy học",
+  "kstatus_808": "Không đủ điểm",
+  "say_hi_to_x": "Gửi lời chào tới",
+  "hi": "Chào"
 }
