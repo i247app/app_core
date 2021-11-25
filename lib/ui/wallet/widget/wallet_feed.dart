@@ -217,7 +217,7 @@ class _WalletFeedState extends State<WalletFeed> {
         children: [
           Icon(Icons.send),
           SizedBox(width: 6),
-          Text("Transfer"),
+          Text(KPhrases.transfer),
         ],
       ),
     );

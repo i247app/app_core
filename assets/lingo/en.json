@@ -105,6 +105,7 @@
   "payment_method": "Payment method",
   "deposit": "Deposit",
   "withdrawal": "Withdrawal",
+  "transfer": "Transfer",
   "confirm": "Confirm",
   "account_name": "Account Name",
   "account_number": "Account Number",
