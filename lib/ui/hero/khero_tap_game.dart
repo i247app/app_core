@@ -9,6 +9,7 @@ import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
+import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -218,30 +219,108 @@ class _KTapGameScreenState extends State<KTapGameScreen>
   bool isShowPlusPoint = false;
   DateTime? lastGetPointTime;
 
-  List<String> questions = [
-    "1 + 1",
-    "3 + 2",
-    "4 - 1",
-    "4 + 5",
-    "2 x 1",
-    "2 x 3",
-    "1 + 2 - 1",
-    "4 + 8 - 5",
-    "1 x 2 + 3",
-    "1 + 2 x 3",
+  List<List<String>> levelQuestions = [
+    [
+      "1 + 1",
+      "3 + 2",
+      "4 - 1",
+      "4 + 5",
+      "2 x 1",
+      "2 x 3",
+      "1 + 2 - 1",
+      "4 + 8 - 5",
+      "1 x 2 + 3",
+      "1 + 2 x 3",
+    ],
+    [
+      "1 + 1",
+      "3 + 2",
+      "4 - 1",
+      "4 + 5",
+      "2 x 1",
+      "2 x 3",
+      "1 + 2 - 1",
+      "4 + 8 - 5",
+      "1 x 2 + 3",
+      "1 + 2 x 3",
+    ],
+    [
+      "1 + 1",
+      "3 + 2",
+      "4 - 1",
+      "4 + 5",
+      "2 x 1",
+      "2 x 3",
+      "1 + 2 - 1",
+      "4 + 8 - 5",
+      "1 x 2 + 3",
+      "1 + 2 x 3",
+    ],
+    [
+      "1 + 1",
+      "3 + 2",
+      "4 - 1",
+      "4 + 5",
+      "2 x 1",
+      "2 x 3",
+      "1 + 2 - 1",
+      "4 + 8 - 5",
+      "1 x 2 + 3",
+      "1 + 2 x 3",
+    ],
   ];
-  List<int> rightAnswers = [
-    2,
-    5,
-    3,
-    9,
-    2,
-    6,
-    2,
-    7,
-    5,
-    7,
+  List<List<int>> levelRightAnswers = [
+    [
+      2,
+      5,
+      3,
+      9,
+      2,
+      6,
+      2,
+      7,
+      5,
+      7,
+    ],
+    [
+      2,
+      5,
+      3,
+      9,
+      2,
+      6,
+      2,
+      7,
+      5,
+      7,
+    ],
+    [
+      2,
+      5,
+      3,
+      9,
+      2,
+      6,
+      2,
+      7,
+      5,
+      7,
+    ],
+    [
+      2,
+      5,
+      3,
+      9,
+      2,
+      6,
+      2,
+      7,
+      5,
+      7,
+    ],
   ];
+  List<String> get questions => levelQuestions[currentLevel];
+  List<int> get rightAnswers => levelRightAnswers[currentLevel];
   int currentQuestionIndex = 0;
   int? spinningHeroIndex;
   int? currentShowStarIndex;
@@ -265,6 +344,7 @@ class _KTapGameScreenState extends State<KTapGameScreen>
   double topBoundary = -2.1;
 
   int? overlayID;
+  bool isPause = false;
   bool isBackgroundSoundPlaying = false;
 
   @override
@@ -344,7 +424,7 @@ class _KTapGameScreenState extends State<KTapGameScreen>
     // this.screenWidth = MediaQuery.of(context).size.width;
 
     _timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
-      if (isStart) {
+      if (isStart && mounted && !isPause) {
         if (currentLevel < 4) {
           this.setState(() {
             this.levelPlayTimes[currentLevel] += 1;
@@ -375,6 +455,46 @@ class _KTapGameScreenState extends State<KTapGameScreen>
 
     // TODO: implement dispose
     super.dispose();
+  }
+
+  void showPauseDialog() {
+    if (this.isBackgroundSoundPlaying) {
+      toggleBackgroundSound();
+    }
+    this.setState(() {
+      this.isPause = true;
+    });
+    final view = KGamePauseDialog(
+      onExit: () {
+        if (this.overlayID != null) {
+          KOverlayHelper.removeOverlay(this.overlayID!);
+          this.overlayID = null;
+        }
+        Navigator.of(context).pop();
+      },
+      onResume: () {
+        if (this.overlayID != null) {
+          KOverlayHelper.removeOverlay(this.overlayID!);
+          this.overlayID = null;
+        }
+        if (!this.isBackgroundSoundPlaying) {
+          toggleBackgroundSound();
+        }
+        this.setState(() {
+          this.isPause = false;
+        });
+      },
+    );
+    final overlay = Stack(
+      fit: StackFit.expand,
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: view,
+        ),
+      ],
+    );
+    this.overlayID = KOverlayHelper.addOverlay(overlay);
   }
 
   void showCountDownOverlay() {
@@ -844,7 +964,7 @@ class _KTapGameScreenState extends State<KTapGameScreen>
           ),
         if (!isStart)
           GestureDetector(
-              onTap: (isShowCountDown || widget.isShowEndLevel)
+              onTap: (isShowCountDown || widget.isShowEndLevel || isPause)
                   ? () {}
                   : (result == null
                       ? start
@@ -964,14 +1084,38 @@ class _KTapGameScreenState extends State<KTapGameScreen>
             ),
           ),
         ],
-        Align(
-          alignment: Alignment.topRight,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (isStart || result != null)
+        if (!isPause)
+          Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (isStart || result != null)
+                    InkWell(
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        padding:
+                            EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(40),
+                        ),
+                        child: Icon(
+                          this.isBackgroundSoundPlaying
+                              ? Icons.volume_up
+                              : Icons.volume_off,
+                          color: Color(0xff2c1c44),
+                          size: 30,
+                        ),
+                      ),
+                      onTap: () => this.toggleBackgroundSound(),
+                    ),
+                  SizedBox(
+                    width: 10,
+                  ),
                   InkWell(
                     child: Container(
                       width: 50,
@@ -983,40 +1127,17 @@ class _KTapGameScreenState extends State<KTapGameScreen>
                         borderRadius: BorderRadius.circular(40),
                       ),
                       child: Icon(
-                        this.isBackgroundSoundPlaying
-                            ? Icons.volume_up
-                            : Icons.volume_off,
-                        color: Color(0xff2c1c44),
+                        Icons.pause,
+                        color: Colors.red,
                         size: 30,
                       ),
                     ),
-                    onTap: () => this.toggleBackgroundSound(),
+                    onTap: () => showPauseDialog(),
                   ),
-                SizedBox(
-                  width: 10,
-                ),
-                InkWell(
-                  child: Container(
-                    width: 50,
-                    height: 50,
-                    padding:
-                        EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                    child: Icon(
-                      Icons.close,
-                      color: Colors.red,
-                      size: 30,
-                    ),
-                  ),
-                  onTap: () => Navigator.of(context).pop(),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
       ],
     );
 
