@@ -368,7 +368,7 @@ abstract class KServerHandler {
   }) async {
     final params = {
       "svc": "chao",
-      "req": "get.credit.transactions",
+      "req": "get.wallet.transactions",
       "txID": transactionID,
       "lineID": lineID,
       "puid": puid,

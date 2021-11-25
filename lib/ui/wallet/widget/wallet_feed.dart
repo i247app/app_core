@@ -4,26 +4,26 @@ import 'package:app_core/model/kbalance.dart';
 import 'package:app_core/model/kcredit_transaction.dart';
 import 'package:app_core/model/response/get_balances_response.dart';
 import 'package:app_core/model/response/get_credit_transactions_response.dart';
-import 'package:app_core/ui/credit/credit_bank_transfer.dart';
-import 'package:app_core/ui/credit/credit_receipt.dart';
-import 'package:app_core/ui/credit/credit_send.dart';
-import 'package:app_core/ui/credit/widget/credit_token_picker.dart';
-import 'package:app_core/ui/credit/widget/kcredit_banner.dart';
+import 'package:app_core/ui/wallet/credit_bank_transfer.dart';
+import 'package:app_core/ui/wallet/credit_receipt.dart';
+import 'package:app_core/ui/wallet/credit_send.dart';
+import 'package:app_core/ui/wallet/widget/credit_token_picker.dart';
+import 'package:app_core/ui/wallet/widget/kcredit_banner.dart';
 import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
 import 'package:app_core/app_core.dart';
 
-class CreditFeed extends StatefulWidget {
+class WalletFeed extends StatefulWidget {
   final String? defaultTokenName;
   final bool showTransferButton;
 
-  CreditFeed({this.defaultTokenName, this.showTransferButton = true});
+  WalletFeed({this.defaultTokenName, this.showTransferButton = true});
 
   @override
-  State<StatefulWidget> createState() => _CreditFeedState();
+  State<StatefulWidget> createState() => _WalletFeedState();
 }
 
-class _CreditFeedState extends State<CreditFeed> {
+class _WalletFeedState extends State<WalletFeed> {
   late final String initialToken = widget.defaultTokenName ??
       (KLocaleHelper.isUSA ? KMoney.USD : KMoney.VND);
 

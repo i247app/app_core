@@ -4,20 +4,20 @@ import 'package:app_core/header/kassets.dart';
 import 'package:app_core/helper/klocale_helper.dart';
 import 'package:app_core/helper/kmoney_helper.dart';
 import 'package:app_core/helper/ksession_data.dart';
-import 'package:app_core/ui/credit/widget/credit_feed.dart';
+import 'package:app_core/ui/wallet/widget/wallet_feed.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-class CreditHome extends StatefulWidget {
+class WalletHome extends StatefulWidget {
   final bool showTransferButton;
 
-  const CreditHome({this.showTransferButton = true});
+  const WalletHome({this.showTransferButton = true});
 
   @override
-  State<StatefulWidget> createState() => _CreditHomeState();
+  State<StatefulWidget> createState() => _WalletHomeState();
 }
 
-class _CreditHomeState extends State<CreditHome> {
+class _WalletHomeState extends State<WalletHome> {
   String get defaultToken => KLocaleHelper.isUSA ? KMoney.USD : KMoney.VND;
 
   void showQR() {
@@ -60,7 +60,7 @@ class _CreditHomeState extends State<CreditHome> {
 
   @override
   Widget build(BuildContext context) {
-    final body = CreditFeed(
+    final body = WalletFeed(
       defaultTokenName: defaultToken,
       showTransferButton: widget.showTransferButton,
     );
