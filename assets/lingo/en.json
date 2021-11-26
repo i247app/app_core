@@ -158,9 +158,9 @@
   "kstatus_808": "Insufficient funds",
   "say_hi_to_x": "Say hi to",
   "hi": "Hi",
-  "email_already_exits": "Email already exits",
-  "phone_already_exits": "Phone already exits",
-  "username_already_exits": "Username already exits",
+  "email_already_exist": "Email already exist",
+  "phone_already_exist": "Phone already exist",
+  "username_already_exist": "Username already exist",
   "app_failed": "App Failed",
   "success": "Success"
 }

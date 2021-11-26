@@ -157,9 +157,9 @@
   "kstatus_808": "Không đủ điểm",
   "say_hi_to_x": "Gửi lời chào tới",
   "hi": "Chào",
-  "email_already_exits": "Email đã tồn tại",
-  "phone_already_exits": "Số điện thoại đã tồn tại",
-  "username_already_exits": "Tài khoản đã tồn tại",
+  "email_already_exist": "Email đã tồn tại",
+  "phone_already_exist": "Số điện thoại đã tồn tại",
+  "username_already_exist": "Tài khoản đã tồn tại",
   "app_faild": "App lỗi",
   "success": "Thành công"
 }

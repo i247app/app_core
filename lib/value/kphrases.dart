@@ -84,14 +84,14 @@ abstract class KPhrases {
 
   static String get hi => _klingo.yak("hi");
 
-  static String get emailAlreadyExits => _klingo.yak("email_already_exits");
+  static String get emailAlreadyExist => _klingo.yak("email_already_exist");
 
-  static String get phoneAlreadyExits => _klingo.yak("phone_already_exits");
+  static String get phoneAlreadyExist => _klingo.yak("phone_already_exist");
 
   static String get appFailed => _klingo.yak("app_failed");
 
   static String get success => _klingo.yak("success");
 
-  static String get usernameAlreadyExits =>
-      _klingo.yak("username_already_exits");
+  static String get usernameAlreadyExist =>
+      _klingo.yak("username_already_exist");
 }
