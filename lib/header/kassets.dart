@@ -17,6 +17,9 @@ abstract class KAssets {
   static const String IMG_HERO_EGG = "$IMG_BASE/heroegg.png";
   static const String IMG_TAMAGO_OUTLINE = "$IMG_BASE/tamago_outline.png";
   static const String IMG_TAMAGO_CHAN = "$IMG_BASE/tamago_chan.png";
+  static const String IMG_TAMAGO_CHAN_JUMP_RIGHT = "$IMG_BASE/tamago_chan_jump_right.png";
+  static const String IMG_TAMAGO_CHAN_JUMP_LEFT = "$IMG_BASE/tamago_chan_jump_left.png";
+  static const String IMG_TAMAGO_CHAN_JUMP_UP = "$IMG_BASE/tamago_chan_jump_up.png";
   static const String IMG_TAMAGO_1 = "$IMG_BASE/tamago_01.png";
   static const String IMG_TAMAGO_2 = "$IMG_BASE/tamago_02.png";
   static const String IMG_TAMAGO_3 = "$IMG_BASE/tamago_03.png";
