@@ -82,6 +82,7 @@
   "invalid_email": "Invalid email format.",
   "email_already_used": "Email Already Used",
   "phone_already_used": "Phone Already Used",
+  "username_already_used": "Username Already Used",
   "hint_phone": "eg 5553431212",
   "check_security_code": "Check security code",
   "dark_theme": "Dark Theme",

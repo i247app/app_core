@@ -81,6 +81,7 @@
   "invalid_email": "Email không hợp lệ",
   "email_already_used": "Email này đã được sử dụng",
   "phone_already_used": "Số điện thoại này đã được sử dụng",
+  "username_already_used": "Username này đã được sử dụng",
   "hint_phone": "vd 0901234567",
   "check_security_code": "Kiểm tra  mã",
   "dark_theme": "Dark Theme",
