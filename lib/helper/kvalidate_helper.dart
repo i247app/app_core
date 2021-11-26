@@ -12,13 +12,13 @@ abstract class KValidateHelper {
       case KCoreCode.ERROR:
         return KPhrases.anErrorOccurred;
       case 622:
-        return KPhrases.emailAlreadyExist;
+        return KPhrases.emailAlreadyUsed;
       case 621:
-        return KPhrases.usernameAlreadyExist;
+        return KPhrases.usernameAlreadyUsed;
       case 623:
-        return KPhrases.phoneAlreadyExist;
-      case KCoreCode.INSUFFICIENT_CREDIT:
-        return KPhrases.kstatus808;
+        return KPhrases.phoneAlreadyUsed;
+      case KCoreCode.INSUFFICIENT_FUNDS:
+        return KPhrases.insufficientFunds;
       default:
         return KPhrases.anErrorOccurred;
     }

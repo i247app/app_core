@@ -10,5 +10,5 @@ abstract class KCoreCode {
   static const int FONE_ERROR = 623;
   static const int PIN_ERROR = 415;
   static const int APP_FAIL = 600;
-  static const int INSUFFICIENT_CREDIT = 808;
+  static const int INSUFFICIENT_FUNDS = 808;
 }
