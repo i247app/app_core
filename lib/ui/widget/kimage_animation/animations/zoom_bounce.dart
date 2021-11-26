@@ -55,7 +55,9 @@ class _ZoomBounceImageState extends State<ZoomBounceImage>
           });
           this._bouncingAnimationController.forward();
         } else if (mounted && status == AnimationStatus.dismissed) {
-          if (currentPreset!.maxLoop != 0 && loopTime == 0 && currentPreset!.onFinish != null) {
+          if (currentPreset!.maxLoop != 0 &&
+              loopTime == 0 &&
+              currentPreset!.onFinish != null) {
             currentPreset!.onFinish!();
           }
         }
@@ -84,25 +86,31 @@ class _ZoomBounceImageState extends State<ZoomBounceImage>
               _scaleAnimationController.reverse();
               this.bounceTime = MAX_BOUNCE_TIME;
 
-              if (currentPreset!.maxLoop == 0 || loopTime > 0) {
-                if (loopTime > 0) this.setState(() => loopTime = loopTime - 1);
+              Future.delayed(
+                Duration(milliseconds: 1000),
+                () {
+                  if (mounted && currentPreset!.maxLoop == 0 || loopTime > 0) {
+                    if (loopTime > 0)
+                      this.setState(() => loopTime = loopTime - 1);
 
-                int newIndex = imageIndex + 1;
-                if (newIndex < imageUrls.length) {
-                  this.setState(() => imageIndex = newIndex);
-                } else if (imageIndex > 0) {
-                  this.setState(() => imageIndex = 0);
-                }
-
-                Future.delayed(
-                  Duration(milliseconds: 700),
-                  () {
-                    if (mounted) {
-                      this._scaleAnimationController.forward();
+                    int newIndex = imageIndex + 1;
+                    if (newIndex < imageUrls.length) {
+                      this.setState(() => imageIndex = newIndex);
+                    } else if (imageIndex > 0) {
+                      this.setState(() => imageIndex = 0);
                     }
-                  },
-                );
-              }
+
+                    Future.delayed(
+                      Duration(milliseconds: 700),
+                      () {
+                        if (mounted) {
+                          this._scaleAnimationController.forward();
+                        }
+                      },
+                    );
+                  }
+                },
+              );
             }
           });
     _bouncingAnimation = Tween(begin: Offset(0, 0), end: Offset(0, -5.0))
