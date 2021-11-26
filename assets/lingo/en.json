@@ -157,5 +157,10 @@
   "help_with_hw": "Homework Buddy/Tutor",
   "kstatus_808": "Insufficient funds",
   "say_hi_to_x": "Say hi to",
-  "hi": "Hi"
+  "hi": "Hi",
+  "email_already_exits": "Email already exits",
+  "phone_already_exits": "Số điện thoại đã tồn tại",
+  "username_already_exits": "Tài khoản đã tồn tại",
+  "app_failed": "App lỗi",
+  "success": "Thành công"
 }

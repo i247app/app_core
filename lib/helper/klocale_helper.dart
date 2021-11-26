@@ -30,8 +30,6 @@ abstract class KLocaleHelper {
   static KLocale get currentLocale => _getLocale();
 
   static bool get isUSA => currentLocale.country == KLocaleHelper.COUNTRY_US;
-  static bool get isEnglish =>
-      currentLocale.language != KLocaleHelper.LANGUAGE_VI;
 
   static bool get isVietnam =>
       currentLocale.country == KLocaleHelper.COUNTRY_VN;

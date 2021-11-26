@@ -6,23 +6,17 @@ abstract class KValidateHelper {
   static String messageFromCode(int? status) {
     switch (status) {
       case KCoreCode.SUCCESS:
-        return KLocaleHelper.isEnglish ? "Success" : "Thành công";
+        return KPhrases.success;
       case 600:
-        return KLocaleHelper.isEnglish ? "App Fail" : "App gặp lỗi";
+        return KPhrases.appFailed;
       case KCoreCode.ERROR:
-        return KLocaleHelper.isEnglish ? "An error occurred" : "Đã xảy ra lỗi";
+        return KPhrases.anErrorOccurred;
       case 622:
-        return KLocaleHelper.isEnglish
-            ? "Email already exists"
-            : "Email đã tồn tại";
+        return KPhrases.emailAlreadyExits;
       case 621:
-        return KLocaleHelper.isEnglish
-            ? "Username already exists"
-            : "Tài khoản đã tồn tại";
+        return KPhrases.usernameAlreadyExits;
       case 623:
-        return KLocaleHelper.isEnglish
-            ? "Phone already registered"
-            : "Số điện thoại đã tồn tại";
+        return KPhrases.phoneAlreadyExits;
       case KCoreCode.INSUFFICIENT_CREDIT:
         return KPhrases.kstatus808;
       default:

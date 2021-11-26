@@ -83,4 +83,15 @@ abstract class KPhrases {
   static String get sayHiToX => _klingo.yak("say_hi_to_x");
 
   static String get hi => _klingo.yak("hi");
+
+  static String get emailAlreadyExits => _klingo.yak("email_already_exits");
+
+  static String get phoneAlreadyExits => _klingo.yak("phone_already_exits");
+
+  static String get appFailed => _klingo.yak("app_failed");
+
+  static String get success => _klingo.yak("success");
+
+  static String get usernameAlreadyExits =>
+      _klingo.yak("username_already_exits");
 }
