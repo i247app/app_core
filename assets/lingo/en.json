@@ -159,8 +159,8 @@
   "say_hi_to_x": "Say hi to",
   "hi": "Hi",
   "email_already_exits": "Email already exits",
-  "phone_already_exits": "Số điện thoại đã tồn tại",
-  "username_already_exits": "Tài khoản đã tồn tại",
-  "app_failed": "App lỗi",
-  "success": "Thành công"
+  "phone_already_exits": "Phone already exits",
+  "username_already_exits": "Username already exits",
+  "app_failed": "App Failed",
+  "success": "Success"
 }
