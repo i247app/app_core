@@ -405,10 +405,11 @@ abstract class KUtil {
           break;
       }
 
-      if (date != null && date.isUtc) {
-        print("a date is utc");
-        date = date.toLocal(); // localized for display only
-      }
+      // if (date != null && date.isUtc) {
+      //   print("a date is utc");
+      //   date = date.toLocal(); // localized for display only
+      // }
+      date = date?.toLocal();
 
       // Build pretty string
       try {
