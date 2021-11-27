@@ -42,6 +42,8 @@ abstract class KPhrases {
 
   static String get transfer => _klingo.yak("transfer");
 
+  static String get bxfr => _klingo.yak("bxfr");
+
   static String get confirm => _klingo.yak("confirm");
 
   static String get accountName => _klingo.yak("account_name");
