@@ -43,7 +43,8 @@ abstract class KStringHelper {
     return RegExp(emailPattern).hasMatch(z);
   }
 
-  static bool isPhone(final String z) => isExist(z); // TODO
+  static bool isPhone(final String z) =>
+      z.length > 6 && !RegExp(r"[a-zA-Z]+").hasMatch(z);
 
   static int atoi(String z) => int.parse(z);
 
