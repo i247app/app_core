@@ -4,7 +4,7 @@ import 'package:app_core/model/kbalance.dart';
 import 'package:app_core/model/kcredit_transaction.dart';
 import 'package:app_core/model/response/get_balances_response.dart';
 import 'package:app_core/model/response/get_credit_transactions_response.dart';
-import 'package:app_core/ui/wallet/bxfr_tranfer.dart';
+import 'package:app_core/ui/wallet/proxy_tranfer.dart';
 import 'package:app_core/ui/wallet/credit_bank_transfer.dart';
 import 'package:app_core/ui/wallet/credit_receipt.dart';
 import 'package:app_core/ui/wallet/credit_send.dart';
@@ -142,7 +142,7 @@ class _WalletFeedState extends State<WalletFeed> {
 
   void onBXFRClick() => Navigator.of(context)
       .push(MaterialPageRoute(
-          builder: (ctx) => BXFRTransfer(tokenName: balance?.tokenName ?? "")))
+          builder: (ctx) => ProxyTransfer(tokenName: balance?.tokenName ?? "")))
       .whenComplete(loadData);
 
   void onTokenNameClick(int index) => setBalanceIndex(index);

@@ -1,21 +1,21 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'bxfr_transfer_response.dart';
+part of 'proxy_transfer_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-BXFRTransferResponse _$BXFRTransferResponseFromJson(
+ProxyTransferResponse _$ProxyTransferResponseFromJson(
         Map<String, dynamic> json) =>
-    BXFRTransferResponse()
+    ProxyTransferResponse()
       ..kstatus = zzz_parseInt(json['kstatus'] as String?)
       ..kmessage = json['kmessage'] as String?
       ..ktoken = json['ktoken'] as String?
       ..puid = json['puid'] as String?;
 
-Map<String, dynamic> _$BXFRTransferResponseToJson(
-    BXFRTransferResponse instance) {
+Map<String, dynamic> _$ProxyTransferResponseToJson(
+    ProxyTransferResponse instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {

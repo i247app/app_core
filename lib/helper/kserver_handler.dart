@@ -1,6 +1,6 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/khero.dart';
-import 'package:app_core/model/response/bxfr_transfer_response.dart';
+import 'package:app_core/model/response/proxy_transfer_response.dart';
 import 'package:app_core/model/response/chat_add_members_response.dart';
 import 'package:app_core/model/response/chat_remove_members_response.dart';
 import 'package:app_core/model/response/credit_transfer_response.dart';
@@ -418,7 +418,7 @@ abstract class KServerHandler {
         .then((data) => CreditTransferResponse.fromJson(data));
   }
 
-  static Future<BXFRTransferResponse> bxfrTransfer({
+  static Future<ProxyTransferResponse> proxyTransfer({
     String? puid,
     String? fone,
     required String amount,
@@ -429,16 +429,16 @@ abstract class KServerHandler {
   }) async {
     final params = {
       "svc": "reward",
-      "req": "xfr.behalf",
+      "req": "xfr.proxy",
       "puid": puid,
-      "buid": buid,
       "fone": fone,
       "amount": amount,
       "tokenName": tokenName,
+      "buid": buid,
       "storeID": storeID,
       "promoCode": promoCode,
     };
     return TLSHelper.send(params)
-        .then((data) => BXFRTransferResponse.fromJson(data));
+        .then((data) => ProxyTransferResponse.fromJson(data));
   }
 }

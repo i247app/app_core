@@ -10,17 +10,17 @@ import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class BXFRTransfer extends StatefulWidget {
+class ProxyTransfer extends StatefulWidget {
   final String? initialPUID;
   final String? tokenName;
 
-  BXFRTransfer({this.initialPUID, this.tokenName});
+  ProxyTransfer({this.initialPUID, this.tokenName});
 
   @override
-  State<StatefulWidget> createState() => _BXFRTransferState();
+  State<StatefulWidget> createState() => _ProxyTransferState();
 }
 
-class _BXFRTransferState extends State<BXFRTransfer> {
+class _ProxyTransferState extends State<ProxyTransfer> {
   final TextEditingController userController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
 
@@ -78,7 +78,7 @@ class _BXFRTransferState extends State<BXFRTransfer> {
   }) async {
     setState(() => isTransferring = true);
 
-    final response = await KServerHandler.bxfrTransfer(
+    final response = await KServerHandler.proxyTransfer(
       amount: amount,
       tokenName: KMoney.VND,
       puid: puid,
