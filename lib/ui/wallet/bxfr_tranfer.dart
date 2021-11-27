@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:app_core/app_core.dart';
 import 'package:app_core/header/no_overscroll.dart';
+import 'package:app_core/helper/kmoney_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/ui/wallet/credit_receipt.dart';
 import 'package:app_core/ui/wallet/widget/kcredit_banner.dart';
@@ -78,7 +79,11 @@ class _BXFRTransferState extends State<BXFRTransfer> {
     setState(() => isTransferring = true);
 
     final response = await KServerHandler.bxfrTransfer(
-        amount: amount, tokenName: "FTEA", puid: puid);
+      amount: amount,
+      tokenName: KMoney.VND,
+      puid: puid,
+      buid: "909",
+    );
 
     switch (response.kstatus) {
       case 100:
@@ -93,10 +98,8 @@ class _BXFRTransferState extends State<BXFRTransfer> {
         // }
         break;
       case 2104:
-        // multiple toast unlti a better solution
         KToastHelper.show("Insufficient funds",
             backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
-        // do noting
         break;
       case 400:
         KToastHelper.show("Transfer failed",

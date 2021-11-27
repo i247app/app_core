@@ -423,6 +423,7 @@ abstract class KServerHandler {
     String? fone,
     required String amount,
     required String tokenName,
+    required String buid,
     String? storeID,
     String? promoCode,
   }) async {
@@ -430,7 +431,7 @@ abstract class KServerHandler {
       "svc": "reward",
       "req": "award.rewards",
       "puid": puid,
-      "buid": "buid",
+      "buid": buid,
       "fone": fone,
       "amount": amount,
       "tokenName": tokenName,
