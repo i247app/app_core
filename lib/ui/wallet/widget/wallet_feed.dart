@@ -4,6 +4,7 @@ import 'package:app_core/model/kbalance.dart';
 import 'package:app_core/model/kcredit_transaction.dart';
 import 'package:app_core/model/response/get_balances_response.dart';
 import 'package:app_core/model/response/get_credit_transactions_response.dart';
+import 'package:app_core/ui/wallet/bxfr_tranfer.dart';
 import 'package:app_core/ui/wallet/credit_bank_transfer.dart';
 import 'package:app_core/ui/wallet/credit_receipt.dart';
 import 'package:app_core/ui/wallet/credit_send.dart';
@@ -139,6 +140,11 @@ class _WalletFeedState extends State<WalletFeed> {
           builder: (ctx) => CreditSend(tokenName: balance?.tokenName ?? "")))
       .whenComplete(loadData);
 
+  void onBXFRClick() => Navigator.of(context)
+      .push(MaterialPageRoute(
+          builder: (ctx) => BXFRTransfer(tokenName: balance?.tokenName ?? "")))
+      .whenComplete(loadData);
+
   void onTokenNameClick(int index) => setBalanceIndex(index);
 
   void showChooseTokenDialog() => showModalBottomSheet<void>(
@@ -222,6 +228,18 @@ class _WalletFeedState extends State<WalletFeed> {
       ),
     );
 
+    final bxfrButton = ElevatedButton(
+      onPressed: onBXFRClick,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.code),
+          SizedBox(width: 6),
+          Text(KPhrases.bxfr),
+        ],
+      ),
+    );
+
     final tokenNameButton = InkWell(
       onTap: (this._balancesResponse?.balances ?? []).length > 0
           ? showChooseTokenDialog
@@ -284,6 +302,11 @@ class _WalletFeedState extends State<WalletFeed> {
                       child: transferButton,
                     ),
                   ],
+                  SizedBox(height: 6),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                    child: bxfrButton,
+                  ),
                   SizedBox(height: 12),
                   transactionList,
                 ],

@@ -30,7 +30,9 @@ abstract class KPhrases {
   /// Localized strings
   static String get anErrorOccurred => _klingo.yak("an_error_occurred");
 
-  static String get kstatus808 => _klingo.yak("kstatus_808");
+  static String get insufficientFunds => _klingo.yak("insufficient_funds");
+
+  static String get insufficientCredits => _klingo.yak("insufficient_credits");
 
   static String get paymentMethod => _klingo.yak("payment_method");
 
@@ -39,6 +41,8 @@ abstract class KPhrases {
   static String get deposit => _klingo.yak("deposit");
 
   static String get transfer => _klingo.yak("transfer");
+
+  static String get bxfr => _klingo.yak("bxfr");
 
   static String get confirm => _klingo.yak("confirm");
 
@@ -83,4 +87,14 @@ abstract class KPhrases {
   static String get sayHiToX => _klingo.yak("say_hi_to_x");
 
   static String get hi => _klingo.yak("hi");
+
+  static String get emailAlreadyUsed => _klingo.yak("email_already_used");
+
+  static String get phoneAlreadyUsed => _klingo.yak("phone_already_used");
+
+  static String get usernameAlreadyUsed => _klingo.yak("username_already_used");
+
+  static String get appFailed => _klingo.yak("app_failed");
+
+  static String get success => _klingo.yak("success");
 }

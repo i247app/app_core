@@ -81,6 +81,7 @@
   "invalid_email": "Email không hợp lệ",
   "email_already_used": "Email này đã được sử dụng",
   "phone_already_used": "Số điện thoại này đã được sử dụng",
+  "username_already_used": "Username này đã được sử dụng",
   "hint_phone": "vd 0901234567",
   "check_security_code": "Kiểm tra  mã",
   "dark_theme": "Dark Theme",
@@ -154,7 +155,11 @@
   "over_13": "Trên 13 tuổi",
   "over_13_info": "Người dùng trên 13 tuổi",
   "help_with_hw": "Kèm học/Dạy học",
-  "kstatus_808": "Không đủ điểm",
+  "insufficient_fundss": "Không đủ tiền",
+  "insufficient_credits": "Không đủ điểm",
   "say_hi_to_x": "Gửi lời chào tới",
-  "hi": "Chào"
+  "hi": "Chào",
+  "app_faild": "App lỗi",
+  "success": "Thành công",
+  "bxfr": "BXFR"
 }

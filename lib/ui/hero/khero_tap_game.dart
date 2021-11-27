@@ -10,6 +10,7 @@ import 'package:app_core/model/khero.dart';
 import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
+import 'package:app_core/ui/hero/widget/ktamago_chan_jumping.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -55,7 +56,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
     this.setState(() {
       this.isShowEndLevel = true;
     });
-    final heroGameLevel = KHeroGameLevel(onFinish: onFinish);
+    final heroGameLevel = KTamagoChanJumping(onFinish: onFinish);
     showCustomOverlay(heroGameLevel);
   }
 
@@ -556,23 +557,26 @@ class _KTapGameScreenState extends State<KTapGameScreen>
   void getListAnswer() {
     final currentRightAnswer = rightAnswers[currentQuestionIndex];
 
-    if (currentRightAnswer <= 4) {
-      this.barrierValues = [
-        currentRightAnswer,
-        currentRightAnswer + 1,
-        currentRightAnswer + 2,
-        currentRightAnswer + 3,
-      ];
-      this.barrierValues.shuffle();
-    } else {
-      this.barrierValues = [
-        currentRightAnswer,
-        currentRightAnswer - 1,
-        currentRightAnswer - 2,
-        currentRightAnswer - 3,
-      ];
-      this.barrierValues.shuffle();
-    }
+    this.setState(() {
+      this.currentShowStarIndex = null;
+      if (currentRightAnswer <= 4) {
+        this.barrierValues = [
+          currentRightAnswer,
+          currentRightAnswer + 1,
+          currentRightAnswer + 2,
+          currentRightAnswer + 3,
+        ];
+        this.barrierValues.shuffle();
+      } else {
+        this.barrierValues = [
+          currentRightAnswer,
+          currentRightAnswer - 1,
+          currentRightAnswer - 2,
+          currentRightAnswer - 3,
+        ];
+        this.barrierValues.shuffle();
+      }
+    });
   }
 
   void randomBoxPosition() {
