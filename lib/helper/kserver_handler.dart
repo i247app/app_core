@@ -429,7 +429,7 @@ abstract class KServerHandler {
   }) async {
     final params = {
       "svc": "reward",
-      "req": "award.rewards",
+      "req": "xfr.behalf",
       "puid": puid,
       "buid": buid,
       "fone": fone,
