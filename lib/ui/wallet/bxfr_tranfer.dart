@@ -87,6 +87,7 @@ class _BXFRTransferState extends State<BXFRTransfer> {
 
     switch (response.kstatus) {
       case 100:
+        KToastHelper.fromResponse(response);
         // if (response.transaction != null) {
         //   Navigator.of(context).pushReplacement(MaterialPageRoute(
         //     builder: (ctx) => CreditReceipt(
