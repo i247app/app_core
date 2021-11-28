@@ -1,4 +1,3 @@
-import 'package:app_core/helper/kamp_helper.dart';
 import 'package:app_core/helper/kcall_kit_helper.dart';
 import 'package:app_core/helper/kfcm_helper.dart';
 import 'package:app_core/helper/khost_config.dart';
@@ -21,7 +20,6 @@ abstract class KSessionData {
   static String? _fcmToken;
   static String? _voipToken;
   static KUserSession? kUserSession;
-  static Map<String, AMPData> _carts = {};
   static void Function(KSessionInitData)? _postSetupHook;
 
   // // // // // system
@@ -130,15 +128,6 @@ abstract class KSessionData {
   static bool get isGuest => userSession == null;
 
   // // // // // app
-  static Map<String, AMPData> get carts => _carts;
-
-  static void setCart(AMPData ampData) {
-    if ((ampData.key ?? "").isNotEmpty) carts[ampData.key!] = ampData;
-  }
-
-  static void removeCart(AMPData ampData) =>
-      carts.removeWhere((k, v) => k == ampData.key);
-
   static List<BusinessMember>? get businessMembers =>
       getUserSession()?.businessMembers;
 
