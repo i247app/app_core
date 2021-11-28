@@ -280,7 +280,10 @@ class _WalletFeedState extends State<WalletFeed> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          balanceView,
+                          Container(
+                            height: 100,
+                            child: balanceView,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: <Widget>[
