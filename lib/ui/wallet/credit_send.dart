@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:app_core/app_core.dart';
 import 'package:app_core/header/no_overscroll.dart';
 import 'package:app_core/helper/kserver_handler.dart';
+import 'package:app_core/model/xfr_ticket.dart';
 import 'package:app_core/ui/wallet/credit_receipt.dart';
 import 'package:app_core/ui/wallet/widget/kcredit_banner.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
@@ -30,14 +31,27 @@ class _CreditSendState extends State<CreditSend> {
   bool isBalanceLoaded = false;
   bool isTransferring = false;
 
+  bool get isButtonEnabled =>
+      selectedUser != null && amountController.text.isNotEmpty;
+
   @override
   void initState() {
     super.initState();
 
     loadBalance();
 
+    amountController.addListener(fieldListener);
+
     if (widget.initialPUID != null) loadUserInfo(puid: widget.initialPUID!);
   }
+
+  @override
+  void dispose() {
+    amountController.removeListener(fieldListener);
+    super.dispose();
+  }
+
+  void fieldListener() => setState(() {});
 
   void loadBalance() async {
     // Load balance
@@ -77,11 +91,9 @@ class _CreditSendState extends State<CreditSend> {
   }) async {
     setState(() => isTransferring = true);
 
-    final response = await KServerHandler.transferCredit(
-      puid: puid,
-      amount: amount,
-      tokenName: tokenName,
-    );
+    final ticket =
+        XFRTicket(rcvPUID: puid, amount: amount, tokenName: tokenName);
+    final response = await KServerHandler.xfrDirect(ticket);
 
     switch (response.kstatus) {
       case 100:
@@ -173,7 +185,7 @@ class _CreditSendState extends State<CreditSend> {
     );
 
     final sendButton = ElevatedButton(
-      onPressed: attemptTransferCredit,
+      onPressed: isButtonEnabled ? attemptTransferCredit : null,
       child: Text("TRANSFER"),
     );
 
@@ -199,23 +211,24 @@ class _CreditSendState extends State<CreditSend> {
             isTransferring
                 ? Center(child: CircularProgressIndicator())
                 : sendButton,
-            SizedBox(height: 10),
           ],
         ),
       ),
     );
 
+    final actions = [
+      IconButton(
+        onPressed: onScanQR,
+        icon: Image.asset(
+          KAssets.IMG_QR_SCAN,
+          package: 'app_core',
+          color: Theme.of(context).colorScheme.secondary,
+        ),
+      ),
+    ];
+
     return Scaffold(
-      appBar: AppBar(title: Text("Transfer"), actions: <Widget>[
-        IconButton(
-          onPressed: onScanQR,
-          icon: Image.asset(
-            KAssets.IMG_QR_SCAN,
-            package: 'app_core',
-            color: Theme.of(context).colorScheme.secondary,
-          ),
-        )
-      ]),
+      appBar: AppBar(title: Text("Transfer"), actions: actions),
       body: body,
     );
   }

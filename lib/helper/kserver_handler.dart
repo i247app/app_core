@@ -14,6 +14,7 @@ import 'package:app_core/model/response/resume_session_response.dart';
 import 'package:app_core/model/response/search_users_response.dart';
 import 'package:app_core/model/response/send_2fa_response.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
+import 'package:app_core/model/xfr_ticket.dart';
 
 abstract class KServerHandler {
   static Future<SimpleResponse> logToServer(String key, value) async {
@@ -402,41 +403,28 @@ abstract class KServerHandler {
         .then((data) => GetBalancesResponse.fromJson(data));
   }
 
-  static Future<CreditTransferResponse> transferCredit({
-    required String puid,
-    required String amount,
-    String? tokenName,
-  }) async {
+  static Future<CreditTransferResponse> xfrDirect(XFRTicket xfrTicket) async {
     final params = {
       "svc": "chao",
       "req": "xfr.direct",
-      "puid": puid,
-      "amount": amount,
-      "tokenName": tokenName,
+      "xfrTicket": xfrTicket,
     };
     return TLSHelper.send(params)
         .then((data) => CreditTransferResponse.fromJson(data));
   }
 
-  static Future<ProxyTransferResponse> proxyTransfer({
-    String? puid,
-    String? fone,
-    required String amount,
-    required String tokenName,
-    required String buid,
-    String? storeID,
-    String? promoCode,
-  }) async {
+  static Future<ProxyTransferResponse> xfrProxy(XFRTicket xfrTicket) async {
     final params = {
       "svc": "reward",
       "req": "xfr.proxy",
-      "puid": puid,
-      "fone": fone,
-      "amount": amount,
-      "tokenName": tokenName,
-      "buid": buid,
-      "storeID": storeID,
-      "promoCode": promoCode,
+      "xfrTicket": xfrTicket,
+      // "puid": puid,
+      // "fone": fone,
+      // "amount": amount,
+      // "tokenName": tokenName,
+      // "buid": buid,
+      // "storeID": storeID,
+      // "promoCode": promoCode,
     };
     return TLSHelper.send(params)
         .then((data) => ProxyTransferResponse.fromJson(data));

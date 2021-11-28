@@ -223,7 +223,7 @@ class _WalletFeedState extends State<WalletFeed> {
         children: [
           Icon(Icons.send),
           SizedBox(width: 6),
-          Text(KPhrases.transfer),
+          Text(KPhrases.directTransfer),
         ],
       ),
     );
@@ -235,7 +235,7 @@ class _WalletFeedState extends State<WalletFeed> {
         children: [
           Icon(Icons.code),
           SizedBox(width: 6),
-          Text(KPhrases.bxfr),
+          Text(KPhrases.proxyTransfer),
         ],
       ),
     );

@@ -4,8 +4,10 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/header/no_overscroll.dart';
 import 'package:app_core/helper/kmoney_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
+import 'package:app_core/model/xfr_ticket.dart';
 import 'package:app_core/ui/wallet/widget/kcredit_banner.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
+import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -77,11 +79,17 @@ class _ProxyTransferState extends State<ProxyTransfer> {
   }) async {
     setState(() => isTransferring = true);
 
-    final response = await KServerHandler.proxyTransfer(
-      amount: amount,
-      tokenName: KMoney.VND,
-      puid: puid,
-      buid: "909",
+    final response = await KServerHandler.xfrProxy(
+      XFRTicket(
+        sndPUID: "909", // Schoolbird BUID
+        rcvPUID: puid,
+        amount: amount,
+        tokenName: KMoney.VND,
+      ),
+      // amount: amount,
+      // tokenName: KMoney.VND,
+      // puid: puid,
+      // buid: "909",
     );
 
     switch (response.kstatus) {
@@ -152,6 +160,10 @@ class _ProxyTransferState extends State<ProxyTransfer> {
     }
   }
 
+  void onSwitchProxyClick() {
+    print("Switching proxy mode");
+  }
+
   @override
   Widget build(BuildContext context) {
     final balanceBanner = KCreditBanner(
@@ -206,17 +218,23 @@ class _ProxyTransferState extends State<ProxyTransfer> {
       ),
     );
 
+    final actions = [
+      IconButton(
+        onPressed: onScanQR,
+        icon: Image.asset(
+          KAssets.IMG_QR_SCAN,
+          package: 'app_core',
+          color: Theme.of(context).colorScheme.secondary,
+        ),
+      ),
+      IconButton(
+        onPressed: onSwitchProxyClick,
+        icon: KUserAvatar.fromUser(KSessionData.me),
+      ),
+    ];
+
     return Scaffold(
-      appBar: AppBar(title: Text("Transfer"), actions: <Widget>[
-        IconButton(
-          onPressed: onScanQR,
-          icon: Image.asset(
-            KAssets.IMG_QR_SCAN,
-            package: 'app_core',
-            color: Theme.of(context).colorScheme.secondary,
-          ),
-        )
-      ]),
+      appBar: AppBar(title: Text("Transfer"), actions: actions),
       body: body,
     );
   }

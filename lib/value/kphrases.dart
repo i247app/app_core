@@ -40,9 +40,9 @@ abstract class KPhrases {
 
   static String get deposit => _klingo.yak("deposit");
 
-  static String get transfer => _klingo.yak("transfer");
+  static String get directTransfer => _klingo.yak("transfer");
 
-  static String get bxfr => _klingo.yak("bxfr");
+  static String get proxyTransfer => _klingo.yak("bxfr");
 
   static String get confirm => _klingo.yak("confirm");
 

@@ -7,7 +7,7 @@ part 'xfr_ticket.g.dart';
 class XFRTicket {
   // required in params
   static const String BY_PUID = "byPUID";
-  static const String SND_PUID = "sndKUID";
+  static const String SND_PUID = "sndPUID";
   static const String RCV_PUID = "rcvPUID"; // to priority 1
   static const String RCV_KUNM = "rcvKUNM"; // or priority 2
   static const String RCV_EMAIL = "rcvEmail"; // or priority 3
@@ -28,7 +28,6 @@ class XFRTicket {
 
   // dig attributes for transaction lines
   static const String BY_KUID = "byKUID";
-  static const String SND_KUID = "sndKUID";
   static const String SND_KAID = "sndKAID";
   static const String RCV_KUID = "rcvKUID";
   static const String RCV_KAID = "rcvKAID";
@@ -39,7 +38,7 @@ class XFRTicket {
   String? byPUID;
 
   @JsonKey(name: SND_PUID)
-  String? sndKUID;
+  String? sndPUID;
 
   @JsonKey(name: RCV_PUID)
   String? rcvPUID;
@@ -98,12 +97,21 @@ class XFRTicket {
   @JsonKey(name: IS_AUTO_CREATE, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isAutoCreate;
 
-  final String? fone;
-  final String? puid;
+  // final String? fone; // rcvFone
+  // final String? puid; // rcvPUID
   final String? promotionType;
-  final String? promotionValue;
 
-  XFRTicket({this.promotionType, this.promotionValue, this.fone, this.puid});
+  // final String? promotionValue; // promoCode
+
+  XFRTicket({
+    this.promotionType,
+    this.promoCode,
+    this.sndPUID,
+    this.rcvFone,
+    this.rcvPUID,
+    this.tokenName,
+    this.amount,
+  });
 
   // JSON
   // XFRTicket();
