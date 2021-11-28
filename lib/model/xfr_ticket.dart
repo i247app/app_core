@@ -98,8 +98,15 @@ class XFRTicket {
   @JsonKey(name: IS_AUTO_CREATE, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isAutoCreate;
 
+  final String? fone;
+  final String? puid;
+  final String? promotionType;
+  final String? promotionValue;
+
+  XFRTicket({this.promotionType, this.promotionValue, this.fone, this.puid});
+
   // JSON
-  XFRTicket();
+  // XFRTicket();
 
   factory XFRTicket.fromJson(Map<String, dynamic> json) =>
       _$XFRTicketFromJson(json);
