@@ -11,20 +11,20 @@ import 'package:app_core/model/kpush_data.dart';
 import 'package:app_core/ui/chat/widget/kchat_icon.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class KChatListing extends StatefulWidget {
+class KChatListingView extends StatefulWidget {
   final KChatListingController controller;
   final Function(KChat chat)? onChatClick;
 
-  KChatListing(
+  KChatListingView(
     this.controller, {
     this.onChatClick,
   });
 
   @override
-  _KChatListingState createState() => _KChatListingState();
+  _KChatListingViewState createState() => _KChatListingViewState();
 }
 
-class _KChatListingState extends State<KChatListing> {
+class _KChatListingViewState extends State<KChatListingView> {
   final SlidableController slideCtrl = SlidableController();
 
   late StreamSubscription streamSub;
@@ -59,10 +59,7 @@ class _KChatListingState extends State<KChatListing> {
     }
   }
 
-  void chatListingListener() {
-    print("chat list udapte");
-    setState(() {});
-  }
+  void chatListingListener() => setState(() {});
 
   @override
   Widget build(BuildContext context) {

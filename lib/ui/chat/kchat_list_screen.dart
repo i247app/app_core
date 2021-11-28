@@ -5,7 +5,7 @@ import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/model/kchat.dart';
 import 'package:app_core/model/kchat_member.dart';
 import 'package:app_core/ui/chat/kchat_contact_listing.dart';
-import 'package:app_core/ui/chat/kchat_listing.dart';
+import 'package:app_core/ui/chat/kchat_listing_view.dart';
 import 'package:app_core/ui/chat/service/kchat_listing_controller.dart';
 import 'package:app_core/ui/chat/service/kchat_listing_data.dart';
 import 'package:flutter/material.dart';
@@ -80,8 +80,6 @@ class _KChatListScreenState extends State<KChatListScreen> {
   }
 
   void onChatClick(KChat chat, bool isTablet) async {
-    print("Clicked on chat ${chat.chatID}");
-
     if (isTablet) {
       final screen = KChatScreen(
         key: UniqueKey(),
@@ -153,7 +151,7 @@ class _KChatListScreenState extends State<KChatListScreen> {
       ),
     );
 
-    final chatListing = KChatListing(
+    final chatListing = KChatListingView(
       this.chatListingCtrl,
       onChatClick: (chat) => onChatClick(chat, isTablet),
     );
