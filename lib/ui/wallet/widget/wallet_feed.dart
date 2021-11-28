@@ -16,9 +16,9 @@ import 'package:app_core/app_core.dart';
 
 class WalletFeed extends StatefulWidget {
   final String? defaultTokenName;
-  final bool showTransferButton;
+  final bool showTransferButtons;
 
-  WalletFeed({this.defaultTokenName, this.showTransferButton = true});
+  WalletFeed({this.defaultTokenName, this.showTransferButtons = true});
 
   @override
   State<StatefulWidget> createState() => _WalletFeedState();
@@ -295,18 +295,18 @@ class _WalletFeedState extends State<WalletFeed> {
                   ),
                   SizedBox(height: 12),
                   actions,
-                  if (widget.showTransferButton) ...[
+                  if (widget.showTransferButtons) ...[
                     SizedBox(height: 6),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 20.0),
                       child: transferButton,
                     ),
+                    SizedBox(height: 6),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      child: bxfrButton,
+                    ),
                   ],
-                  SizedBox(height: 6),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
-                    child: bxfrButton,
-                  ),
                   SizedBox(height: 12),
                   transactionList,
                 ],

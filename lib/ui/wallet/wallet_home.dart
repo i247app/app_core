@@ -62,7 +62,7 @@ class _WalletHomeState extends State<WalletHome> {
   Widget build(BuildContext context) {
     final body = WalletFeed(
       defaultTokenName: defaultToken,
-      showTransferButton: widget.showTransferButton,
+      showTransferButtons: widget.showTransferButton,
     );
 
     final showQrButton = IconButton(
