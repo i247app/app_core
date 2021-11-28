@@ -32,3 +32,4 @@ export 'hero/khero_basic_picker.dart';
 export 'hero/khero_shooting_game.dart';
 export 'hero/khero_home.dart';
 export 'hero/khero_training.dart';
+export 'hero/widget/khero_tap_intro.dart';
