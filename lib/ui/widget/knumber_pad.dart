@@ -9,17 +9,17 @@ class KNumberPad extends StatelessWidget {
 
   final TextEditingController controller;
   final VoidCallback onReturn;
-  final void Function(String) onTextChange;
+  final void Function(String)? onTextChange;
 
   KNumberPad({
     required this.controller,
     required this.onReturn,
-    required this.onTextChange,
+    this.onTextChange,
   });
 
   void _qwertyHandler() => this.onReturn.call();
 
-  void _textChange(String string) => this.onTextChange.call(string);
+  void _textChange(String string) => this.onTextChange?.call(string);
 
   double _getShortestSide() => WidgetsBinding.instance != null
       ? MediaQueryData.fromWindow(WidgetsBinding.instance!.window)
