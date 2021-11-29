@@ -312,7 +312,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       this.setState(() {
         this.isPlaySound = true;
       });
-      playSound(isTrueAnswer);
+      // playSound(isTrueAnswer);
     }
 
     this.setState(() {
