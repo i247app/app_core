@@ -1,3 +1,4 @@
+import 'package:app_core/helper/kapp_nav_helper.dart';
 import 'package:app_core/helper/kmoney_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/kbalance.dart';
@@ -179,7 +180,7 @@ class _WalletFeedState extends State<WalletFeed> {
             ),
           );
 
-    final actions = Container(
+    final bankButtons = Container(
       padding: EdgeInsets.symmetric(horizontal: 20.0),
       child: Row(
         mainAxisSize: MainAxisSize.max,
@@ -187,7 +188,8 @@ class _WalletFeedState extends State<WalletFeed> {
         children: [
           Expanded(
             child: ElevatedButton(
-              onPressed: onDepositClick,
+              onPressed:
+                  KAppNavHelper.pay == KAppNav.READONLY ? null : onDepositClick,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -201,7 +203,9 @@ class _WalletFeedState extends State<WalletFeed> {
           SizedBox(width: 24),
           Expanded(
             child: ElevatedButton(
-              onPressed: onWithdrawClick,
+              onPressed: KAppNavHelper.pay == KAppNav.READONLY
+                  ? null
+                  : onWithdrawClick,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -296,8 +300,10 @@ class _WalletFeedState extends State<WalletFeed> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 12),
-                  actions,
+                  if (KAppNavHelper.pay != KAppNav.OFF) ...[
+                    SizedBox(height: 12),
+                    bankButtons,
+                  ],
                   if (widget.showTransferButtons) ...[
                     SizedBox(height: 6),
                     Container(
