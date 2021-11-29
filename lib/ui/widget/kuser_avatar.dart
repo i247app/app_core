@@ -62,7 +62,7 @@ class KUserAvatar extends StatelessWidget {
         ? (initial ?? "").isEmpty
             ? placeholderImage
             : FittedBox(
-                fit: BoxFit.contain,
+                fit: BoxFit.cover,
                 child: CircleAvatar(
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Colors.white,
