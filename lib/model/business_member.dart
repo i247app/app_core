@@ -13,7 +13,6 @@ class BusinessMember extends KUser {
   static const String ROLE_STAFF = "STAFF";
 
   // NOTE super.puid is the main businessMember id
-
   @JsonKey(name: "puid")
   String? puid;
 
@@ -48,15 +47,18 @@ class BusinessMember extends KUser {
   @JsonKey(name: "activeStatus")
   String? activeStatus;
 
-  // TODO remove here. use KSessionData.activeTokename
+  // TODO remove here. use KSessionData.activeTokenName
   @JsonKey(name: "tokenName")
   String? tokenName;
 
   @JsonKey(name: "businessName")
   String? businessName;
 
-  bool isActive() => KStringHelper.parseBoolean(this.activeStatus ?? "");
+  /// Methods
+  @JsonKey(ignore: true)
+  bool get isActive => KStringHelper.parseBoolean(this.activeStatus ?? "");
 
+  @JsonKey(ignore: true)
   String get fullName =>
       phone ??
       KUtil.prettyName(
