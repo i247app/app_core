@@ -16,11 +16,13 @@ class KHeroTapIntro extends StatefulWidget {
   final Function(int)? onChangeLevel;
   final Function? onFinishLevel;
   final bool isShowEndLevel;
+  final bool isMuted;
 
   const KHeroTapIntro({
     this.onChangeLevel,
     this.onFinishLevel,
     required this.isShowEndLevel,
+    required this.isMuted,
   });
 
   @override
@@ -308,11 +310,11 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   void handlePickAnswer(int answer, int answerIndex) {
     bool isTrueAnswer = answer == rightAnswers[currentQuestionIndex];
 
-    if (!isPlaySound) {
+    if (!widget.isMuted && !isPlaySound) {
       this.setState(() {
         this.isPlaySound = true;
       });
-      // playSound(isTrueAnswer);
+      playSound(isTrueAnswer);
     }
 
     this.setState(() {
