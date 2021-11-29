@@ -9,9 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class WalletHome extends StatefulWidget {
-  final bool showTransferButton;
+  final bool showBankButtons;
+  final bool showDirectTransferButton;
+  final bool showProxyTransferButton;
 
-  const WalletHome({this.showTransferButton = true});
+  const WalletHome({
+    required this.showBankButtons,
+    required this.showDirectTransferButton,
+    required this.showProxyTransferButton,
+  });
 
   @override
   State<StatefulWidget> createState() => _WalletHomeState();
@@ -62,7 +68,9 @@ class _WalletHomeState extends State<WalletHome> {
   Widget build(BuildContext context) {
     final body = WalletFeed(
       defaultTokenName: defaultToken,
-      showTransferButtons: widget.showTransferButton,
+      showBankButtons: widget.showBankButtons,
+      showDirectTransferButton: widget.showDirectTransferButton,
+      showProxyTransferButton: widget.showProxyTransferButton,
     );
 
     final showQrButton = IconButton(
