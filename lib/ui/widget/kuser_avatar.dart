@@ -62,7 +62,7 @@ class KUserAvatar extends StatelessWidget {
         ? (initial ?? "").isEmpty
             ? placeholderImage
             : FittedBox(
-                fit: BoxFit.contain,
+                fit: BoxFit.cover,
                 child: CircleAvatar(
                   backgroundColor: Theme.of(context).colorScheme.primary,
                   foregroundColor: Colors.white,
@@ -81,10 +81,7 @@ class KUserAvatar extends StatelessWidget {
             image: imageURL!,
             fit: BoxFit.cover,
             fadeInDuration: Duration(milliseconds: 100),
-            imageErrorBuilder: (BuildContext context, Object exception,
-                StackTrace? stackTrace) {
-              return placeholderImage;
-            },
+            imageErrorBuilder: (ctx, exc, stackTrace) => placeholderImage,
           );
 
     final body = AspectRatio(
@@ -92,7 +89,7 @@ class KUserAvatar extends StatelessWidget {
       child: Container(
         width: size,
         height: size,
-        child: Center(child: ClipOval(child: raw)),
+        child: ClipOval(child: raw),
       ),
     );
 
