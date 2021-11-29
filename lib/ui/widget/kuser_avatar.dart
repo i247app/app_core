@@ -92,7 +92,7 @@ class KUserAvatar extends StatelessWidget {
       child: Container(
         width: size,
         height: size,
-        child: Center(child: ClipOval(child: raw)),
+        child: ClipOval(child: raw),
       ),
     );
 
