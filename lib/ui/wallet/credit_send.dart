@@ -71,17 +71,17 @@ class _CreditSendState extends State<CreditSend> {
   }
 
   void attemptTransferCredit() {
-    String puid = "${selectedUser?.puid ?? ""}";
-    String amount = amountController.text;
+    final puid = selectedUser?.puid ?? "";
+    final amount = amountController.text;
 
-    if (KStringHelper.isExist(puid) && KStringHelper.isExist(amount))
+    if (puid.isNotEmpty && amount.isNotEmpty)
       transferCredit(
         puid: puid,
         amount: amount,
         tokenName: widget.tokenName,
       );
 
-    FocusScope.of(context).requestFocus(FocusNode()); // dismiss keyboard
+    FocusScope.of(context).unfocus(); // dismiss keyboard
   }
 
   void transferCredit({
@@ -132,7 +132,7 @@ class _CreditSendState extends State<CreditSend> {
   }
 
   void loadUserInfo({required String puid}) async {
-    final response = await KServerHandler.getUsers(puid: "$puid");
+    final response = await KServerHandler.getUsers(puid: puid);
     if (response.users != null && response.users!.length > 0) {
       KUser user = response.users!.first;
       setState(() {
