@@ -2,11 +2,9 @@ import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class KNumberPad extends StatelessWidget {
-  static const int KEYBOARD_MODE_NONE = 0;
-  static const int KEYBOARD_MODE_NUMBER = 1;
-  static const int KEYBOARD_MODE_QUERY = 2;
+enum KNumberPadMode { NONE, NUMBER, QWERTY }
 
+class KNumberPad extends StatelessWidget {
   final TextEditingController controller;
   final VoidCallback onReturn;
   final void Function(String)? onTextChange;
@@ -28,8 +26,8 @@ class KNumberPad extends StatelessWidget {
       : 200;
 
   double _keyboardHeight() {
-    double w = _getShortestSide();
-    print("shortestSide $w");
+    final w = _getShortestSide();
+    // print("shortestSide $w");
     if (w > 375) {
       return 250;
     } else if (w > 320) {
@@ -225,8 +223,11 @@ class _TextKey extends StatelessWidget {
   final ValueSetter<String> onTextInput;
   final int flex;
 
-  const _TextKey(
-      {required this.text, required this.onTextInput, this.flex = 1});
+  const _TextKey({
+    required this.text,
+    required this.onTextInput,
+    this.flex = 1,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -285,8 +286,11 @@ class _SmallTextKey extends StatelessWidget {
   final ValueSetter<String> onTextInput;
   final int flex;
 
-  const _SmallTextKey(
-      {required this.text, required this.onTextInput, this.flex = 1});
+  const _SmallTextKey({
+    required this.text,
+    required this.onTextInput,
+    this.flex = 1,
+  });
 
   @override
   Widget build(BuildContext context) {
