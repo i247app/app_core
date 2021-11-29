@@ -90,7 +90,7 @@ class KUserSession {
     try {
       if (businessMembers != null) {
         for (BusinessMember bm in businessMembers!) {
-          if (bm.isActive()) {
+          if (bm.isActive) {
             activeMember = bm;
             break;
           }

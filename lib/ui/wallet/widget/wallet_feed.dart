@@ -17,9 +17,16 @@ import 'package:app_core/app_core.dart';
 
 class WalletFeed extends StatefulWidget {
   final String? defaultTokenName;
-  final bool showTransferButtons;
+  final bool showBankButtons;
+  final bool showDirectTransferButton;
+  final bool showProxyTransferButton;
 
-  WalletFeed({this.defaultTokenName, this.showTransferButtons = true});
+  WalletFeed({
+    this.defaultTokenName,
+    required this.showBankButtons,
+    required this.showDirectTransferButton,
+    required this.showProxyTransferButton,
+  });
 
   @override
   State<StatefulWidget> createState() => _WalletFeedState();
@@ -300,18 +307,18 @@ class _WalletFeedState extends State<WalletFeed> {
                       ),
                     ),
                   ),
-                  if (KAppNavHelper.pay != KAppNav.OFF) ...[
+                  if (widget.showBankButtons) ...[
                     SizedBox(height: 12),
                     bankButtons,
                   ],
-                  if (widget.showTransferButtons) ...[
+                  if (widget.showDirectTransferButton) ...[
                     SizedBox(height: 6),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 20.0),
                       child: transferButton,
                     ),
                   ],
-                  if (KSessionData.userSession?.isSuperAdmin ?? false) ...[
+                  if (widget.showProxyTransferButton) ...[
                     SizedBox(height: 6),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 20.0),
