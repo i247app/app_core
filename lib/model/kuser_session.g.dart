@@ -29,6 +29,7 @@ KUserSession _$KUserSessionFromJson(Map<String, dynamic> json) => KUserSession()
   ..isTutorReady = json['isTutorReady'] as bool?
   ..isBizReady = json['isBizReady'] as bool?
   ..isCusupReady = json['isCUSUPReady'] as bool?
+  ..isSuperAdmin = json['isSuperAdmin'] as bool?
   ..business = json['business'] == null
       ? null
       : Business.fromJson(json['business'] as Map<String, dynamic>)
@@ -57,6 +58,7 @@ Map<String, dynamic> _$KUserSessionToJson(KUserSession instance) {
   writeNotNull('isTutorReady', instance.isTutorReady);
   writeNotNull('isBizReady', instance.isBizReady);
   writeNotNull('isCUSUPReady', instance.isCusupReady);
+  writeNotNull('isSuperAdmin', instance.isSuperAdmin);
   writeNotNull('business', instance.business?.toJson());
   writeNotNull('businessMembers',
       instance.businessMembers?.map((e) => e.toJson()).toList());

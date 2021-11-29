@@ -25,6 +25,7 @@ class KUserSession {
   static const String IS_TUTOR_READY = "isTutorReady";
   static const String IS_BIZ_READY = "isBizReady";
   static const String IS_CUSUP_READY = "isCUSUPReady";
+  static const String IS_SUPER_ADMIN = "isSuperAdmin";
   static const String BUSINESS = "business";
   static const String BUSINESS_MEMBERS = "businessMembers";
 
@@ -63,6 +64,9 @@ class KUserSession {
 
   @JsonKey(name: IS_CUSUP_READY)
   bool? isCusupReady;
+
+  @JsonKey(name: IS_SUPER_ADMIN)
+  bool? isSuperAdmin;
 
   @JsonKey(name: BUSINESS)
   Business? business;

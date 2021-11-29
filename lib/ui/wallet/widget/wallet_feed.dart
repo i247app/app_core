@@ -304,6 +304,8 @@ class _WalletFeedState extends State<WalletFeed> {
                       padding: EdgeInsets.symmetric(horizontal: 20.0),
                       child: transferButton,
                     ),
+                  ],
+                  if (KSessionData.userSession?.isSuperAdmin ?? false) ...[
                     SizedBox(height: 6),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 20.0),
