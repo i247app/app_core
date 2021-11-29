@@ -191,8 +191,8 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
   double velocity = 3.5;
   Timer? _timer;
   bool isStart = false;
-  double heroHeight = 40;
-  double heroWidth = 40;
+  double heroHeight = 90;
+  double heroWidth = 90;
   bool isShowCountDown = false;
   int trueAnswer = 2;
   double bulletSpeed = 0.01;
@@ -1087,14 +1087,14 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
         Align(
           alignment: Alignment(0, 1),
           child: Container(
-            width: heroWidth * 2,
-            height: heroHeight * 2,
+            width: heroWidth,
+            height: heroHeight,
             child: ScaleTransition(
               scale: _barrelScaleAnimation,
               child: Image.asset(
                 KAssets.IMG_CANNON_BARREL,
-                width: heroWidth * 2,
-                height: heroHeight * 2,
+                width: heroWidth,
+                height: heroHeight,
                 package: 'app_core',
               ),
             ),

@@ -98,6 +98,9 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
 
   int tamagoJumpTimes = 5;
 
+  double eggWidth = 90;
+  double eggHeight = 90;
+
   @override
   void initState() {
     super.initState();
@@ -415,30 +418,36 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                     starY: _moveUpAnimation.value,
                     isShowStar: currentShowStarIndex == 0,
                   ),
+                  SizedBox(
+                    width: 16,
+                  ),
                   Container(
                     transform: Matrix4.rotationZ(
                         _shakeTheTopRightAnimation.value * Math.pi),
                     transformAlignment: Alignment.bottomCenter,
-                    width: MediaQuery.of(context).size.width * 0.35,
-                    height: MediaQuery.of(context).size.width * 0.35,
+                    width: eggWidth,
+                    height: eggHeight,
                     child: Container(
                       transform: Matrix4.rotationZ(
                           _shakeTheTopLeftAnimation.value * Math.pi),
                       transformAlignment: Alignment.bottomCenter,
-                      width: MediaQuery.of(context).size.width * 0.35,
-                      height: MediaQuery.of(context).size.width * 0.35,
+                      width: eggWidth,
+                      height: eggHeight,
                       child: Transform.translate(
                         offset: currentShowStarIndex == null
                             ? _bouncingAnimation.value
                             : Offset(0, 0),
                         child: Image.asset(
                           KAssets.IMG_TAMAGO_CHAN,
-                          width: MediaQuery.of(context).size.width * 0.35,
-                          height: MediaQuery.of(context).size.width * 0.35,
+                          width: eggWidth,
+                          height: eggHeight,
                           package: 'app_core',
                         ),
                       ),
                     ),
+                  ),
+                  SizedBox(
+                    width: 16,
                   ),
                   _Barrier(
                     value: barrierValues[1],
@@ -456,56 +465,12 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                   ),
                 ],
               ),
+              SizedBox(
+                height: 60,
+              ),
             ],
           ),
         ),
-        // Align(
-        //   alignment: Alignment.center,
-        //   child: Padding(
-        //     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-        //     child: Stack(
-        //       children: [
-        //         ...List.generate(
-        //           barrierValues.length,
-        //           (i) => _Barrier(
-        //             value: barrierValues[i],
-        //             barrierY: i == 0 ? -1 : 1,
-        //             rotateAngle: spinningHeroIndex == i
-        //                 ? -this._spinAnimationController.value * 4 * Math.pi
-        //                 : 0,
-        //             bouncingAnimation: spinningHeroIndex == i
-        //                 ? _bouncingAnimation.value
-        //                 : Offset(0, 0),
-        //             scaleAnimation:
-        //                 spinningHeroIndex == i ? _heroScaleAnimation : null,
-        //             starY: _moveUpAnimation.value,
-        //             isShowStar: currentShowStarIndex == i,
-        //           ),
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
-        // Align(
-        //   alignment: Alignment(0, -0.5),
-        //   child: Padding(
-        //     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-        //     child: Container(
-        //       width: MediaQuery.of(context).size.width * 0.75,
-        //       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        //       child: Text(
-        //         questions[currentQuestionIndex],
-        //         textScaleFactor: 1.0,
-        //         textAlign: TextAlign.center,
-        //         style: TextStyle(
-        //           color: Colors.black,
-        //           fontSize: 35,
-        //           fontWeight: FontWeight.w600,
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // ),
       ],
     );
 

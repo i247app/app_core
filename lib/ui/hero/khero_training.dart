@@ -43,6 +43,8 @@ class _KHeroTrainingState extends State<KHeroTraining>
   double bottomTarget = -0.7;
   bool isShowPlusPoint = false;
   DateTime? lastGetPointTime;
+  double heroWidth = 90;
+  double heroHeight = 90;
 
   @override
   void initState() {
@@ -301,17 +303,17 @@ class _KHeroTrainingState extends State<KHeroTraining>
                     ),
                   ),
                   Container(
-                      width: 80,
-                      height: 80,
+                      width: heroWidth,
+                      height: heroHeight,
                       alignment: Alignment(0, 1 + heroY),
                       child: Image.network(
                         widget.hero?.imageURL ?? "",
-                        width: 80,
-                        height: 80,
+                        width: heroWidth,
+                        height: heroHeight,
                         errorBuilder: (context, error, stack) => Image.asset(
                           KAssets.IMG_TAMAGO_CHAN,
-                          width: 80,
-                          height: 80,
+                          width: heroWidth,
+                          height: heroHeight,
                           package: 'app_core',
                         ),
                       )),

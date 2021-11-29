@@ -48,8 +48,8 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
   Timer? _timer;
   double bulletWidth = 40;
   double bulletHeight = 40;
-  double heroHeight = 40;
-  double heroWidth = 40;
+  double heroHeight = 90;
+  double heroWidth = 90;
   double bulletSpeed = 0.01;
   bool isShooting = false;
   List<double> bulletsY = [];
@@ -321,23 +321,23 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
         Align(
           alignment: Alignment(_barrelHeroMovingAnimation.value, 1),
           child: Transform.translate(
-            offset: Offset(-heroWidth * 2 + 15, 0),
+            offset: Offset(-heroWidth + 15, 0),
             child: Transform.translate(
               offset: _bouncingAnimation.value,
               child: Container(
                 transform:
                     Matrix4.rotationZ(_shakeTheTopAnimation.value * Math.pi),
                 transformAlignment: Alignment.bottomCenter,
-                width: heroWidth * 2,
-                height: heroHeight * 2,
+                width: heroWidth,
+                height: heroHeight,
                 child: Transform.rotate(
                   angle: -this._barrelHeroSpinAnimationController.value *
                       4 *
                       Math.pi,
                   child: Image.asset(
                     KAssets.IMG_TAMAGO_CHAN,
-                    width: heroWidth * 2,
-                    height: heroHeight * 2,
+                    width: heroWidth,
+                    height: heroHeight,
                     package: 'app_core',
                   ),
                 ),
@@ -348,14 +348,14 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
         Align(
           alignment: Alignment(_barrelMovingAnimation.value, 1),
           child: Container(
-            width: heroWidth * 2,
-            height: heroHeight * 2,
+            width: heroWidth,
+            height: heroHeight,
             child: ScaleTransition(
               scale: _barrelScaleAnimation,
               child: Image.asset(
                 KAssets.IMG_CANNON_BARREL,
-                width: heroWidth * 2,
-                height: heroHeight * 2,
+                width: heroWidth,
+                height: heroHeight,
                 package: 'app_core',
               ),
             ),
