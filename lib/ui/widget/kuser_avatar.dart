@@ -81,10 +81,7 @@ class KUserAvatar extends StatelessWidget {
             image: imageURL!,
             fit: BoxFit.cover,
             fadeInDuration: Duration(milliseconds: 100),
-            imageErrorBuilder: (BuildContext context, Object exception,
-                StackTrace? stackTrace) {
-              return placeholderImage;
-            },
+            imageErrorBuilder: (ctx, exc, stackTrace) => placeholderImage,
           );
 
     final body = AspectRatio(
