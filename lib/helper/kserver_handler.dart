@@ -1,5 +1,6 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/khero.dart';
+import 'package:app_core/model/response/get_business_response.dart';
 import 'package:app_core/model/response/proxy_transfer_response.dart';
 import 'package:app_core/model/response/chat_add_members_response.dart';
 import 'package:app_core/model/response/chat_remove_members_response.dart';
@@ -428,5 +429,15 @@ abstract class KServerHandler {
     };
     return TLSHelper.send(params)
         .then((data) => ProxyTransferResponse.fromJson(data));
+  }
+
+  static Future<GetBusinessResponse> getBusiness(String buid) async {
+    final params = {
+      "svc": "biz",
+      "req": "get.business",
+      "buid": buid,
+    };
+    return TLSHelper.send(params)
+        .then((data) => GetBusinessResponse.fromJson(data));
   }
 }

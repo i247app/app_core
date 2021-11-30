@@ -89,6 +89,10 @@ class KUserAvatar extends StatelessWidget {
       child: Container(
         width: size,
         height: size,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(size ?? 100),
+          border: Border.all(color: Colors.black, width: 0.1),
+        ),
         child: ClipOval(child: raw),
       ),
     );

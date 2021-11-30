@@ -1,16 +1,20 @@
 import 'package:app_core/helper/kapp_nav_helper.dart';
 import 'package:app_core/helper/kmoney_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
+import 'package:app_core/model/business_member.dart';
 import 'package:app_core/model/kbalance.dart';
 import 'package:app_core/model/kcredit_transaction.dart';
+import 'package:app_core/model/krole.dart';
 import 'package:app_core/model/response/get_balances_response.dart';
 import 'package:app_core/model/response/get_credit_transactions_response.dart';
-import 'package:app_core/ui/wallet/proxy_tranfer.dart';
 import 'package:app_core/ui/wallet/credit_bank_transfer.dart';
 import 'package:app_core/ui/wallet/credit_receipt.dart';
-import 'package:app_core/ui/wallet/credit_send.dart';
+import 'package:app_core/ui/wallet/wallet_transfer.dart';
 import 'package:app_core/ui/wallet/widget/credit_token_picker.dart';
 import 'package:app_core/ui/wallet/widget/kcredit_banner.dart';
+import 'package:app_core/ui/widget/dialog/kproxy_select_modal.dart';
+import 'package:app_core/ui/widget/kqr_viewer.dart';
+import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
 import 'package:app_core/app_core.dart';
@@ -20,12 +24,14 @@ class WalletFeed extends StatefulWidget {
   final bool showBankButtons;
   final bool showDirectTransferButton;
   final bool showProxyTransferButton;
+  final bool useScaffold;
 
   WalletFeed({
     this.defaultTokenName,
     required this.showBankButtons,
     required this.showDirectTransferButton,
     required this.showProxyTransferButton,
+    this.useScaffold = true,
   });
 
   @override
@@ -33,15 +39,17 @@ class WalletFeed extends StatefulWidget {
 }
 
 class _WalletFeedState extends State<WalletFeed> {
-  late final String initialToken = widget.defaultTokenName ??
-      (KLocaleHelper.isUSA ? KMoney.USD : KMoney.VND);
+  late final String initialToken = widget.defaultTokenName ?? localeToken;
 
+  KRole? proxyRole;
   GetBalancesResponse? _balancesResponse;
   GetCreditTransactionsResponse? _transactionsResponse;
 
   // timing issue?? maybe need some kind of timeout
   bool isLoaded = false;
   int balanceIndex = -1;
+
+  String get localeToken => KLocaleHelper.isUSA ? KMoney.USD : KMoney.VND;
 
   KBalance? get balance {
     KBalance dummyBalance = KBalance()
@@ -55,6 +63,9 @@ class _WalletFeedState extends State<WalletFeed> {
     }
   }
 
+  KTransferType get transferType =>
+      proxyRole == null ? KTransferType.direct : KTransferType.proxy;
+
   String get tokenToLookFor => balance?.tokenName ?? initialToken;
 
   List<KCreditTransaction> get transactions =>
@@ -64,6 +75,8 @@ class _WalletFeedState extends State<WalletFeed> {
   void initState() {
     super.initState();
     loadData();
+
+    // print("WALLET FEED - use scaffold??? - ${widget.useScaffold}");
   }
 
   @override
@@ -145,17 +158,33 @@ class _WalletFeedState extends State<WalletFeed> {
 
   void onTransferClick() => Navigator.of(context)
       .push(MaterialPageRoute(
-          builder: (ctx) => CreditSend(tokenName: balance?.tokenName ?? "")))
+          builder: (ctx) => WalletTransfer(
+                sndRole: proxyRole,
+                transferType: transferType,
+                tokenName: balance?.tokenName ?? "",
+              )))
       .whenComplete(loadData);
 
-  void onBXFRClick() => Navigator.of(context)
-      .push(MaterialPageRoute(
-          builder: (ctx) => ProxyTransfer(tokenName: balance?.tokenName ?? "")))
-      .whenComplete(loadData);
+  // void onDirectTransferClick() => Navigator.of(context)
+  //     .push(MaterialPageRoute(
+  //         builder: (ctx) => CreditSend(tokenName: balance?.tokenName ?? "")))
+  //     .whenComplete(loadData);
+  //
+  // void onBXFRClick() => Navigator.of(context)
+  //     .push(MaterialPageRoute(
+  //         builder: (ctx) => ProxyTransfer(tokenName: balance?.tokenName ?? "")))
+  //     .whenComplete(loadData);
 
   void onTokenNameClick(int index) => setBalanceIndex(index);
 
-  void showChooseTokenDialog() => showModalBottomSheet<void>(
+  void showQR() {
+    final qrData = {'puid': KSessionData.me?.puid ?? ""};
+    final screen = KQRViewer(qrData: qrData);
+
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
+  }
+
+  void showChooseTokenModal() => showModalBottomSheet<void>(
         context: context,
         builder: (_) => CreditTokenPicker(
           balances: this._balancesResponse?.balances ?? [],
@@ -163,6 +192,33 @@ class _WalletFeedState extends State<WalletFeed> {
               this._balancesResponse?.balances?.indexOf(bal) ?? -1),
         ),
       );
+
+  void onProxyClick() async {
+    final modal = KProxySelectModal(
+      roles: [
+        KRole()
+          ..puid = KSessionData.me?.puid
+          ..bnm = "As Myself"
+          ..avatarURL = KSessionData.me?.avatarURL
+          ..isMePlaceholder = true,
+        KRole()
+          ..puid = KSessionData.me?.puid
+          ..buid = "909"
+          ..role = BusinessMember.ROLE_STAFF
+          ..bnm = "Schoolbird"
+          ..avatarURL =
+              "https://images.squarespace-cdn.com/content/v1/5d5f36b370ce620001a6feb3/4a3e1089-41af-4eb3-adf1-7e98cfc0db1f/logo1.jpg?format=1500w",
+      ],
+    );
+    final result = await showModalBottomSheet<KRole?>(
+      context: context,
+      builder: (_) => modal,
+    );
+
+    if (result != null) {
+      setState(() => proxyRole = result.isMePlaceholder ? null : result);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -228,7 +284,7 @@ class _WalletFeedState extends State<WalletFeed> {
     );
 
     final transferButton = ElevatedButton(
-      onPressed: onTransferClick,
+      onPressed: onTransferClick, //onDirectTransferClick,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -239,21 +295,21 @@ class _WalletFeedState extends State<WalletFeed> {
       ),
     );
 
-    final bxfrButton = ElevatedButton(
-      onPressed: onBXFRClick,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.code),
-          SizedBox(width: 6),
-          Text(KPhrases.proxyTransfer),
-        ],
-      ),
-    );
+    // final bxfrButton = ElevatedButton(
+    //   onPressed: onTransferClick, // onBXFRClick,
+    //   child: Row(
+    //     mainAxisSize: MainAxisSize.min,
+    //     children: [
+    //       Icon(Icons.code),
+    //       SizedBox(width: 6),
+    //       Text(KPhrases.proxyTransfer),
+    //     ],
+    //   ),
+    // );
 
     final tokenNameButton = InkWell(
       onTap: (this._balancesResponse?.balances ?? []).length > 0
-          ? showChooseTokenDialog
+          ? showChooseTokenModal
           : null,
       borderRadius: BorderRadius.circular(4),
       child: Container(
@@ -275,64 +331,116 @@ class _WalletFeedState extends State<WalletFeed> {
       ),
     );
 
-    final body = !this.isLoaded
-        ? Container()
-        : SingleChildScrollView(
-            child: SafeArea(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Card(
-                    elevation: 1,
-                    margin: EdgeInsets.all(20),
-                    child: Container(
-                      padding: EdgeInsets.all(10),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Container(
-                            height: 100,
-                            child: balanceView,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              tokenNameButton,
-                              SizedBox(width: 30.0),
-                            ],
-                          ),
-                          SizedBox(height: 20.0),
-                        ],
-                      ),
-                    ),
-                  ),
-                  if (widget.showBankButtons) ...[
-                    SizedBox(height: 12),
-                    bankButtons,
-                  ],
-                  if (widget.showDirectTransferButton) ...[
-                    SizedBox(height: 6),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0),
-                      child: transferButton,
-                    ),
-                  ],
-                  if (widget.showProxyTransferButton) ...[
-                    SizedBox(height: 6),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0),
-                      child: bxfrButton,
-                    ),
-                  ],
-                  SizedBox(height: 12),
-                  transactionList,
-                ],
+    final balanceCard = Card(
+      elevation: 1,
+      margin: EdgeInsets.symmetric(horizontal: 20, vertical: 2),
+      child: Container(
+        padding: EdgeInsets.all(8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Container(
+              height: 80,
+              child: Center(child: balanceView),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Container(
+                padding: EdgeInsets.only(right: 30),
+                child: tokenNameButton,
               ),
             ),
-          );
+          ],
+        ),
+      ),
+    );
 
-    return body;
+    final content = SingleChildScrollView(
+      child: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            balanceCard,
+            if (widget.showBankButtons) ...[
+              SizedBox(height: 14),
+              bankButtons,
+            ],
+            if (widget.showDirectTransferButton) ...[
+              SizedBox(height: 6),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                child: transferButton,
+              ),
+            ],
+            // if (widget.showProxyTransferButton) ...[
+            //   SizedBox(height: 6),
+            //   Container(
+            //     padding: EdgeInsets.symmetric(horizontal: 20.0),
+            //     child: bxfrButton,
+            //   ),
+            // ],
+            SizedBox(height: 12),
+            transactionList,
+          ],
+        ),
+      ),
+    );
+
+    final body = !this.isLoaded ? Container() : content;
+
+    final showQrButton = IconButton(
+      onPressed: showQR,
+      icon: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(2),
+          color: Colors.white,
+        ),
+        child: Image.asset(KAssets.IMG_QR_CODE, package: 'app_core'),
+      ),
+    );
+
+    final proxyButton = IconButton(
+      onPressed: onProxyClick,
+      icon: Material(
+        elevation: 3,
+        borderRadius: BorderRadius.circular(20),
+        child: KUserAvatar(
+          initial: proxyRole?.bnm,
+          imageURL: proxyRole?.avatarURL ?? KSessionData.me?.avatarURL,
+        ),
+      ),
+    );
+
+    final actions = [
+      showQrButton,
+      if (widget.showProxyTransferButton) proxyButton,
+    ];
+
+    final withoutScaffold = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: actions,
+        ),
+        body,
+      ],
+    );
+
+    final withScaffold = Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor:
+            Theme.of(context).appBarTheme.backgroundColor?.withOpacity(0.8),
+        title: Text("Wallet"),
+        actions: actions,
+      ),
+      body: body,
+    );
+
+    return widget.useScaffold ? withScaffold : withoutScaffold;
   }
 }
 

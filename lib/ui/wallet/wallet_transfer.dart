@@ -3,33 +3,45 @@ import 'dart:convert';
 import 'package:app_core/app_core.dart';
 import 'package:app_core/header/no_overscroll.dart';
 import 'package:app_core/helper/kserver_handler.dart';
+import 'package:app_core/model/krole.dart';
 import 'package:app_core/model/xfr_ticket.dart';
+import 'package:app_core/ui/wallet/credit_receipt.dart';
 import 'package:app_core/ui/wallet/widget/kcredit_banner.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class ProxyTransfer extends StatefulWidget {
-  final String? initialPUID;
-  final String? tokenName;
+enum KTransferType { direct, proxy }
 
-  ProxyTransfer({this.initialPUID, this.tokenName});
+class WalletTransfer extends StatefulWidget {
+  final String? rcvPUID;
+  final KRole? sndRole;
+  final KTransferType transferType;
+  final String tokenName;
+
+  WalletTransfer({
+    this.rcvPUID,
+    this.sndRole,
+    required this.transferType,
+    required this.tokenName,
+  });
 
   @override
-  State<StatefulWidget> createState() => _ProxyTransferState();
+  State<StatefulWidget> createState() => _WalletTransferState();
 }
 
-class _ProxyTransferState extends State<ProxyTransfer> {
+class _WalletTransferState extends State<WalletTransfer> {
   final TextEditingController userController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
 
-  String? balance;
-  String? balanceTokenName;
+  String? balanceAmount;
   KUser? selectedUser;
 
-  bool isBalanceLoaded = false;
-  bool isTransferring = false;
+  bool isNetworking = false;
+
+  bool get isButtonEnabled =>
+      selectedUser != null && amountController.text.isNotEmpty;
 
   @override
   void initState() {
@@ -37,77 +49,79 @@ class _ProxyTransferState extends State<ProxyTransfer> {
 
     loadBalance();
 
-    if (widget.initialPUID != null) loadUserInfo(puid: widget.initialPUID!);
+    amountController.addListener(fieldListener);
+
+    if (widget.rcvPUID != null) loadUserInfo(puid: widget.rcvPUID!);
   }
+
+  @override
+  void dispose() {
+    amountController.removeListener(fieldListener);
+    super.dispose();
+  }
+
+  void fieldListener() => setState(() {});
 
   void loadBalance() async {
     // Load balance
-    final response = await KServerHandler.getCreditBalances(
-//      tokenName: balanceTokenName,
-      tokenName: widget.tokenName,
-    );
+    final response =
+        await KServerHandler.getCreditBalances(tokenName: widget.tokenName);
 
     if (mounted) {
       setState(() {
-        balance = response.balances
+        balanceAmount = response.balances
             ?.firstWhere((b) => b.tokenName == widget.tokenName)
             .amount;
-        balanceTokenName = widget.tokenName;
       });
     }
   }
 
   void attemptTransferCredit() {
-    String puid = "${selectedUser?.puid ?? ""}";
-    String amount = amountController.text;
+    final puid = selectedUser?.puid ?? "";
+    final amount = amountController.text;
 
-    if (KStringHelper.isExist(puid) && KStringHelper.isExist(amount))
+    if (puid.isNotEmpty && amount.isNotEmpty)
       transferCredit(
-        puid: puid,
+        rcvPUID: puid,
         amount: amount,
         tokenName: widget.tokenName,
       );
 
-    FocusScope.of(context).requestFocus(FocusNode()); // dismiss keyboard
+    FocusScope.of(context).unfocus(); // dismiss keyboard
   }
 
   void transferCredit({
-    required String puid,
+    required String rcvPUID,
     required String amount,
     String? tokenName,
   }) async {
-    setState(() => isTransferring = true);
+    setState(() => isNetworking = true);
 
-    final response = await KServerHandler.xfrProxy(
-      XFRTicket(
-        sndPUID: "909", // Schoolbird BUID
-        rcvPUID: puid,
-        amount: amount,
-        tokenName: tokenName,
-      ),
-      // amount: amount,
-      // tokenName: KMoney.VND,
-      // puid: puid,
-      // buid: "909",
+    final ticket = XFRTicket(
+      sndPUID: widget.sndRole?.puid,
+      rcvPUID: rcvPUID,
+      amount: amount,
+      tokenName: tokenName,
     );
+    final response = await KServerHandler.xfrDirect(ticket);
 
     switch (response.kstatus) {
       case 100:
-        loadBalance();
-        KToastHelper.fromResponse(response);
-        // if (response.transaction != null) {
-        //   Navigator.of(context).pushReplacement(MaterialPageRoute(
-        //     builder: (ctx) => CreditReceipt(
-        //       transactionID: response.transaction!.txID ?? "",
-        //       lineID: response.transaction!.lineID ?? "",
-        //       tokenName: widget.tokenName,
-        //     ),
-        //   ));
-        // }
+        if (response.transaction != null) {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (ctx) => CreditReceipt(
+              transactionID: response.transaction!.txID ?? "",
+              lineID: response.transaction!.lineID ?? "",
+              tokenName: widget.tokenName,
+            ),
+          ));
+        }
         break;
       case 2104:
+        // multiple toast until a better solution
         KToastHelper.show("Insufficient funds",
             backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
+        // do noting
         break;
       case 400:
         KToastHelper.show("Transfer failed",
@@ -118,7 +132,7 @@ class _ProxyTransferState extends State<ProxyTransfer> {
             backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
         break;
     }
-    setState(() => isTransferring = false);
+    setState(() => isNetworking = false);
   }
 
   void toChooseContact() async {
@@ -128,7 +142,7 @@ class _ProxyTransferState extends State<ProxyTransfer> {
   }
 
   void loadUserInfo({required String puid}) async {
-    final response = await KServerHandler.getUsers(puid: "$puid");
+    final response = await KServerHandler.getUsers(puid: puid);
     if (response.users != null && response.users!.length > 0) {
       KUser user = response.users!.first;
       setState(() {
@@ -149,7 +163,7 @@ class _ProxyTransferState extends State<ProxyTransfer> {
   }
 
   void onScanQR() async {
-    KScanResult result = await KScanHelper.scan();
+    final result = await KScanHelper.scan();
     try {
       Map data = jsonDecode(result.data ?? "");
       String puid = data["puid"];
@@ -159,15 +173,46 @@ class _ProxyTransferState extends State<ProxyTransfer> {
     }
   }
 
-  void onSwitchProxyClick() {
-    print("Switching proxy mode");
-  }
-
   @override
   Widget build(BuildContext context) {
-    final balanceBanner = KCreditBanner(
-      amount: this.balance ?? "",
-      tokenName: this.balanceTokenName ?? "",
+    final roleDisplay = widget.sndRole == null
+        ? Container()
+        : Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              KUserAvatar(
+                initial: widget.sndRole?.bnm,
+                imageURL: widget.sndRole?.avatarURL,
+                size: 32,
+              ),
+              SizedBox(width: 6),
+              Text(
+                widget.sndRole?.bnm ?? "",
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          );
+
+    final balanceBanner = Container(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Opacity(opacity: 0, child: Text(widget.tokenName)),
+          Expanded(
+            child: KCreditBanner(
+              amount: balanceAmount ?? "",
+              tokenName: widget.tokenName,
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(bottom: 10),
+            child: Text(widget.tokenName),
+          ),
+        ],
+      ),
     );
 
     final transferTo = _CreditInput(
@@ -185,7 +230,7 @@ class _ProxyTransferState extends State<ProxyTransfer> {
     );
 
     final sendButton = ElevatedButton(
-      onPressed: attemptTransferCredit,
+      onPressed: isButtonEnabled ? attemptTransferCredit : null,
       child: Text("TRANSFER"),
     );
 
@@ -195,6 +240,7 @@ class _ProxyTransferState extends State<ProxyTransfer> {
         child: ListView(
           padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
           children: <Widget>[
+            if (widget.sndRole != null) roleDisplay,
             Container(
               height: 100,
               child: balanceBanner,
@@ -208,10 +254,9 @@ class _ProxyTransferState extends State<ProxyTransfer> {
             SizedBox(height: 20),
             transferAmount,
             SizedBox(height: 20),
-            isTransferring
+            isNetworking
                 ? Center(child: CircularProgressIndicator())
                 : sendButton,
-            SizedBox(height: 10),
           ],
         ),
       ),
@@ -226,14 +271,13 @@ class _ProxyTransferState extends State<ProxyTransfer> {
           color: Theme.of(context).colorScheme.secondary,
         ),
       ),
-      IconButton(
-        onPressed: onSwitchProxyClick,
-        icon: KUserAvatar.fromUser(KSessionData.me),
-      ),
     ];
 
     return Scaffold(
-      appBar: AppBar(title: Text("Transfer"), actions: actions),
+      appBar: AppBar(
+        // title: Text("Transfer"),
+        actions: actions,
+      ),
       body: body,
     );
   }
@@ -285,11 +329,13 @@ class _CreditInput extends StatelessWidget {
       onTap: onClick == null ? null : () => clickHandler(context),
       // style: TextStyle(color: Theme.of(context).primaryColor),
       decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 10),
-          suffixIcon: icon),
+        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+        suffixIcon: icon,
+      ),
     );
 
     return Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         text,

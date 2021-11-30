@@ -41,11 +41,8 @@ class _CreditTokenPickerState extends State<CreditTokenPicker> {
                         Navigator.pop(context);
                         widget.onSelect(balance);
                       },
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 20,
-                        ),
+                      child: Container(
+                        padding: EdgeInsets.all(20),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

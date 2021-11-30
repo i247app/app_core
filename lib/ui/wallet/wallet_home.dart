@@ -1,13 +1,12 @@
-import 'dart:convert';
-
 import 'package:app_core/header/kassets.dart';
 import 'package:app_core/helper/klocale_helper.dart';
 import 'package:app_core/helper/kmoney_helper.dart';
 import 'package:app_core/helper/ksession_data.dart';
-import 'package:app_core/ui/wallet/widget/wallet_feed.dart';
+import 'package:app_core/ui/wallet/wallet_feed.dart';
+import 'package:app_core/ui/widget/kqr_viewer.dart';
 import 'package:flutter/material.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
+@deprecated
 class WalletHome extends StatefulWidget {
   final bool showBankButtons;
   final bool showDirectTransferButton;
@@ -28,38 +27,7 @@ class _WalletHomeState extends State<WalletHome> {
 
   void showQR() {
     final qrData = {'puid': KSessionData.me?.puid ?? ""};
-    final screen = Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: Container(
-          padding: EdgeInsets.all(32),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Center(
-                child: Text(
-                  KSessionData.me?.businessName ??
-                      KSessionData.me?.fullName ??
-                      "",
-                  style: Theme.of(context).textTheme.headline5,
-                ),
-              ),
-              SizedBox(height: 16),
-              QrImage(data: jsonEncode(qrData), backgroundColor: Colors.white),
-              SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("${KSessionData.me?.kunm}"),
-                  SizedBox(width: 20),
-                  Text("${KSessionData.me?.puid}")
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+    final screen = KQRViewer(qrData: qrData);
 
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
   }
