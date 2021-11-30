@@ -1,6 +1,9 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/khero.dart';
+import 'package:app_core/model/xfr_proxy.dart';
 import 'package:app_core/model/response/get_business_response.dart';
+import 'package:app_core/model/response/list_xfr_proxy_response.dart';
+import 'package:app_core/model/response/list_xfr_role_response.dart';
 import 'package:app_core/model/response/proxy_transfer_response.dart';
 import 'package:app_core/model/response/chat_add_members_response.dart';
 import 'package:app_core/model/response/chat_remove_members_response.dart';
@@ -71,25 +74,6 @@ abstract class KServerHandler {
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }
 
-  //
-  // static Future<GetChatMessagesResponse> getChatMessages({
-  //   String? chatID,
-  //   String? appContent,
-  //   String? appContentID,
-  //   String? messageID,
-  // }) async {
-  //   final params = {
-  //     "svc": "chat",
-  //     "req": "chat.message.list",
-  //     "chatID": chatID,
-  //     "refApp": appContent,
-  //     "refID": appContentID,
-  //     "messageID": messageID,
-  //   };
-  //   return TLSHelper.send(params)
-  //       .then((data) => GetChatMessagesResponse.fromJson(data));
-  // }
-  //
   static Future<SendChatMessageResponse> sendMessage(KChatMessage msg,
       {List<String>? refPUIDs}) async {
     final params = {
@@ -102,20 +86,6 @@ abstract class KServerHandler {
         .then((data) => SendChatMessageResponse.fromJson(data));
   }
 
-//
-// static Future<GetChatMembersResponse> getChatMembers(
-//     {String? chatID, String? appContent, String? appContentID}) async {
-//   final params = {
-//     "svc": "chat",
-//     "req": "chat.member.list",
-//     "chatID": chatID,
-//     "refApp": appContent,
-//     "refID": appContentID,
-//   };
-//   return TLSHelper.send(params)
-//       .then((data) => GetChatMembersResponse.fromJson(data));
-// }
-//
   static Future<ChatAddMembersResponse> addChatMembers({
     required String chatID,
     required List<String> refPUIDs,
@@ -127,7 +97,6 @@ abstract class KServerHandler {
       "req": "chat.member.add",
       "members": refPUIDs
           .map((puid) => KChatMember()
-            // ..domain = domain
             ..refApp = refApp
             ..refID = refID
             ..chatID = chatID
@@ -419,13 +388,6 @@ abstract class KServerHandler {
       "svc": "reward",
       "req": "xfr.proxy",
       "xfrTicket": xfrTicket,
-      // "puid": puid,
-      // "fone": fone,
-      // "amount": amount,
-      // "tokenName": tokenName,
-      // "buid": buid,
-      // "storeID": storeID,
-      // "promoCode": promoCode,
     };
     return TLSHelper.send(params)
         .then((data) => ProxyTransferResponse.fromJson(data));
@@ -439,5 +401,24 @@ abstract class KServerHandler {
     };
     return TLSHelper.send(params)
         .then((data) => GetBusinessResponse.fromJson(data));
+  }
+
+  static Future<ListXFRRoleResponse> listXFRRoles() async {
+    final params = {
+      "svc": "chao",
+      "req": "xfr.role.list",
+    };
+    return TLSHelper.send(params)
+        .then((data) => ListXFRRoleResponse.fromJson(data));
+  }
+
+  static Future<ListXFRProxyResponse> listXFRProxy(String buid) async {
+    final params = {
+      "svc": "chao",
+      "req": "xfr.proxy.list",
+      "xfrProxy": XFRProxy()..buid = buid,
+    };
+    return TLSHelper.send(params)
+        .then((data) => ListXFRProxyResponse.fromJson(data));
   }
 }
