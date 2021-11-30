@@ -43,8 +43,8 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
   double gravity = 0.0;
   double velocity = 3.5;
   Timer? _timer;
-  double heroHeight = 40;
-  double heroWidth = 40;
+  double heroHeight = 90;
+  double heroWidth = 90;
   bool isShooting = false;
   int eggBreakStep = 0;
 
@@ -295,23 +295,23 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
         Align(
           alignment: Alignment(_barrelHeroMovingAnimation.value, 0),
           child: Transform.translate(
-            offset: Offset(-heroWidth * 2 + 15, 0),
+            offset: Offset(-heroWidth + 15, 0),
             child: Transform.translate(
               offset: _bouncingAnimation.value,
               child: Container(
                 transform:
                     Matrix4.rotationZ(_shakeTheTopAnimation.value * Math.pi),
                 transformAlignment: Alignment.bottomCenter,
-                width: heroWidth * 2,
-                height: heroHeight * 2,
+                width: heroWidth,
+                height: heroHeight,
                 child: Transform.rotate(
                   angle: -this._barrelHeroSpinAnimationController.value *
                       4 *
                       Math.pi,
                   child: Image.asset(
                     KAssets.IMG_TAMAGO_CHAN,
-                    width: heroWidth * 2,
-                    height: heroHeight * 2,
+                    width: heroWidth,
+                    height: heroHeight,
                     package: 'app_core',
                   ),
                 ),
@@ -322,32 +322,32 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
         Align(
           alignment: Alignment(_barrelMovingAnimation.value, 0),
           child: Container(
-            width: heroWidth * 4,
-            height: heroHeight * 4,
+            width: heroWidth * 2,
+            height: heroHeight * 2,
             child: eggStep1,
           ),
         ),
         Align(
           alignment: Alignment(_barrelMovingAnimation.value, 0),
           child: Container(
-            width: heroWidth * 4,
-            height: heroHeight * 4,
+            width: heroWidth * 2,
+            height: heroHeight * 2,
             child: eggStep2,
           ),
         ),
         Align(
           alignment: Alignment(_barrelMovingAnimation.value, 0),
           child: Container(
-            width: heroWidth * 4,
-            height: heroHeight * 4,
+            width: heroWidth * 2,
+            height: heroHeight * 2,
             child: eggStep3,
           ),
         ),
         Align(
           alignment: Alignment(_barrelMovingAnimation.value, 0),
           child: Container(
-            width: heroWidth * 4,
-            height: heroHeight * 4,
+            width: heroWidth * 2,
+            height: heroHeight * 2,
             child: eggStep4,
           ),
         ),

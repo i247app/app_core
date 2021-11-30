@@ -169,8 +169,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   double velocity = 2.0;
   Timer? _timer;
   bool isStart = false;
-  double heroHeight = 80;
-  double heroWidth = 80;
+  double heroHeight = 90;
+  double heroWidth = 90;
   int trueAnswer = 2;
   bool? result;
   bool isScroll = true;

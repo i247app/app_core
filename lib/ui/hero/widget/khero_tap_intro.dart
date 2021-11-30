@@ -96,7 +96,10 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   bool isPause = false;
   bool isBackgroundSoundPlaying = false;
 
-  int tamagoJumpTimes =  5;
+  int tamagoJumpTimes = 5;
+
+  double eggWidth = 90;
+  double eggHeight = 90;
 
   @override
   void initState() {
@@ -376,75 +379,96 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       children: [
         Align(
           alignment: Alignment.center,
-          child: Container(
-            transform:
-                Matrix4.rotationZ(_shakeTheTopRightAnimation.value * Math.pi),
-            transformAlignment: Alignment.bottomCenter,
-            width: MediaQuery.of(context).size.width * 0.35,
-            height: MediaQuery.of(context).size.width * 0.35,
-            child: Container(
-              transform: Matrix4.rotationZ(
-                  _shakeTheTopLeftAnimation.value * Math.pi),
-              transformAlignment: Alignment.bottomCenter,
-              width: MediaQuery.of(context).size.width * 0.35,
-              height: MediaQuery.of(context).size.width * 0.35,
-              child: Transform.translate(
-                offset: currentShowStarIndex == null ? _bouncingAnimation.value : Offset(0, 0),
-                child: Image.asset(
-                  KAssets.IMG_TAMAGO_CHAN,
-                  width: MediaQuery.of(context).size.width * 0.35,
-                  height: MediaQuery.of(context).size.width * 0.35,
-                  package: 'app_core',
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: Text(
+                    questions[currentQuestionIndex],
+                    textScaleFactor: 1.0,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 35,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.center,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-            child: Stack(
-              children: [
-                ...List.generate(
-                  barrierValues.length,
-                  (i) => _Barrier(
-                    value: barrierValues[i],
-                    barrierY: i == 0 ? -1 : 1,
-                    rotateAngle: spinningHeroIndex == i
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _Barrier(
+                    value: barrierValues[0],
+                    barrierY: 0,
+                    rotateAngle: spinningHeroIndex == 0
                         ? -this._spinAnimationController.value * 4 * Math.pi
                         : 0,
-                    bouncingAnimation: spinningHeroIndex == i
+                    bouncingAnimation: spinningHeroIndex == 0
                         ? _bouncingAnimation.value
                         : Offset(0, 0),
                     scaleAnimation:
-                        spinningHeroIndex == i ? _heroScaleAnimation : null,
+                        spinningHeroIndex == 0 ? _heroScaleAnimation : null,
                     starY: _moveUpAnimation.value,
-                    isShowStar: currentShowStarIndex == i,
+                    isShowStar: currentShowStarIndex == 0,
                   ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment(0, -0.5),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.75,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              child: Text(
-                questions[currentQuestionIndex],
-                textScaleFactor: 1.0,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 35,
-                  fontWeight: FontWeight.w600,
-                ),
+                  SizedBox(
+                    width: 16,
+                  ),
+                  Container(
+                    transform: Matrix4.rotationZ(
+                        _shakeTheTopRightAnimation.value * Math.pi),
+                    transformAlignment: Alignment.bottomCenter,
+                    width: eggWidth,
+                    height: eggHeight,
+                    child: Container(
+                      transform: Matrix4.rotationZ(
+                          _shakeTheTopLeftAnimation.value * Math.pi),
+                      transformAlignment: Alignment.bottomCenter,
+                      width: eggWidth,
+                      height: eggHeight,
+                      child: Transform.translate(
+                        offset: currentShowStarIndex == null
+                            ? _bouncingAnimation.value
+                            : Offset(0, 0),
+                        child: Image.asset(
+                          KAssets.IMG_TAMAGO_CHAN,
+                          width: eggWidth,
+                          height: eggHeight,
+                          package: 'app_core',
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: 16,
+                  ),
+                  _Barrier(
+                    value: barrierValues[1],
+                    barrierY: 0,
+                    rotateAngle: spinningHeroIndex == 1
+                        ? -this._spinAnimationController.value * 4 * Math.pi
+                        : 0,
+                    bouncingAnimation: spinningHeroIndex == 1
+                        ? _bouncingAnimation.value
+                        : Offset(0, 0),
+                    scaleAnimation:
+                        spinningHeroIndex == 1 ? _heroScaleAnimation : null,
+                    starY: _moveUpAnimation.value,
+                    isShowStar: currentShowStarIndex == 1,
+                  ),
+                ],
               ),
-            ),
+              SizedBox(
+                height: 60,
+              ),
+            ],
           ),
         ),
       ],
