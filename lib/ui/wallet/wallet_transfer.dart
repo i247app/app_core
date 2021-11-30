@@ -5,7 +5,6 @@ import 'package:app_core/header/no_overscroll.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/krole.dart';
 import 'package:app_core/model/xfr_ticket.dart';
-import 'package:app_core/ui/wallet/credit_receipt.dart';
 import 'package:app_core/ui/wallet/widget/kcredit_banner.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
