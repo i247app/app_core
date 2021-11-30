@@ -64,8 +64,10 @@ class _WalletTransferState extends State<WalletTransfer> {
 
   void loadBalance() async {
     // Load balance
-    final response =
-        await KServerHandler.getCreditBalances(tokenName: widget.tokenName);
+    final response = await KServerHandler.getCreditBalances(
+      tokenName: widget.tokenName,
+      proxyPUID: widget.sndRole?.buid,
+    );
 
     if (mounted) {
       setState(() {
@@ -77,12 +79,12 @@ class _WalletTransferState extends State<WalletTransfer> {
   }
 
   void attemptTransferCredit() {
-    final puid = selectedUser?.puid ?? "";
+    final rcvPUID = selectedUser?.puid ?? "";
     final amount = amountController.text;
 
-    if (puid.isNotEmpty && amount.isNotEmpty)
+    if (rcvPUID.isNotEmpty && amount.isNotEmpty)
       transferCredit(
-        rcvPUID: puid,
+        rcvPUID: rcvPUID,
         amount: amount,
         tokenName: widget.tokenName,
       );
@@ -98,24 +100,31 @@ class _WalletTransferState extends State<WalletTransfer> {
     setState(() => isNetworking = true);
 
     final ticket = XFRTicket(
-      sndPUID: widget.sndRole?.puid,
+      sndPUID: widget.sndRole?.buid,
       rcvPUID: rcvPUID,
       amount: amount,
       tokenName: tokenName,
     );
-    final response = await KServerHandler.xfrDirect(ticket);
+    final Future<BaseResponse> Function(XFRTicket) fn =
+        widget.transferType == KTransferType.direct
+            ? KServerHandler.xfrDirect
+            : KServerHandler.xfrProxy;
+    final response = await fn.call(ticket);
 
     switch (response.kstatus) {
       case 100:
-        if (response.transaction != null) {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (ctx) => CreditReceipt(
-              transactionID: response.transaction!.txID ?? "",
-              lineID: response.transaction!.lineID ?? "",
-              tokenName: widget.tokenName,
-            ),
-          ));
-        }
+        // TODO re-enable later
+        // if (response.transaction != null) {
+        //   Navigator.of(context).pushReplacement(MaterialPageRoute(
+        //     builder: (ctx) => CreditReceipt(
+        //       transactionID: response.transaction!.txID ?? "",
+        //       lineID: response.transaction!.lineID ?? "",
+        //       tokenName: widget.tokenName,
+        //     ),
+        //   ));
+        // }
+        KToastHelper.fromResponse(response);
+        loadBalance();
         break;
       case 2104:
         // multiple toast until a better solution

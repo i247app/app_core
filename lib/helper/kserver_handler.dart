@@ -330,24 +330,43 @@ abstract class KServerHandler {
 
   // get by session on server myPUID() or perhaps by proxy puid
   static Future<GetCreditTransactionsResponse> getCreditTransactions({
+    required String tokenName,
     String? transactionID,
     String? lineID,
     String? puid, // TODO by proxy
     String? buid,
     String? storeID,
     String? page,
-    String? tokenName,
+    String? proxyPUID,
+  }) async {
+    final params = {
+      "svc": "chao",
+      "req": "get.credit.transactions",
+      "tokenName": tokenName,
+      // "txID": transactionID,
+      // "lineID": lineID,
+      "puid": puid,
+      "buid": buid,
+      "storeID": storeID,
+      "page": page,
+      "proxyPUID": proxyPUID,
+    };
+    return TLSHelper.send(params)
+        .then((data) => GetCreditTransactionsResponse.fromJson(data));
+  }
+
+  // get by session on server myPUID() or perhaps by proxy puid
+  static Future<GetCreditTransactionsResponse> getTx({
+    required String transactionID,
+    required String lineID,
+    String? proxyPUID,
   }) async {
     final params = {
       "svc": "chao",
       "req": "get.credit.transactions",
       "txID": transactionID,
       "lineID": lineID,
-      "puid": puid,
-      "buid": buid,
-      "storeID": storeID,
-      "page": page,
-      "tokenName": tokenName,
+      "proxyPUID": proxyPUID,
     };
     return TLSHelper.send(params)
         .then((data) => GetCreditTransactionsResponse.fromJson(data));
@@ -361,6 +380,7 @@ abstract class KServerHandler {
     String? fone, // ADMIN use or remove - also enforce security on server
     String? puid, // ADMIN use or remove - also enforce security on server
     String? tokenName,
+    String? proxyPUID,
   }) async {
     final params = {
       "svc": "chao",
@@ -368,6 +388,7 @@ abstract class KServerHandler {
       "tokenName": tokenName,
       "puid": puid,
       "fone": fone,
+      "proxyPUID": proxyPUID,
     };
     return TLSHelper.send(params)
         .then((data) => GetBalancesResponse.fromJson(data));

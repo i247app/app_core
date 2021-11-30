@@ -42,43 +42,44 @@ class _WalletFeedState extends State<WalletFeed> {
 
   final xfrRoleCtrl = ValueNotifier<KRole?>(null);
   final xfrProxiesCtrl = ValueNotifier<List<XFRProxy>?>(null);
+  final balanceTokenCtrl = ValueNotifier<String?>(null);
 
   GetBalancesResponse? _balancesResponse;
   GetCreditTransactionsResponse? _transactionsResponse;
 
   // timing issue?? maybe need some kind of timeout
   bool isLoaded = false;
-  int balanceIndex = -1;
 
   String get localeToken => KLocaleHelper.isUSA ? KMoney.USD : KMoney.VND;
 
-  KBalance? get balance {
-    final dummyBalance = KBalance()
-      ..puid = ""
-      ..amount = ""
-      ..tokenName = null;
+  KBalance? get currentBalance {
     try {
-      return _balancesResponse?.balances?[balanceIndex] ?? dummyBalance;
-    } catch (_) {
-      return dummyBalance;
+      // print("CURRENT TOKEN - ${balanceTokenCtrl.value}");
+      // print(
+      //     "FILTERED BALANCES - ${proxyFilteredBalances.map((b) => b.tokenName).join(", ")}");
+      return proxyFilteredBalances
+          .firstWhere((b) => b.tokenName == balanceTokenCtrl.value);
+    } catch (e) {
+      print(e.toString());
+      return null;
     }
   }
 
   KTransferType get transferType =>
       xfrRoleCtrl.value == null ? KTransferType.direct : KTransferType.proxy;
 
-  String get tokenToLookFor => balance?.tokenName ?? initialToken;
+  String get tokenToLookFor => currentBalance?.tokenName ?? initialToken;
 
   List<KCreditTransaction> get transactions =>
       _transactionsResponse?.transactions ?? [];
 
   List<KBalance> get proxyFilteredBalances {
-    final bals = _balancesResponse?.balances ?? [];
+    final bal = _balancesResponse?.balances ?? [];
     final xfrProxiesTokens =
         (xfrProxiesCtrl.value ?? []).map((p) => p.tokenName);
     return (xfrRoleCtrl.value == null
-            ? bals
-            : bals.where((b) => xfrProxiesTokens.contains(b.tokenName)))
+            ? bal
+            : bal.where((b) => xfrProxiesTokens.contains(b.tokenName)))
         .toList();
   }
 
@@ -88,16 +89,16 @@ class _WalletFeedState extends State<WalletFeed> {
 
     xfrRoleCtrl.addListener(xfrRoleListener);
     xfrProxiesCtrl.addListener(xfrProxiesListener);
+    balanceTokenCtrl.addListener(balanceTokenListener);
 
-    loadData();
+    loadBalances();
   }
 
   @override
   void dispose() {
     xfrRoleCtrl.removeListener(xfrRoleListener);
     xfrProxiesCtrl.removeListener(xfrProxiesListener);
-    this._balancesResponse = null;
-    this._transactionsResponse = null;
+    balanceTokenCtrl.removeListener(balanceTokenListener);
     super.dispose();
   }
 
@@ -106,59 +107,68 @@ class _WalletFeedState extends State<WalletFeed> {
     xfrProxiesCtrl.value = null;
 
     // Load in new xfr proxies
-    final response =
-        await KServerHandler.listXFRProxy(xfrRoleCtrl.value?.buid ?? "");
-    if (response.isSuccess) {
-      xfrProxiesCtrl.value = response.proxies;
+    if (xfrRoleCtrl.value != null) {
+      final response =
+          await KServerHandler.listXFRProxy(xfrRoleCtrl.value?.buid ?? "");
+      if (response.isSuccess) {
+        xfrProxiesCtrl.value = response.proxies;
+      }
     }
+
+    loadBalances();
+    loadTransactions();
   }
 
   void xfrProxiesListener() async {
     setState(() {});
   }
 
-  void loadData() async {
-    final response = await KServerHandler.getCreditBalances();
+  void balanceTokenListener() async {
+    // KBalance? bal;
+    // try {
+    //   bal = _balancesResponse!.balances!
+    //       .firstWhere((b) => b.tokenName == balanceTokenCtrl.value);
+    // } catch (_) {
+    //   bal = null;
+    // }
+    loadTransactions();
+  }
+
+  void loadTransactions() async {
+    KBalance? bal = currentBalance;
+    if (bal == null) {
+      setState(() => _transactionsResponse = null);
+    } else {
+      final response = await KServerHandler.getCreditTransactions(
+        tokenName: bal.tokenName ?? "",
+        proxyPUID: xfrRoleCtrl.value?.buid,
+      );
+      setState(() => _transactionsResponse = response);
+    }
+  }
+
+  void loadBalances() async {
+    final response = await KServerHandler.getCreditBalances(
+        proxyPUID: xfrRoleCtrl.value?.buid);
     if (mounted) {
       setState(() => _balancesResponse = response);
 
-      int? index;
+      setState(() => isLoaded = false);
       try {
-        index = _balancesResponse?.balances
-            ?.indexWhere((b) => b.tokenName == tokenToLookFor);
-      } catch (_) {}
-      if ((index ?? -1) == -1) {
-        index = 0;
+        final hasInitialToken = proxyFilteredBalances
+            .where((b) => b.tokenName == tokenToLookFor)
+            .isNotEmpty;
+        if (hasInitialToken) {
+          balanceTokenCtrl.value = tokenToLookFor;
+        } else {
+          balanceTokenCtrl.value = proxyFilteredBalances.first.tokenName;
+        }
+      } catch (e) {
+        print(e.toString());
       }
-      setBalanceIndex(index!);
     }
     setState(() => isLoaded = true);
   }
-
-  Future setBalanceIndex(int index) async {
-    KBalance bal;
-    try {
-      bal = this._balancesResponse!.balances![index];
-    } catch (_) {
-      return;
-    }
-
-    final response = await KServerHandler.getCreditTransactions(
-        tokenName: bal.tokenName ?? "");
-    setState(() {
-      this.balanceIndex = index;
-      this._transactionsResponse = response;
-    });
-  }
-
-  // void toCreditTransfer({String? refPUID}) async => await Navigator.of(context)
-  //     .push(MaterialPageRoute(
-  //       builder: (ctx) => CreditTransfer(
-  //         initialPUID: refPUID ?? "",
-  //         tokenName: widget.tokenName,
-  //       ),
-  //     ))
-  //     .then((_) => loadData());
 
   void onTransactionClick(KCreditTransaction transaction) async =>
       await Navigator.of(context).push(
@@ -174,39 +184,29 @@ class _WalletFeedState extends State<WalletFeed> {
   void onWithdrawClick() async => Navigator.of(context)
       .push(MaterialPageRoute(
           builder: (ctx) => CreditBankTransfer(
-                tokenName: this.balance?.tokenName ?? "",
+                tokenName: currentBalance?.tokenName ?? "",
                 action: BankTransferAction.withdraw,
               )))
-      .whenComplete(loadData);
+      .whenComplete(loadBalances);
 
   void onDepositClick() async => Navigator.of(context)
       .push(MaterialPageRoute(
           builder: (ctx) => CreditBankTransfer(
-                tokenName: this.balance?.tokenName ?? "",
+                tokenName: currentBalance?.tokenName ?? "",
                 action: BankTransferAction.deposit,
               )))
-      .whenComplete(loadData);
+      .whenComplete(loadBalances);
 
   void onTransferClick() => Navigator.of(context)
       .push(MaterialPageRoute(
           builder: (ctx) => WalletTransfer(
                 sndRole: xfrRoleCtrl.value,
                 transferType: transferType,
-                tokenName: balance?.tokenName ?? "",
+                tokenName: currentBalance?.tokenName ?? "",
               )))
-      .whenComplete(loadData);
+      .whenComplete(loadBalances);
 
-  // void onDirectTransferClick() => Navigator.of(context)
-  //     .push(MaterialPageRoute(
-  //         builder: (ctx) => CreditSend(tokenName: balance?.tokenName ?? "")))
-  //     .whenComplete(loadData);
-  //
-  // void onBXFRClick() => Navigator.of(context)
-  //     .push(MaterialPageRoute(
-  //         builder: (ctx) => ProxyTransfer(tokenName: balance?.tokenName ?? "")))
-  //     .whenComplete(loadData);
-
-  void onTokenNameClick(int index) => setBalanceIndex(index);
+  void onTokenNameClick(String token) => balanceTokenCtrl.value = token;
 
   void showQR() {
     final qrData = {'puid': KSessionData.me?.puid ?? ""};
@@ -218,36 +218,42 @@ class _WalletFeedState extends State<WalletFeed> {
   void showChooseTokenModal() => showModalBottomSheet<void>(
         context: context,
         builder: (_) => CreditTokenPicker(
-          balances: this._balancesResponse?.balances ?? [],
-          onSelect: (bal) => onTokenNameClick(
-              this._balancesResponse?.balances?.indexOf(bal) ?? -1),
+          balances: proxyFilteredBalances,
+          onSelect: (bal) => onTokenNameClick(bal.tokenName ?? ""),
         ),
       );
 
   void onProxyRoleChange(KRole? role) async {
-    setState(() => xfrRoleCtrl.value = role);
+    xfrRoleCtrl.value = role;
     print("CHOSE ROLE - ${role?.bnm}");
   }
 
   @override
   Widget build(BuildContext context) {
-    final balanceView = this.balance == null
-        ? Container()
-        : KCreditBanner(
-            amount: this.balance!.amount ?? "",
-            tokenName: this.balance!.tokenName ?? "",
-          );
+    final balanceView = Container(
+      height: 80,
+      child: Center(
+        child: _balancesResponse == null
+            ? Text("Loading...")
+            : currentBalance == null
+                ? Text("No Balance")
+                : KCreditBanner(
+                    amount: currentBalance!.amount ?? "",
+                    tokenName: currentBalance!.tokenName ?? "",
+                  ),
+      ),
+    );
 
-    final transactionList = this.transactions.isEmpty
+    final transactionList = transactions.isEmpty
         ? Center(child: Text("No transaction found"))
         : ListView.builder(
             primary: false,
-            itemCount: this.transactions.length,
+            itemCount: transactions.length,
             shrinkWrap: true,
             padding: EdgeInsets.only(bottom: 100),
             itemBuilder: (_, i) => _CreditFeedItem(
-              this.transactions[i],
-              this.transactions[i].tokenName ?? this.balance?.tokenName ?? "",
+              transactions[i],
+              transactions[i].tokenName ?? currentBalance?.tokenName ?? "",
               onClick: onTransactionClick,
             ),
           );
@@ -317,9 +323,7 @@ class _WalletFeedState extends State<WalletFeed> {
     // );
 
     final tokenNameButton = InkWell(
-      onTap: (this._balancesResponse?.balances ?? []).length > 0
-          ? showChooseTokenModal
-          : null,
+      onTap: proxyFilteredBalances.length > 0 ? showChooseTokenModal : null,
       borderRadius: BorderRadius.circular(4),
       child: Container(
         padding: EdgeInsets.all(2),
@@ -327,14 +331,16 @@ class _WalletFeedState extends State<WalletFeed> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(Icons.list, color: Colors.black, size: 18),
-            SizedBox(width: 6),
-            Text(
-              this.balance?.tokenName ?? "",
-              style: Theme.of(context)
-                  .textTheme
-                  .subtitle1!
-                  .copyWith(color: Colors.blue),
-            ),
+            if (currentBalance != null) ...[
+              SizedBox(width: 6),
+              Text(
+                currentBalance?.tokenName ?? "",
+                style: Theme.of(context)
+                    .textTheme
+                    .subtitle1!
+                    .copyWith(color: Colors.blue),
+              ),
+            ],
           ],
         ),
       ),
@@ -348,10 +354,7 @@ class _WalletFeedState extends State<WalletFeed> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Container(
-              height: 80,
-              child: Center(child: balanceView),
-            ),
+            balanceView,
             Align(
               alignment: Alignment.centerRight,
               child: Container(
@@ -396,7 +399,7 @@ class _WalletFeedState extends State<WalletFeed> {
       ),
     );
 
-    final body = !this.isLoaded ? Container() : content;
+    final body = !isLoaded ? Container() : content;
 
     final showQrButton = IconButton(
       onPressed: showQR,
@@ -518,9 +521,7 @@ class _CreditFeedItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final body = GestureDetector(
-      onTap: this.onClick == null
-          ? null
-          : () => this.onClick?.call(this.transaction),
+      onTap: onClick == null ? null : () => onClick?.call(transaction),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Card(
@@ -536,26 +537,23 @@ class _CreditFeedItem extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    transactionDate(context, this.transaction.lineDate ?? ""),
+                    transactionDate(context, transaction.lineDate ?? ""),
                     amountChange(
                       context,
-                      this.transaction.amount ?? "0",
-                      this.tokenName,
+                      transaction.amount ?? "0",
+                      tokenName,
                     ),
                   ],
                 ),
-                if (!KStringHelper.isEmpty(this.transaction.prettyName) &&
-                    !KStringHelper.isEmpty(this.transaction.poiKUNM)) ...[
+                if (!KStringHelper.isEmpty(transaction.prettyName) &&
+                    !KStringHelper.isEmpty(transaction.poiKUNM)) ...[
                   SizedBox(height: 5),
                   Row(
                     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      transactorPrettyName(
-                          context, this.transaction.prettyName),
-                      SizedBox(
-                        width: 8,
-                      ),
-                      socialName(context, this.transaction.poiKUNM ?? ""),
+                      transactorPrettyName(context, transaction.prettyName),
+                      SizedBox(width: 8),
+                      socialName(context, transaction.poiKUNM ?? ""),
                     ],
                   ),
                 ],
@@ -565,7 +563,7 @@ class _CreditFeedItem extends StatelessWidget {
                   children: <Widget>[
                     transactionMethod(
                       context,
-                      this.transaction.prettyXFRDescription,
+                      transaction.prettyXFRDescription,
                     ),
                   ],
                 ),
@@ -573,8 +571,8 @@ class _CreditFeedItem extends StatelessWidget {
                 // Row(
                 //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 //   children: <Widget>[
-                //     transactionID(context, this.transaction.txID ?? ""),
-                //     transactionDate(context, this.transaction.lineDate ?? ""),
+                //     transactionID(context, transaction.txID ?? ""),
+                //     transactionDate(context, transaction.lineDate ?? ""),
                 //   ],
                 // ),
               ],

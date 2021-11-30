@@ -35,7 +35,7 @@ class _CreditReceiptState extends State<CreditReceipt> {
   }
 
   void loadTransaction() async {
-    final response = await KServerHandler.getCreditTransactions(
+    final response = await KServerHandler.getTx(
       transactionID: widget.transactionID,
       lineID: widget.lineID,
     );
