@@ -58,7 +58,5 @@ abstract class KAssets {
   static const String SOUND_WRONG = "wrong.mp3";
 
   /* JSON */
-  static const String JSON_SELF_STUDY_BEGINNER =
-      "$JSON_BASE/self_study_beginner.json";
   static const String JSON_VIETNAM_BANKS = "$JSON_BASE/vietnam_banks.json";
 }

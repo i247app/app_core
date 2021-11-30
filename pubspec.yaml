@@ -108,6 +108,7 @@ flutter:
   assets:
     - assets/
     - assets/img/
+    - assets/json/
     - assets/audio/
     - assets/lingo/
 #

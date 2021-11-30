@@ -12,7 +12,8 @@ abstract class KBankHelper {
         KLocaleHelper.currentLocale.country == KLocaleHelper.COUNTRY_US
             ? KAssets.JSON_VIETNAM_BANKS
             : KAssets.JSON_VIETNAM_BANKS;
-    final bankJsonString = await rootBundle.loadString(bankFile);
+    final bankJsonString =
+        await rootBundle.loadString("packages/app_core/$bankFile");
     Map<String, dynamic> bankJsonMap = json.decode(bankJsonString);
     final banksResponse = GetBanksResponse.fromJson(bankJsonMap);
     final banks = (banksResponse.banks ?? [])
