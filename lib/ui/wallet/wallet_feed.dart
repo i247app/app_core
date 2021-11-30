@@ -6,6 +6,7 @@ import 'package:app_core/model/kcredit_transaction.dart';
 import 'package:app_core/model/krole.dart';
 import 'package:app_core/model/response/get_balances_response.dart';
 import 'package:app_core/model/response/get_credit_transactions_response.dart';
+import 'package:app_core/model/xfr_proxy.dart';
 import 'package:app_core/ui/wallet/credit_bank_transfer.dart';
 import 'package:app_core/ui/wallet/credit_receipt.dart';
 import 'package:app_core/ui/wallet/wallet_transfer.dart';
@@ -39,7 +40,9 @@ class WalletFeed extends StatefulWidget {
 class _WalletFeedState extends State<WalletFeed> {
   late final String initialToken = widget.defaultTokenName ?? localeToken;
 
-  KRole? proxyRole;
+  final xfrRoleCtrl = ValueNotifier<KRole?>(null);
+  final xfrProxiesCtrl = ValueNotifier<List<XFRProxy>?>(null);
+
   GetBalancesResponse? _balancesResponse;
   GetCreditTransactionsResponse? _transactionsResponse;
 
@@ -50,10 +53,10 @@ class _WalletFeedState extends State<WalletFeed> {
   String get localeToken => KLocaleHelper.isUSA ? KMoney.USD : KMoney.VND;
 
   KBalance? get balance {
-    KBalance dummyBalance = KBalance()
-      ..puid = "0"
-      ..amount = "0"
-      ..tokenName = initialToken;
+    final dummyBalance = KBalance()
+      ..puid = ""
+      ..amount = ""
+      ..tokenName = null;
     try {
       return _balancesResponse?.balances?[balanceIndex] ?? dummyBalance;
     } catch (_) {
@@ -62,26 +65,56 @@ class _WalletFeedState extends State<WalletFeed> {
   }
 
   KTransferType get transferType =>
-      proxyRole == null ? KTransferType.direct : KTransferType.proxy;
+      xfrRoleCtrl.value == null ? KTransferType.direct : KTransferType.proxy;
 
   String get tokenToLookFor => balance?.tokenName ?? initialToken;
 
   List<KCreditTransaction> get transactions =>
       _transactionsResponse?.transactions ?? [];
 
+  List<KBalance> get proxyFilteredBalances {
+    final bals = _balancesResponse?.balances ?? [];
+    final xfrProxiesTokens =
+        (xfrProxiesCtrl.value ?? []).map((p) => p.tokenName);
+    return (xfrRoleCtrl.value == null
+            ? bals
+            : bals.where((b) => xfrProxiesTokens.contains(b.tokenName)))
+        .toList();
+  }
+
   @override
   void initState() {
     super.initState();
-    loadData();
 
-    // print("WALLET FEED - use scaffold??? - ${widget.useScaffold}");
+    xfrRoleCtrl.addListener(xfrRoleListener);
+    xfrProxiesCtrl.addListener(xfrProxiesListener);
+
+    loadData();
   }
 
   @override
   void dispose() {
+    xfrRoleCtrl.removeListener(xfrRoleListener);
+    xfrProxiesCtrl.removeListener(xfrProxiesListener);
     this._balancesResponse = null;
     this._transactionsResponse = null;
     super.dispose();
+  }
+
+  void xfrRoleListener() async {
+    // Clear out old xfr proxies
+    xfrProxiesCtrl.value = null;
+
+    // Load in new xfr proxies
+    final response =
+        await KServerHandler.listXFRProxy(xfrRoleCtrl.value?.buid ?? "");
+    if (response.isSuccess) {
+      xfrProxiesCtrl.value = response.proxies;
+    }
+  }
+
+  void xfrProxiesListener() async {
+    setState(() {});
   }
 
   void loadData() async {
@@ -157,7 +190,7 @@ class _WalletFeedState extends State<WalletFeed> {
   void onTransferClick() => Navigator.of(context)
       .push(MaterialPageRoute(
           builder: (ctx) => WalletTransfer(
-                sndRole: proxyRole,
+                sndRole: xfrRoleCtrl.value,
                 transferType: transferType,
                 tokenName: balance?.tokenName ?? "",
               )))
@@ -192,7 +225,7 @@ class _WalletFeedState extends State<WalletFeed> {
       );
 
   void onProxyRoleChange(KRole? role) async {
-    setState(() => proxyRole = role);
+    setState(() => xfrRoleCtrl.value = role);
     print("CHOSE ROLE - ${role?.bnm}");
   }
 
