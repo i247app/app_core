@@ -101,64 +101,71 @@ class _WalletTransferState extends State<WalletTransfer> {
     required String amount,
     String? tokenName,
   }) async {
-    setState(() => isNetworking = true);
+    try {
+      setState(() => isNetworking = true);
 
-    final ticket = XFRTicket(
-      sndPUID: widget.sndRole?.buid,
-      rcvPUID: rcvPUID,
-      amount: amount,
-      tokenName: tokenName,
-    );
-    final Future<CreditTransferResponse> Function(XFRTicket) fn =
-        widget.transferType == KTransferType.direct
-            ? KServerHandler.xfrDirect
-            : KServerHandler.xfrProxy;
-    final response = await fn.call(ticket);
+      final ticket = XFRTicket(
+        sndPUID: widget.sndRole?.buid,
+        rcvPUID: rcvPUID,
+        amount: amount,
+        tokenName: tokenName,
+      );
+      final Future<CreditTransferResponse> Function(XFRTicket) fn =
+          widget.transferType == KTransferType.direct
+              ? KServerHandler.xfrDirect
+              : KServerHandler.xfrProxy;
+      final response = await fn.call(ticket);
 
-    switch (response.kstatus) {
-      case 100:
-        final assPUIDToLookFor = widget.transferType == KTransferType.proxy
-            ? widget.sndRole?.buid
-            : KSessionData.me?.puid;
-        KCreditTransaction? theTx;
-        try {
-          theTx = response.transactions?.firstWhere((t) {
-            print("t.assPUID == ${t.assPUID}");
-            print("assPUIDToLookFor == $assPUIDToLookFor");
-            return t.assPUID == assPUIDToLookFor;
-          });
-        } catch (e) {
-          print(e.toString());
-        }
-        if (theTx != null) {
-          await Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (ctx) => CreditReceipt(
-              transactionID: theTx!.txID ?? "",
-              lineID: theTx.lineID ?? "",
-              tokenName: widget.tokenName,
-            ),
-          ));
-        } else {
-          KToastHelper.fromResponse(response);
-        }
-        loadBalance();
-        break;
-      case 2104:
-        // multiple toast until a better solution
-        KToastHelper.show("Insufficient funds",
-            backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
-        // do noting
-        break;
-      case 400:
-        KToastHelper.show("Transfer failed",
-            backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
-        break;
-      default:
-        KToastHelper.show(response.kmessage ?? "Transfer failed",
-            backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
-        break;
+      setState(() => isNetworking = false);
+
+      switch (response.kstatus) {
+        case 100:
+          final assPUIDToLookFor = widget.transferType == KTransferType.proxy
+              ? widget.sndRole?.buid
+              : KSessionData.me?.puid;
+          KCreditTransaction? theTx;
+          try {
+            theTx = response.transactions?.firstWhere((t) {
+              print("t.assPUID == ${t.assPUID}");
+              print("assPUIDToLookFor == $assPUIDToLookFor");
+              return t.assPUID == assPUIDToLookFor;
+            });
+          } catch (e) {
+            print(e.toString());
+          }
+          if (theTx != null) {
+            await Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (ctx) => CreditReceipt(
+                transactionID: theTx!.txID ?? "",
+                lineID: theTx.lineID ?? "",
+                tokenName: widget.tokenName,
+              ),
+            ));
+          } else {
+            KToastHelper.fromResponse(response);
+          }
+          loadBalance();
+          break;
+        case 2104:
+          // multiple toast until a better solution
+          KToastHelper.show("Insufficient funds",
+              backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
+          // do noting
+          break;
+        case 400:
+          KToastHelper.show("Transfer failed",
+              backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
+          break;
+        default:
+          KToastHelper.show(response.kmessage ?? "Transfer failed",
+              backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
+          break;
+      }
+    } catch (e) {
+      print(e);
+      print("release isNetworking = false");
+      setState(() => isNetworking = false);
     }
-    setState(() => isNetworking = false);
   }
 
   void toChooseContact() async {
