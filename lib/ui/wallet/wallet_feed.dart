@@ -322,47 +322,47 @@ class _WalletFeedState extends State<WalletFeed> {
     //   ),
     // );
 
-    final tokenNameButton = InkWell(
-      onTap: proxyFilteredBalances.length > 0 ? showChooseTokenModal : null,
-      borderRadius: BorderRadius.circular(4),
-      child: Container(
-        padding: EdgeInsets.all(2),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.list, color: Colors.black, size: 18),
-            if (currentBalance != null) ...[
-              SizedBox(width: 6),
-              Text(
-                currentBalance?.tokenName ?? "",
-                style: Theme.of(context)
-                    .textTheme
-                    .subtitle1!
-                    .copyWith(color: Colors.blue),
-              ),
-            ],
+    final tokenNameDisplay = Container(
+      padding: EdgeInsets.all(2),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.list, color: Colors.black, size: 18),
+          if (currentBalance != null) ...[
+            SizedBox(width: 6),
+            Text(
+              currentBalance?.tokenName ?? "",
+              style: Theme.of(context)
+                  .textTheme
+                  .subtitle1!
+                  .copyWith(color: Colors.blue),
+            ),
           ],
-        ),
+        ],
       ),
     );
 
     final balanceCard = Card(
       elevation: 1,
       margin: EdgeInsets.symmetric(horizontal: 20, vertical: 2),
-      child: Container(
-        padding: EdgeInsets.all(8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            balanceView,
-            Align(
-              alignment: Alignment.centerRight,
-              child: Container(
-                padding: EdgeInsets.only(right: 30),
-                child: tokenNameButton,
+      child: InkWell(
+        onTap: proxyFilteredBalances.length > 0 ? showChooseTokenModal : null,
+        borderRadius: BorderRadius.circular(4),
+        child: Container(
+          padding: EdgeInsets.all(8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              balanceView,
+              Align(
+                alignment: Alignment.centerRight,
+                child: Container(
+                  padding: EdgeInsets.only(right: 30),
+                  child: tokenNameDisplay,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
