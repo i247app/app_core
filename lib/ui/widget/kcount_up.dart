@@ -18,6 +18,7 @@ class KCountUp extends StatefulWidget {
   final String? separator;
   final String prefix;
   final String suffix;
+  final String Function(double)? formatter;
 
   KCountUp({
     Key? key,
@@ -38,6 +39,7 @@ class KCountUp extends StatefulWidget {
     this.separator,
     this.prefix = '',
     this.suffix = '',
+    this.formatter,
   }) : super(key: key);
 
   @override
@@ -67,7 +69,7 @@ class _KCountUpState extends State<KCountUp> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    CurvedAnimation curvedAnimation =
+    final curvedAnimation =
         CurvedAnimation(parent: _controller, curve: widget.curve);
     _animation = Tween<double>(begin: widget.begin, end: widget.end)
         .animate(curvedAnimation);
@@ -96,6 +98,7 @@ class _KCountUpState extends State<KCountUp> with TickerProviderStateMixin {
       separator: widget.separator,
       prefix: widget.prefix,
       suffix: widget.suffix,
+      formatter: widget.formatter,
     );
   }
 }
@@ -117,6 +120,7 @@ class _CountUpAnimatedText extends AnimatedWidget {
   final String? separator;
   final String? prefix;
   final String? suffix;
+  final String Function(double)? formatter;
 
   _CountUpAnimatedText({
     Key? key,
@@ -134,22 +138,32 @@ class _CountUpAnimatedText extends AnimatedWidget {
     this.separator,
     this.prefix,
     this.suffix,
+    this.formatter,
   }) : super(key: key, listenable: animation);
+
+  String getLegacyText() {
+    String legacyBase = animation.value.toStringAsFixed(precision);
+    if (separator != null) {
+      legacyBase = legacyBase.replaceAllMapped(reg, (m) => '${m[1]}$separator');
+    }
+    final legacyText = "$prefix$legacyBase$suffix";
+    return legacyText;
+  }
+
+  String getFormattedText() => formatter!.call(animation.value);
+
+  String getText() {
+    if (formatter == null) {
+      return getLegacyText();
+    } else {
+      // print("########## USING FORMATTER - ${getFormattedText()}");
+      return getFormattedText();
+    }
+  }
 
   @override
   Widget build(BuildContext context) => Text(
-        separator != null
-            ? '$prefix' +
-                this
-                    .animation
-                    .value
-                    .toStringAsFixed(precision)
-                    .replaceAllMapped(
-                        reg, (Match match) => '${match[1]}$separator') +
-                '$suffix'
-            : '$prefix' +
-                this.animation.value.toStringAsFixed(precision) +
-                '$suffix',
+        getText(),
         style: this.style,
         textAlign: this.textAlign,
         textDirection: this.textDirection,
