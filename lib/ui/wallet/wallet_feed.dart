@@ -23,14 +23,14 @@ class WalletFeed extends StatefulWidget {
   final bool showBankButtons;
   final bool showDirectTransferButton;
   final bool showProxyTransferButton;
-  final bool useScaffold;
+  final bool isPartOfBubba;
 
   WalletFeed({
     this.defaultTokenName,
     required this.showBankButtons,
     required this.showDirectTransferButton,
     required this.showProxyTransferButton,
-    this.useScaffold = true,
+    this.isPartOfBubba = false,
   });
 
   @override
@@ -121,7 +121,7 @@ class _WalletFeedState extends State<WalletFeed> {
     }
 
     loadBalances();
-    loadTransactions();
+    // loadTransactions();
   }
 
   void xfrProxiesListener() async {
@@ -139,7 +139,7 @@ class _WalletFeedState extends State<WalletFeed> {
     loadTransactions();
   }
 
-  void loadTransactions() async {
+  Future loadTransactions() async {
     KBalance? bal = currentBalance;
     if (bal == null) {
       setState(() => _transactionsResponse = null);
@@ -152,7 +152,7 @@ class _WalletFeedState extends State<WalletFeed> {
     }
   }
 
-  void loadBalances() async {
+  Future loadBalances() async {
     final response = await KServerHandler.getCreditBalances(
         proxyPUID: xfrRoleCtrl.value?.buid);
     if (mounted) {
@@ -186,13 +186,18 @@ class _WalletFeedState extends State<WalletFeed> {
         ),
       );
 
+  Future loadAllData() async => Future.wait([
+        loadBalances(),
+        loadTransactions(),
+      ]);
+
   void onWithdrawClick() async => Navigator.of(context)
       .push(MaterialPageRoute(
           builder: (ctx) => CreditBankTransfer(
                 tokenName: currentBalance?.tokenName ?? "",
                 action: BankTransferAction.withdraw,
               )))
-      .whenComplete(loadBalances);
+      .whenComplete(loadAllData);
 
   void onDepositClick() async => Navigator.of(context)
       .push(MaterialPageRoute(
@@ -200,7 +205,7 @@ class _WalletFeedState extends State<WalletFeed> {
                 tokenName: currentBalance?.tokenName ?? "",
                 action: BankTransferAction.deposit,
               )))
-      .whenComplete(loadBalances);
+      .whenComplete(loadAllData);
 
   void onTransferClick() => Navigator.of(context)
       .push(MaterialPageRoute(
@@ -209,7 +214,7 @@ class _WalletFeedState extends State<WalletFeed> {
                 transferType: transferType,
                 tokenName: currentBalance?.tokenName ?? "",
               )))
-      .whenComplete(loadBalances);
+      .whenComplete(loadAllData);
 
   void onTokenNameClick(String token) => balanceTokenCtrl.value = token;
 
@@ -228,10 +233,7 @@ class _WalletFeedState extends State<WalletFeed> {
         ),
       );
 
-  void onProxyRoleChange(KRole? role) async {
-    xfrRoleCtrl.value = role;
-    print("CHOSE ROLE - ${role?.bnm}");
-  }
+  void onProxyRoleChange(KRole? role) async => xfrRoleCtrl.value = role;
 
   @override
   Widget build(BuildContext context) {
@@ -372,29 +374,25 @@ class _WalletFeedState extends State<WalletFeed> {
       ),
     );
 
-    final content = SingleChildScrollView(
-      child: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            balanceCard,
-            if (widget.showBankButtons) ...[
-              SizedBox(height: 14),
-              bankButtons,
-            ],
-            if (isTransferButtonEnabled) ...[
-              SizedBox(height: 6),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
-                child: transferButton,
-              ),
-            ],
-            SizedBox(height: 12),
-            transactionList,
-          ],
-        ),
-      ),
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SafeArea(child: Container()),
+        balanceCard,
+        if (widget.showBankButtons) ...[
+          SizedBox(height: 14),
+          bankButtons,
+        ],
+        if (isTransferButtonEnabled) ...[
+          SizedBox(height: 6),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: transferButton,
+          ),
+        ],
+        SizedBox(height: 12),
+        transactionList,
+      ],
     );
 
     final body = !isLoaded ? Container() : content;
@@ -416,16 +414,19 @@ class _WalletFeedState extends State<WalletFeed> {
         KRolePicker(onChange: onProxyRoleChange),
     ];
 
-    final withoutScaffold = Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: actions,
-        ),
-        body,
-      ],
+    final withoutScaffold = RefreshIndicator(
+      onRefresh: loadAllData,
+      child: ListView(
+        children: [
+          if (widget.isPartOfBubba) SizedBox(height: 40),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: actions,
+          ),
+          body,
+        ],
+      ),
     );
 
     final withScaffold = Scaffold(
@@ -436,10 +437,13 @@ class _WalletFeedState extends State<WalletFeed> {
         title: Text("Wallet"),
         actions: actions,
       ),
-      body: body,
+      body: RefreshIndicator(
+        onRefresh: loadAllData,
+        child: SingleChildScrollView(child: body),
+      ),
     );
 
-    return widget.useScaffold ? withScaffold : withoutScaffold;
+    return widget.isPartOfBubba ? withoutScaffold : withScaffold;
   }
 }
 
