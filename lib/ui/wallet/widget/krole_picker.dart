@@ -26,7 +26,7 @@ class _KRolePickerState extends State<KRolePicker> {
 
   KRole buildSelfPlaceholderRole() => KRole()
     ..puid = KSessionData.me?.puid
-    ..bnm = "As Myself"
+    ..bnm = KSessionData.me?.fullName
     ..avatarURL = KSessionData.me?.avatarURL
     ..isMePlaceholder = true;
 

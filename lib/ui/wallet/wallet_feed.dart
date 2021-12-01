@@ -1,3 +1,4 @@
+import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kapp_nav_helper.dart';
 import 'package:app_core/helper/kmoney_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
@@ -16,7 +17,6 @@ import 'package:app_core/ui/wallet/widget/krole_picker.dart';
 import 'package:app_core/ui/widget/kqr_viewer.dart';
 import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
-import 'package:app_core/app_core.dart';
 
 class WalletFeed extends StatefulWidget {
   final String? defaultTokenName;
@@ -533,6 +533,7 @@ class _CreditFeedItem extends StatelessWidget {
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -545,15 +546,17 @@ class _CreditFeedItem extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (!KStringHelper.isEmpty(transaction.prettyName) &&
-                    !KStringHelper.isEmpty(transaction.poiKUNM)) ...[
+                if (KStringHelper.isExist(transaction.prettyName) &&
+                    KStringHelper.isExist(transaction.poiKUNM)) ...[
                   SizedBox(height: 5),
-                  Row(
-                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Wrap(
                     children: <Widget>[
-                      transactorPrettyName(context, transaction.prettyName),
-                      SizedBox(width: 8),
                       socialName(context, transaction.poiKUNM ?? ""),
+                      Text(
+                        " • ",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      transactorPrettyName(context, transaction.prettyName),
                     ],
                   ),
                 ],
@@ -568,13 +571,13 @@ class _CreditFeedItem extends StatelessWidget {
                   ],
                 ),
                 // SizedBox(height: 10),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: <Widget>[
-                //     transactionID(context, transaction.txID ?? ""),
-                //     transactionDate(context, transaction.lineDate ?? ""),
-                //   ],
-                // ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    transactionID(context, transaction.txID ?? ""),
+                    transactionDate(context, transaction.lineDate ?? ""),
+                  ],
+                ),
               ],
             ),
           ),
