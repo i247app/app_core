@@ -117,12 +117,14 @@ class _WalletTransferState extends State<WalletTransfer> {
 
     switch (response.kstatus) {
       case 100:
-        final assPUIDToLookFor = widget.sndRole?.buid;
+        final assPUIDToLookFor = widget.transferType == KTransferType.proxy
+            ? widget.sndRole?.buid
+            : KSessionData.me?.puid;
         KCreditTransaction? theTx;
         try {
           theTx = response.transactions?.firstWhere((t) {
-            // print("t.assPUID == ${t.assPUID}");
-            // print("assPUIDToLookFor == $assPUIDToLookFor");
+            print("t.assPUID == ${t.assPUID}");
+            print("assPUIDToLookFor == $assPUIDToLookFor");
             return t.assPUID == assPUIDToLookFor;
           });
         } catch (e) {
