@@ -129,13 +129,6 @@ class _WalletFeedState extends State<WalletFeed> {
   }
 
   void balanceTokenListener() async {
-    // KBalance? bal;
-    // try {
-    //   bal = _balancesResponse!.balances!
-    //       .firstWhere((b) => b.tokenName == balanceTokenCtrl.value);
-    // } catch (_) {
-    //   bal = null;
-    // }
     loadTransactions();
   }
 
@@ -243,7 +236,10 @@ class _WalletFeedState extends State<WalletFeed> {
         child: _balancesResponse == null
             ? Text("Loading...")
             : currentBalance == null
-                ? Text("No Balance")
+                ? KCreditBanner(
+                    amount: "0",
+                    tokenName: "",
+                  ) // Text("No Balance")
                 : KCreditBanner(
                     amount: currentBalance!.amount ?? "",
                     tokenName: currentBalance!.tokenName ?? "",
@@ -335,16 +331,14 @@ class _WalletFeedState extends State<WalletFeed> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(Icons.list, color: Colors.black, size: 18),
-          if (currentBalance != null) ...[
-            SizedBox(width: 6),
-            Text(
-              currentBalance?.tokenName ?? "",
-              style: Theme.of(context)
-                  .textTheme
-                  .subtitle1!
-                  .copyWith(color: Colors.blue),
-            ),
-          ],
+          SizedBox(width: 6),
+          Text(
+            currentBalance?.tokenName ?? "    ",
+            style: Theme.of(context)
+                .textTheme
+                .subtitle1!
+                .copyWith(color: Colors.blue),
+          ),
         ],
       ),
     );
