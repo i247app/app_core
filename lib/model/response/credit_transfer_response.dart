@@ -15,8 +15,8 @@ class CreditTransferResponse extends BaseResponse {
   @JsonKey(name: "txID")
   String? transactionID;
 
-  @JsonKey(name: "transaction")
-  KCreditTransaction? transaction;
+  @JsonKey(name: "transactions")
+  List<KCreditTransaction>? transactions;
 
   // JSON
   CreditTransferResponse();

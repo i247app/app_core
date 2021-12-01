@@ -15,10 +15,9 @@ CreditTransferResponse _$CreditTransferResponseFromJson(
       ..amount = json['amount'] as String?
       ..refPUID = json['refKUID'] as String?
       ..transactionID = json['txID'] as String?
-      ..transaction = json['transaction'] == null
-          ? null
-          : KCreditTransaction.fromJson(
-              json['transaction'] as Map<String, dynamic>);
+      ..transactions = (json['transactions'] as List<dynamic>?)
+          ?.map((e) => KCreditTransaction.fromJson(e as Map<String, dynamic>))
+          .toList();
 
 Map<String, dynamic> _$CreditTransferResponseToJson(
     CreditTransferResponse instance) {
@@ -36,6 +35,7 @@ Map<String, dynamic> _$CreditTransferResponseToJson(
   writeNotNull('amount', instance.amount);
   writeNotNull('refKUID', instance.refPUID);
   writeNotNull('txID', instance.transactionID);
-  writeNotNull('transaction', instance.transaction?.toJson());
+  writeNotNull(
+      'transactions', instance.transactions?.map((e) => e.toJson()).toList());
   return val;
 }

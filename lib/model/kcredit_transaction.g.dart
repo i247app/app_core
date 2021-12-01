@@ -8,6 +8,7 @@ part of 'kcredit_transaction.dart';
 
 KCreditTransaction _$KCreditTransactionFromJson(Map<String, dynamic> json) =>
     KCreditTransaction()
+      ..assPUID = json['assPUID'] as String?
       ..txID = json['txID'] as String?
       ..lineID = json['lineID'] as String?
       ..lineDate = json['lineDate'] as String?
@@ -33,6 +34,7 @@ Map<String, dynamic> _$KCreditTransactionToJson(KCreditTransaction instance) {
     }
   }
 
+  writeNotNull('assPUID', instance.assPUID);
   writeNotNull('txID', instance.txID);
   writeNotNull('lineID', instance.lineID);
   writeNotNull('lineDate', instance.lineDate);

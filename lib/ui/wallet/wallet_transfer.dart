@@ -3,8 +3,11 @@ import 'dart:convert';
 import 'package:app_core/app_core.dart';
 import 'package:app_core/header/no_overscroll.dart';
 import 'package:app_core/helper/kserver_handler.dart';
+import 'package:app_core/model/kcredit_transaction.dart';
 import 'package:app_core/model/krole.dart';
+import 'package:app_core/model/response/credit_transfer_response.dart';
 import 'package:app_core/model/xfr_ticket.dart';
+import 'package:app_core/ui/wallet/credit_receipt.dart';
 import 'package:app_core/ui/wallet/widget/kcredit_banner.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
@@ -40,7 +43,9 @@ class _WalletTransferState extends State<WalletTransfer> {
   bool isNetworking = false;
 
   bool get isButtonEnabled =>
-      selectedUser != null && amountController.text.isNotEmpty;
+      selectedUser != null &&
+      amountController.text.isNotEmpty &&
+      (double.tryParse(amountController.text) ?? 0) > 0;
 
   @override
   void initState() {
@@ -104,7 +109,7 @@ class _WalletTransferState extends State<WalletTransfer> {
       amount: amount,
       tokenName: tokenName,
     );
-    final Future<BaseResponse> Function(XFRTicket) fn =
+    final Future<CreditTransferResponse> Function(XFRTicket) fn =
         widget.transferType == KTransferType.direct
             ? KServerHandler.xfrDirect
             : KServerHandler.xfrProxy;
@@ -112,17 +117,28 @@ class _WalletTransferState extends State<WalletTransfer> {
 
     switch (response.kstatus) {
       case 100:
-        // TODO re-enable later
-        // if (response.transaction != null) {
-        //   Navigator.of(context).pushReplacement(MaterialPageRoute(
-        //     builder: (ctx) => CreditReceipt(
-        //       transactionID: response.transaction!.txID ?? "",
-        //       lineID: response.transaction!.lineID ?? "",
-        //       tokenName: widget.tokenName,
-        //     ),
-        //   ));
-        // }
-        KToastHelper.fromResponse(response);
+        final assPUIDToLookFor = widget.sndRole?.buid;
+        KCreditTransaction? theTx;
+        try {
+          theTx = response.transactions?.firstWhere((t) {
+            // print("t.assPUID == ${t.assPUID}");
+            // print("assPUIDToLookFor == $assPUIDToLookFor");
+            return t.assPUID == assPUIDToLookFor;
+          });
+        } catch (e) {
+          print(e.toString());
+        }
+        if (theTx != null) {
+          await Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (ctx) => CreditReceipt(
+              transactionID: theTx!.txID ?? "",
+              lineID: theTx.lineID ?? "",
+              tokenName: widget.tokenName,
+            ),
+          ));
+        } else {
+          KToastHelper.fromResponse(response);
+        }
         loadBalance();
         break;
       case 2104:

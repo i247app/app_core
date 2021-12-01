@@ -15,6 +15,10 @@ part 'kcredit_transaction.g.dart';
 @JsonSerializable()
 class KCreditTransaction {
   static const String LINE_TYPE_CREDIT = "CR";
+  static const String LINE_TYPE_DEBIT = "DR";
+
+  @JsonKey(name: "assPUID") // grouping of lines
+  String? assPUID;
 
   @JsonKey(name: "txID") // grouping of lines
   String? txID;

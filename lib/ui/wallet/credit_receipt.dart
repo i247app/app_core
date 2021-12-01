@@ -41,7 +41,7 @@ class _CreditReceiptState extends State<CreditReceipt> {
     );
 
     KCreditTransaction? theTX =
-    response.transactions == null ? null : response.transactions!.first;
+        response.transactions == null ? null : response.transactions!.first;
 
     setState(() {
       this.transaction = theTX;
@@ -57,9 +57,7 @@ class _CreditReceiptState extends State<CreditReceipt> {
       padding: EdgeInsets.all(12.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(100),
-        color: this.isSuccess ? Colors.green : Theme
-            .of(context)
-            .errorColor,
+        color: this.isSuccess ? Colors.green : Theme.of(context).errorColor,
       ),
       child: Icon(
         this.isSuccess ? Icons.check : Icons.close,
@@ -71,154 +69,143 @@ class _CreditReceiptState extends State<CreditReceipt> {
     final info = this.transaction == null
         ? Container()
         : Container(
-      padding: EdgeInsets.all(10),
-      child: Row(
-        children: [
-          Expanded(
+            padding: EdgeInsets.all(10),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.contain,
+                        child: Text(
+                          KMoneyHelper.prettyMoney(
+                            amount: this.transaction!.amount ?? "",
+                            currency: KMoney.VND,
+                            showSymbol: false,
+                          ),
+                          style: Theme.of(context).textTheme.headline2,
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        KUtil.prettyDate(this.transaction!.lineDate,
+                            showTime: true),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText1!
+                            .copyWith(fontSize: 18),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: Text(
+                      (this.transaction!.tokenName ?? "") +
+                          ((this.transaction!.tokenName != "USD" &&
+                                  this.transaction!.tokenName != null)
+                              ? ""
+                              : ""),
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle1!
+                          .copyWith(fontSize: 18),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+
+    final recipient = this.transaction == null
+        ? Container()
+        : Container(
+            padding: EdgeInsets.all(10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  KMoneyHelper.prettyMoney(
-                    amount: this.transaction!.amount ?? "",
-                    currency: KMoney.VND,
-                    showSymbol: false,
-                  ),
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .headline2,
+                  this.transaction!.lineType ==
+                          KCreditTransaction.LINE_TYPE_CREDIT
+                      ? "Transfer from"
+                      : "Transfer to",
+                  style: Theme.of(context).textTheme.subtitle2!,
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: 8),
                 Text(
-                  KUtil.prettyDate(this.transaction!.lineDate,
-                      showTime: true),
-                  style: Theme
-                      .of(context)
+                  this.transaction!.prettyName,
+                  style: Theme.of(context)
                       .textTheme
                       .bodyText1!
                       .copyWith(fontSize: 18),
                 ),
               ],
             ),
-          ),
-          Expanded(
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                (this.transaction!.tokenName ?? "") +
-                    ((this.transaction!.tokenName != "USD" &&
-                        this.transaction!.tokenName != null)
-                        ? " Credits"
-                        : ""),
-                style: Theme
-                    .of(context)
-                    .textTheme
-                    .subtitle1!
-                    .copyWith(fontSize: 18),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    final recipient = this.transaction == null
-        ? Container()
-        : Container(
-      padding: EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            this.transaction!.lineType ==
-                KCreditTransaction.LINE_TYPE_CREDIT
-                ? "Transfer from"
-                : "Transfer to",
-            style: Theme
-                .of(context)
-                .textTheme
-                .subtitle2!,
-          ),
-          SizedBox(height: 8),
-          Text(
-            this.transaction!.prettyName,
-            style: Theme
-                .of(context)
-                .textTheme
-                .bodyText1!
-                .copyWith(fontSize: 18),
-          ),
-        ],
-      ),
-    );
+          );
 
     final transactionDescription = this.transaction == null
         ? Container()
         : Container(
-      padding: EdgeInsets.all(10),
-      child: Column(children: [
-        Row(
-          children: [
-            Text(
-              "Transaction ID",
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .subtitle2!,
-            ),
-            SizedBox(width: 10),
-            Text(
-              "${this.transaction!.txID}",
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyText1!,
-            ),
-          ],
-        ),
-        SizedBox(height: 8),
-        Row(
-          children: [
-            Text(
-              this.transaction!.prettyXFRDescription,
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyText1!
-                  .copyWith(fontSize: 18),
-            ),
-          ],
-        ),
-      ]),
-    );
+            padding: EdgeInsets.all(10),
+            child: Column(children: [
+              Row(
+                children: [
+                  Text(
+                    "Transaction ID",
+                    style: Theme.of(context).textTheme.subtitle2!,
+                  ),
+                  SizedBox(width: 10),
+                  Text(
+                    "${this.transaction!.txID}",
+                    style: Theme.of(context).textTheme.bodyText1!,
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  Text(
+                    this.transaction!.prettyXFRDescription,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText1!
+                        .copyWith(fontSize: 18),
+                  ),
+                ],
+              ),
+            ]),
+          );
 
     final body = this.isLoading && this.transaction == null
         ? Center(child: CircularProgressIndicator())
         : !this.isLoading && this.transaction == null
-        ? Center(child: Text("Failed to load transaction"))
-        : ScrollConfiguration(
-      behavior: NoOverscroll(),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Center(child: icon),
-            info,
-            SizedBox(height: 8),
-            Divider(),
-            SizedBox(height: 8),
-            recipient,
-            SizedBox(height: 8),
-            Divider(),
-            SizedBox(height: 8),
-            transactionDescription,
-            SizedBox(height: 8),
-            Divider(),
-          ],
-        ),
-      ),
-    );
+            ? Center(child: Text("Failed to load transaction"))
+            : ScrollConfiguration(
+                behavior: NoOverscroll(),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Center(child: icon),
+                      info,
+                      SizedBox(height: 8),
+                      Divider(),
+                      SizedBox(height: 8),
+                      recipient,
+                      SizedBox(height: 8),
+                      Divider(),
+                      SizedBox(height: 8),
+                      transactionDescription,
+                      SizedBox(height: 8),
+                      Divider(),
+                    ],
+                  ),
+                ),
+              );
 
     return Scaffold(
       appBar: AppBar(title: Text("Transaction ${transaction?.txID ?? ""}")),

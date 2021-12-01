@@ -1,23 +1,22 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/khero.dart';
-import 'package:app_core/model/xfr_proxy.dart';
-import 'package:app_core/model/response/get_business_response.dart';
-import 'package:app_core/model/response/list_xfr_proxy_response.dart';
-import 'package:app_core/model/response/list_xfr_role_response.dart';
-import 'package:app_core/model/response/proxy_transfer_response.dart';
 import 'package:app_core/model/response/chat_add_members_response.dart';
 import 'package:app_core/model/response/chat_remove_members_response.dart';
 import 'package:app_core/model/response/credit_transfer_response.dart';
 import 'package:app_core/model/response/get_balances_response.dart';
+import 'package:app_core/model/response/get_business_response.dart';
 import 'package:app_core/model/response/get_chat_response.dart';
 import 'package:app_core/model/response/get_chats_response.dart';
 import 'package:app_core/model/response/get_credit_transactions_response.dart';
 import 'package:app_core/model/response/get_users_response.dart';
 import 'package:app_core/model/response/list_heroes_response.dart';
+import 'package:app_core/model/response/list_xfr_proxy_response.dart';
+import 'package:app_core/model/response/list_xfr_role_response.dart';
 import 'package:app_core/model/response/resume_session_response.dart';
 import 'package:app_core/model/response/search_users_response.dart';
 import 'package:app_core/model/response/send_2fa_response.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
+import 'package:app_core/model/xfr_proxy.dart';
 import 'package:app_core/model/xfr_ticket.dart';
 
 abstract class KServerHandler {
@@ -404,14 +403,14 @@ abstract class KServerHandler {
         .then((data) => CreditTransferResponse.fromJson(data));
   }
 
-  static Future<ProxyTransferResponse> xfrProxy(XFRTicket xfrTicket) async {
+  static Future<CreditTransferResponse> xfrProxy(XFRTicket xfrTicket) async {
     final params = {
       "svc": "chao",
       "req": "xfr.proxy",
       "xfrTicket": xfrTicket,
     };
     return TLSHelper.send(params)
-        .then((data) => ProxyTransferResponse.fromJson(data));
+        .then((data) => CreditTransferResponse.fromJson(data));
   }
 
   static Future<GetBusinessResponse> getBusiness(String buid) async {
