@@ -95,6 +95,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   int? overlayID;
   bool isPause = false;
   bool isBackgroundSoundPlaying = false;
+  bool isShowSadTamago = false;
 
   int tamagoJumpTimes = 5;
 
@@ -334,11 +335,16 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
           this._moveUpAnimationController.forward();
         }
       });
+    } else {
+      this.setState(() {
+        this.isShowSadTamago = true;
+      });
     }
 
     Future.delayed(Duration(milliseconds: 1000), () {
       if (mounted && currentQuestionIndex + 1 < questions.length) {
         this.setState(() {
+          isShowSadTamago = false;
           currentShowStarIndex = null;
           spinningHeroIndex = null;
           currentQuestionIndex = currentQuestionIndex + 1;
@@ -438,7 +444,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                             ? _bouncingAnimation.value
                             : Offset(0, 0),
                         child: Image.asset(
-                          KAssets.IMG_TAMAGO_CHAN,
+                          isShowSadTamago ? KAssets.IMG_TAMAGO_CHAN_SAD : KAssets.IMG_TAMAGO_CHAN,
                           width: eggWidth,
                           height: eggHeight,
                           package: 'app_core',
