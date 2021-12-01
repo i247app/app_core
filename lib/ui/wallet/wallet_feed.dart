@@ -83,6 +83,11 @@ class _WalletFeedState extends State<WalletFeed> {
         .toList();
   }
 
+  bool get isTransferButtonEnabled =>
+      (transferType == KTransferType.direct &&
+          widget.showDirectTransferButton) ||
+      (transferType == KTransferType.proxy && widget.showProxyTransferButton);
+
   @override
   void initState() {
     super.initState();
@@ -378,20 +383,13 @@ class _WalletFeedState extends State<WalletFeed> {
               SizedBox(height: 14),
               bankButtons,
             ],
-            if (widget.showDirectTransferButton) ...[
+            if (isTransferButtonEnabled) ...[
               SizedBox(height: 6),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 20.0),
                 child: transferButton,
               ),
             ],
-            // if (widget.showProxyTransferButton) ...[
-            //   SizedBox(height: 6),
-            //   Container(
-            //     padding: EdgeInsets.symmetric(horizontal: 20.0),
-            //     child: bxfrButton,
-            //   ),
-            // ],
             SizedBox(height: 12),
             transactionList,
           ],
@@ -412,11 +410,10 @@ class _WalletFeedState extends State<WalletFeed> {
       ),
     );
 
-    final proxyButton = KRolePicker(onChange: onProxyRoleChange);
-
     final actions = [
       showQrButton,
-      if (widget.showProxyTransferButton) proxyButton,
+      if (widget.showProxyTransferButton)
+        KRolePicker(onChange: onProxyRoleChange),
     ];
 
     final withoutScaffold = Column(
