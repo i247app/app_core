@@ -166,7 +166,7 @@ abstract class KServerHandler {
       "req": "webrtc.call.notify",
       "notifyType": "voip",
       "refPUIDs": refPUIDs
-          .where((element) => element != KSessionData.me?.puid)
+          .where((p) => p != KSessionData.me?.puid)
           .toList(),
       "callID": callID,
       "uuid": uuid,
@@ -406,7 +406,7 @@ abstract class KServerHandler {
 
   static Future<ProxyTransferResponse> xfrProxy(XFRTicket xfrTicket) async {
     final params = {
-      "svc": "reward",
+      "svc": "chao",
       "req": "xfr.proxy",
       "xfrTicket": xfrTicket,
     };
