@@ -1,6 +1,5 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kmath_helper.dart';
-import 'package:app_core/helper/kmoney_helper.dart';
 import 'package:app_core/ui/widget/kcount_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -20,10 +19,10 @@ class KCreditBanner extends StatelessWidget {
         fit: BoxFit.contain,
         child: KCountUp(
           begin: 0,
-          end: KMathHelper.parseDouble(this.amount),
+          end: KMathHelper.parseDouble(amount),
           duration: Duration(milliseconds: 500),
-          separator: this.tokenName == KMoney.USD ? "," : ".",
-          precision: this.tokenName == KMoney.VND ? 0 : 2,
+          // separator: this.tokenName == KMoney.USD ? "," : ".",
+          // precision: this.tokenName == KMoney.VND ? 0 : 2,
           style: Theme.of(context).textTheme.headline1,
           formatter: (double d) => KUtil.prettyMoney(
             amount: "${d}",
