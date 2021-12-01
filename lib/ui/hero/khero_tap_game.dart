@@ -9,6 +9,7 @@ import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
+import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
 import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
 import 'package:app_core/ui/hero/widget/ktamago_chan_jumping.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -59,7 +60,25 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
     showCustomOverlay(heroGameLevel);
   }
 
+  void showHeroGameHighscoreOverlay(Function() onClose) async {
+    this.setState(() {
+      this.isShowEndLevel = true;
+    });
+    final heroGameHighScore = Stack(
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: KGameHighscoreDialog(onClose: onClose),
+        ),
+      ],
+    );
+    showCustomOverlay(heroGameHighScore);
+  }
+
   void showCustomOverlay(Widget view) {
+    this.setState(() {
+      this.isShowEndLevel = true;
+    });
     final overlay = Stack(
       fit: StackFit.expand,
       children: [
@@ -115,15 +134,31 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                         if (level <= 3) {
                           this.showHeroGameLevelOverlay(
                             () {
-                              this.setState(() {
-                                this.isShowEndLevel = false;
-                              });
                               if (this.overlayID != null) {
                                 KOverlayHelper.removeOverlay(this.overlayID!);
                                 this.overlayID = null;
                               }
+                              this.showHeroGameHighscoreOverlay(() {
+                                this.setState(() {
+                                  this.isShowEndLevel = false;
+                                });
+                                if (this.overlayID != null) {
+                                  KOverlayHelper.removeOverlay(this.overlayID!);
+                                  this.overlayID = null;
+                                }
+                              });
                             },
                           );
+                        } else {
+                          this.showHeroGameHighscoreOverlay(() {
+                            this.setState(() {
+                              this.isShowEndLevel = false;
+                            });
+                            if (this.overlayID != null) {
+                              KOverlayHelper.removeOverlay(this.overlayID!);
+                              this.overlayID = null;
+                            }
+                          });
                         }
                       },
                       onChangeLevel: (level) => this.setState(
