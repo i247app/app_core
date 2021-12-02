@@ -35,7 +35,7 @@ abstract class KPrefHelper {
 
   static Future<dynamic> get(String key, {defaultResult}) async {
     dynamic result = (await _instance.get(key)) ?? defaultResult;
-    if (isDebugMode) print('$TAG GET $key -> $result');
+    if (isDebugMode) print('$TAG GET $key -> ${result.runtimeType}:$result');
     try {
       result = jsonDecode(result);
     } catch (e) {}
