@@ -3,16 +3,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 enum KNumberPadMode { NONE, NUMBER, QWERTY }
+enum KNumberPadStyle { ORIGINAL, CASHAPP }
+
+class _NumpadStyleManager extends InheritedWidget {
+  final KNumberPadStyle style;
+
+  const _NumpadStyleManager({
+    required Widget child,
+    required this.style,
+  }) : super(child: child);
+
+  static _NumpadStyleManager of(BuildContext context) {
+    final _NumpadStyleManager? result =
+        context.dependOnInheritedWidgetOfExactType<_NumpadStyleManager>();
+    assert(result != null, 'No _NumpadStyleManager found in context');
+    return result!;
+  }
+
+  @override
+  bool updateShouldNotify(_NumpadStyleManager old) => this.style != old.style;
+}
 
 class KNumberPad extends StatelessWidget {
   final TextEditingController controller;
   final VoidCallback onReturn;
   final void Function(String)? onTextChange;
+  final KNumberPadStyle style;
 
   KNumberPad({
     required this.controller,
     required this.onReturn,
     this.onTextChange,
+    this.style = KNumberPadStyle.ORIGINAL,
   });
 
   void _qwertyHandler() => this.onReturn.call();
@@ -39,80 +61,107 @@ class KNumberPad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: _keyboardHeight(),
-      width: _getShortestSide() > 600 ? 600 : _getShortestSide(),
-      color: Colors.white,
-      child: Column(
-        children: [
-          buildRowOne(),
-          buildRowTwo(),
-          buildRowThree(),
-          buildRowFour(),
-        ],
+    return _NumpadStyleManager(
+      style: style,
+      child: Container(
+        height: _keyboardHeight(),
+        width: _getShortestSide() > 600 ? 600 : _getShortestSide(),
+        color: Colors.white,
+        child: Column(
+          children: [
+            buildRowOne(),
+            buildRowTwo(),
+            buildRowThree(),
+            buildRowFour(),
+          ],
+        ),
       ),
     );
   }
 
   void _insertText(String myText) {
-    final text = controller.text;
-    final textSelection = controller.selection;
-    final newText = text.replaceRange(
-      textSelection.start,
-      textSelection.end,
-      myText,
-    );
-    final myTextLength = myText.length;
-    controller.text = newText;
-    _textChange(newText);
-    controller.selection = textSelection.copyWith(
-      baseOffset: textSelection.start + myTextLength,
-      extentOffset: textSelection.start + myTextLength,
-    );
-  }
+    print("INSERT TEXT");
 
-  void _backspace() {
-    final text = controller.text;
-    final textSelection = controller.selection;
-    final selectionLength = textSelection.end - textSelection.start;
-
-    // There is a selection.
-    if (selectionLength > 0) {
+    if (style == KNumberPadStyle.ORIGINAL) {
+      final text = controller.text;
+      final textSelection = controller.selection;
       final newText = text.replaceRange(
         textSelection.start,
         textSelection.end,
-        '',
+        myText,
       );
+      final myTextLength = myText.length;
       controller.text = newText;
       _textChange(newText);
       controller.selection = textSelection.copyWith(
-        baseOffset: textSelection.start,
-        extentOffset: textSelection.start,
+        baseOffset: textSelection.start + myTextLength,
+        extentOffset: textSelection.start + myTextLength,
       );
-      return;
-    } else {}
-
-    // The cursor is at the beginning.
-    if (textSelection.start == 0) {
-      return;
+    } else {
+      //CASHAPP
+      controller.text += myText;
     }
+  }
 
-    // Delete the previous character
-    final previousCodeUnit = text.codeUnitAt(textSelection.start - 1);
-    final offset = _isUtf16Surrogate(previousCodeUnit) ? 2 : 1;
-    final newStart = textSelection.start - offset;
-    final newEnd = textSelection.start;
-    final newText = text.replaceRange(
-      newStart,
-      newEnd,
-      '',
-    );
-    controller.text = newText;
-    controller.selection = textSelection.copyWith(
-      baseOffset: newStart,
-      extentOffset: newStart,
-    );
-    _textChange(newText);
+  void _backspace() {
+    print("BACKSPACE");
+
+    if (style == KNumberPadStyle.ORIGINAL) {
+      final text = controller.text;
+      final textSelection = controller.selection;
+      final selectionLength = textSelection.end - textSelection.start;
+
+      // There is a selection.
+      if (selectionLength > 0) {
+        final newText = text.replaceRange(
+          textSelection.start,
+          textSelection.end,
+          '',
+        );
+        controller.text = newText;
+        _textChange(newText);
+        controller.selection = textSelection.copyWith(
+          baseOffset: textSelection.start,
+          extentOffset: textSelection.start,
+        );
+        return;
+      } else {}
+
+      // The cursor is at the beginning.
+      if (textSelection.start == 0) {
+        return;
+      }
+
+      // Delete the previous character
+      final previousCodeUnit = text.codeUnitAt(textSelection.start - 1);
+      final offset = _isUtf16Surrogate(previousCodeUnit) ? 2 : 1;
+      final newStart = textSelection.start - offset;
+      final newEnd = textSelection.start;
+      final newText = text.replaceRange(
+        newStart,
+        newEnd,
+        '',
+      );
+      controller.text = newText;
+      controller.selection = textSelection.copyWith(
+        baseOffset: newStart,
+        extentOffset: newStart,
+      );
+      _textChange(newText);
+    } else {
+      //CASHAPP
+      if (controller.text.length > 1) {
+        // print("TEXT LENGTH > 1");
+        final newString =
+            controller.text.substring(0, controller.text.length - 1);
+        controller.text = newString;
+      } else if (controller.text == 1) {
+        // print("TEXT LENGTH == 0");
+        controller.text = "0";
+      } else {
+        // print("TEXT LENGTH IS <= 0");
+      }
+    }
   }
 
   bool _isUtf16Surrogate(int value) {
@@ -120,101 +169,186 @@ class KNumberPad extends StatelessWidget {
   }
 
   Expanded buildRowOne() {
-    return Expanded(
-      child: Row(
-        children: [
-          _TextKey(
-            text: '1',
-            onTextInput: _insertText,
-          ),
-          _TextKey(
-            text: '2',
-            onTextInput: _insertText,
-          ),
-          _TextKey(
-            text: '3',
-            onTextInput: _insertText,
-          ),
-          _BackspaceKey(
-            onBackspace: () => _backspace(),
-          ),
-        ],
-      ),
-    );
+    if (style == KNumberPadStyle.ORIGINAL) {
+      return Expanded(
+        child: Row(
+          children: [
+            _TextKey(
+              text: '1',
+              onTextInput: _insertText,
+            ),
+            _TextKey(
+              text: '2',
+              onTextInput: _insertText,
+            ),
+            _TextKey(
+              text: '3',
+              onTextInput: _insertText,
+            ),
+            _BackspaceKey(
+              onBackspace: () => _backspace(),
+            ),
+          ],
+        ),
+      );
+    } else {
+      // CASHAPP
+      return Expanded(
+        child: Row(
+          children: [
+            _TextKey(
+              text: '1',
+              onTextInput: _insertText,
+            ),
+            _TextKey(
+              text: '2',
+              onTextInput: _insertText,
+            ),
+            _TextKey(
+              text: '3',
+              onTextInput: _insertText,
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   Expanded buildRowTwo() {
-    return Expanded(
-      child: Row(
-        children: [
-          _TextKey(
-            text: '4',
-            onTextInput: _insertText,
-          ),
-          _TextKey(
-            text: '5',
-            onTextInput: _insertText,
-          ),
-          _TextKey(
-            text: '6',
-            onTextInput: _insertText,
-          ),
-          _SmallTextKey(
-            text: '-',
-            onTextInput: _insertText,
-          ),
-        ],
-      ),
-    );
+    if (style == KNumberPadStyle.ORIGINAL) {
+      return Expanded(
+        child: Row(
+          children: [
+            _TextKey(
+              text: '4',
+              onTextInput: _insertText,
+            ),
+            _TextKey(
+              text: '5',
+              onTextInput: _insertText,
+            ),
+            _TextKey(
+              text: '6',
+              onTextInput: _insertText,
+            ),
+            _SmallTextKey(
+              text: '-',
+              onTextInput: _insertText,
+            ),
+          ],
+        ),
+      );
+    } else {
+      // CASHAPP
+      return Expanded(
+        child: Row(
+          children: [
+            _TextKey(
+              text: '4',
+              onTextInput: _insertText,
+            ),
+            _TextKey(
+              text: '5',
+              onTextInput: _insertText,
+            ),
+            _TextKey(
+              text: '6',
+              onTextInput: _insertText,
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   Expanded buildRowThree() {
-    return Expanded(
-      child: Row(
-        children: [
-          _TextKey(
-            text: '7',
-            onTextInput: _insertText,
-          ),
-          _TextKey(
-            text: '8',
-            onTextInput: _insertText,
-          ),
-          _TextKey(
-            text: '9',
-            onTextInput: _insertText,
-          ),
-          _SmallTextKey(
-            text: '#',
-            onTextInput: _insertText,
-          ),
-        ],
-      ),
-    );
+    if (style == KNumberPadStyle.ORIGINAL) {
+      return Expanded(
+        child: Row(
+          children: [
+            _TextKey(
+              text: '7',
+              onTextInput: _insertText,
+            ),
+            _TextKey(
+              text: '8',
+              onTextInput: _insertText,
+            ),
+            _TextKey(
+              text: '9',
+              onTextInput: _insertText,
+            ),
+            _SmallTextKey(
+              text: '#',
+              onTextInput: _insertText,
+            ),
+          ],
+        ),
+      );
+    } else {
+      //CASHAPP
+      return Expanded(
+        child: Row(
+          children: [
+            _TextKey(
+              text: '7',
+              onTextInput: _insertText,
+            ),
+            _TextKey(
+              text: '8',
+              onTextInput: _insertText,
+            ),
+            _TextKey(
+              text: '9',
+              onTextInput: _insertText,
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   Expanded buildRowFour() {
-    return Expanded(
-      child: Row(
-        children: [
-          _TextKey(
-            text: '+',
-            onTextInput: _insertText,
-          ),
-          _TextKey(
-            text: '0',
-            onTextInput: _insertText,
-          ),
-          _TextKey(
-            text: '.',
-            onTextInput: _insertText,
-          ),
-          _QwertyKey(
-            onQwerty: _qwertyHandler,
-          )
-        ],
-      ),
-    );
+    if (style == KNumberPadStyle.ORIGINAL) {
+      return Expanded(
+        child: Row(
+          children: [
+            _TextKey(
+              text: '+',
+              onTextInput: _insertText,
+            ),
+            _TextKey(
+              text: '0',
+              onTextInput: _insertText,
+            ),
+            _TextKey(
+              text: '.',
+              onTextInput: _insertText,
+            ),
+            _QwertyKey(
+              onQwerty: _qwertyHandler,
+            )
+          ],
+        ),
+      );
+    } else {
+      //CASHAPP
+      return Expanded(
+        child: Row(
+          children: [
+            _TextKey(
+              text: '.',
+              onTextInput: _insertText,
+            ),
+            _TextKey(
+              text: '0',
+              onTextInput: _insertText,
+            ),
+            _BackspaceKey(onBackspace: _backspace),
+          ],
+        ),
+      );
+    }
   }
 }
 
@@ -231,14 +365,27 @@ class _TextKey extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theText;
+    if (_NumpadStyleManager.of(context).style == KNumberPadStyle.ORIGINAL) {
+      theText = Text(
+        this.text,
+        style: Theme.of(context).textTheme.headline6?.copyWith(fontSize: 18),
+      );
+    } else {
+      theText = Text(
+        this.text,
+        style: Theme.of(context).textTheme.headline6?.copyWith(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+      );
+    }
+
     return Expanded(
       flex: flex,
       child: _BaseKey(
         onClick: () => this.onTextInput.call(this.text),
-        child: Text(
-          this.text,
-          style: Theme.of(context).textTheme.headline6?.copyWith(fontSize: 18),
-        ),
+        child: theText,
       ),
     );
   }
@@ -252,12 +399,25 @@ class _BackspaceKey extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theIcon;
+    if (_NumpadStyleManager.of(context).style == KNumberPadStyle.ORIGINAL) {
+      theIcon = Icon(
+        Icons.backspace_outlined,
+        color: Theme.of(context).accentColor,
+      );
+    } else {
+      theIcon = Icon(
+        Icons.arrow_back_ios,
+        color: Theme.of(context).primaryColor,
+        size: 20,
+      );
+    }
+
     return Expanded(
       flex: flex,
       child: _BaseKey(
         onClick: this.onBackspace,
-        child: Icon(Icons.backspace_outlined,
-            color: Theme.of(context).accentColor),
+        child: theIcon,
       ),
     );
   }
@@ -344,22 +504,33 @@ class _BaseKey extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final content = Container(
-      margin: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
-      decoration: BoxDecoration(
-        border: Border.all(color: KStyles.colorDivider),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Center(child: this.child),
-    );
+    final body;
+    if (_NumpadStyleManager.of(context).style == KNumberPadStyle.ORIGINAL) {
+      final content = Container(
+        margin: EdgeInsets.symmetric(horizontal: 2, vertical: 1),
+        decoration: BoxDecoration(
+          border: Border.all(color: KStyles.colorDivider),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Center(child: this.child),
+      );
 
-    final body = Material(
-      // color: Colors.white,
-      child: InkWell(
-        onTap: this.onClick,
-        child: content,
-      ),
-    );
+      body = Material(
+        // color: Colors.white,
+        child: InkWell(
+          onTap: this.onClick,
+          child: content,
+        ),
+      );
+    } else {
+      body = Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: this.onClick,
+          child: Center(child: child),
+        ),
+      );
+    }
 
     return body;
   }
