@@ -1,5 +1,6 @@
-import 'package:app_core/value/kstyles.dart';
 import 'package:app_core/helper/kglobals.dart';
+import 'package:app_core/model/response/base_response.dart';
+import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
 
 abstract class KSnackBarHelper {
@@ -34,4 +35,8 @@ abstract class KSnackBarHelper {
         text: text ?? "Success",
         isSuccess: true,
       );
+
+  /// Display generic success message
+  static Future<bool?> fromResponse(BaseResponse response) async =>
+      (response.isSuccess ? success : error).call(response.prettyMessage);
 }

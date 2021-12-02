@@ -164,9 +164,7 @@ abstract class KServerHandler {
       "svc": "chat",
       "req": "webrtc.call.notify",
       "notifyType": "voip",
-      "refPUIDs": refPUIDs
-          .where((p) => p != KSessionData.me?.puid)
-          .toList(),
+      "refPUIDs": refPUIDs.where((p) => p != KSessionData.me?.puid).toList(),
       "callID": callID,
       "uuid": uuid,
     };

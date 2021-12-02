@@ -64,43 +64,18 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
       }
       hasModifyBank = true;
     }
-    if (widget.action == BankTransferAction.withdraw) {
-      final response = await KServerHandler.bankWithdrawal(
-        bankID: bankId,
-        bankName: bankName,
-        bankAccount: accountNameCtrl.text,
-        bankAccNumber: bankAccountNumberCtrl.text,
-        amount: double.tryParse(amountCtrl.text) ?? 0,
-      );
-      if (response.kstatus == KCoreCode.SUCCESS) {
-        KSnackBarHelper.show(
-          text: response.kmessage ?? "",
-          isSuccess: true,
-        );
-      } else
-        KSnackBarHelper.show(
-          text: response.kmessage ?? "",
-          isSuccess: false,
-        );
-    } else {
-      final response = await KServerHandler.bankDeposit(
-        bankID: bankId,
-        bankName: bankName,
-        bankAccount: accountNameCtrl.text,
-        bankAccNumber: bankAccountNumberCtrl.text,
-        amount: double.tryParse(amountCtrl.text) ?? 0,
-      );
-      if (response.kstatus == KCoreCode.SUCCESS) {
-        KSnackBarHelper.show(
-          text: response.kmessage ?? "",
-          isSuccess: true,
-        );
-      } else
-        KSnackBarHelper.show(
-          text: response.kmessage ?? "",
-          isSuccess: false,
-        );
-    }
+
+    final apiCall = widget.action == BankTransferAction.withdraw
+        ? KServerHandler.bankWithdrawal
+        : KServerHandler.bankDeposit;
+    final response = await apiCall.call(
+      bankID: bankId,
+      bankName: bankName,
+      bankAccount: accountNameCtrl.text,
+      bankAccNumber: bankAccountNumberCtrl.text,
+      amount: double.tryParse(amountCtrl.text) ?? 0,
+    );
+    KSnackBarHelper.fromResponse(response);
 
     if (hasModifyBank) {
       await KSessionData.reload();
