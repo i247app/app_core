@@ -22,15 +22,13 @@ import 'package:flutter/material.dart';
 class WalletFeed extends StatefulWidget {
   final String? defaultTokenName;
   final bool showBankButtons;
-  final bool showDirectTransferButton;
-  final bool showProxyTransferButton;
-  final bool isPartOfBubba;
+  final bool isDirectTransferEnabled;
+  final bool isPartOfBubba; // Hacky but also only affects UI
 
   WalletFeed({
     this.defaultTokenName,
     required this.showBankButtons,
-    required this.showDirectTransferButton,
-    required this.showProxyTransferButton,
+    required this.isDirectTransferEnabled,
     this.isPartOfBubba = false,
   });
 
@@ -85,9 +83,7 @@ class _WalletFeedState extends State<WalletFeed> {
   }
 
   bool get isTransferButtonEnabled =>
-      (transferType == KTransferType.direct &&
-          widget.showDirectTransferButton) ||
-      (transferType == KTransferType.proxy && widget.showProxyTransferButton);
+      transferType == KTransferType.direct && widget.isDirectTransferEnabled;
 
   @override
   void initState() {
@@ -405,8 +401,7 @@ class _WalletFeedState extends State<WalletFeed> {
 
     final actions = [
       showQrButton,
-      if (widget.showProxyTransferButton)
-        KRolePicker(onChange: onProxyRoleChange),
+      KRolePicker(onChange: onProxyRoleChange),
     ];
 
     final withoutScaffold = RefreshIndicator(
