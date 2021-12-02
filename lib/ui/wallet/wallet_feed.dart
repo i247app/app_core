@@ -47,6 +47,7 @@ class _WalletFeedState extends State<WalletFeed> {
 
   // timing issue?? maybe need some kind of timeout
   bool isLoaded = false;
+  late Widget wRolePicker = KRolePicker(onChange: onProxyRoleChange);
 
   String get localeToken => KLocaleHelper.isUSA ? KMoney.USD : KMoney.VND;
 
@@ -422,7 +423,7 @@ class _WalletFeedState extends State<WalletFeed> {
 
     final actions = [
       showQrButton,
-      KRolePicker(onChange: onProxyRoleChange),
+      wRolePicker,
     ];
 
     final withoutScaffold = RefreshIndicator(
@@ -532,12 +533,13 @@ class _CreditFeedItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final body = GestureDetector(
-      onTap: onClick == null ? null : () => onClick?.call(transaction),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: Card(
-          elevation: 1,
+    final body = Container(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: Card(
+        elevation: 1,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(4),
+          onTap: onClick == null ? null : () => onClick?.call(transaction),
           child: Container(
             padding: EdgeInsets.symmetric(
               horizontal: 20,
