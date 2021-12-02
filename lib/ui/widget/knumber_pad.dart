@@ -29,12 +29,14 @@ class KNumberPad extends StatelessWidget {
   final VoidCallback onReturn;
   final void Function(String)? onTextChange;
   final KNumberPadStyle style;
+  final int decimals;
 
   KNumberPad({
     required this.controller,
     required this.onReturn,
     this.onTextChange,
     this.style = KNumberPadStyle.ORIGINAL,
+    this.decimals = 2,
   });
 
   void _qwertyHandler() => this.onReturn.call();
@@ -80,7 +82,7 @@ class KNumberPad extends StatelessWidget {
   }
 
   void _insertText(String myText) {
-    print("INSERT TEXT");
+    // print("INSERT TEXT");
 
     if (style == KNumberPadStyle.ORIGINAL) {
       final text = controller.text;
@@ -99,12 +101,19 @@ class KNumberPad extends StatelessWidget {
       );
     } else {
       //CASHAPP
+      if (controller.text.contains('.') && myText == '.') {
+        return;
+      } else if (controller.text.contains('.') &&
+          controller.text.replaceAll(RegExp(r"[0-9]*\."), "").length >=
+              decimals) {
+        return;
+      }
       controller.text += myText;
     }
   }
 
   void _backspace() {
-    print("BACKSPACE");
+    // print("BACKSPACE");
 
     if (style == KNumberPadStyle.ORIGINAL) {
       final text = controller.text;
@@ -333,13 +342,13 @@ class KNumberPad extends StatelessWidget {
       );
     } else {
       //CASHAPP
+      final decimalButton = decimals > 0
+          ? _TextKey(text: '.', onTextInput: _insertText)
+          : _TextKey(text: '', onTextInput: null);
       return Expanded(
         child: Row(
           children: [
-            _TextKey(
-              text: '.',
-              onTextInput: _insertText,
-            ),
+            decimalButton,
             _TextKey(
               text: '0',
               onTextInput: _insertText,
@@ -354,7 +363,7 @@ class KNumberPad extends StatelessWidget {
 
 class _TextKey extends StatelessWidget {
   final String text;
-  final ValueSetter<String> onTextInput;
+  final ValueSetter<String>? onTextInput;
   final int flex;
 
   const _TextKey({
@@ -384,7 +393,7 @@ class _TextKey extends StatelessWidget {
     return Expanded(
       flex: flex,
       child: _BaseKey(
-        onClick: () => this.onTextInput.call(this.text),
+        onClick: () => this.onTextInput?.call(this.text),
         child: theText,
       ),
     );
@@ -497,8 +506,8 @@ class _SmallBaseKey extends StatelessWidget {
 }
 
 class _BaseKey extends StatelessWidget {
-  final VoidCallback onClick;
   final Widget child;
+  final VoidCallback? onClick;
 
   const _BaseKey({required this.child, required this.onClick});
 
@@ -517,10 +526,12 @@ class _BaseKey extends StatelessWidget {
 
       body = Material(
         // color: Colors.white,
-        child: InkWell(
-          onTap: this.onClick,
-          child: content,
-        ),
+        child: onClick == null
+            ? content
+            : InkWell(
+                onTap: this.onClick,
+                child: content,
+              ),
       );
     } else {
       body = Material(

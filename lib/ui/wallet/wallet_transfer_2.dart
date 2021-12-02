@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/helper/kmoney_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/kcredit_transaction.dart';
 import 'package:app_core/model/krole.dart';
@@ -32,7 +33,7 @@ class WalletTransfer2 extends StatefulWidget {
 
 class _WalletTransfer2State extends State<WalletTransfer2> {
   final TextEditingController userController = TextEditingController();
-  final TextEditingController amountController = TextEditingController();
+  final TextEditingController amountCtrl = TextEditingController();
 
   String? balanceAmount;
   KUser? selectedUser;
@@ -40,8 +41,8 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
   bool isNetworking = false;
 
   void Function()? get actionButtonHandler {
-    if (!(amountController.text.isNotEmpty &&
-        (double.tryParse(amountController.text) ?? 0) > 0)) {
+    if (!(amountCtrl.text.isNotEmpty &&
+        (double.tryParse(amountCtrl.text) ?? 0) > 0)) {
       return null;
     } else if (selectedUser == null) {
       return toChooseContact;
@@ -56,15 +57,15 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
 
     loadBalance();
 
-    amountController.text = "0";
-    amountController.addListener(fieldListener);
+    amountCtrl.text = "0";
+    amountCtrl.addListener(fieldListener);
 
     if (widget.rcvPUID != null) loadUserInfo(puid: widget.rcvPUID!);
   }
 
   @override
   void dispose() {
-    amountController.removeListener(fieldListener);
+    amountCtrl.removeListener(fieldListener);
     super.dispose();
   }
 
@@ -88,14 +89,17 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
 
   void attemptTransferCredit() {
     final rcvPUID = selectedUser?.puid ?? "";
-    final amount = amountController.text;
+    final amount = amountCtrl.text.endsWith(".")
+        ? amountCtrl.text.replaceAll(".", "")
+        : amountCtrl.text;
 
-    if (rcvPUID.isNotEmpty && amount.isNotEmpty)
+    if (rcvPUID.isNotEmpty && amount.isNotEmpty) {
       transferCredit(
         rcvPUID: rcvPUID,
         amount: amount,
         tokenName: widget.tokenName,
       );
+    }
 
     FocusScope.of(context).unfocus(); // dismiss keyboard
   }
@@ -212,6 +216,20 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
     }
   }
 
+  String prettyPartialDecimal(String rawAmount) {
+    final endsWithPeriod = rawAmount.endsWith(".");
+    final base = KUtil.prettyMoney(
+      amount: rawAmount,
+      tokenName: widget.tokenName,
+      useCurrencySymbol: false,
+    );
+    if (endsWithPeriod) {
+      return "$base.";
+    } else {
+      return base;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final roleDisplay = widget.sndRole == null
@@ -255,15 +273,13 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
     final transferAmount = FittedBox(
       fit: BoxFit.contain,
       child: Text(
-        KUtil.prettyMoney(
-          amount: amountController.text,
-          tokenName: widget.tokenName,
-          useCurrencySymbol: false,
-        ),
-        style: TextStyle(
-          // fontSize: 100,
-          fontWeight: FontWeight.bold,
-        ),
+        prettyPartialDecimal(amountCtrl.text),
+        // KUtil.prettyMoney(
+        //   amount: amountController.text,
+        //   tokenName: widget.tokenName,
+        //   useCurrencySymbol: false,
+        // ),
+        style: TextStyle(fontWeight: FontWeight.bold),
       ),
     );
 
@@ -290,9 +306,10 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
           Center(child: balanceView),
           Expanded(
             child: KNumberPad(
-              controller: amountController,
+              controller: amountCtrl,
               onReturn: () {},
               style: KNumberPadStyle.CASHAPP,
+              decimals: widget.tokenName == KMoney.VND ? 0 : 2,
             ),
           ),
           SizedBox(height: 10),

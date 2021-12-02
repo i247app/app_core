@@ -161,7 +161,7 @@ class KUser extends KObject {
       phone;
 
   String get prettyFone =>
-      KUtil.prettyFone(foneCode: this.phoneCode ?? "", number: phone ?? "");
+      KUtil.prettyFone(foneCode: phoneCode ?? "", number: phone ?? "");
 
   String get firstInitial => firstName?.substring(0, 1) ?? "";
 

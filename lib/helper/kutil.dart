@@ -123,18 +123,18 @@ abstract class KUtil {
   }
 
   static String maskedFone(String fone) {
-    if (fone.length <= 4)
+    if (fone.length <= 4) {
       return fone.replaceAll(RegExp(r'.'), 'x');
-    else
+    } else {
       return fone.replaceAll(RegExp(r'.'), 'x').substring(0, fone.length - 4) +
           fone.substring(fone.length - 4);
+    }
   }
 
   static String prettyFone({String foneCode = "", String number = ""}) {
     foneCode = foneCode.replaceAll("+", "");
-    final String prefix =
-        KStringHelper.isExist(foneCode) ? "+" + foneCode + " " : "";
-    return prefix + number;
+    final String prefix = foneCode.isNotEmpty ? "+$foneCode " : "";
+    return prefix.isEmpty ? number : "$prefix$number";
   }
 
   // TODO VN - last, middle first else first middle last
@@ -158,11 +158,12 @@ abstract class KUtil {
     return title;
   }
 
-  static String? chatDisplayName(
-      {String? kunm = "",
-      String? fnm = "",
-      String? mnm = "",
-      String? lnm = ""}) {
+  static String? chatDisplayName({
+    String? kunm = "",
+    String? fnm = "",
+    String? mnm = "",
+    String? lnm = "",
+  }) {
     String? title;
 
     try {
