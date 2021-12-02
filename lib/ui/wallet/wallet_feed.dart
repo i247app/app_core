@@ -347,7 +347,7 @@ class _WalletFeedState extends State<WalletFeed> {
         onTap: proxyFilteredBalances.length > 0 ? showChooseTokenModal : null,
         borderRadius: BorderRadius.circular(4),
         child: Container(
-          padding: EdgeInsets.all(8),
+          padding: EdgeInsets.symmetric(vertical: 6, horizontal: 16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -357,9 +357,9 @@ class _WalletFeedState extends State<WalletFeed> {
                   Opacity(
                     opacity: 1,
                     child: Icon(
-                      Icons.arrow_forward_ios,
+                      Icons.arrow_back_ios,
                       color: Colors.black26,
-                      size: 32,
+                      size: 44,
                     ),
                   ),
                   Expanded(child: balanceView),
@@ -368,7 +368,7 @@ class _WalletFeedState extends State<WalletFeed> {
                     child: Icon(
                       Icons.arrow_forward_ios,
                       color: Colors.black26,
-                      size: 32,
+                      size: 44,
                     ),
                   ),
                 ],
