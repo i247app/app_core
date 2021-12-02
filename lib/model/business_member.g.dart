@@ -17,7 +17,7 @@ BusinessMember _$BusinessMemberFromJson(Map<String, dynamic> json) =>
       ..kmodifyID = json['modifyID'] as String?
       ..kmodifyDate = zzz_str2Date(json['modifyDate'] as String?)
       ..kisValid = json['isValid'] as String?
-      ..kaction = json['action'] as String?
+      ..action = json['action'] as String?
       ..korderBy = json['orderBy'] as String?
       ..klimit = json['limit'] as String?
       ..koffset = json['offset'] as String?
@@ -98,7 +98,7 @@ Map<String, dynamic> _$BusinessMemberToJson(BusinessMember instance) {
   writeNotNull('modifyID', instance.kmodifyID);
   writeNotNull('modifyDate', zzz_date2Str(instance.kmodifyDate));
   writeNotNull('isValid', instance.kisValid);
-  writeNotNull('action', instance.kaction);
+  writeNotNull('action', instance.action);
   writeNotNull('orderBy', instance.korderBy);
   writeNotNull('limit', instance.klimit);
   writeNotNull('offset', instance.koffset);

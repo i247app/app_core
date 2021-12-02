@@ -51,7 +51,7 @@ abstract class KObject {
   String? kisValid;
 
   @JsonKey(name: ACTION)
-  String? kaction;
+  String? action;
 
   @JsonKey(name: ORDER_BY)
   String? korderBy;

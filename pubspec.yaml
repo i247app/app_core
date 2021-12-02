@@ -25,7 +25,7 @@ dependencies:
   timeago: ^3.1.0
   intl: ^0.17.0
   flutter_secure_storage: ^4.2.0
-  json_annotation: ^4.3.0
+  json_annotation: ^4.4.0
   fluttertoast: ^8.0.7
   local_auth: ^1.1.6
   new_version: ^0.2.0
