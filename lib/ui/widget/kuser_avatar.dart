@@ -1,16 +1,18 @@
-import 'package:app_core/model/kchat.dart';
-import 'package:app_core/model/kchat_member.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:app_core/header/kassets.dart';
 import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/helper/kstring_helper.dart';
+import 'package:app_core/model/kchat.dart';
+import 'package:app_core/model/kchat_member.dart';
 import 'package:app_core/model/kuser.dart';
-import 'package:app_core/header/kassets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class KUserAvatar extends StatelessWidget {
   final String? initial;
   final String? imageURL;
   final Image? imagePlaceHolder;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
   final double? size;
 
   Image get placeholderImage =>
@@ -20,6 +22,8 @@ class KUserAvatar extends StatelessWidget {
     this.initial,
     this.imageURL,
     this.imagePlaceHolder,
+    this.backgroundColor,
+    this.foregroundColor,
     this.size,
   });
 
@@ -64,15 +68,16 @@ class KUserAvatar extends StatelessWidget {
             : FittedBox(
                 fit: BoxFit.cover,
                 child: CircleAvatar(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Colors.white,
+                  backgroundColor:
+                      backgroundColor ?? Theme.of(context).colorScheme.primary,
+                  foregroundColor: foregroundColor ?? Colors.white,
                   child: Text(
                     KStringHelper.substring(initial!, 0, 2).toUpperCase(),
                     textAlign: TextAlign.center,
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline5!
-                        .copyWith(color: Colors.white),
+                    style: TextStyle(
+                      color: foregroundColor ?? Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               )
