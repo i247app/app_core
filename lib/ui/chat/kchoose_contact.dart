@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/model/kuser.dart';
+import 'package:app_core/ui/chat/widget/kuser_profile_view.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
@@ -114,7 +115,7 @@ class _KChooseContactState extends State<KChooseContact> {
             user: user,
             onClick: onSearchResultClick,
             icon: Container(
-              width: 40,
+              width: 36,
               child: KUserAvatar.fromUser(user),
             ),
           );
@@ -143,6 +144,7 @@ class _KChooseContactState extends State<KChooseContact> {
           topBar,
           SizedBox(height: 8),
           searchInput,
+          SizedBox(height: 10),
           Expanded(child: userListing),
         ],
       ),
@@ -175,23 +177,30 @@ class _SearchField extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final searchField = TextField(
-      maxLength: 12,
-      maxLines: null,
-      focusNode: focusNode,
-      textAlign: TextAlign.left,
-      controller: searchFieldCtrl,
-      onChanged: onChanged,
-      autofocus: true,
-      showCursor: true,
-      onTap: onTap,
-      readOnly: readOnly,
-      style: theme.textTheme.bodyText1,
-      decoration: InputDecoration(
-        hintText: "Type a name or phone number",
-        counterText: "",
-        // contentPadding: EdgeInsets.symmetric(vertical: 2),
-        border: InputBorder.none,
+    final searchField = Theme(
+      data: ThemeData(
+        inputDecorationTheme: InputDecorationTheme(border: InputBorder.none),
+      ),
+      child: TextField(
+        maxLength: 12,
+        maxLines: null,
+        focusNode: focusNode,
+        textAlign: TextAlign.left,
+        controller: searchFieldCtrl,
+        onChanged: onChanged,
+        autofocus: true,
+        showCursor: true,
+        onTap: onTap,
+        readOnly: readOnly,
+        style: theme.textTheme.bodyText1,
+        decoration: InputDecoration(
+          hintText: "Type a name or phone number",
+          hintStyle:
+              TextStyle(color: Theme.of(context).primaryColor.withOpacity(0.8)),
+          counterText: "",
+          // contentPadding: EdgeInsets.symmetric(vertical: 2),
+          border: InputBorder.none,
+        ),
       ),
     );
 
@@ -221,14 +230,32 @@ class _SearchField extends StatelessWidget {
             ))
         .toList();
 
+    final searchRow = Row(
+      children: [
+        Text(
+          "Search",
+          style:
+              theme.textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        SizedBox(width: 16),
+        Expanded(child: searchField),
+      ],
+    );
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          searchField,
-          Wrap(spacing: 4, runSpacing: 4, children: selectedUserChips),
-          SizedBox(height: 6),
+          Divider(color: Colors.black12),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: searchRow,
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Wrap(spacing: 4, runSpacing: 4, children: selectedUserChips),
+          ),
+          Divider(color: Colors.black12),
         ],
       ),
     );
@@ -247,6 +274,9 @@ class _ResultItem extends StatelessWidget {
     required this.onClick,
     this.backgroundColor,
   });
+
+  void onMoreInfoClick(ctx) => Navigator.of(ctx)
+      .push(MaterialPageRoute(builder: (_) => KUserProfileView.fromUser(user)));
 
   @override
   Widget build(BuildContext context) {
@@ -267,7 +297,7 @@ class _ResultItem extends StatelessWidget {
           ),
     );
 
-    final centerInfo = Column(
+    final info = Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -278,9 +308,18 @@ class _ResultItem extends StatelessWidget {
               .bodyText1
               ?.copyWith(fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 4),
+        SizedBox(height: 6),
         contactHandle,
       ],
+    );
+
+    final moreInfoButton = IconButton(
+      onPressed: () => onMoreInfoClick(context),
+      iconSize: 20,
+      icon: Icon(
+        Icons.info,
+        color: Theme.of(context).primaryColor.withOpacity(0.2),
+      ),
     );
 
     return InkWell(
@@ -288,11 +327,14 @@ class _ResultItem extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(6),
         color: Colors.transparent,
-        child: Row(children: <Widget>[
-          icon,
-          SizedBox(width: 16),
-          Expanded(child: centerInfo),
-        ]),
+        child: Row(
+          children: <Widget>[
+            icon,
+            SizedBox(width: 16),
+            Expanded(child: info),
+            moreInfoButton,
+          ],
+        ),
       ),
     );
   }
