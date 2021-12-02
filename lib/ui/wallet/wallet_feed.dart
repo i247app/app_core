@@ -533,67 +533,64 @@ class _CreditFeedItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final body = Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Card(
-        elevation: 1,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(4),
-          onTap: onClick == null ? null : () => onClick?.call(transaction),
-          child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 15,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    transactionDate(context, transaction.lineDate ?? ""),
-                    amountChange(
-                      context,
-                      transaction.amount ?? "0",
-                      tokenName,
-                    ),
-                  ],
-                ),
-                if (KStringHelper.isExist(transaction.prettyName) &&
-                    KStringHelper.isExist(transaction.poiKUNM)) ...[
-                  SizedBox(height: 5),
-                  Wrap(
-                    children: <Widget>[
-                      socialName(context, transaction.poiKUNM ?? ""),
-                      Text(
-                        " • ",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      transactorPrettyName(context, transaction.prettyName),
-                    ],
+    final body = Card(
+      elevation: 1,
+      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(4),
+        onTap: onClick == null ? null : () => onClick?.call(transaction),
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 15,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  transactionDate(context, transaction.lineDate ?? ""),
+                  amountChange(
+                    context,
+                    transaction.amount ?? "0",
+                    tokenName,
                   ),
                 ],
+              ),
+              if (KStringHelper.isExist(transaction.prettyName) &&
+                  KStringHelper.isExist(transaction.poiKUNM)) ...[
                 SizedBox(height: 5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Wrap(
                   children: <Widget>[
-                    transactionMethod(
-                      context,
-                      transaction.prettyXFRDescription,
+                    socialName(context, transaction.poiKUNM ?? ""),
+                    Text(
+                      " • ",
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                  ],
-                ),
-                // SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    transactionID(context, transaction.txID ?? ""),
-                    transactionDate(context, transaction.lineDate ?? ""),
+                    transactorPrettyName(context, transaction.prettyName),
                   ],
                 ),
               ],
-            ),
+              SizedBox(height: 5),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  transactionMethod(
+                    context,
+                    transaction.prettyXFRDescription,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  transactionID(context, transaction.txID ?? ""),
+                  transactionDate(context, transaction.lineDate ?? ""),
+                ],
+              ),
+            ],
           ),
         ),
       ),
