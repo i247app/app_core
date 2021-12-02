@@ -11,7 +11,6 @@ import 'package:app_core/model/xfr_proxy.dart';
 import 'package:app_core/ui/wallet/credit_bank_transfer.dart';
 import 'package:app_core/ui/wallet/credit_receipt.dart';
 import 'package:app_core/ui/wallet/wallet_transfer.dart';
-import 'package:app_core/ui/wallet/wallet_transfer_2.dart';
 import 'package:app_core/ui/wallet/widget/credit_token_picker.dart';
 import 'package:app_core/ui/wallet/widget/kcredit_banner.dart';
 import 'package:app_core/ui/wallet/widget/krole_picker.dart';
@@ -83,7 +82,7 @@ class _WalletFeedState extends State<WalletFeed> {
   }
 
   bool get isTransferButtonEnabled =>
-      transferType == KTransferType.direct && widget.isDirectTransferEnabled;
+      transferType != KTransferType.direct || widget.isDirectTransferEnabled;
 
   @override
   void initState() {
@@ -199,10 +198,11 @@ class _WalletFeedState extends State<WalletFeed> {
 
   void onTransferClick() => Navigator.of(context)
       .push(MaterialPageRoute(
-          builder: (ctx) => WalletTransfer2(
+          builder: (ctx) => KUtil.getPaymentScreen(
                 sndRole: xfrRoleCtrl.value,
                 transferType: transferType,
                 tokenName: currentBalance?.tokenName ?? "",
+                rcvPUID: null,
               )))
       .whenComplete(loadAllData);
 
