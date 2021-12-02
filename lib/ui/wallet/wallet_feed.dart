@@ -351,7 +351,28 @@ class _WalletFeedState extends State<WalletFeed> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              balanceView,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Opacity(
+                    opacity: 1,
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.black26,
+                      size: 32,
+                    ),
+                  ),
+                  Expanded(child: balanceView),
+                  Opacity(
+                    opacity: 0,
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.black26,
+                      size: 32,
+                    ),
+                  ),
+                ],
+              ),
               Align(
                 alignment: Alignment.centerRight,
                 child: Container(
