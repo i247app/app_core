@@ -14,11 +14,11 @@ XFRTicket _$XFRTicketFromJson(Map<String, dynamic> json) => XFRTicket(
       rcvPUID: json['rcvPUID'] as String?,
       tokenName: json['tokenName'] as String?,
       amount: json['amount'] as String?,
+      memo: json['memo'] as String?,
     )
       ..byPUID = json['byPUID'] as String?
       ..rcvKUNM = json['rcvKUNM'] as String?
       ..rcvEmail = json['rcvEmail'] as String?
-      ..memo = json['memo'] as String?
       ..xfrID = json['xfrID'] as String?
       ..xfrType = json['xfrType'] as String?
       ..xfrDate = json['xfrDate'] as String?
