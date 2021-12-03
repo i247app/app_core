@@ -54,20 +54,23 @@ class KChatBubble extends StatelessWidget {
         ? BorderRadius.horizontal(left: Radius.circular(BORDER_RADIUS))
         : BorderRadius.horizontal(right: Radius.circular(BORDER_RADIUS));
     if (this.isFirstOfSeries) {
-      if (this.chat.isMe)
+      if (this.chat.isMe) {
         br =
             br.add(BorderRadius.only(topRight: Radius.circular(BORDER_RADIUS)));
-      else
+      } else {
         br = br.add(BorderRadius.only(topLeft: Radius.circular(BORDER_RADIUS)));
+      }
     }
     if (this.isLastOfSeries) {
-      if (this.chat.isMe)
+      if (this.chat.isMe) {
         br = br.add(
             BorderRadius.only(bottomRight: Radius.circular(BORDER_RADIUS)));
-      else
+      } else {
         br = br
             .add(BorderRadius.only(bottomLeft: Radius.circular(BORDER_RADIUS)));
+      }
     }
+
     return br;
   }
 
@@ -78,13 +81,11 @@ class KChatBubble extends StatelessWidget {
     this.onAvatarClick,
   });
 
-  void onImageClick(ctx) {
-    Navigator.of(ctx).push(
-      MaterialPageRoute(
-        builder: (c) =>
-            Scaffold(body: KImageViewer.network(this.chat.user?.avatarURL)),
-      ),
-    );
+  void onImageMessageClick(ctx, KChatMessage msg) {
+    if (msg.messageType == KChatMessage.CONTENT_TYPE_IMAGE) {
+      Navigator.of(ctx).push(MaterialPageRoute(
+          builder: (c) => Scaffold(body: KImageViewer.network(msg.message))));
+    }
   }
 
   Widget wrapWithChatBubble(Widget child, Color chatBGColor) => Container(
@@ -128,7 +129,7 @@ class KChatBubble extends StatelessWidget {
                     child: Icon(Icons.broken_image),
                   )
                 : InkWell(
-                    onTap: () => onImageClick(context),
+                    onTap: () => onImageMessageClick(context, chat),
                     child: FadeInImage(
                       placeholder: AssetImage(KAssets.IMG_TRANSPARENCY),
                       image: this.chat.imageData != null
