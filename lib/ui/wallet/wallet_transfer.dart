@@ -34,8 +34,9 @@ class WalletTransfer extends StatefulWidget {
 }
 
 class _WalletTransferState extends State<WalletTransfer> {
-  final TextEditingController userController = TextEditingController();
-  final TextEditingController amountController = TextEditingController();
+  final TextEditingController userCtrl = TextEditingController();
+  final TextEditingController amountCtrl = TextEditingController();
+  final TextEditingController memoCtrl = TextEditingController();
 
   String? balanceAmount;
   KUser? selectedUser;
@@ -44,8 +45,8 @@ class _WalletTransferState extends State<WalletTransfer> {
 
   bool get isButtonEnabled =>
       selectedUser != null &&
-      amountController.text.isNotEmpty &&
-      (double.tryParse(amountController.text) ?? 0) > 0;
+      amountCtrl.text.isNotEmpty &&
+      (double.tryParse(amountCtrl.text) ?? 0) > 0;
 
   @override
   void initState() {
@@ -53,14 +54,14 @@ class _WalletTransferState extends State<WalletTransfer> {
 
     loadBalance();
 
-    amountController.addListener(fieldListener);
+    amountCtrl.addListener(fieldListener);
 
     if (widget.rcvPUID != null) loadUserInfo(puid: widget.rcvPUID!);
   }
 
   @override
   void dispose() {
-    amountController.removeListener(fieldListener);
+    amountCtrl.removeListener(fieldListener);
     super.dispose();
   }
 
@@ -84,7 +85,7 @@ class _WalletTransferState extends State<WalletTransfer> {
 
   void attemptTransferCredit() {
     final rcvPUID = selectedUser?.puid ?? "";
-    final amount = amountController.text;
+    final amount = amountCtrl.text;
 
     if (rcvPUID.isNotEmpty && amount.isNotEmpty)
       transferCredit(
@@ -109,6 +110,7 @@ class _WalletTransferState extends State<WalletTransfer> {
         rcvPUID: rcvPUID,
         amount: amount,
         tokenName: tokenName,
+        memo: memoCtrl.text,
       );
       final Future<CreditTransferResponse> Function(XFRTicket) fn =
           widget.transferType == KTransferType.direct
@@ -180,7 +182,7 @@ class _WalletTransferState extends State<WalletTransfer> {
       KUser user = response.users!.first;
       setState(() {
         this.selectedUser = user;
-        this.userController.text = !(user.kunm ?? "").isEmpty
+        this.userCtrl.text = !(user.kunm ?? "").isEmpty
             ? (KUtil.chatDisplayName(
                     kunm: user.kunm,
                     fnm: user.firstName ?? "",
@@ -227,29 +229,8 @@ class _WalletTransferState extends State<WalletTransfer> {
             ],
           );
 
-    final balanceBanner = Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Opacity(opacity: 0, child: Text(widget.tokenName)),
-          Expanded(
-            child: KCreditBanner(
-              amount: balanceAmount ?? "",
-              tokenName: widget.tokenName,
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(bottom: 10),
-            child: Text(widget.tokenName),
-          ),
-        ],
-      ),
-    );
-
     final transferTo = _CreditInput(
-      controller: userController,
+      controller: userCtrl,
       label: "Transfer To",
       asset: KAssets.IMG_PROFILE,
       keyboardType: TextInputType.text,
@@ -257,9 +238,16 @@ class _WalletTransferState extends State<WalletTransfer> {
     );
 
     final transferAmount = _CreditInput(
-      controller: amountController,
+      controller: amountCtrl,
       label: "Transfer Amount",
+      style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
       keyboardType: TextInputType.numberWithOptions(decimal: true),
+    );
+
+    final transferMemo = _CreditInput(
+      controller: memoCtrl,
+      label: "Leave a Message (Optional)",
+      keyboardType: TextInputType.text,
     );
 
     final sendButton = ElevatedButton(
@@ -274,18 +262,19 @@ class _WalletTransferState extends State<WalletTransfer> {
           padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
           children: <Widget>[
             if (widget.sndRole != null) roleDisplay,
-            Container(
-              height: 100,
-              child: balanceBanner,
-            ),
-            Text(
-              "Balance",
-              style: Theme.of(context).textTheme.headline6,
-            ),
-            SizedBox(height: 40),
-            transferTo,
             SizedBox(height: 20),
             transferAmount,
+            SizedBox(height: 40),
+            Center(
+              child: Text(
+                "Balance: ${KUtil.prettyMoney(amount: balanceAmount, tokenName: widget.tokenName)}",
+                style: Theme.of(context).textTheme.bodyText1,
+              ),
+            ),
+            SizedBox(height: 20),
+            transferTo,
+            SizedBox(height: 20),
+            transferMemo,
             SizedBox(height: 20),
             isNetworking
                 ? Center(child: CircularProgressIndicator())
@@ -320,6 +309,7 @@ class _CreditInput extends StatelessWidget {
   final TextEditingController controller;
   final String label;
   final String? asset;
+  final TextStyle? style;
   final TextInputType keyboardType;
   final Function()? onClick;
 
@@ -327,6 +317,7 @@ class _CreditInput extends StatelessWidget {
     required this.controller,
     required this.label,
     this.asset,
+    this.style,
     this.onClick,
     this.keyboardType = TextInputType.text,
   });
@@ -360,7 +351,7 @@ class _CreditInput extends StatelessWidget {
       keyboardType: this.keyboardType,
       textInputAction: TextInputAction.done,
       onTap: onClick == null ? null : () => clickHandler(context),
-      // style: TextStyle(color: Theme.of(context).primaryColor),
+      style: style,
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(horizontal: 10),
         suffixIcon: icon,

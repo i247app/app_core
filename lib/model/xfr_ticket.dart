@@ -111,6 +111,7 @@ class XFRTicket {
     this.rcvPUID,
     this.tokenName,
     this.amount,
+    this.memo,
   });
 
   // JSON
