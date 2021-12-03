@@ -1,0 +1,166 @@
+import 'dart:math';
+
+import 'package:app_core/app_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+
+class KGameHighscoreDialog extends StatefulWidget {
+  final Function onClose;
+
+  const KGameHighscoreDialog({required this.onClose});
+
+  @override
+  _KGameHighscoreDialogState createState() => _KGameHighscoreDialogState();
+}
+
+class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
+  List<int> scores = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    final _scores = [
+      Random().nextInt(20000),
+      Random().nextInt(20000),
+      Random().nextInt(20000),
+      Random().nextInt(20000),
+      Random().nextInt(20000),
+      Random().nextInt(20000),
+      Random().nextInt(20000),
+      Random().nextInt(20000),
+      Random().nextInt(20000),
+      Random().nextInt(20000),
+    ];
+    _scores.sort();
+    this.setState(() {
+      scores = _scores.reversed.toList();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final body = Container(
+      width: MediaQuery.of(context).size.width * 0.85,
+      height: MediaQuery.of(context).size.height * 0.6,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.5),
+            blurRadius: 8,
+            offset: Offset(2, 6),
+          ),
+        ],
+      ),
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.topRight,
+            child: Transform.translate(
+              offset: Offset(20, -20),
+              child: InkWell(
+                onTap: () => widget.onClose(),
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 25),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "HIGH SCORES",
+                  textScaleFactor: 1.0,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: scores.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        padding: EdgeInsets.symmetric(vertical: 5),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              width: 0.5,
+                              color: Colors.black54.withAlpha(50),
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Text("${index < 9 ? '0' : ''}${index + 1}"),
+                            SizedBox(
+                              width: 15,
+                            ),
+                            Expanded(
+                              child: Text(
+                                KSessionData.userSession?.user?.kunm ?? "",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text('${scores[index]}')
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                InkWell(
+                  onTap: () => widget.onClose(),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.3,
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    child: Text(
+                      "CLOSE",
+                      textScaleFactor: 1.0,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+
+    return body;
+  }
+}
