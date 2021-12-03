@@ -68,7 +68,7 @@ class KNumberPad extends StatelessWidget {
       child: Container(
         height: _keyboardHeight(),
         width: _getShortestSide() > 600 ? 600 : _getShortestSide(),
-        color: Colors.white,
+        color: Colors.transparent,
         child: Column(
           children: [
             buildRowOne(),

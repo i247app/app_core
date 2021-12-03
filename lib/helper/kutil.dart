@@ -639,7 +639,7 @@ abstract class KUtil {
     required KTransferType transferType,
     required String tokenName,
   }) =>
-      KHostConfig.isReleaseMode||true
+      KHostConfig.isReleaseMode
           ? WalletTransfer(
               transferType: transferType,
               tokenName: tokenName,
