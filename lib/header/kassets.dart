@@ -53,6 +53,7 @@ abstract class KAssets {
   static const String IMG_EGG = "$IMG_BASE/heroegg_without_space.png";
   static const String IMG_QR_CODE = "$IMG_BASE/qr_code_small.png";
   static const String IMG_QR_SCAN = "$IMG_BASE/scan_qr.png";
+  static const String IMG_RANKING_BLUE = "$IMG_BASE/ranking_blue.png";
 
   // Sounds
   static const String SOUND_CORRECT = "correct.mp3";
