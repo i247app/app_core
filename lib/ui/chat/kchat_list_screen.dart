@@ -122,27 +122,27 @@ class _KChatListScreenState extends State<KChatListScreen> {
   Widget _buildSmallLayout(bool isTablet) {
     final newChatAction = IconButton(
       onPressed: onCreateChatClick,
-      icon: Icon(Icons.add_circle_rounded),
+      icon: Icon(
+        Icons.add_circle_rounded,
+        color: Theme.of(context).colorScheme.primary,
+      ),
     );
 
     final topRow = Container(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       child: Row(
         children: [
           if (!KEmbedManager.of(context).isEmbed) BackButton(),
           Container(
             height: 40,
-            width: 40,
             child: KUserAvatar.me(),
           ),
           SizedBox(width: 10),
           Expanded(
             child: Text(
               "Chats",
-              style: Theme.of(context)
-                  .textTheme
-                  .subtitle1!
-                  .copyWith(fontWeight: FontWeight.w600),
+              style:
+                  Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 20),
               textAlign: TextAlign.start,
             ),
           ),

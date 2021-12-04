@@ -36,6 +36,7 @@ class KChatroom extends StatefulWidget {
 
 class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
   final messageCtrl = TextEditingController();
+  final scrollCtrl = ScrollController();
 
   late StreamSubscription pushDataStreamSub;
 
@@ -52,14 +53,24 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
       .firstWhereOrNull((m) => m.puid != KSessionData.me!.puid)
       ?.toUser();
 
+  bool get showInputBoxDivider {
+    try {
+      return !(scrollCtrl.position.atEdge && scrollCtrl.position.pixels == 0);
+    } catch (_) {
+      return false;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     KLocalNotifHelper.blockBanner(KPushData.APP_CHAT_NOTIFY);
 
-    this.pushDataStreamSub = KPushDataHelper.stream.listen(pushDataListener);
+    pushDataStreamSub = KPushDataHelper.stream.listen(pushDataListener);
 
-    widget.controller.addListener(controllerListener);
+    messageCtrl.addListener(basicSetStateListener);
+    widget.controller.addListener(basicSetStateListener);
+
     WidgetsBinding.instance?.addObserver(this);
 
     widget.controller.loadChat();
@@ -67,8 +78,9 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    messageCtrl.removeListener(basicSetStateListener);
+    widget.controller.removeListener(basicSetStateListener);
     KLocalNotifHelper.unblockBanner(KPushData.APP_CHAT_NOTIFY);
-    widget.controller.removeListener(controllerListener);
     this.pushDataStreamSub.cancel();
     WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
@@ -79,7 +91,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
     if (state == AppLifecycleState.resumed) widget.controller.loadChat();
   }
 
-  void controllerListener() => setState(() {});
+  void basicSetStateListener() => setState(() {});
 
   void pushDataListener(KPushData pushData) {
     switch (pushData.app) {
@@ -177,8 +189,10 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
     );
 
     final chatBody = SingleChildScrollView(
+      controller: scrollCtrl,
       reverse: true,
-      physics: ScrollPhysics(),
+      physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+      // physics: ScrollPhysics(),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -191,29 +205,45 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
                 style: theme.textTheme.bodyText1,
               ),
             ),
-          SizedBox(height: 4),
         ],
       ),
     );
 
     final addCameraButton = IconButton(
       onPressed: onAddCameraImageClick,
-      icon: Icon(Icons.camera_alt),
+      icon: Icon(
+        Icons.camera_alt,
+        color: Theme.of(context).colorScheme.primary,
+      ),
     );
 
     final addImageButton = IconButton(
       onPressed: onAddGalleryImageClick,
-      icon: Icon(Icons.image_outlined),
+      icon: Icon(
+        Icons.image_outlined,
+        color: Theme.of(context).colorScheme.primary,
+      ),
     );
 
     final sendMessageButton = IconButton(
       onPressed: onSendTextClick,
-      icon: Icon(Icons.send),
+      icon: Icon(
+        Icons.send,
+        color: Theme.of(context).colorScheme.primary,
+      ),
     );
 
-    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final sendLikeButton = IconButton(
+      onPressed: () => widget.controller.sendText("👍"),
+      icon: Icon(
+        Icons.thumb_up,
+        color: Theme.of(context).colorScheme.primary,
+      ),
+    );
 
-    final messageInputBox = SafeArea(
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    final inputBox = SafeArea(
       top: false,
       bottom: true,
       child: Row(
@@ -235,6 +265,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
                   fillColor: isDarkMode ? Colors.white30 : Colors.black12,
                   hintText: "Aa",
                   filled: true,
+                  isDense: true,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20.0),
                     borderSide: BorderSide.none,
@@ -253,7 +284,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
             ),
           ),
           SizedBox(width: 2),
-          sendMessageButton,
+          messageCtrl.text.isEmpty ? sendLikeButton : sendMessageButton,
         ],
       ),
     );
@@ -263,8 +294,12 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
         Expanded(child: chatBody),
         if (!widget.isReadOnly) ...[
           Container(
-            padding: EdgeInsets.all(2),
-            child: messageInputBox,
+            height: 1,
+            color: showInputBoxDivider ? Colors.black12 : Colors.transparent,
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 2),
+            child: inputBox,
           ),
         ],
       ],
