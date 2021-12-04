@@ -59,27 +59,32 @@ class _KRolePickerState extends State<KRolePicker> {
 
   @override
   Widget build(BuildContext context) {
-    final content = roles == null
-        ? Container(
-            padding: EdgeInsets.all(6),
-            child: CircularProgressIndicator(),
-          )
-        : () {
-            final role = selectedRole ?? buildSelfPlaceholderRole();
-            return KUserAvatar(
-              initial: role.bnm,
-              imageURL: role.avatarURL,
-            );
-          }.call();
-
-    final body = IconButton(
-      onPressed: onProxyClick,
-      icon: Material(
-        elevation: 3,
-        borderRadius: BorderRadius.circular(20),
-        child: content,
-      ),
+    final loadingView = Container(
+      // padding: EdgeInsets.all(6),
+      // child: AspectRatio(
+      //   aspectRatio: 1,
+      //   child: CircularProgressIndicator(),
+      // ),
     );
+
+    final content = () {
+      final role = selectedRole ?? buildSelfPlaceholderRole();
+      return KUserAvatar(
+        initial: role.bnm,
+        imageURL: role.avatarURL,
+      );
+    }.call();
+
+    final body = roles == null
+        ? loadingView
+        : IconButton(
+            onPressed: onProxyClick,
+            icon: Material(
+              elevation: 3,
+              borderRadius: BorderRadius.circular(20),
+              child: content,
+            ),
+          );
 
     return body;
   }
