@@ -10,5 +10,3 @@ export 'style/kpalette.dart';
 export 'value/kstyles.dart';
 export 'header/kassets.dart';
 export 'header/kextensions.dart';
-
-// class AppCore {}
