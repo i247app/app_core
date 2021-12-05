@@ -14,19 +14,13 @@ extension KList<T> on List<T> {
   }
 
   /// Remove duplicates
-  Iterable<T> unique(dynamic Function(T) extractor) {
-    // rawTutorGigs
-    //     ?.map((tg) => tg.gigID) // get all current IDs
-    //     .map((id) => rawTutorGigs
-    //     ?.firstWhereOrNull((rtg) => rtg.gigID == id)) // get 1 gig per ID
-    //     .where((tg) => tg?.gigStatus != null) // filter out null gigs
-    //     .cast<TutorGig>()
-    //     .toList()
-    return map((e) => extractor(e))
-        .map((e1) => firstWhereOrNull((e2) => e1 == extractor(e2)))
-        .where((e) => e != null)
-        .cast<T>();
-  }
+  Iterable<T> unique(dynamic Function(T) extractor) => map(
+          (e) => extractor(e)) // extract IDs
+      .toSet() // remove duplicates
+      .map((e1) =>
+          firstWhereOrNull((e2) => e1 == extractor(e2))) // pick 1 matching item
+      .where((e) => e != null) // remove nulls
+      .cast<T>();
 }
 
 extension KWidget<T> on State<StatefulWidget> {
