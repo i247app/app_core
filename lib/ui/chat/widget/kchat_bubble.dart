@@ -24,8 +24,8 @@ class KChatBubble extends StatelessWidget {
     if (this.previousChat == null ||
         this.previousChat?.messageDate == null ||
         this.chat.messageDate == null) return true;
-    bool isDifferentUser = this.previousChat?.puid != this.chat.puid;
-    bool isPastTimeCutoff = this
+    final isDifferentUser = this.previousChat?.puid != this.chat.puid;
+    final isPastTimeCutoff = this
             .chat
             .messageDate!
             .difference(this.previousChat!.messageDate!)
@@ -47,6 +47,10 @@ class KChatBubble extends StatelessWidget {
       this.previousChat?.messageDate == null ||
       this.chat.messageDate!.difference(this.previousChat!.messageDate!).abs() >
           LONG_TIME_CUTOFF;
+
+  bool get isAlignLeft => !chat.isMe;
+
+  bool get isAlignRight => chat.isMe;
 
   /// Kinda complex rule-set for determining chat bubble border radius
   BorderRadiusGeometry get chatBorderRadius {
@@ -91,8 +95,8 @@ class KChatBubble extends StatelessWidget {
   Widget wrapWithChatBubble(Widget child, Color chatBGColor) => Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          borderRadius: this.chatBorderRadius,
-          color: this.chat.isLocal ? Colors.blue[50] : chatBGColor,
+          borderRadius: chatBorderRadius,
+          color: chat.isLocal ? Colors.blue[50] : chatBGColor,
         ),
         child: child,
       );
@@ -107,11 +111,11 @@ class KChatBubble extends StatelessWidget {
         this.chat.isMe ? Colors.white : theme.primaryColor;
 
     final content;
-    switch (this.chat.messageType ?? "") {
+    switch (chat.messageType ?? "") {
       case KChatMessage.CONTENT_TYPE_TEXT:
         content = wrapWithChatBubble(
           Text(
-            this.chat.message ?? "",
+            chat.message ?? "",
             style:
                 theme.textTheme.subtitle1!.copyWith(color: chatForegroundColor),
           ),
@@ -191,7 +195,7 @@ class KChatBubble extends StatelessWidget {
     }
 
     final userIcon = GestureDetector(
-      onTap: () => this.onAvatarClick?.call(this.chat.user!),
+      onTap: () => onAvatarClick?.call(this.chat.user!),
       child: ClipOval(
         child: Container(
           width: GUTTER_SIZE,
@@ -204,17 +208,17 @@ class KChatBubble extends StatelessWidget {
     final fbSideGutter = Container(
       width: GUTTER_SIZE,
       height: GUTTER_SIZE,
-      child: this.isLastOfSeries && !this.chat.isMe ? userIcon : Container(),
+      child: isLastOfSeries && !chat.isMe ? userIcon : Container(),
     );
 
     final fbStyleBody = Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        if (!this.chat.isMe) ...[
+        if (isAlignLeft) ...[
           fbSideGutter,
           SizedBox(width: 10),
         ],
-        if (this.chat.isMe) Spacer(flex: 3),
+        if (isAlignRight) Spacer(flex: 3),
         Expanded(
           flex: 7,
           child: Align(
@@ -223,7 +227,7 @@ class KChatBubble extends StatelessWidget {
             child: content,
           ),
         ),
-        if (!this.chat.isMe) Spacer(flex: 3),
+        if (isAlignLeft) Spacer(flex: 3),
       ],
     );
 

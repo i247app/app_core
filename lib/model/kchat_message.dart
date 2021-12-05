@@ -57,7 +57,7 @@ class KChatMessage {
   bool get isLocal => this.localID != null && this.messageID == null;
 
   @JsonKey(ignore: true)
-  bool get isMe => this.puid == KSessionData.me?.puid;
+  bool get isMe => puid == KSessionData.me?.puid;
 
   static String generateLocalID() => KUtil.buildRandomString(8);
 
