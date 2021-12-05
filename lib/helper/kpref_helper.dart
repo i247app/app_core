@@ -7,8 +7,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 abstract class KPrefHelper {
   static const String TAG = 'KPrefHelper';
 
-  static bool get isDebugMode => !KHostConfig.isReleaseMode;
-
   static const String KTOKEN = 'session_token';
   static const String PUSH_TOKEN = 'push_token';
   static const String LAST_LOGIN = 'last_login';
@@ -21,35 +19,39 @@ abstract class KPrefHelper {
   static const String PENDING_REM_ACTION = 'pending_rem_action';
   static const String CACHED_USER = 'cached_user';
 
-  static _PrefAdapter? _prefAdapter;
+  static late final _PrefAdapter _instance = _PrefAdapter();
 
-  static _PrefAdapter get _instance => _prefAdapter ??= _PrefAdapter();
+  static bool get isDebugMode => !KHostConfig.isReleaseMode;
 
-  static Future<String> put(String key, dynamic value) async {
-    String original = await _instance.get(key);
+  static Future<String?> put(String key, dynamic value) async {
+    final original = await _instance.get(key);
     await _instance.put(key, jsonEncode(value));
     if (isDebugMode) print('$TAG PUT $key = $value');
-
     return original;
   }
 
-  static Future<dynamic> get(String key, {defaultResult}) async {
-    dynamic result = (await _instance.get(key)) ?? defaultResult;
-    if (isDebugMode) print('$TAG GET $key -> ${result.runtimeType}:$result');
+  static Future<T?> get<T>(String key) async {
+    final String? raw = await _instance.get(key);
+    if (isDebugMode) print('$TAG GET $key -> ${raw.runtimeType}:$raw');
+    dynamic result;
     try {
-      result = jsonDecode(result);
-    } catch (e) {}
-    return result;
+      result = raw == null ? null : jsonDecode(raw);
+    } catch (_) {}
+    return result as T?;
   }
 
-  static Future<String> remove(String key) async {
-    String original = await _instance.get(key);
+  static Future<List<T>?> getList<T>(String key) async =>
+      get<List>(key).then((r) => r?.cast<T>());
+
+  static Future<T?> remove<T>(String key) async {
+    final String? rawOriginal = await _instance.get(key);
     await _instance.remove(key);
     if (isDebugMode) print('$TAG REMOVE $key');
+    dynamic result;
     try {
-      original = jsonDecode(original);
-    } catch (e) {}
-    return original;
+      result = rawOriginal == null ? null : jsonDecode(rawOriginal);
+    } catch (_) {}
+    return result as T?;
   }
 }
 
@@ -57,18 +59,18 @@ abstract class KPrefHelper {
 class _PrefAdapter {
   static const String SS_PREFIX = "_ss_";
 
-  final plugin = new FlutterSecureStorage();
+  late final _plugin = FlutterSecureStorage();
 
-  Future put(String key, dynamic value) async {
-    await plugin.write(key: "$SS_PREFIX/$key", value: value);
+  Future<void> put(String key, String? value) async {
+    await _plugin.write(key: "$SS_PREFIX/$key", value: value);
   }
 
-  Future<dynamic> get(String key) async {
-    String? result = await plugin.read(key: "$SS_PREFIX/$key");
-    return result ?? "";
+  Future<String?> get(String key) async {
+    final String? result = await _plugin.read(key: "$SS_PREFIX/$key");
+    return result;
   }
 
-  Future remove(String key) async {
-    await plugin.delete(key: "$SS_PREFIX/$key");
+  Future<void> remove(String key) async {
+    await _plugin.delete(key: "$SS_PREFIX/$key");
   }
 }
