@@ -28,7 +28,7 @@ abstract class KDeviceIDHelper {
   }
 
   static Future<String> _getFallbackID() async {
-    String? id = await KPrefHelper.get(PREFS_KEY);
+    String? id = await KPrefHelper.get<String>(PREFS_KEY);
     if (id == null) {
       id = base64Encode(
           List<int>.generate(32, (i) => KUtil.getRandom().nextInt(256)));

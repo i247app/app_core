@@ -23,11 +23,9 @@ abstract class KPrefHelper {
 
   static bool get isDebugMode => !KHostConfig.isReleaseMode;
 
-  static Future<String?> put(String key, dynamic value) async {
-    final original = await _instance.get(key);
+  static Future<void> put(String key, dynamic value) async {
     await _instance.put(key, jsonEncode(value));
     if (isDebugMode) print('$TAG PUT $key = $value');
-    return original;
   }
 
   static Future<T?> get<T>(String key) async {

@@ -31,7 +31,8 @@ class KCallKitHelper {
 
   Future<void> startListenSocket(String uuid, String callID) async {
     final deviceID = await KUtil.getDeviceID();
-    final userJson = await KPrefHelper.get(KPrefHelper.CACHED_USER);
+    final userJson =
+        await KPrefHelper.get<Map<String, dynamic>>(KPrefHelper.CACHED_USER);
     if (userJson == null) return;
 
     final KUser user = KUser.fromJson(userJson);
@@ -190,10 +191,10 @@ class KCallKitHelper {
   }
 
   Future<KVoipCallInfo?> consumeCallInfo() async {
-    final json = await KPrefHelper.get(VOIP_PREF_KEY);
+    final json = await KPrefHelper.get<Map<String, dynamic>>(VOIP_PREF_KEY);
     var result;
     try {
-      result = KVoipCallInfo.fromJson(json);
+      result = KVoipCallInfo.fromJson(json!);
     } catch (e) {
       print(e.toString());
     } finally {
