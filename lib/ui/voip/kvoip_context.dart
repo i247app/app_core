@@ -5,4 +5,12 @@ class KVoipContext {
   Map<String, RTCVideoRenderer> remoteRenderers = {};
   RTCVideoRenderer? localRenderer;
   KVOIPCommManager? commManager;
+
+  void dispose() {
+    if (commManager != null && !commManager!.isDisposed) {
+      commManager?.close();
+      localRenderer?.dispose();
+      remoteRenderers.forEach((_, rr) => rr.dispose());
+    }
+  }
 }
