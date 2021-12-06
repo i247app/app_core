@@ -41,8 +41,11 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
 
   int? overlayID;
 
+  int totalLevel = 4;
   int currentLevel = 0;
   bool isShowEndLevel = false;
+
+  List<int> levelHighscores = [];
 
   void showHeroGameEndOverlay(Function() onFinish) async {
     final heroGameEnd = KHeroGameEnd(
@@ -68,7 +71,11 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
       children: [
         Align(
           alignment: Alignment.center,
-          child: KGameHighscoreDialog(onClose: onClose),
+          child: KGameHighscoreDialog(
+            onClose: onClose,
+            scores: levelHighscores,
+            currentLevel: currentLevel,
+          ),
         ),
       ],
     );
@@ -129,9 +136,16 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                   Expanded(
                     child: KTapGameScreen(
                       hero: widget.hero,
+                      totalLevel: totalLevel,
                       isShowEndLevel: isShowEndLevel,
-                      onFinishLevel: (level) {
-                        if (level <= 3) {
+                      onFinishLevel: (level, score, isHaveWrongAnswer) {
+                        if (level < totalLevel) {
+                          print(isHaveWrongAnswer);
+                          if (!isHaveWrongAnswer) {
+                            this.setState(() {
+                              this.levelHighscores.add(score);
+                            });
+                          }
                           this.showHeroGameLevelOverlay(
                             () {
                               if (this.overlayID != null) {
@@ -163,7 +177,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                       },
                       onChangeLevel: (level) => this.setState(
                         () {
-                          this.currentLevel = Math.Random().nextInt(4);
+                          this.currentLevel = level;
                         },
                       ),
                     ),
@@ -188,11 +202,13 @@ class KTapGameScreen extends StatefulWidget {
   final Function(int)? onChangeLevel;
   final Function? onFinishLevel;
   final bool isShowEndLevel;
+  final int? totalLevel;
 
   const KTapGameScreen({
     this.hero,
     this.onChangeLevel,
     this.onFinishLevel,
+    this.totalLevel,
     required this.isShowEndLevel,
   });
 
@@ -238,123 +254,30 @@ class _KTapGameScreenState extends State<KTapGameScreen>
   bool isWrongAnswer = false;
   int rightAnswerCount = 0;
   int wrongAnswerCount = 0;
+  int totalLevel = 1;
   int currentLevel = 0;
   bool canAdvance = false;
-  List<double> levelHardness = [0.7, 0.8, 0.9, 1.0];
-  List<int> levelPlayTimes = [0, 0, 0, 0];
-  List<String> levelIconAssets = [
+  double baseLevelHardness = 0.7;
+  List<double> levelHardness = [];
+  List<int> levelPlayTimes = [];
+  List<String> baseLevelIconAssets = [
     KAssets.BULLET_BALL_GREEN,
     KAssets.BULLET_BALL_BLUE,
     KAssets.BULLET_BALL_ORANGE,
     KAssets.BULLET_BALL_RED,
   ];
+  List<String> levelIconAssets = [];
 
   int points = 0;
   bool resetPos = false;
   bool isShowPlusPoint = false;
   DateTime? lastGetPointTime;
 
-  List<List<String>> levelQuestions = [
-    [
-      "1 + 1",
-      "3 + 2",
-      "4 - 1",
-      "4 + 5",
-      "2 x 1",
-      "2 x 3",
-      "1 + 2 - 1",
-      "4 + 8 - 5",
-      "1 x 2 + 3",
-      "1 + 2 x 3",
-    ],
-    [
-      "1 + 1",
-      "3 + 2",
-      "4 - 1",
-      "4 + 5",
-      "2 x 1",
-      "2 x 3",
-      "1 + 2 - 1",
-      "4 + 8 - 5",
-      "1 x 2 + 3",
-      "1 + 2 x 3",
-    ],
-    [
-      "1 + 1",
-      "3 + 2",
-      "4 - 1",
-      "4 + 5",
-      "2 x 1",
-      "2 x 3",
-      "1 + 2 - 1",
-      "4 + 8 - 5",
-      "1 x 2 + 3",
-      "1 + 2 x 3",
-    ],
-    [
-      "1 + 1",
-      "3 + 2",
-      "4 - 1",
-      "4 + 5",
-      "2 x 1",
-      "2 x 3",
-      "1 + 2 - 1",
-      "4 + 8 - 5",
-      "1 x 2 + 3",
-      "1 + 2 x 3",
-    ],
-  ];
-  List<List<int>> levelRightAnswers = [
-    [
-      2,
-      5,
-      3,
-      9,
-      2,
-      6,
-      2,
-      7,
-      5,
-      7,
-    ],
-    [
-      2,
-      5,
-      3,
-      9,
-      2,
-      6,
-      2,
-      7,
-      5,
-      7,
-    ],
-    [
-      2,
-      5,
-      3,
-      9,
-      2,
-      6,
-      2,
-      7,
-      5,
-      7,
-    ],
-    [
-      2,
-      5,
-      3,
-      9,
-      2,
-      6,
-      2,
-      7,
-      5,
-      7,
-    ],
-  ];
+  List<List<String>> levelQuestions = [];
+  List<List<int>> levelRightAnswers = [];
+
   List<String> get questions => levelQuestions[currentLevel];
+
   List<int> get rightAnswers => levelRightAnswers[currentLevel];
   int currentQuestionIndex = 0;
   int? spinningHeroIndex;
@@ -371,8 +294,8 @@ class _KTapGameScreenState extends State<KTapGameScreen>
       : (rand.nextInt(4) + rightAnswers[currentQuestionIndex] - 3);
 
   bool get canRestartGame =>
-      currentLevel + 1 < levelHardness.length ||
-      (currentLevel < levelHardness.length &&
+      currentLevel + 1 < totalLevel ||
+      (currentLevel < totalLevel &&
           (rightAnswerCount / questions.length) < levelHardness[currentLevel]);
 
   List<int> barrierValues = [];
@@ -385,6 +308,48 @@ class _KTapGameScreenState extends State<KTapGameScreen>
   @override
   void initState() {
     super.initState();
+
+    this.totalLevel = widget.totalLevel ?? 1;
+    this.levelHardness = List.generate(
+      this.totalLevel,
+      (index) => baseLevelHardness + (index * 0.1),
+    );
+    this.levelPlayTimes = List.filled(this.totalLevel, 0);
+    this.levelIconAssets = List.generate(
+      this.totalLevel,
+      (index) => baseLevelIconAssets[
+          Math.Random().nextInt(baseLevelIconAssets.length)],
+    );
+    this.levelQuestions = List.filled(
+      this.totalLevel,
+      [
+        "1 + 1",
+        "3 + 2",
+        "4 - 1",
+        "4 + 5",
+        "2 x 1",
+        "2 x 3",
+        "1 + 2 - 1",
+        "4 + 8 - 5",
+        "1 x 2 + 3",
+        "1 + 2 x 3",
+      ],
+    );
+    this.levelRightAnswers = List.filled(
+      this.totalLevel,
+      [
+        2,
+        5,
+        3,
+        9,
+        2,
+        6,
+        2,
+        7,
+        5,
+        7,
+      ],
+    );
 
     loadAudioAsset();
 
@@ -460,7 +425,7 @@ class _KTapGameScreenState extends State<KTapGameScreen>
 
     _timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
       if (isStart && mounted && !isPause) {
-        if (currentLevel < 4) {
+        if (currentLevel < totalLevel) {
           this.setState(() {
             this.levelPlayTimes[currentLevel] += 1;
           });
@@ -748,10 +713,10 @@ class _KTapGameScreenState extends State<KTapGameScreen>
             if (rightAnswerCount / questions.length >=
                 levelHardness[currentLevel]) {
               eggReceive = eggReceive + 1;
-              if (currentLevel + 1 < levelHardness.length) {
+              if (currentLevel + 1 < totalLevel) {
                 canAdvance = true;
                 if (widget.onFinishLevel != null) {
-                  widget.onFinishLevel!(currentLevel + 1);
+                  widget.onFinishLevel!(currentLevel + 1, levelPlayTimes[currentLevel], wrongAnswerCount > 0);
                 }
               }
             }
@@ -808,7 +773,7 @@ class _KTapGameScreenState extends State<KTapGameScreen>
         if (isStart || result != null)
           Align(
             alignment: Alignment(-1, -1),
-            child: currentLevel < 4
+            child: currentLevel < totalLevel
                 ? Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                     child: Container(
@@ -1135,8 +1100,8 @@ class _KTapGameScreenState extends State<KTapGameScreen>
                       child: Container(
                         width: 50,
                         height: 50,
-                        padding:
-                            EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                        padding: EdgeInsets.only(
+                            top: 5, bottom: 5, left: 5, right: 5),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(40),
