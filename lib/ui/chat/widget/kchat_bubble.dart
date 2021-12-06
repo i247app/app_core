@@ -47,7 +47,10 @@ class KChatBubble extends StatelessWidget {
           LONG_TIME_CUTOFF;
 
   bool get amIInThisChat =>
-      (members ?? []).map((m) => m.puid).contains(KSessionData.me ?? "?");
+      members == null ||
+      (members ?? [])
+          .map<String?>((m) => m.puid)
+          .contains(KSessionData.me?.puid ?? "?");
 
   bool get isAlignLeft {
     final insider = !msg.isMe;
