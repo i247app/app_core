@@ -15,50 +15,77 @@ class KChatBubble extends StatelessWidget {
   static const double GUTTER_SIZE = 32;
   static const double BORDER_RADIUS = 16;
 
-  final KChatMessage chat;
-  final KChatMessage? previousChat;
-  final KChatMessage? nextChat;
+  final List<KChatMember>? members;
+  final KChatMessage msg;
+  final KChatMessage? previousMsg;
+  final KChatMessage? nextMsg;
   final Function(KUser)? onAvatarClick;
 
   bool get isFirstOfSeries {
-    if (this.previousChat == null ||
-        this.previousChat?.messageDate == null ||
-        this.chat.messageDate == null) return true;
-    final isDifferentUser = this.previousChat?.puid != this.chat.puid;
-    final isPastTimeCutoff = this
-            .chat
-            .messageDate!
-            .difference(this.previousChat!.messageDate!)
-            .abs() >
-        SHORT_TIME_CUTOFF;
+    if (this.previousMsg == null ||
+        this.previousMsg?.messageDate == null ||
+        this.msg.messageDate == null) return true;
+    final isDifferentUser = this.previousMsg?.puid != this.msg.puid;
+    final isPastTimeCutoff =
+        this.msg.messageDate!.difference(this.previousMsg!.messageDate!).abs() >
+            SHORT_TIME_CUTOFF;
     return isDifferentUser || isPastTimeCutoff;
   }
 
   bool get isLastOfSeries =>
-      this.nextChat == null ||
-      this.nextChat?.puid != this.chat.puid ||
-      this.chat.messageDate == null ||
-      this.chat.messageDate!.difference(this.nextChat!.messageDate!).abs() >
+      this.nextMsg == null ||
+      this.nextMsg?.puid != this.msg.puid ||
+      this.msg.messageDate == null ||
+      this.msg.messageDate!.difference(this.nextMsg!.messageDate!).abs() >
           SHORT_TIME_CUTOFF;
 
   bool get isShowTimestamp =>
-      this.previousChat == null ||
-      this.chat.messageDate == null ||
-      this.previousChat?.messageDate == null ||
-      this.chat.messageDate!.difference(this.previousChat!.messageDate!).abs() >
+      this.previousMsg == null ||
+      this.msg.messageDate == null ||
+      this.previousMsg?.messageDate == null ||
+      this.msg.messageDate!.difference(this.previousMsg!.messageDate!).abs() >
           LONG_TIME_CUTOFF;
 
-  bool get isAlignLeft => !chat.isMe;
+  bool get amIInThisChat =>
+      (members ?? []).map((m) => m.puid).contains(KSessionData.me ?? "?");
 
-  bool get isAlignRight => chat.isMe;
+  bool get isAlignLeft {
+    final insider = !msg.isMe;
+    if (amIInThisChat) {
+      return insider;
+    }
+    bool? outsider;
+    try {
+      // Alternate right-left scheme when viewing other ppls' chat
+      outsider = msg.puid !=
+          (members?..sort((a, b) => a.puid!.compareTo(b.puid!)))![1].puid;
+    } catch (_) {}
+    return outsider == null ? insider : outsider;
+  }
+
+  bool get isAlignRight {
+    final insider = msg.isMe;
+    if (amIInThisChat) {
+      return insider;
+    }
+    bool? outsider;
+    try {
+      // Alternate right-left scheme when viewing other ppls' chat
+      outsider = msg.puid ==
+          (members?..sort((a, b) => a.puid!.compareTo(b.puid!)))![1].puid;
+    } catch (_) {}
+    return outsider == null ? insider : outsider;
+  }
+
+  // bool get isAlignRight => (amIInThisChat && msg.isMe);
 
   /// Kinda complex rule-set for determining chat bubble border radius
   BorderRadiusGeometry get chatBorderRadius {
-    BorderRadiusGeometry br = this.chat.isMe
+    BorderRadiusGeometry br = this.msg.isMe
         ? BorderRadius.horizontal(left: Radius.circular(BORDER_RADIUS))
         : BorderRadius.horizontal(right: Radius.circular(BORDER_RADIUS));
     if (this.isFirstOfSeries) {
-      if (this.chat.isMe) {
+      if (this.msg.isMe) {
         br =
             br.add(BorderRadius.only(topRight: Radius.circular(BORDER_RADIUS)));
       } else {
@@ -66,7 +93,7 @@ class KChatBubble extends StatelessWidget {
       }
     }
     if (this.isLastOfSeries) {
-      if (this.chat.isMe) {
+      if (this.msg.isMe) {
         br = br.add(
             BorderRadius.only(bottomRight: Radius.circular(BORDER_RADIUS)));
       } else {
@@ -79,9 +106,10 @@ class KChatBubble extends StatelessWidget {
   }
 
   const KChatBubble(
-    this.chat, {
-    this.previousChat,
-    this.nextChat,
+    this.msg, {
+    this.members,
+    this.previousMsg,
+    this.nextMsg,
     this.onAvatarClick,
   });
 
@@ -96,7 +124,7 @@ class KChatBubble extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
           borderRadius: chatBorderRadius,
-          color: chat.isLocal ? Colors.blue[50] : chatBGColor,
+          color: msg.isLocal ? Colors.blue[50] : chatBGColor,
         ),
         child: child,
       );
@@ -104,18 +132,18 @@ class KChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final chatBGColor = this.chat.isMe
+    final chatBGColor = this.msg.isMe
         ? theme.colorScheme.primary
         : theme.primaryColor.withOpacity(0.05);
     final chatForegroundColor =
-        this.chat.isMe ? Colors.white : theme.primaryColor;
+        this.msg.isMe ? Colors.white : theme.primaryColor;
 
     final content;
-    switch (chat.messageType ?? "") {
+    switch (msg.messageType ?? "") {
       case KChatMessage.CONTENT_TYPE_TEXT:
         content = wrapWithChatBubble(
           Text(
-            chat.message ?? "",
+            msg.message ?? "",
             style:
                 theme.textTheme.subtitle1!.copyWith(color: chatForegroundColor),
           ),
@@ -127,19 +155,19 @@ class KChatBubble extends StatelessWidget {
           borderRadius: BorderRadius.circular(BORDER_RADIUS),
           child: Container(
             width: MediaQuery.of(context).size.height / 2,
-            child: this.chat.message == null && this.chat.imageData == null
+            child: this.msg.message == null && this.msg.imageData == null
                 ? FittedBox(
                     fit: BoxFit.fitWidth,
                     child: Icon(Icons.broken_image),
                   )
                 : InkWell(
-                    onTap: () => onImageMessageClick(context, chat),
+                    onTap: () => onImageMessageClick(context, msg),
                     child: FadeInImage(
                       placeholder: AssetImage(KAssets.IMG_TRANSPARENCY),
-                      image: this.chat.imageData != null
-                          ? MemoryImage(base64Decode(this.chat.imageData!))
+                      image: this.msg.imageData != null
+                          ? MemoryImage(base64Decode(this.msg.imageData!))
                               as ImageProvider<Object>
-                          : NetworkImage(this.chat.message!),
+                          : NetworkImage(this.msg.message!),
                       fit: BoxFit.contain,
                       fadeInDuration: Duration(milliseconds: 100),
                     ),
@@ -160,7 +188,7 @@ class KChatBubble extends StatelessWidget {
                   SizedBox(width: 10),
                   Flexible(
                     child: Text(
-                      "Video call from ${this.chat.user?.firstName ?? "user"}",
+                      "Video call from ${this.msg.user?.firstName ?? "user"}",
                       style: theme.textTheme.subtitle1!
                           .copyWith(color: chatForegroundColor),
                     ),
@@ -169,7 +197,7 @@ class KChatBubble extends StatelessWidget {
               ),
               SizedBox(height: 4),
               Text(
-                "${KUtil.prettyDate(this.chat.messageDate, showTime: true)}",
+                "${KUtil.prettyDate(this.msg.messageDate, showTime: true)}",
                 style: theme.textTheme.caption!
                     .copyWith(color: chatForegroundColor),
               ),
@@ -195,12 +223,12 @@ class KChatBubble extends StatelessWidget {
     }
 
     final userIcon = GestureDetector(
-      onTap: () => onAvatarClick?.call(this.chat.user!),
+      onTap: () => onAvatarClick?.call(this.msg.user!),
       child: ClipOval(
         child: Container(
           width: GUTTER_SIZE,
           height: GUTTER_SIZE,
-          child: KUserAvatar.fromUser(this.chat.user),
+          child: KUserAvatar.fromUser(this.msg.user),
         ),
       ),
     );
@@ -208,7 +236,9 @@ class KChatBubble extends StatelessWidget {
     final fbSideGutter = Container(
       width: GUTTER_SIZE,
       height: GUTTER_SIZE,
-      child: isLastOfSeries && !chat.isMe ? userIcon : Container(),
+      child: isLastOfSeries && (!amIInThisChat || !msg.isMe)
+          ? userIcon
+          : Container(),
     );
 
     final fbStyleBody = Row(
@@ -223,11 +253,15 @@ class KChatBubble extends StatelessWidget {
           flex: 7,
           child: Align(
             alignment:
-                this.chat.isMe ? Alignment.centerRight : Alignment.centerLeft,
+                isAlignRight ? Alignment.centerRight : Alignment.centerLeft,
             child: content,
           ),
         ),
         if (isAlignLeft) Spacer(flex: 3),
+        if (isAlignRight && !amIInThisChat) ...[
+          SizedBox(width: 10),
+          fbSideGutter,
+        ],
       ],
     );
 
@@ -238,7 +272,7 @@ class KChatBubble extends StatelessWidget {
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Text(
-                    KUtil.timeAgo(this.chat.messageDate),
+                    KUtil.timeAgo(this.msg.messageDate),
                     style: theme.textTheme.bodyText2,
                   ),
                 ),

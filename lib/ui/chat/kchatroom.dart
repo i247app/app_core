@@ -180,8 +180,9 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
               : this.chatMessages[i + 1];
           return KChatBubble(
             this.chatMessages[i],
-            previousChat: next,
-            nextChat: prev,
+            members: chatData.members,
+            previousMsg: next,
+            nextMsg: prev,
             onAvatarClick: onOtherPersonClick,
           );
         }
