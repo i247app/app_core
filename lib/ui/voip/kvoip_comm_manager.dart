@@ -175,6 +175,7 @@ class KVOIPCommManager {
         "roomID": this.session?.id,
         "isEnabled": isEnabled,
       });
+      voipContext?.withFlags((flags) => flags.isMySoundEnabled = isEnabled);
     }
   }
 
@@ -186,11 +187,14 @@ class KVOIPCommManager {
         "roomID": this.session?.id,
         "isEnabled": isEnabled,
       });
+      voipContext?.withFlags((flags) => flags.isMyCameraEnabled = isEnabled);
     }
   }
 
-  void setSpeakerphoneEnabled(bool isEnabled) =>
-      this._localStream?.getAudioTracks()[0].enableSpeakerphone(isEnabled);
+  void setSpeakerphoneEnabled(bool isEnabled) {
+    this._localStream?.getAudioTracks()[0].enableSpeakerphone(isEnabled);
+    voipContext?.withFlags((flags) => flags.isMySpeakerEnabled = isEnabled);
+  }
 
   void onPauseState() => setCameraEnabled(false);
 
@@ -492,13 +496,15 @@ class KVOIPCommManager {
       case 'toggle_camera_enabled':
         {
           final bool isEnabled = data['isEnabled'];
-          this.onCameraToggled?.call(isEnabled);
+          // this.onCameraToggled?.call(isEnabled);
+          onCameraToggledWrapper(isEnabled);
         }
         break;
       case 'toggle_mic_enabled':
         {
           final bool isEnabled = data['isEnabled'];
-          this.onMicToggled?.call(isEnabled);
+          // this.onMicToggled?.call(isEnabled);
+          onMicToggledWrapper(isEnabled);
         }
         break;
       case 'call_rejected':
@@ -613,6 +619,16 @@ class KVOIPCommManager {
     voipContext?.withLocalRenderer((localRenderer) {
       localRenderer?.srcObject = stream;
     });
+  }
+
+  void onCameraToggledWrapper(bool b) {
+    onCameraToggled?.call(b);
+    voipContext?.withFlags((flags) => flags.isMyCameraEnabled = b);
+  }
+
+  void onMicToggledWrapper(bool b) {
+    onMicToggled?.call(b);
+    voipContext?.withFlags((flags) => flags.isMySoundEnabled = b);
   }
 
   Future<RTCPeerConnection?> _createPeerConnection(

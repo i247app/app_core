@@ -5,6 +5,7 @@ import 'package:app_core/header/kassets.dart';
 import 'package:app_core/helper/service/kvoip_service.dart';
 import 'package:app_core/ui/voip/kvoip_context.dart';
 import 'package:app_core/ui/widget/dialog/boolean_dialog.dart';
+import 'package:app_core/value/kphrases.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:app_core/helper/kcall_kit_helper.dart';
 import 'package:app_core/helper/knotif_stream_helper.dart';
@@ -99,12 +100,12 @@ class _KVOIPCallState extends State<KVOIPCall>
   int? infoCode;
 
   // RTCVideoRenderer? localRenderer;
-  bool isMySoundEnabled = true;
-  bool isMySpeakerEnabled = true;
-  bool isMyCameraEnabled = true;
-  bool isOtherSoundEnabled = true;
-  bool isOtherCameraEnabled = true;
-  bool isPanelOpen = false;
+  // bool isMySoundEnabled = true;
+  // bool isMySpeakerEnabled = true;
+  // bool isMyCameraEnabled = true;
+  // bool isOtherSoundEnabled = true;
+  // bool isOtherCameraEnabled = true;
+  // bool isPanelOpen = false;
 
   String get voipServiceID {
     final id = widget.callID ?? "anonymous call";
@@ -235,7 +236,7 @@ class _KVOIPCallState extends State<KVOIPCall>
       return;
     } else {
       print("###### KVoipService !! NO !! CONTEXT ID - $voipServiceID");
-      voipContext = KVoipContext();
+      voipContext = KVoipContext(voipServiceID);
     }
     voipContext?.addListener(voipContextListener);
 
@@ -374,11 +375,11 @@ class _KVOIPCallState extends State<KVOIPCall>
     // commManager.onRemoveRemoteStream =
     //     ((peerID, _) => remoteRenderers?[peerID]?.srcObject = null);
 
-    commManager.onCameraToggled =
-        (b) => !mounted ? null : setState(() => isOtherCameraEnabled = b);
+    // commManager.onCameraToggled =
+    //     (b) => !mounted ? null : setState(() => isOtherCameraEnabled = b);
 
-    commManager.onMicToggled =
-        (b) => !mounted ? null : setState(() => isOtherSoundEnabled = b);
+    // commManager.onMicToggled =
+    //     (b) => !mounted ? null : setState(() => isOtherSoundEnabled = b);
 
     await commManager.connect(widget.callID);
     return commManager;
@@ -611,7 +612,16 @@ class _KVOIPCallState extends State<KVOIPCall>
     } catch (e) {}
   }
 
-  void hangUp() {
+  void hangUp() async {
+    final doesWantToHangUp = await showDialog(
+      context: context,
+      builder: (_) => BooleanDialog(
+        title: KPhrases.hangUpQuestion,
+        valence: false,
+      ),
+    );
+    if (!doesWantToHangUp) return;
+
     print("tutoring_p2p_call.hangUp am clicking hangup.........");
     ringtoneTimer?.cancel();
     FlutterRingtonePlayer.stop();
@@ -667,27 +677,28 @@ class _KVOIPCallState extends State<KVOIPCall>
   }
 
   void onMicToggled(bool newValue) {
-    setState(() => isMySoundEnabled = newValue);
+    // setState(() => isMySoundEnabled = newValue);
     commManager?.setMicEnabled(newValue);
   }
 
   void onSpeakerToggled(bool newValue) {
-    setState(() => isMySpeakerEnabled = newValue);
+    // setState(() => isMySpeakerEnabled = newValue);
     commManager?.setSpeakerphoneEnabled(newValue);
   }
 
   void onCameraToggled(bool newValue) {
-    setState(() => isMyCameraEnabled = newValue);
+    // setState(() => isMyCameraEnabled = newValue);
     commManager?.setCameraEnabled(newValue);
   }
 
   Future<bool> _onWillPop() async {
-    return (await showDialog(
-          context: context,
-          builder: (_) =>
-              BooleanDialog(title: 'Cúp máy?', isPositiveTheme: false),
-        )) ??
-        false;
+    return true;
+    // return (await showDialog(
+    //       context: context,
+    //       builder: (_) =>
+    //           BooleanDialog(title: 'Cúp máy?', isPositiveTheme: false),
+    //     )) ??
+    //     false;
   }
 
   @override
@@ -699,8 +710,9 @@ class _KVOIPCallState extends State<KVOIPCall>
           KP2PVideoView(
             localRenderer: localRenderer!,
             remoteRenderers: remoteRenderers!,
-            isRemoteCameraEnabled: isOtherCameraEnabled,
-            isRemoteMicEnabled: isOtherSoundEnabled,
+            isRemoteCameraEnabled:
+                voipContext?.flags.isOtherCameraEnabled ?? false,
+            isRemoteMicEnabled: voipContext?.flags.isOtherSoundEnabled ?? false,
             onLocalVideoTap: switchCamera,
             onRemoteVideoTap: videoTap,
           ),
@@ -714,12 +726,14 @@ class _KVOIPCallState extends State<KVOIPCall>
               child: Container(
                 width: 200.0,
                 child: KP2PButtonView(
-                  isMicEnabled: isMySoundEnabled,
-                  isCameraEnabled: isMyCameraEnabled,
+                  isMicEnabled: voipContext?.flags.isMySoundEnabled ?? false,
+                  isCameraEnabled:
+                      voipContext?.flags.isMyCameraEnabled ?? false,
                   type: KWebRTCCallType.video,
                   onMicToggled: onMicToggled,
                   onCameraToggled: onCameraToggled,
-                  isSpeakerEnabled: isMySpeakerEnabled,
+                  isSpeakerEnabled:
+                      voipContext?.flags.isMySpeakerEnabled ?? false,
                   onSpeakerToggled: onSpeakerToggled,
                   onHangUp: hangUp,
                 ),
@@ -978,12 +992,14 @@ class _KVOIPCallState extends State<KVOIPCall>
                   ),
                 ),
                 KP2PButtonView(
-                  isMicEnabled: isMySoundEnabled,
-                  isCameraEnabled: isMyCameraEnabled,
+                  isMicEnabled: voipContext?.flags.isMySoundEnabled ?? false,
+                  isCameraEnabled:
+                      voipContext?.flags.isMyCameraEnabled ?? false,
                   type: KWebRTCCallType.video,
                   onMicToggled: onMicToggled,
                   onCameraToggled: onCameraToggled,
-                  isSpeakerEnabled: isMySpeakerEnabled,
+                  isSpeakerEnabled:
+                      voipContext?.flags.isMySpeakerEnabled ?? false,
                   onSpeakerToggled: onSpeakerToggled,
                   onHangUp: hangUp,
                 ),

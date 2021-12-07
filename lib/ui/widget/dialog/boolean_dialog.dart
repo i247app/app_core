@@ -7,17 +7,16 @@ class BooleanDialog extends StatelessWidget {
   final String? content;
   final String? yesText;
   final String? noText;
-  final bool isPositiveTheme; // Is the 'yes' action a positive or negative?
+  final bool valence; // Is the 'yes' action a positive or negative?
 
-  Color get yesColor =>
-      isPositiveTheme ? KStyles.colorBGYes : KStyles.colorBGNo;
+  Color get yesColor => valence ? KStyles.colorBGYes : KStyles.colorBGNo;
 
   const BooleanDialog({
     this.content,
     this.title,
     this.yesText,
     this.noText,
-    this.isPositiveTheme = true,
+    this.valence = true,
   });
 
   @override

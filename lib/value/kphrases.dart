@@ -97,4 +97,6 @@ abstract class KPhrases {
   static String get appFailed => _klingo.yak("app_failed");
 
   static String get success => _klingo.yak("success");
+
+  static String get hangUpQuestion => 'Cúp máy?';
 }
