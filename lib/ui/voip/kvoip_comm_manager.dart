@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:app_core/helper/kwebrtc_helper.dart';
 import 'package:app_core/ui/voip/ksimple_websocket.dart';
+import 'package:app_core/ui/voip/kvoip_context.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:app_core/app_core.dart';
 
@@ -79,6 +80,7 @@ class KVOIPCommManager {
   final String puid;
   final String deviceID;
   final String nickname;
+
   bool isDisposed = false;
 
   String get myClientID => KWebRTCHelper.buildWebRTCClientID(
@@ -94,6 +96,7 @@ class KVOIPCommManager {
   final List<MediaStream> _localStreams = [];
   final List<MediaStream> _remoteStreams = [];
 
+  KVoipContext? voipContext;
   KSimpleWebSocket? _socket;
   Map<String, dynamic>? _turnCredential;
   KP2PSession? session;
@@ -145,6 +148,7 @@ class KVOIPCommManager {
     required this.puid,
     required this.deviceID,
     this.nickname = "Anonymous",
+    this.voipContext,
   });
 
   void close() {
@@ -381,8 +385,9 @@ class KVOIPCommManager {
 
           try {
             this.onStateChange?.call(SignalingState.CallStateBye);
+          } catch (e) {
+            print(e);
           }
-          catch(e) { print(e); }
 
           final to = data['to'];
 
@@ -391,8 +396,9 @@ class KVOIPCommManager {
               this._localStream!.dispose();
               this._localStreams.clear();
             }
+          } catch (e) {
+            print(e);
           }
-          catch(e) { print(e); }
 
           try {
             final pc = this._peerConnections[to];
@@ -400,8 +406,9 @@ class KVOIPCommManager {
               pc.close();
               this._peerConnections.remove(to);
             }
+          } catch (e) {
+            print(e);
           }
-          catch(e) { print(e); }
 
           try {
             final dc = this._dataChannels[to];
@@ -409,8 +416,9 @@ class KVOIPCommManager {
               dc.close();
               this._dataChannels.remove(to);
             }
+          } catch (e) {
+            print(e);
           }
-          catch(e) { print(e); }
         }
         break;
       case 'keepalive':
@@ -582,7 +590,7 @@ class KVOIPCommManager {
     final MediaStream stream = isUserScreen
         ? await navigator.mediaDevices.getDisplayMedia(mediaConstraints)
         : await navigator.mediaDevices.getUserMedia(mediaConstraints);
-    this.onLocalStream?.call(id, stream);
+    onLocalStreamWrapper(id, stream);
     return stream;
   }
 
@@ -595,9 +603,16 @@ class KVOIPCommManager {
     final MediaStream stream = isUserScreen
         ? await navigator.mediaDevices.getDisplayMedia(mediaConstraints)
         : await navigator.mediaDevices.getUserMedia(mediaConstraints);
-    this.onLocalStream?.call(id, stream);
+    onLocalStreamWrapper(id, stream);
 
     return stream;
+  }
+
+  void onLocalStreamWrapper(String id, MediaStream stream) {
+    onLocalStream?.call(id, stream);
+    voipContext?.withLocalRenderer((localRenderer) {
+      localRenderer?.srcObject = stream;
+    });
   }
 
   Future<RTCPeerConnection?> _createPeerConnection(
@@ -634,18 +649,43 @@ class KVOIPCommManager {
     pc.onIceConnectionState = (state) {};
 
     pc.onAddStream = (MediaStream stream) {
-      this.onAddRemoteStream?.call(peerID, stream);
+      onAddRemoteStreamWrapper(peerID, stream);
       this._remoteStreams.add(stream);
     };
 
     pc.onRemoveStream = (MediaStream stream) {
-      this.onRemoveRemoteStream?.call(peerID, stream);
+      onRemoveRemoteStreamWrapper(peerID, stream);
       this._remoteStreams.removeWhere((it) => it.id == stream.id);
     };
 
     pc.onDataChannel = (channel) => _addDataChannel(peerID, channel);
 
     return pc;
+  }
+
+  void onRemoveRemoteStreamWrapper(String peerID, MediaStream stream) {
+    // Fire callback
+    onRemoveRemoteStream?.call(peerID, stream);
+
+    // Update voip context if available
+    voipContext?.withRemoteRenderers((remoteRenderers) {
+      remoteRenderers[peerID]?.srcObject = null;
+    });
+  }
+
+  void onAddRemoteStreamWrapper(String peerID, MediaStream stream) async {
+    // Fire callback
+    onAddRemoteStream?.call(peerID, stream);
+
+    // Update voip context if available
+    if (voipContext != null) {
+      final remoteRenderer = RTCVideoRenderer();
+      await remoteRenderer.initialize();
+      remoteRenderer.srcObject = stream;
+      voipContext?.withRemoteRenderers((remoteRenderers) {
+        remoteRenderers[peerID] = remoteRenderer;
+      });
+    }
   }
 
   void _addDataChannel(String peerID, RTCDataChannel channel) {

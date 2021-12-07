@@ -208,11 +208,11 @@ class _KVOIPCallState extends State<KVOIPCall>
     stopRingtone();
 
     SystemChrome.setSystemUIOverlayStyle(KStyles.systemStyle);
+    voipContext?.removeListener(voipContextListener);
     ringtoneTimer?.cancel();
     endCallTimer?.cancel();
     panelTimer?.cancel();
     streamSub.cancel();
-    // releaseResourceIfNeed();
     KCallKitHelper.instance.isCalling = false;
     super.dispose();
   }
@@ -223,6 +223,8 @@ class _KVOIPCallState extends State<KVOIPCall>
       commManager?.onPauseState();
     else if (state == AppLifecycleState.resumed) commManager?.onResumedState();
   }
+
+  void voipContextListener() => setState(() {});
 
   Future<void> setupVoipContext() async {
     // CHECK FOR EXISTING VOIP CONTEXT
@@ -235,6 +237,7 @@ class _KVOIPCallState extends State<KVOIPCall>
       print("###### KVoipService !! NO !! CONTEXT ID - $voipServiceID");
       voipContext = KVoipContext();
     }
+    voipContext?.addListener(voipContextListener);
 
     // INIT RENDERS
     final localRendererResult = await buildLocalRenderer();
@@ -339,6 +342,7 @@ class _KVOIPCallState extends State<KVOIPCall>
         puid: puid,
         deviceID: await KUtil.getDeviceID(),
         nickname: name,
+        voipContext: voipContext,
       );
     } catch (e) {
       return null;
@@ -357,18 +361,18 @@ class _KVOIPCallState extends State<KVOIPCall>
     commManager.onCallInfo = onCallStatusUpdate;
     commManager.onCallError = onCallError;
 
-    commManager.onLocalStream =
-        ((peerID, stream) => setState(() => localRenderer?.srcObject = stream));
+    // commManager.onLocalStream =
+    //     ((peerID, stream) => setState(() => localRenderer?.srcObject = stream));
 
-    commManager.onAddRemoteStream = ((peerID, stream) async {
-      final remoteRenderer = RTCVideoRenderer();
-      await remoteRenderer.initialize();
-      remoteRenderer.srcObject = stream;
-      if (mounted) setState(() => remoteRenderers?[peerID] = remoteRenderer);
-    });
+    // commManager.onAddRemoteStream = ((peerID, stream) async {
+    //   final remoteRenderer = RTCVideoRenderer();
+    //   await remoteRenderer.initialize();
+    //   remoteRenderer.srcObject = stream;
+    //   if (mounted) setState(() => remoteRenderers?[peerID] = remoteRenderer);
+    // });
 
-    commManager.onRemoveRemoteStream =
-        ((peerID, _) => remoteRenderers?[peerID]?.srcObject = null);
+    // commManager.onRemoveRemoteStream =
+    //     ((peerID, _) => remoteRenderers?[peerID]?.srcObject = null);
 
     commManager.onCameraToggled =
         (b) => !mounted ? null : setState(() => isOtherCameraEnabled = b);
@@ -432,7 +436,7 @@ class _KVOIPCallState extends State<KVOIPCall>
         // safePop(false);
         setState(() => callState = _CallState.ended);
         endCallTimeout();
-        releaseResourceIfNeed();
+        // releaseResourceIfNeed();
         break;
       case SignalingState.CallStateBye:
         if (!KHostConfig.isReleaseMode)
@@ -441,7 +445,7 @@ class _KVOIPCallState extends State<KVOIPCall>
         // TODO do we need to null out localRenderer/remoteRenderer
         // pop() will call dispose()
         setState(() => callState = _CallState.ended);
-        releaseResourceIfNeed();
+        // releaseResourceIfNeed();
         endCallTimeout();
         Future.delayed(
           Duration(milliseconds: 500),
@@ -475,7 +479,7 @@ class _KVOIPCallState extends State<KVOIPCall>
           // remoteRenderer.srcObject = null;
           callState = _CallState.ended;
         });
-        releaseResourceIfNeed();
+        // releaseResourceIfNeed();
         endCallTimeout();
         // should do more like fb messenger
         Future.delayed(
@@ -527,7 +531,7 @@ class _KVOIPCallState extends State<KVOIPCall>
         // safePop(false);
         stopRingtone();
         setState(() => callState = _CallState.ended);
-        releaseResourceIfNeed();
+        // releaseResourceIfNeed();
         endCallTimeout();
         break;
       case SignalingState.CallStateBye:
