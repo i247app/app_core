@@ -88,7 +88,7 @@ class _KVOIPCallState extends State<KVOIPCall>
       : _CallState.init;
 
   KVOIPCommManager? commManager;
-  Timer? timer;
+  Timer? ringtoneTimer;
   Timer? endCallTimer;
   Timer? panelTimer;
   String? infoMsg;
@@ -198,7 +198,7 @@ class _KVOIPCallState extends State<KVOIPCall>
     stopRingtone();
 
     SystemChrome.setSystemUIOverlayStyle(KStyles.systemStyle);
-    this.timer?.cancel();
+    this.ringtoneTimer?.cancel();
     this.endCallTimer?.cancel();
     this.panelTimer?.cancel();
     this.streamSub.cancel();
@@ -542,7 +542,7 @@ class _KVOIPCallState extends State<KVOIPCall>
   void startRingtone([double volume = 0.9]) {
     try {
       if (Platform.isIOS) {
-        this.timer = Timer.periodic(
+        this.ringtoneTimer = Timer.periodic(
           Duration(seconds: 3),
           (_) => FlutterRingtonePlayer.playRingtone(
             looping: true,
@@ -557,14 +557,14 @@ class _KVOIPCallState extends State<KVOIPCall>
 
   void stopRingtone() {
     try {
-      this.timer?.cancel();
+      this.ringtoneTimer?.cancel();
       FlutterRingtonePlayer.stop();
     } catch (e) {}
   }
 
   void hangUp() {
     print("tutoring_p2p_call.hangUp am clicking hangup.........");
-    this.timer?.cancel();
+    this.ringtoneTimer?.cancel();
     FlutterRingtonePlayer.stop();
     try {
       // stopCallerTune();
@@ -610,7 +610,7 @@ class _KVOIPCallState extends State<KVOIPCall>
 
   void rejectCall() {
     print("tutoring_p2p_call.rejectCall am clicking hangup.........");
-    this.timer?.cancel();
+    this.ringtoneTimer?.cancel();
     FlutterRingtonePlayer.stop();
     try {
       this.commManager?.sayGoodbye();
@@ -904,8 +904,6 @@ class _KVOIPCallState extends State<KVOIPCall>
       ),
     );
 
-    // bool isStartedCall = false; // TODO - refactor this out of the build method
-
     final voipView;
     switch (this.callState) {
       case _CallState.ws_error:
@@ -955,10 +953,7 @@ class _KVOIPCallState extends State<KVOIPCall>
                   onHangUp: hangUp,
                 ),
                 SizedBox(height: 28),
-                Expanded(
-                    child: Container(
-                  child: chatroom,
-                )),
+                Expanded(child: Container(child: chatroom)),
               ],
             );
 
