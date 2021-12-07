@@ -739,7 +739,11 @@ class _KVOIPCallState extends State<KVOIPCall>
                 ),
               ),
             ),
-          )
+          ),
+          Align(
+            alignment: Alignment.topLeft,
+            child: SafeArea(child: BackButton()),
+          ),
         ],
       ],
     );
