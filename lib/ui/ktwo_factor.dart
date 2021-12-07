@@ -27,16 +27,13 @@ class KTwoFactor extends StatefulWidget {
 }
 
 class _KTwoFactorState extends State<KTwoFactor> {
-  static const int KEYBOARD_MODE_NONE = 0;
-  static const int KEYBOARD_MODE_NUMBER = 1;
-
   final TextEditingController pinController = TextEditingController();
+  final FocusNode focusNode = FocusNode();
 
   String? responseKpin;
   KNoticeData? notice;
 
-  FocusNode focusNode = FocusNode();
-  int keyboardMode = KEYBOARD_MODE_NUMBER;
+  KNumberPadMode keyboardMode = KNumberPadMode.NUMBER;
   bool sendCodeEnabled = true;
 
   bool get shouldAutoSendPin => true;
@@ -46,24 +43,24 @@ class _KTwoFactorState extends State<KTwoFactor> {
     super.initState();
 
     // Auto send code if requested
-    if (this.shouldAutoSendPin) Future.delayed(Duration(seconds: 1), sendCode);
+    if (shouldAutoSendPin) Future.delayed(Duration(seconds: 1), sendCode);
   }
 
   @override
   void dispose() {
-    this.focusNode.dispose();
+    focusNode.dispose();
     super.dispose();
   }
 
   void sendCode() async {
     setState(() {
-      this.notice = null;
-      this.responseKpin = null;
+      notice = null;
+      responseKpin = null;
     });
 
     final isAllowed = await Permission.notification.isGranted;
     if (isAllowed) {
-      PermissionStatus status = await Permission.notification.request();
+      final status = await Permission.notification.request();
       if (status != PermissionStatus.granted) print("Permissions denied");
     }
 
@@ -71,25 +68,26 @@ class _KTwoFactorState extends State<KTwoFactor> {
       phone: widget.phone,
       email: widget.email,
     );
-    if (response.kstatus == 100) {
+
+    if (response.isSuccess) {
       setState(() {
-        this.notice = KNoticeData.success("");
-        this.responseKpin = response.kpin;
-        this.sendCodeEnabled = false;
+        notice = KNoticeData.success("");
+        responseKpin = response.kpin;
+        sendCodeEnabled = false;
       });
 
       Future.delayed(
         Duration(seconds: 30),
-        () => mounted ? setState(() => this.sendCodeEnabled = true) : null,
+        () => mounted ? setState(() => sendCodeEnabled = true) : null,
       );
     } else {
-      setState(() =>
-          this.notice = KNoticeData.error("Failed to send security code."));
+      setState(
+          () => notice = KNoticeData.error("Failed to send security code."));
     }
   }
 
   void submit(String kpin) async {
-    setState(() => this.notice = null);
+    setState(() => notice = null);
 
     switch (widget.behavior) {
       case KTwoFactorBehavior.legacy:
@@ -100,25 +98,25 @@ class _KTwoFactorState extends State<KTwoFactor> {
         break;
     }
 
-    this.focusNode.requestFocus();
+    focusNode.requestFocus();
   }
 
   void legacySubmit(String kpin) async {
     final response = await KServerHandler.verify2FACode(kpin);
-    if (response.kstatus == 100)
+    if (response.kstatus == 100) {
       Navigator.of(context).pop(kpin);
-    else if (response.kstatus == 415) {
+    } else if (response.kstatus == 415) {
       setState(() {
-        this.pinController.clear();
-        this.responseKpin = null;
-        this.notice =
+        pinController.clear();
+        responseKpin = null;
+        notice =
             KNoticeData.error(response.kmessage ?? "Security Code Expired");
       });
     } else {
       setState(() {
-        this.pinController.clear();
-        this.responseKpin = null;
-        this.notice =
+        pinController.clear();
+        responseKpin = null;
+        notice =
             KNoticeData.error(response.kmessage ?? "Invalid Security Code");
       });
     }
@@ -132,7 +130,7 @@ class _KTwoFactorState extends State<KTwoFactor> {
       controller: pinController,
       autofocus: true,
       readOnly: true,
-      showCursor: keyboardMode == KEYBOARD_MODE_NUMBER,
+      showCursor: keyboardMode == KNumberPadMode.NUMBER,
       focusNode: focusNode,
       textAlign: TextAlign.center,
       keyboardType: TextInputType.number,
@@ -140,9 +138,9 @@ class _KTwoFactorState extends State<KTwoFactor> {
       maxLength: KTwoFactor.PIN_LENGTH,
       maxLengthEnforcement: MaxLengthEnforcement.enforced,
       onTap: () {
-        if (keyboardMode != KEYBOARD_MODE_NUMBER) {
-          this.setState(() {
-            this.keyboardMode = KEYBOARD_MODE_NUMBER;
+        if (keyboardMode != KNumberPadMode.NUMBER) {
+          setState(() {
+            keyboardMode = KNumberPadMode.NUMBER;
           });
         }
       },
@@ -155,23 +153,22 @@ class _KTwoFactorState extends State<KTwoFactor> {
     final pinEdit = Container(width: 140, child: rawPinEdit);
 
     final resendCodeButton = TextButton(
-      onPressed: this.sendCodeEnabled ? sendCode : null,
+      onPressed: sendCodeEnabled ? sendCode : null,
       style: TextButton.styleFrom(
         textStyle: TextStyle(
-          color:
-              this.sendCodeEnabled ? KStyles.colorSecondary : KStyles.lightGrey,
+          color: sendCodeEnabled ? KStyles.colorSecondary : KStyles.lightGrey,
         ),
       ),
       child: Text("Resend Code"),
     );
 
-    final errorLabel = this.notice == null && this.responseKpin == null
+    final errorLabel = notice == null && responseKpin == null
         ? CircularProgressIndicator()
-        : this.responseKpin == null
+        : responseKpin == null
             ? Text(
-                this.notice?.message ?? "An error occurred",
+                notice?.message ?? "An error occurred",
                 style: TextStyle(
-                  color: this.notice?.isSuccess ?? false
+                  color: notice?.isSuccess ?? false
                       ? KStyles.darkGrey
                       : KStyles.colorError,
                 ),
@@ -179,13 +176,10 @@ class _KTwoFactorState extends State<KTwoFactor> {
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    "Pin",
-                    style: TextStyle(fontSize: 30),
-                  ),
+                  Text("Pin", style: TextStyle(fontSize: 30)),
                   SizedBox(height: 6),
                   Text(
-                    this.responseKpin ?? "",
+                    responseKpin ?? "",
                     style: TextStyle(
                       fontSize: 60,
                       fontWeight: FontWeight.normal,
@@ -210,7 +204,7 @@ class _KTwoFactorState extends State<KTwoFactor> {
     );
 
     final keyboard = KNumberPad(
-      controller: this.pinController,
+      controller: pinController,
       onReturn: () {},
       onTextChange: (pin) {
         if (pin.length == KTwoFactor.PIN_LENGTH &&
@@ -220,26 +214,25 @@ class _KTwoFactorState extends State<KTwoFactor> {
       },
     );
 
-    final body = Column(children: <Widget>[
-      Expanded(child: upperContent),
-      if (keyboardMode == KEYBOARD_MODE_NUMBER) keyboard,
-    ]);
+    final body = Column(
+      children: <Widget>[
+        Expanded(child: upperContent),
+        if (keyboardMode == KNumberPadMode.NUMBER) keyboard,
+      ],
+    );
 
-    return new Scaffold(
-      appBar: AppBar(
-        title: Text("Security"),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
+    return Scaffold(
+      appBar: AppBar(title: Text("Security")),
       body: GestureDetector(
-          onTap: () {
-            if (keyboardMode == KEYBOARD_MODE_NUMBER) {
-              this.setState(() {
-                this.keyboardMode = KEYBOARD_MODE_NONE;
-              });
-            }
-          },
-          child: SafeArea(child: body)),
+        onTap: () {
+          if (keyboardMode == KNumberPadMode.NUMBER) {
+            setState(() {
+              keyboardMode = KNumberPadMode.NONE;
+            });
+          }
+        },
+        child: SafeArea(child: body),
+      ),
     );
   }
 }
