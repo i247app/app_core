@@ -9,6 +9,7 @@ import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
+import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
 import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,7 +30,6 @@ class KHeroJumpOverGame extends StatefulWidget {
 
 class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
   int? overlayID;
-  int currentLevel = 0;
   List<String> levelBackground = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
     KAssets.IMG_BG_COUNTRYSIDE_DARK,
@@ -43,7 +43,11 @@ class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
       ? KAssets.IMG_BG_SPACE_LIGHT
       : KAssets.IMG_BG_SPACE_DARK;
 
+  int totalLevel = 4;
+  int currentLevel = 0;
   bool isShowEndLevel = false;
+
+  List<int> levelHighscores = [];
 
   @override
   void initState() {
@@ -75,6 +79,25 @@ class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
       onFinish: onFinish,
     );
     showCustomOverlay(heroGameLevel);
+  }
+
+  void showHeroGameHighscoreOverlay(Function() onClose) async {
+    this.setState(() {
+      this.isShowEndLevel = true;
+    });
+    final heroGameHighScore = Stack(
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: KGameHighscoreDialog(
+            onClose: onClose,
+            scores: levelHighscores,
+            currentLevel: currentLevel,
+          ),
+        ),
+      ],
+    );
+    showCustomOverlay(heroGameHighScore);
   }
 
   void showCustomOverlay(Widget view) {
@@ -114,25 +137,48 @@ class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
                   Expanded(
                     child: KJumpGameScreen(
                       hero: widget.hero,
+                      totalLevel: totalLevel,
                       isShowEndLevel: isShowEndLevel,
-                      onFinishLevel: (level) {
-                        if (level <= 3) {
+                      onFinishLevel: (level, score, isHaveWrongAnswer) {
+                        if (level < totalLevel) {
+                          print(isHaveWrongAnswer);
+                          if (!isHaveWrongAnswer) {
+                            this.setState(() {
+                              this.levelHighscores.add(score);
+                            });
+                          }
                           this.showHeroGameLevelOverlay(
-                            () {
-                              this.setState(() {
-                                this.isShowEndLevel = false;
-                              });
+                                () {
                               if (this.overlayID != null) {
                                 KOverlayHelper.removeOverlay(this.overlayID!);
                                 this.overlayID = null;
                               }
+                              this.showHeroGameHighscoreOverlay(() {
+                                this.setState(() {
+                                  this.isShowEndLevel = false;
+                                });
+                                if (this.overlayID != null) {
+                                  KOverlayHelper.removeOverlay(this.overlayID!);
+                                  this.overlayID = null;
+                                }
+                              });
                             },
                           );
+                        } else {
+                          this.showHeroGameHighscoreOverlay(() {
+                            this.setState(() {
+                              this.isShowEndLevel = false;
+                            });
+                            if (this.overlayID != null) {
+                              KOverlayHelper.removeOverlay(this.overlayID!);
+                              this.overlayID = null;
+                            }
+                          });
                         }
                       },
                       onChangeLevel: (level) => this.setState(
                         () {
-                          this.currentLevel = Math.Random().nextInt(4);
+                          this.currentLevel = level;
                         },
                       ),
                     ),
@@ -157,12 +203,14 @@ class KJumpGameScreen extends StatefulWidget {
   final Function(int)? onChangeLevel;
   final Function? onFinishLevel;
   final bool isShowEndLevel;
+  final int? totalLevel;
 
   const KJumpGameScreen({
     this.hero,
     this.onChangeLevel,
     this.onFinishLevel,
     required this.isShowEndLevel,
+    this.totalLevel,
   });
 
   @override
@@ -215,15 +263,19 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
   bool isWrongAnswer = false;
   int rightAnswerCount = 0;
   int wrongAnswerCount = 0;
+  int totalLevel = 1;
   int currentLevel = 0;
   bool canAdvance = false;
-  List<double> levelHardness = [0.7, 0.8, 0.9, 1.0];
-  List<String> levelIconAssets = [
+  double baseLevelHardness = 0.7;
+  List<double> levelHardness = [];
+  List<int> levelPoints = [];
+  List<String> baseLevelIconAssets = [
     KAssets.BULLET_BALL_GREEN,
     KAssets.BULLET_BALL_BLUE,
     KAssets.BULLET_BALL_ORANGE,
     KAssets.BULLET_BALL_RED,
   ];
+  List<String> levelIconAssets = [];
 
   int points = 0;
   bool resetPos = false;
@@ -231,30 +283,10 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
   DateTime? lastGetPointTime;
   Timer? _timerFinishGame, _resetStarTimer;
 
-  List<String> questions = [
-    "1 + 1",
-    "3 + 2",
-    "4 - 1",
-    "4 + 5",
-    "2 x 1",
-    "2 x 3",
-    "1 + 2 - 1",
-    "4 + 8 - 5",
-    "1 x 2 + 3",
-    "1 + 2 x 3",
-  ];
-  List<int> rightAnswers = [
-    2,
-    5,
-    3,
-    9,
-    2,
-    6,
-    2,
-    7,
-    5,
-    7,
-  ];
+  List<List<String>> levelQuestions = [];
+  List<List<int>> levelRightAnswers = [];
+  List<String> get questions => levelQuestions[currentLevel];
+  List<int> get rightAnswers => levelRightAnswers[currentLevel];
   int currentQuestionIndex = 0;
   int? spinningHeroIndex;
   int? currentShowStarIndex;
@@ -292,6 +324,48 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
   @override
   void initState() {
     super.initState();
+
+    this.totalLevel = widget.totalLevel ?? 1;
+    this.levelHardness = List.generate(
+      this.totalLevel,
+          (index) => baseLevelHardness + (index * 0.1),
+    );
+    this.levelPoints = List.filled(this.totalLevel, 0);
+    this.levelIconAssets = List.generate(
+      this.totalLevel,
+          (index) => baseLevelIconAssets[
+      Math.Random().nextInt(baseLevelIconAssets.length)],
+    );
+    this.levelQuestions = List.filled(
+      this.totalLevel,
+      [
+        "1 + 1",
+        "3 + 2",
+        "4 - 1",
+        "4 + 5",
+        "2 x 1",
+        "2 x 3",
+        "1 + 2 - 1",
+        "4 + 8 - 5",
+        "1 x 2 + 3",
+        "1 + 2 x 3",
+      ],
+    );
+    this.levelRightAnswers = List.filled(
+      this.totalLevel,
+      [
+        2,
+        5,
+        3,
+        9,
+        2,
+        6,
+        2,
+        7,
+        5,
+        7,
+      ],
+    );
 
     loadAudioAsset();
 
@@ -625,7 +699,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
     if (isScroll) {
       for (int i = 0; i < barrierX.length; i++) {
         double speed = scrollSpeed;
-        if (currentLevel < levelHardness.length) {
+        if (currentLevel < totalLevel) {
           speed += scrollSpeed * levelHardness[currentLevel];
         }
         setState(() {
@@ -737,6 +811,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
               this._scaleAnimationController.forward();
               this.setState(() {
                 result = true;
+                levelPoints[currentLevel] = levelPoints[currentLevel] + 5;
                 isScroll = false;
                 if (!isWrongAnswer) {
                   currentShowStarIndex = i;
@@ -775,10 +850,10 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
                     if (rightAnswerCount / questions.length >=
                         levelHardness[currentLevel]) {
                       eggReceive = eggReceive + 1;
-                      if (currentLevel + 1 < levelHardness.length) {
+                      if (currentLevel + 1 < totalLevel) {
                         canAdvance = true;
                         if (widget.onFinishLevel != null) {
-                          widget.onFinishLevel!(currentLevel + 1);
+                          widget.onFinishLevel!(currentLevel + 1, levelPoints[currentLevel], wrongAnswerCount > 0);
                         }
                       }
                     }
@@ -801,6 +876,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
               _playerScaleAnimationController.forward();
               this.setState(() {
                 result = false;
+                levelPoints[currentLevel] = levelPoints[currentLevel] > 0 ? levelPoints[currentLevel] - 1 : 0;
                 if (!isWrongAnswer) {
                   wrongAnswerCount += 1;
                   isWrongAnswer = true;
@@ -837,7 +913,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
     if (!this.isBackgroundSoundPlaying) {
       toggleBackgroundSound();
     }
-    if (currentLevel + 1 < levelHardness.length &&
+    if (currentLevel + 1 < totalLevel &&
         (rightAnswerCount / questions.length) >= levelHardness[currentLevel]) {
       this.setState(() {
         if (widget.onChangeLevel != null)
@@ -907,7 +983,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
                                     ),
                           ),
                         ),
-                        if (currentLevel < levelIconAssets.length &&
+                        if (currentLevel < totalLevel &&
                             levelIconAssets[currentLevel].isNotEmpty)
                           Positioned(
                             left: -40,

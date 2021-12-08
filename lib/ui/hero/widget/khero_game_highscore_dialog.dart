@@ -7,8 +7,11 @@ import 'package:flutter/widgets.dart';
 
 class KGameHighscoreDialog extends StatefulWidget {
   final Function onClose;
+  final List<int>? scores;
+  final int? currentLevel;
 
-  const KGameHighscoreDialog({required this.onClose});
+  const KGameHighscoreDialog(
+      {required this.onClose, this.scores, this.currentLevel});
 
   @override
   _KGameHighscoreDialogState createState() => _KGameHighscoreDialogState();
@@ -17,26 +20,20 @@ class KGameHighscoreDialog extends StatefulWidget {
 class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
   List<int> scores = [];
 
+  int? get currentLevelScore =>
+      widget.scores != null && widget.currentLevel != null
+          ? widget.scores![widget.scores!.length - 1]
+          : null;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    final _scores = [
-      Random().nextInt(20000),
-      Random().nextInt(20000),
-      Random().nextInt(20000),
-      Random().nextInt(20000),
-      Random().nextInt(20000),
-      Random().nextInt(20000),
-      Random().nextInt(20000),
-      Random().nextInt(20000),
-      Random().nextInt(20000),
-      Random().nextInt(20000),
-    ];
+    final _scores = widget.scores ?? [];
     _scores.sort();
     this.setState(() {
-      scores = _scores.reversed.toList();
+      scores = _scores;
     });
   }
 
@@ -114,16 +111,26 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
                   child: ListView.builder(
                     itemCount: scores.length,
                     itemBuilder: (context, index) {
+                      bool isCurrentLevel = currentLevelScore == scores[index];
+
                       return Container(
-                        padding: EdgeInsets.symmetric(vertical: 5),
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              width: 0.5,
-                              color: Colors.black54.withAlpha(50),
-                            ),
-                          ),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 5,
+                          horizontal: 5,
                         ),
+                        decoration: isCurrentLevel
+                            ? BoxDecoration(
+                                color: Colors.orange,
+                                borderRadius: BorderRadius.circular(10),
+                              )
+                            : BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    width: 0.5,
+                                    color: Colors.black54.withAlpha(50),
+                                  ),
+                                ),
+                              ),
                         child: Row(
                           children: [
                             Text(
