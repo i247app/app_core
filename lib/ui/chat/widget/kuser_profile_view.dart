@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/helper/kapp_nav_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/klink_helper.dart';
 import 'package:app_core/ui/chat/kchat_screen.dart';
@@ -134,12 +135,13 @@ class _ConcreteKUserProfileView extends StatelessWidget {
     ];
 
     final actions = [
-      IconButton(
-        onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) =>
-                KChatScreen(members: [KChatMember.fromUser(user)]))),
-        icon: Icon(Icons.chat, color: Colors.white),
-      ),
+      if (KAppNavHelper.chat == KAppNav.ON)
+        IconButton(
+          onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) =>
+                  KChatScreen(members: [KChatMember.fromUser(user)]))),
+          icon: Icon(Icons.chat, color: Colors.white),
+        ),
     ];
 
     final body = KDetailView(
