@@ -159,7 +159,7 @@ class KVOIPCommManager {
     this._dataChannels.forEach((_, dc) => dc.close());
 
     if (this._socket != null) KWebRTCHelper.releaseWebsocket(this._socket!);
-    if (this.session?.id != null) sayGoodbye();
+    if (this.session?.id != null) sayGoodbye(tag: "KVOIPCommManager.close");
   }
 
   void switchCamera() {
@@ -215,14 +215,15 @@ class KVOIPCommManager {
   //   });
   // }
 
-  void sayGoodbye([String? roomId]) {
-    print("sayGoodbye fired...");
+  void sayGoodbye({String? roomID, required String tag}) {
+    print("[$tag] sayGoodbye fired...");
+
+    // throw Exception();
 
     _wsSend('goodbye', {
       ...this.stdConnInfo,
-      'roomID': this.session?.id ?? roomId,
+      'roomID': this.session?.id ?? roomID,
     });
-    // close();
   }
 
   void onMessage(Map<String, dynamic> message) async {

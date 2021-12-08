@@ -53,8 +53,11 @@ class KCallKitHelper {
   }
 
   Future<void> sendEndCallSocket(String callID) async {
-    this.commManager?.sayGoodbye(callID);
-    Future.delayed(Duration(seconds: 3), this.commManager?.close);
+    commManager?.sayGoodbye(
+      roomID: callID,
+      tag: "KCallKitHelper.sendEndCallSocket",
+    );
+    Future.delayed(Duration(seconds: 3), commManager?.close);
   }
 
   Future<void> onCallAccepted(String uuid, String callID) async {

@@ -279,15 +279,6 @@ class _KVOIPCallState extends State<KVOIPCall>
     }
   }
 
-  void releaseResourceIfNeed() {
-    if (commManager != null && !commManager!.isDisposed) {
-      commManager?.close();
-      localRenderer?.dispose();
-      remoteRenderers?.forEach((_, rr) => rr.dispose());
-      KCallKitHelper.instance.endCall(_uuid, "", "", "");
-    }
-  }
-
   static Future<void> requestPermission() async {
     // ios
     // try {
@@ -627,7 +618,7 @@ class _KVOIPCallState extends State<KVOIPCall>
     FlutterRingtonePlayer.stop();
     try {
       // stopCallerTune();
-      commManager?.sayGoodbye();
+      commManager?.sayGoodbye(tag: "KVoipCall.hangUp");
     } catch (e) {}
     KVoipService.removeContext(voipServiceID);
     safePop(true);
@@ -671,7 +662,7 @@ class _KVOIPCallState extends State<KVOIPCall>
     ringtoneTimer?.cancel();
     FlutterRingtonePlayer.stop();
     try {
-      commManager?.sayGoodbye();
+      commManager?.sayGoodbye(tag: "KVoipCall.rejectCall");
     } catch (e) {}
     safePop(true);
   }

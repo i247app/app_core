@@ -82,10 +82,11 @@ class KP2PButton extends StatelessWidget {
   final Icon icon;
   final Function() onClick;
 
-  const KP2PButton(
-      {required this.backgroundColor,
-      required this.icon,
-      required this.onClick});
+  const KP2PButton({
+    required this.backgroundColor,
+    required this.icon,
+    required this.onClick,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -84,7 +84,7 @@ class KGigUserLabel extends StatelessWidget {
     );
 
     return GestureDetector(
-      onTap: () => onClick(context),
+      onTap: null, //() => onClick(context),
       child: body,
     );
   }

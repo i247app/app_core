@@ -1,7 +1,6 @@
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/helper/service/kvoip_service.dart';
 import 'package:app_core/ui/voip/kvoip_comm_manager.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class KVoipFlags {
@@ -55,7 +54,7 @@ class KVoipContext extends ChangeNotifier {
     remoteRenderers.forEach((_, rr) => rr.dispose());
     // }
 
-    KVoipService.removeContext(voipID);
+    // KVoipService.removeContext(voipID);
   }
 
   /// Notify other user to join call using push notification
