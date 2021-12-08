@@ -48,11 +48,15 @@ class KVoipContext extends ChangeNotifier {
 
   /// Close all resources
   void close() {
-    // if (commManager != null && !commManager!.isDisposed) {
     commManager?.close();
     localRenderer?.dispose();
     remoteRenderers.forEach((_, rr) => rr.dispose());
-    // }
+
+    commManager = null;
+    localRenderer = null;
+    remoteRenderers.clear();
+
+    notifyListeners();
 
     // KVoipService.removeContext(voipID);
   }

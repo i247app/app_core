@@ -687,6 +687,7 @@ class KVOIPCommManager {
     // Update voip context if available
     voipContext?.withRemoteRenderers((remoteRenderers) {
       remoteRenderers[peerID]?.srcObject = null;
+      remoteRenderers.remove(peerID);
     });
   }
 

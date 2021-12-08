@@ -279,27 +279,9 @@ class _KVOIPCallState extends State<KVOIPCall>
     }
   }
 
-  static Future<void> requestPermission() async {
-    // ios
-    // try {
-    //   await AppTrackingTransparency.requestTrackingAuthorization();
-    // } catch (e) {}
-
-    // local and push ask for iOS
-    try {
-      // await KLocalNotifHelper.setupLocalNotifications();
-    } catch (e) {}
-
-    // setup location permission ask
-    try {
-      await KLocationHelper.askForPermission();
-    } catch (e) {}
-
-    // audio and video
-    try {
-      await KWebRTCHelper.askForPermissions();
-    } catch (e) {}
-  }
+  // audio and video
+  static Future<void> requestPermission() async =>
+      KWebRTCHelper.askForPermissions();
 
   void notifListener(KFullNotification notification) {
     switch (notification.app) {
@@ -620,8 +602,8 @@ class _KVOIPCallState extends State<KVOIPCall>
       // stopCallerTune();
       commManager?.sayGoodbye(tag: "KVoipCall.hangUp");
     } catch (e) {}
-    KVoipService.removeContext(voipServiceID);
     safePop(true);
+    KVoipService.removeContext(voipServiceID);
   }
 
   void videoTap() {
@@ -730,10 +712,6 @@ class _KVOIPCallState extends State<KVOIPCall>
                 ),
               ),
             ),
-          ),
-          Align(
-            alignment: Alignment.topLeft,
-            child: SafeArea(child: BackButton()),
           ),
         ],
       ],
@@ -1034,11 +1012,16 @@ class _KVOIPCallState extends State<KVOIPCall>
             );
 
             return Stack(
+              fit: StackFit.expand,
               children: [
                 voipView,
                 SlideTransition(
                   position: _slidingAnimation,
                   child: slidingBody,
+                ),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: SafeArea(child: BackButton()),
                 ),
               ],
             );
