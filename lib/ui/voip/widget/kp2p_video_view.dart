@@ -21,19 +21,21 @@ class KP2PVideoView extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _P2PVideoViewState();
+  State<StatefulWidget> createState() => _KP2PVideoViewState();
 }
 
-class _P2PVideoViewState extends State<KP2PVideoView> {
-  void _onLocalVideoTap() => this.widget.onLocalVideoTap?.call();
-
-  void _onRemoteVideoTap() => this.widget.onRemoteVideoTap?.call();
-
+class _KP2PVideoViewState extends State<KP2PVideoView> {
   double? get localAspectRatio {
     final ratio = widget.localRenderer.videoHeight.toDouble() /
         widget.localRenderer.videoWidth.toDouble();
     return ratio.isNaN ? null : ratio;
   }
+
+  Iterable<RTCVideoRenderer> get validRemoteRenderers =>
+      widget.remoteRenderers.values.where((rr) => rr.srcObject != null);
+
+  bool get showLocalVideo =>
+      localAspectRatio != null && widget.localRenderer.srcObject != null;
 
   @override
   void initState() {
@@ -43,11 +45,15 @@ class _P2PVideoViewState extends State<KP2PVideoView> {
     widget.remoteRenderers.forEach((_, rr) => rr.onResize = onVideoResize);
   }
 
+  void _onLocalVideoTap() => widget.onLocalVideoTap?.call();
+
+  void _onRemoteVideoTap() => widget.onRemoteVideoTap?.call();
+
   void onVideoResize() => !mounted ? null : setState(() {});
 
   @override
   Widget build(BuildContext context) {
-    final local = this.localAspectRatio == null
+    final local = !showLocalVideo
         ? Container()
         : ClipRRect(
             borderRadius: BorderRadius.circular(10),
@@ -55,7 +61,7 @@ class _P2PVideoViewState extends State<KP2PVideoView> {
               height: MediaQuery.of(context).size.height / 4,
               color: KStyles.extraDarkGrey,
               child: AspectRatio(
-                aspectRatio: this.localAspectRatio!,
+                aspectRatio: localAspectRatio!,
                 child: InkWell(
                   child: RTCVideoView(widget.localRenderer),
                   onTap: _onLocalVideoTap,
@@ -64,25 +70,25 @@ class _P2PVideoViewState extends State<KP2PVideoView> {
             ),
           );
 
-    final remoteVideo = widget.remoteRenderers.length == 1
+    final remoteVideo = validRemoteRenderers.length == 1
         ? Container(
             color: KStyles.black,
             child: RTCVideoView(
-              widget.remoteRenderers.values.first,
+              validRemoteRenderers.first,
               objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
             ),
           )
         : Column(
-            children: widget.remoteRenderers.keys
+            children: validRemoteRenderers
                 .map(
-                  (id) => Expanded(
+                  (rr) => Expanded(
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.red),
                         color: KStyles.black,
                       ),
                       child: RTCVideoView(
-                        widget.remoteRenderers[id]!,
+                        rr,
                         objectFit:
                             RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
                       ),

@@ -81,8 +81,10 @@ class _KVOIPCallState extends State<KVOIPCall>
   late AnimationController _slidingAnimationController;
   late Animation<Offset> _slidingAnimation;
 
+  final Duration panelSlideDuration = Duration(milliseconds: 500);
   final PanelController panelCtrl = PanelController();
   final Set<int> receivedCodes = {};
+  final Map<String, RTCVideoRenderer> remoteRenderers = {};
 
   // final Map<String, RTCVideoRenderer> remoteRenderers = {};
 
@@ -98,6 +100,9 @@ class _KVOIPCallState extends State<KVOIPCall>
   Timer? panelTimer;
   String? infoMsg;
   int? infoCode;
+  RTCVideoRenderer? localRenderer;
+
+  bool isPanelOpen = true;
 
   // RTCVideoRenderer? localRenderer;
   // bool isMySoundEnabled = true;
@@ -114,11 +119,6 @@ class _KVOIPCallState extends State<KVOIPCall>
   }
 
   KVOIPCommManager? get commManager => voipContext?.commManager;
-
-  RTCVideoRenderer? get localRenderer => voipContext?.localRenderer;
-
-  Map<String, RTCVideoRenderer>? get remoteRenderers =>
-      voipContext?.remoteRenderers;
 
   bool get isAccepted => widget.autoPickup;
 
@@ -175,8 +175,9 @@ class _KVOIPCallState extends State<KVOIPCall>
 
     _slidingAnimationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 500),
+      duration: panelSlideDuration,
     )..forward();
+
     _slidingAnimation = Tween<Offset>(
       begin: Offset(0.0, 1.0),
       end: Offset(0.0, 0.0),
@@ -184,6 +185,8 @@ class _KVOIPCallState extends State<KVOIPCall>
       parent: _slidingAnimationController,
       curve: Curves.easeInOut,
     ));
+    _slidingAnimationController.addListener(() => setState(() => isPanelOpen =
+        _slidingAnimationController.status == AnimationStatus.completed));
 
     streamSub = KNotifStreamHelper.stream.listen(notifListener);
 
@@ -225,13 +228,50 @@ class _KVOIPCallState extends State<KVOIPCall>
     else if (state == AppLifecycleState.resumed) commManager?.onResumedState();
   }
 
-  void voipContextListener() => setState(() {});
+  void voipContextListener() {
+    setState(() {});
+
+    // Setup local renderer
+    if (localRenderer == null && voipContext?.localMedia != null) {
+      setupLocalRenderer();
+    }
+
+    // Setup remote renderers
+    if (remoteRenderers.length != (voipContext?.remoteMedia ?? {}).length) {
+      setupRemoteRenderers();
+    }
+  }
+
+  void setupLocalRenderer() {
+    buildLocalRenderer().then((renderer) {
+      if (renderer == null) {
+        print("##### buildLocalRenderer - RETURNED NULL");
+        return;
+      }
+      localRenderer?.dispose();
+      renderer.srcObject = voipContext?.localMedia;
+      setState(() => localRenderer = renderer);
+    });
+  }
+
+  void setupRemoteRenderers() {
+    voipContext?.remoteMedia.forEach((key, val) {
+      final renderer = RTCVideoRenderer();
+      renderer.initialize().whenComplete(() {
+        renderer.srcObject = val;
+        remoteRenderers[key]?.dispose();
+        setState(() => remoteRenderers[key] = renderer);
+      });
+    });
+  }
 
   Future<void> setupVoipContext() async {
     // CHECK FOR EXISTING VOIP CONTEXT
     if (KVoipService.hasContext(voipServiceID)) {
       print("###### KVoipService EXISTING CONTEXT ID - $voipServiceID");
       voipContext = KVoipService.getContext(voipServiceID);
+      setupLocalRenderer();
+      setupRemoteRenderers();
       setState(() => callState = _CallState.in_progress);
       return;
     } else {
@@ -239,17 +279,6 @@ class _KVOIPCallState extends State<KVOIPCall>
       voipContext = KVoipContext(voipServiceID);
     }
     voipContext?.addListener(voipContextListener);
-
-    // INIT RENDERS
-    final localRendererResult = await buildLocalRenderer();
-    if (localRendererResult == null) {
-      safePop();
-      return;
-    } else {
-      setState(() {
-        voipContext!.localRenderer = localRendererResult;
-      });
-    }
 
     // SETUP COMM MANAGER
     final commManagerResult = await buildCommManager(myPUID!, myName!);
@@ -305,7 +334,7 @@ class _KVOIPCallState extends State<KVOIPCall>
 
   void safePop([final result]) {
     if (mounted && (ModalRoute.of(context)?.isActive ?? false)) {
-      Navigator.of(context).pop(result);
+      Navigator.of(context).maybePop(result);
     }
   }
 
@@ -664,14 +693,18 @@ class _KVOIPCallState extends State<KVOIPCall>
     commManager?.setCameraEnabled(newValue);
   }
 
+  void releaseResources() {
+    localRenderer?.srcObject = null;
+    localRenderer?.dispose();
+    remoteRenderers.forEach((_, rr) {
+      rr.srcObject = null;
+      rr.dispose();
+    });
+  }
+
   Future<bool> _onWillPop() async {
+    releaseResources();
     return true;
-    // return (await showDialog(
-    //       context: context,
-    //       builder: (_) =>
-    //           BooleanDialog(title: 'Cúp máy?', isPositiveTheme: false),
-    //     )) ??
-    //     false;
   }
 
   @override
@@ -682,7 +715,7 @@ class _KVOIPCallState extends State<KVOIPCall>
         if (localRenderer != null) ...[
           KP2PVideoView(
             localRenderer: localRenderer!,
-            remoteRenderers: remoteRenderers!,
+            remoteRenderers: remoteRenderers,
             isRemoteCameraEnabled:
                 voipContext?.flags.isOtherCameraEnabled ?? false,
             isRemoteMicEnabled: voipContext?.flags.isOtherSoundEnabled ?? false,
@@ -990,10 +1023,14 @@ class _KVOIPCallState extends State<KVOIPCall>
             final slidingBody = SlidingUpPanel(
               color: Colors.transparent,
               onPanelClosed: () {
+                setState(() => isPanelOpen = false);
+                print("PANEL IS OPEN - $isPanelOpen");
                 FocusManager.instance.primaryFocus?.unfocus();
                 startPanelTimeout();
               },
               onPanelOpened: () {
+                setState(() => isPanelOpen = true);
+                print("PANEL IS OPEN - $isPanelOpen");
                 panelTimer?.cancel();
               },
               border: Border.all(color: Colors.white),
@@ -1021,7 +1058,13 @@ class _KVOIPCallState extends State<KVOIPCall>
                 ),
                 Align(
                   alignment: Alignment.topLeft,
-                  child: SafeArea(child: BackButton()),
+                  child: SafeArea(
+                    child: AnimatedOpacity(
+                      opacity: isPanelOpen ? 1 : 0,
+                      duration: panelSlideDuration,
+                      child: BackButton(),
+                    ),
+                  ),
                 ),
               ],
             );

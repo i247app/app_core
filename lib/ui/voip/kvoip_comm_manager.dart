@@ -617,8 +617,12 @@ class KVOIPCommManager {
 
   void onLocalStreamWrapper(String id, MediaStream stream) {
     onLocalStream?.call(id, stream);
-    voipContext?.withLocalRenderer((localRenderer) {
-      localRenderer?.srcObject = stream;
+    print("COMM MANAGER voipContext?.localMedia == ${voipContext?.localMedia}");
+    voipContext?.localMedia = stream;
+    print("COMM MANAGER voipContext?.localMedia == ${voipContext?.localMedia}");
+    voipContext?.withLocalMedia((localMedia) {
+      // Dummy call just to trigger the notifyListeners()
+      // TODO fix this hackiness
     });
   }
 
@@ -685,9 +689,9 @@ class KVOIPCommManager {
     onRemoveRemoteStream?.call(peerID, stream);
 
     // Update voip context if available
-    voipContext?.withRemoteRenderers((remoteRenderers) {
-      remoteRenderers[peerID]?.srcObject = null;
-      remoteRenderers.remove(peerID);
+    voipContext?.withRemoteMedia((remoteMedia) {
+      remoteMedia[peerID]?.dispose();
+      remoteMedia.remove(peerID);
     });
   }
 
@@ -697,11 +701,8 @@ class KVOIPCommManager {
 
     // Update voip context if available
     if (voipContext != null) {
-      final remoteRenderer = RTCVideoRenderer();
-      await remoteRenderer.initialize();
-      remoteRenderer.srcObject = stream;
-      voipContext?.withRemoteRenderers((remoteRenderers) {
-        remoteRenderers[peerID] = remoteRenderer;
+      voipContext?.withRemoteMedia((remoteMedia) {
+        remoteMedia[peerID] = stream;
       });
     }
   }

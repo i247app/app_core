@@ -14,23 +14,37 @@ class KVoipFlags {
 class KVoipContext extends ChangeNotifier {
   final String voipID;
 
-  Map<String, RTCVideoRenderer> remoteRenderers = {};
-  RTCVideoRenderer? localRenderer;
+  // Map<String, RTCVideoRenderer> remoteRenderers = {};
+  // RTCVideoRenderer? localRenderer;
+  Map<String, MediaStream> remoteMedia = {};
+  MediaStream? localMedia;
   KVOIPCommManager? commManager;
   KVoipFlags flags = KVoipFlags();
 
   KVoipContext(this.voipID);
 
+  // /// Manipulate local renderer
+  // void withLocalRenderer(void Function(RTCVideoRenderer? localRenderer) fn) {
+  //   fn.call(localRenderer);
+  //   notifyListeners();
+  // }
+  //
+  // /// Manipulate remote renderers
+  // void withRemoteRenderers(
+  //     void Function(Map<String, RTCVideoRenderer> remoteRenderers) fn) {
+  //   fn.call(remoteRenderers);
+  //   notifyListeners();
+  // }
+
   /// Manipulate local renderer
-  void withLocalRenderer(void Function(RTCVideoRenderer? localRenderer) fn) {
-    fn.call(localRenderer);
+  void withLocalMedia(void Function(MediaStream? localMedia) fn) {
+    fn.call(localMedia);
     notifyListeners();
   }
 
   /// Manipulate remote renderers
-  void withRemoteRenderers(
-      void Function(Map<String, RTCVideoRenderer> remoteRenderers) fn) {
-    fn.call(remoteRenderers);
+  void withRemoteMedia(void Function(Map<String, MediaStream> remoteMedia) fn) {
+    fn.call(remoteMedia);
     notifyListeners();
   }
 
@@ -49,12 +63,12 @@ class KVoipContext extends ChangeNotifier {
   /// Close all resources
   void close() {
     commManager?.close();
-    localRenderer?.dispose();
-    remoteRenderers.forEach((_, rr) => rr.dispose());
+    localMedia?.dispose();
+    remoteMedia.forEach((_, rr) => rr.dispose());
 
     commManager = null;
-    localRenderer = null;
-    remoteRenderers.clear();
+    localMedia = null;
+    remoteMedia.clear();
 
     notifyListeners();
 
