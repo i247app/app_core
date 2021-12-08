@@ -8,8 +8,9 @@ import 'package:app_core/ui/widget/kuser_avatar.dart';
 
 class KGigUserLabel extends StatelessWidget {
   final KUser user;
+  final String? heroTag;
 
-  KGigUserLabel(this.user);
+  KGigUserLabel(this.user, {this.heroTag});
 
   factory KGigUserLabel.build({
     required String name,

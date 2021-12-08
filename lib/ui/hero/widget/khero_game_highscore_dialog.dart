@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:app_core/app_core.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
