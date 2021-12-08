@@ -153,7 +153,7 @@ class KVOIPCommManager {
 
   void close() {
     this.isDisposed = true;
-    this._localStreams.forEach((ls) => ls.dispose());
+    this._localStreams.forEach((st) => st.dispose());
     this._remoteStreams.forEach((st) => st.dispose());
     this._peerConnections.forEach((_, pc) => pc.close());
     this._dataChannels.forEach((_, dc) => dc.close());
