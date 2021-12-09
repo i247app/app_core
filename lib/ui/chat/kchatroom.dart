@@ -162,7 +162,6 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
               SizedBox(height: 40),
             ],
           );
-
     final chatListing = ListView.builder(
       padding: EdgeInsets.all(4),
       reverse: true,
@@ -180,6 +179,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
               : this.chatMessages[i + 1];
           return KChatBubble(
             this.chatMessages[i],
+            onReload: () => setState(() {}),
             members: chatData.members,
             previousMsg: next,
             nextMsg: prev,

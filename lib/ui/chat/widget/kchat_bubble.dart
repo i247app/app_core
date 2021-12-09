@@ -20,6 +20,7 @@ class KChatBubble extends StatelessWidget {
   final KChatMessage? previousMsg;
   final KChatMessage? nextMsg;
   final Function(KUser)? onAvatarClick;
+  final Function()? onReload;
 
   bool get isFirstOfSeries {
     if (this.previousMsg == null ||
@@ -114,6 +115,7 @@ class KChatBubble extends StatelessWidget {
     this.previousMsg,
     this.nextMsg,
     this.onAvatarClick,
+    this.onReload,
   });
 
   void onImageMessageClick(ctx, KChatMessage msg) {
@@ -140,7 +142,41 @@ class KChatBubble extends StatelessWidget {
         : theme.primaryColor.withOpacity(0.05);
     final chatForegroundColor =
         this.msg.isMe ? Colors.white : theme.primaryColor;
-
+    final imageView = Image.network(
+      this.msg.message!,
+      frameBuilder: (BuildContext context, Widget child, int? frame,
+          bool wasSynchronouslyLoaded) {
+        if (wasSynchronouslyLoaded) {
+          return child;
+        }
+        return AnimatedOpacity(
+          opacity: frame == null ? 0 : 1,
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.easeOut,
+          child: InkWell(
+            child: child,
+            onTap: () => onImageMessageClick(context, msg),
+          ),
+        );
+      },
+      errorBuilder: (context, error, stackTrace) {
+        return InkWell(
+          onTap: () => this.onReload?.call(),
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Icon(Icons.replay_outlined),
+                  Text("Tap to reload"),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
     final content;
     switch (msg.messageType ?? "") {
       case KChatMessage.CONTENT_TYPE_TEXT:
@@ -163,18 +199,11 @@ class KChatBubble extends StatelessWidget {
                     fit: BoxFit.fitWidth,
                     child: Icon(Icons.broken_image),
                   )
-                : InkWell(
-                    onTap: () => onImageMessageClick(context, msg),
-                    child: FadeInImage(
-                      placeholder: AssetImage(KAssets.IMG_TRANSPARENCY),
-                      image: this.msg.imageData != null
-                          ? MemoryImage(base64Decode(this.msg.imageData!))
-                              as ImageProvider<Object>
-                          : NetworkImage(this.msg.message!),
-                      fit: BoxFit.contain,
-                      fadeInDuration: Duration(milliseconds: 100),
-                    ),
-                  ),
+                : this.msg.imageData != null
+                    ? InkWell(
+                        onTap: () => onImageMessageClick(context, msg),
+                        child: Image.memory(base64Decode(this.msg.imageData!)))
+                    : imageView,
           ),
         );
         break;
