@@ -1,14 +1,13 @@
-import 'dart:async';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/painting.dart';
 
 enum KRebuildHelperSignal { rebuild }
 
 abstract class KRebuildHelper {
-  static final StreamController<KRebuildHelperSignal> _streamController =
-      StreamController.broadcast();
+  static final ChangeNotifier notifier = ChangeNotifier();
 
-  static Stream<KRebuildHelperSignal> get stream =>
-      _streamController.stream.asBroadcastStream();
-
-  static void forceRebuild() =>
-      _streamController.add(KRebuildHelperSignal.rebuild);
+  static void forceRebuild() {
+    notifier.notifyListeners();
+    imageCache?.clear(); // Clear the image cache
+  }
 }
