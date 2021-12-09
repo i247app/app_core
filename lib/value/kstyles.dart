@@ -41,6 +41,8 @@ abstract class KStyles {
     primaryFaded: Color(0xff0099EE),
     active: Color(0xff0099EE),
     error: Colors.red,
+    schemePrimary: Colors.blue,
+    schemeSecondary: Color(0xff0099EE),
   );
 
   static KPalette paletteDark = paletteLight;
@@ -171,12 +173,12 @@ abstract class KStyles {
       ThemeData(brightness: brightnessTheme).copyWith(
         colorScheme: brightnessTheme == Brightness.dark
             ? ColorScheme.dark(
-                primary: colorPrimary,
-                secondary: Color(0xff0099EE),
+                primary: palette.schemePrimary,
+                secondary: palette.schemeSecondary,
               )
             : ColorScheme.light(
-                primary: colorPrimary,
-                secondary: Color(0xff0099EE),
+                primary: palette.schemePrimary,
+                secondary: palette.schemeSecondary,
               ),
         backgroundColor: palette.contrasting,
         scaffoldBackgroundColor: palette.contrasting,

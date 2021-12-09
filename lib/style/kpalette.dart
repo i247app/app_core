@@ -16,6 +16,8 @@ class KPalette {
   final Color contrasting;
   final Color error;
   final Color active;
+  final Color schemePrimary;
+  final Color schemeSecondary;
 
   const KPalette({
     // required this.palettePrimary,
@@ -32,5 +34,7 @@ class KPalette {
     required this.contrasting,
     required this.error,
     required this.active,
+    required this.schemePrimary,
+    required this.schemeSecondary,
   });
 }
