@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:app_core/helper/service/ktheme_service.dart';
 import 'package:app_core/style/kpalette.dart';
+import 'package:app_core/style/kpalette_group.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -177,115 +178,120 @@ abstract class KStyles {
     return Theme.of(context).brightness;
   }
 
-  static ThemeData themeDataBuilder(KPalette palette, Brightness brightness) =>
-      ThemeData(brightness: brightness).copyWith(
-        colorScheme: brightness == Brightness.dark
-            ? ColorScheme.dark(
-                primary: palette.schemePrimary,
-                secondary: palette.schemeSecondary,
-              )
-            : ColorScheme.light(
-                primary: palette.schemePrimary,
-                secondary: palette.schemeSecondary,
-              ),
+  static ThemeData themeDataBuilder(
+      KPaletteGroup paletteGroup, Brightness brightness) {
+    final palette = paletteGroup.getPaletteByBrightness(brightness);
+    return ThemeData(brightness: brightness).copyWith(
+      colorScheme: brightness == Brightness.dark
+          ? ColorScheme.dark(
+              primary: palette.schemePrimary,
+              secondary: palette.schemeSecondary,
+            )
+          : ColorScheme.light(
+              primary: palette.schemePrimary,
+              secondary: palette.schemeSecondary,
+            ),
+      backgroundColor: palette.contrasting,
+      scaffoldBackgroundColor: palette.contrasting,
+      primaryColor: palette.primary,
+      primaryColorLight: palette.primaryLight,
+      errorColor: palette.error,
+      toggleableActiveColor: palette.active,
+      textSelectionTheme:
+          TextSelectionThemeData(cursorColor: palette.schemePrimary),
+      iconTheme: IconThemeData(color: palette.primaryLight),
+      primaryIconTheme: IconThemeData(color: palette.primaryLight),
+      textTheme: GoogleFonts.openSansTextTheme(
+        TextTheme(
+          headline1:
+              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+          headline2:
+              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+          headline4:
+              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+          headline5:
+              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+          headline6:
+              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+          subtitle1:
+              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+          subtitle2:
+              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+          bodyText1:
+              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+          bodyText2:
+              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+          caption:
+              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+        ),
+      ),
+      appBarTheme: AppBarTheme(
         backgroundColor: palette.contrasting,
-        scaffoldBackgroundColor: palette.contrasting,
-        primaryColor: palette.primary,
-        primaryColorLight: palette.primaryLight,
-        errorColor: palette.error,
-        toggleableActiveColor: palette.active,
-        textSelectionTheme: TextSelectionThemeData(cursorColor: colorPrimary),
-        iconTheme: IconThemeData(color: palette.primaryLight),
-        primaryIconTheme: IconThemeData(color: palette.primaryLight),
-        textTheme: GoogleFonts.openSansTextTheme(
-          TextTheme(
-            headline1: TextStyle(
-                color: palette.primary, fontWeight: FontWeight.normal),
-            headline2: TextStyle(
-                color: palette.primary, fontWeight: FontWeight.normal),
-            headline4: TextStyle(
-                color: palette.primary, fontWeight: FontWeight.normal),
-            headline5: TextStyle(
-                color: palette.primary, fontWeight: FontWeight.normal),
-            headline6: TextStyle(
-                color: palette.primary, fontWeight: FontWeight.normal),
-            subtitle1: TextStyle(
-                color: palette.primary, fontWeight: FontWeight.normal),
-            subtitle2: TextStyle(
-                color: palette.primary, fontWeight: FontWeight.normal),
-            bodyText1: TextStyle(
-                color: palette.primary, fontWeight: FontWeight.normal),
-            bodyText2: TextStyle(
-                color: palette.primary, fontWeight: FontWeight.normal),
-            caption: TextStyle(
-                color: palette.primary, fontWeight: FontWeight.normal),
-          ),
-        ),
-        appBarTheme: AppBarTheme(
-          backgroundColor: palette.contrasting,
-          elevation: 0,
-          iconTheme: IconThemeData(color: palette.primary),
-          titleTextStyle: TextStyle(color: palette.primary, fontSize: 20),
-          centerTitle: false,
-        ),
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: palette.primary,
-          unselectedItemColor: palette.primaryLight,
-          elevation: 1,
-          backgroundColor: palette.contrasting,
-        ),
-        floatingActionButtonTheme:
-            FloatingActionButtonThemeData(backgroundColor: palette.primary),
-        textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(
-            primary: palette.active,
-            textStyle: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
-              letterSpacing: 1.5,
-            ),
-          ),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            primary: palette.schemePrimary,
-            onPrimary: Colors.white,
-            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(60),
-              side: BorderSide(color: Colors.transparent),
-            ),
-            textStyle: TextStyle(
-              color: palette.primary,
-              fontWeight: FontWeight.w600,
-              fontSize: 16,
-              letterSpacing: 1.5,
-            ),
-          ),
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          hintStyle: TextStyle(color: palette.primary),
-          labelStyle: TextStyle(
-            color: palette.primaryLight,
+        elevation: 0,
+        iconTheme: IconThemeData(color: palette.primary),
+        titleTextStyle: TextStyle(color: palette.primary, fontSize: 20),
+        centerTitle: false,
+      ),
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: palette.primary,
+        unselectedItemColor: palette.primaryLight,
+        elevation: 1,
+        backgroundColor: palette.contrasting,
+      ),
+      floatingActionButtonTheme:
+          FloatingActionButtonThemeData(backgroundColor: palette.primary),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          primary: palette.active,
+          textStyle: TextStyle(
+            fontWeight: FontWeight.w600,
             fontSize: 16,
-            letterSpacing: 0.15,
+            letterSpacing: 1.5,
           ),
-          enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: palette.primaryLight)),
-          focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: palette.primary)),
-          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-          counterStyle: TextStyle(color: palette.primary),
         ),
-        dividerTheme: DividerThemeData(
-          thickness: 1,
-          color: palette.primary,
-          // indent: 16,
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          primary: palette.schemePrimary,
+          onPrimary: Colors.white,
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(60),
+            side: BorderSide(color: Colors.transparent),
+          ),
+          textStyle: TextStyle(
+            color: palette.primary,
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
+            letterSpacing: 1.5,
+          ),
         ),
-        cardTheme: CardTheme(
-          color: palette.contrasting,
-          shadowColor: palette.primaryLight,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        fillColor: palette.primary,
+        hintStyle: TextStyle(color: palette.primaryFaded),
+        labelStyle: TextStyle(
+          color: palette.primaryLight,
+          fontSize: 16,
+          letterSpacing: 0.15,
         ),
-      );
+        enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: palette.primaryLight)),
+        focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: palette.schemePrimary)),
+        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        counterStyle: TextStyle(color: palette.primary),
+      ),
+      dividerTheme: DividerThemeData(
+        thickness: 1,
+        color: palette.primaryLight,
+        // indent: 16,
+      ),
+      cardTheme: CardTheme(
+        color: palette.contrasting,
+        shadowColor: palette.primaryLight,
+      ),
+    );
+  }
 }
