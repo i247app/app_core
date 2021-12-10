@@ -244,7 +244,6 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
     );
 
     final isDarkMode = KThemeService.isDarkMode();
-    print("IS DARK MODE ? - $isDarkMode");
 
     final inputBox = SafeArea(
       top: false,

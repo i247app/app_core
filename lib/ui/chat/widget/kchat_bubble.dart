@@ -4,6 +4,7 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/kchat_message.dart';
 import 'package:app_core/ui/widget/kimage_viewer.dart';
+import 'package:app_core/ui/widget/ksmart_image.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -200,15 +201,19 @@ class KChatBubble extends StatelessWidget {
                   )
                 : InkWell(
                     onTap: () => onImageMessageClick(context, msg),
-                    child: FadeInImage(
-                      placeholder: AssetImage(KAssets.IMG_TRANSPARENCY),
-                      image: this.msg.imageData != null
-                          ? MemoryImage(base64Decode(this.msg.imageData!))
-                              as ImageProvider<Object>
-                          : NetworkImage(this.msg.message!),
-                      fit: BoxFit.contain,
-                      fadeInDuration: Duration(milliseconds: 100),
+                    child: KSmartImage(
+                      base64Data: msg.imageData,
+                      url: msg.message,
                     ),
+                    // FadeInImage(
+                    //   placeholder: AssetImage(KAssets.IMG_TRANSPARENCY),
+                    //   image: this.msg.imageData != null
+                    //       ? MemoryImage(base64Decode(this.msg.imageData!))
+                    //           as ImageProvider<Object>
+                    //       : NetworkImage(this.msg.message!),
+                    //   fit: BoxFit.contain,
+                    //   fadeInDuration: Duration(milliseconds: 100),
+                    // ),
                   ),
           ),
         );
