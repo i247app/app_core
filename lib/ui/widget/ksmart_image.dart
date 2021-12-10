@@ -39,6 +39,7 @@ class _KSmartImageState extends State<KSmartImage> {
     super.initState();
     loadImage();
   }
+  
 
   void loadImage() async {
     setState(() {
