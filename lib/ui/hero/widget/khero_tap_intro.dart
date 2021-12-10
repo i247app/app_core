@@ -99,8 +99,10 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   int currentQuestionIndex = 0;
   int? spinningHeroIndex;
   int? currentShowStarIndex;
-  int correctAnswerCount = 0;
-  int wrongAnswerCount = 0;
+  int correctCount = 0;
+
+  // int wrongAnswerCount = 0;
+  int questionCount = 0;
   bool isPlaySound = false;
 
   List<double> barrierX = [0, 0, 0, 0];
@@ -128,18 +130,23 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   double eggWidth = 90;
   double eggHeight = 90;
 
-  int get totalAnswerCount => correctAnswerCount + wrongAnswerCount;
-  int get correctAnswerPercent => totalAnswerCount > 0 ? (correctAnswerCount*100/totalAnswerCount).floor() : 0;
+  // int get totalAnswerCount => correctAnswerCount + wrongAnswerCount;
+  // int get correctAnswerPercent => totalAnswerCount > 0 ? (correctAnswerCount*100/totalAnswerCount).floor() : 0;
+
+  // int get correctPercent => questionCount > 0 ? ((correctCount*100)/questionCount).floor() : 0;
+  int get correctPercent =>
+      questionCount > 0 ? ((correctCount * 100) / questionCount).floor() : 0;
 
   @override
   void initState() {
     super.initState();
 
-    questions = List.generate(10, (index) => KQuestion()
-      ..pid=index.toString()
-      ..answer=rightAnswers[index]
-      ..question=questionContents[index]
-    );
+    questions = List.generate(
+        10,
+        (index) => KQuestion()
+          ..pid = index.toString()
+          ..answer = rightAnswers[index]
+          ..question = questionContents[index]);
     questions.shuffle();
 
     loadAudioAsset();
@@ -385,7 +392,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
 
         if (isTrueAnswer) {
           this.setState(() {
-            correctAnswerCount = correctAnswerCount + 1;
+            questionCount++;
+            correctCount = correctCount + 1;
             currentShowStarIndex = answerIndex;
             if (!_moveUpAnimationController.isAnimating) {
               this._moveUpAnimationController.reset();
@@ -394,7 +402,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
           });
         } else {
           this.setState(() {
-            wrongAnswerCount = wrongAnswerCount + 1;
+            questionCount++;
+            // wrongAnswerCount = wrongAnswerCount + 1;
             this.isShowSadTamago = true;
           });
         }
@@ -544,7 +553,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                   width: MediaQuery.of(context).size.width * 0.75,
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                   child: Text(
-                    "${correctAnswerPercent}%",
+                    "${correctPercent}%",
                     textScaleFactor: 1.0,
                     textAlign: TextAlign.center,
                     style: TextStyle(
