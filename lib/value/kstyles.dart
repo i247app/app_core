@@ -16,7 +16,11 @@ abstract class KStyles {
   /// Theme Brightness
 
   static Brightness get brightnessTheme =>
-      KThemeService.isDarkMode() ? Brightness.dark : Brightness.light;
+      KThemeService.getThemeMode() == ThemeMode.system
+          ? (KThemeService.isDarkMode() ? Brightness.dark : Brightness.light)
+          : KThemeService.getThemeMode() == ThemeMode.dark
+              ? Brightness.dark
+              : Brightness.light;
 
   /* Base Colors */
   static final Color white = Colors.white; //Color(0xfffafafa);
