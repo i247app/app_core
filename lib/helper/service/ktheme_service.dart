@@ -31,7 +31,8 @@ abstract class KThemeService {
       return Theme.of(kNavigatorKey.currentContext!).brightness ==
           Brightness.dark;
       // return getThemeMode() == ThemeMode.dark;
-    } catch (_) {
+    } catch (e) {
+      print("=>>> ${e.toString()}");
       return false;
     }
   }

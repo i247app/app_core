@@ -93,8 +93,10 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
 
     // print("# # # # # THEME MODE - $themeMode");
 
-    final defaultTheme = KStyles.themeDataBuilder(widget.paletteGroup.light);
-    final darkTheme = KStyles.themeDataBuilder(widget.paletteGroup.dark);
+    final defaultTheme =
+        KStyles.themeDataBuilder(widget.paletteGroup.light, Brightness.light);
+    final darkTheme =
+        KStyles.themeDataBuilder(widget.paletteGroup.dark, Brightness.dark);
 
     final innerApp = (widget.customThemeBuilder ?? defaultThemeBuilder).call(
       widget.paletteGroup,

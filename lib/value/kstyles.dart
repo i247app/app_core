@@ -173,9 +173,13 @@ abstract class KStyles {
         fontSize: 22,
       );
 
-  static ThemeData themeDataBuilder(KPalette palette) =>
-      ThemeData(brightness: brightnessTheme).copyWith(
-        colorScheme: brightnessTheme == Brightness.dark
+  static Brightness getCurrentBrightness(BuildContext context) {
+    return Theme.of(context).brightness;
+  }
+
+  static ThemeData themeDataBuilder(KPalette palette, Brightness brightness) =>
+      ThemeData(brightness: brightness).copyWith(
+        colorScheme: brightness == Brightness.dark
             ? ColorScheme.dark(
                 primary: palette.schemePrimary,
                 secondary: palette.schemeSecondary,

@@ -23,7 +23,7 @@ class KTheme extends KBaseTheme {
   /// Styles stuff
   ///
 
-  ThemeData get themeData => KStyles.themeDataBuilder(activePalette);
+  // ThemeData get themeData => KStyles.themeDataBuilder(activePalette);
 
   final double leftPanelWidth = 270;
   final double smallestSize = 600;
