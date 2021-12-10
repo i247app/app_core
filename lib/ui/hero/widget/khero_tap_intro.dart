@@ -160,6 +160,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   int? overlayID;
   bool isPause = false;
   bool isBackgroundSoundPlaying = false;
+  bool isMuted = true;
   bool isShowSadTamago = false;
   bool isAnimating = false;
 
@@ -411,7 +412,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
         this.setState(() {
           this.tamagoJumpTimes = 0;
         });
-        if (!widget.isMuted && !isPlaySound) {
+        if (!isMuted && !isPlaySound) {
           this.setState(() {
             this.isPlaySound = true;
           });
@@ -463,6 +464,18 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
         });
       });
     });
+  }
+
+  void toggleBackgroundSound() {
+    if (this.isMuted) {
+      this.setState(() {
+        this.isMuted = false;
+      });
+    } else {
+      this.setState(() {
+        this.isMuted = true;
+      });
+    }
   }
 
   void restartGame() {
@@ -580,22 +593,63 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                   ),
                 ],
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.75,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  child: Text(
-                    "${correctPercent}%",
-                    textScaleFactor: 1.0,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 25,
-                      fontWeight: FontWeight.w600,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      child: Text(
+                        "${questionCount}",
+                        textScaleFactor: 1.0,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      child: Text(
+                        "${correctPercent}%",
+                        textScaleFactor: 1.0,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      padding: EdgeInsets.only(
+                          top: 5, bottom: 5, left: 5, right: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      child: Icon(
+                        this.isMuted
+                            ? Icons.volume_off
+                            : Icons.volume_up,
+                        color: Color(0xff2c1c44),
+                        size: 30,
+                      ),
+                    ),
+                    onTap: () => this.toggleBackgroundSound(),
+                  ),
+                ],
               ),
               SizedBox(
                 height: 60,
