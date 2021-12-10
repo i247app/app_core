@@ -1,23 +1,24 @@
 import 'dart:async';
 
-import 'package:app_core/value/kphrases.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:app_core/header/no_overscroll.dart';
+import 'package:app_core/helper/klocal_notif_helper.dart';
 import 'package:app_core/helper/kphoto_helper.dart';
+import 'package:app_core/helper/kpush_data_helper.dart';
 import 'package:app_core/helper/ksession_data.dart';
+import 'package:app_core/helper/service/ktheme_service.dart';
 import 'package:app_core/model/kchat_message.dart';
+import 'package:app_core/model/kpush_data.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/ui/chat/service/kchatroom_controller.dart';
 import 'package:app_core/ui/chat/service/kchatroom_data.dart';
 import 'package:app_core/ui/chat/widget/kchat_bubble.dart';
 import 'package:app_core/ui/chat/widget/kuser_profile_view.dart';
-import 'package:app_core/helper/klocal_notif_helper.dart';
-import 'package:app_core/helper/kpush_data_helper.dart';
-import 'package:app_core/model/kpush_data.dart';
-import 'package:app_core/header/no_overscroll.dart';
 import 'package:app_core/ui/widget/dialog/kopen_settings_dialog.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
+import 'package:app_core/value/kphrases.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class KChatroom extends StatefulWidget {
   final KChatroomController controller;
@@ -242,7 +243,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
       ),
     );
 
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final isDarkMode = KThemeService.isDarkMode();
 
     final inputBox = SafeArea(
       top: false,

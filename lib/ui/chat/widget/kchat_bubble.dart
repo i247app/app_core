@@ -1,13 +1,11 @@
-import 'dart:convert';
-
 import 'package:app_core/app_core.dart';
-import 'package:app_core/header/kassets.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/kchat_message.dart';
 import 'package:app_core/ui/widget/kimage_viewer.dart';
+import 'package:app_core/ui/widget/ksmart_image.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class KChatBubble extends StatelessWidget {
   static const Duration SHORT_TIME_CUTOFF = Duration(minutes: 2);
@@ -142,41 +140,41 @@ class KChatBubble extends StatelessWidget {
         : theme.primaryColor.withOpacity(0.05);
     final chatForegroundColor =
         this.msg.isMe ? Colors.white : theme.primaryColor;
-    final imageView = Image.network(
-      this.msg.message!,
-      frameBuilder: (BuildContext context, Widget child, int? frame,
-          bool wasSynchronouslyLoaded) {
-        if (wasSynchronouslyLoaded) {
-          return child;
-        }
-        return AnimatedOpacity(
-          opacity: frame == null ? 0 : 1,
-          duration: const Duration(milliseconds: 100),
-          curve: Curves.easeOut,
-          child: InkWell(
-            child: child,
-            onTap: () => onImageMessageClick(context, msg),
-          ),
-        );
-      },
-      errorBuilder: (context, error, stackTrace) {
-        return InkWell(
-          onTap: () => this.onReload?.call(),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Icon(Icons.replay_outlined),
-                  Text("Tap to reload"),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
+    // final imageView = Image.network(
+    //   this.msg.message!,
+    //   frameBuilder: (BuildContext context, Widget child, int? frame,
+    //       bool wasSynchronouslyLoaded) {
+    //     if (wasSynchronouslyLoaded) {
+    //       return child;
+    //     }
+    //     return AnimatedOpacity(
+    //       opacity: frame == null ? 0 : 1,
+    //       duration: const Duration(milliseconds: 100),
+    //       curve: Curves.easeOut,
+    //       child: InkWell(
+    //         child: child,
+    //         onTap: () => onImageMessageClick(context, msg),
+    //       ),
+    //     );
+    //   },
+    //   errorBuilder: (context, error, stackTrace) {
+    //     return InkWell(
+    //       onTap: () => this.onReload?.call(),
+    //       child: Card(
+    //         child: Padding(
+    //           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 20),
+    //           child: Column(
+    //             mainAxisSize: MainAxisSize.min,
+    //             children: <Widget>[
+    //               Icon(Icons.replay_outlined),
+    //               Text("Tap to reload"),
+    //             ],
+    //           ),
+    //         ),
+    //       ),
+    //     );
+    //   },
+    // );
     final content;
     switch (msg.messageType ?? "") {
       case KChatMessage.CONTENT_TYPE_TEXT:
@@ -199,11 +197,21 @@ class KChatBubble extends StatelessWidget {
                     fit: BoxFit.fitWidth,
                     child: Icon(Icons.broken_image),
                   )
-                : this.msg.imageData != null
-                    ? InkWell(
-                        onTap: () => onImageMessageClick(context, msg),
-                        child: Image.memory(base64Decode(this.msg.imageData!)))
-                    : imageView,
+                : KSmartImage(
+                    // key: Key(msg.messageID ?? "?"),
+                    base64Data: msg.imageData,
+                    url: msg.message,
+                    onClick: () => onImageMessageClick(context, msg),
+                  ),
+            // FadeInImage(
+            //   placeholder: AssetImage(KAssets.IMG_TRANSPARENCY),
+            //   image: this.msg.imageData != null
+            //       ? MemoryImage(base64Decode(this.msg.imageData!))
+            //           as ImageProvider<Object>
+            //       : NetworkImage(this.msg.message!),
+            //   fit: BoxFit.contain,
+            //   fadeInDuration: Duration(milliseconds: 100),
+            // ),
           ),
         );
         break;

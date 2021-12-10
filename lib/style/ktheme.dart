@@ -1,6 +1,6 @@
 import 'package:app_core/style/kbase_theme.dart';
 import 'package:app_core/style/kpalette_group.dart';
-import 'package:app_core/style/ktheme_data_manager.dart';
+import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -22,11 +22,8 @@ class KTheme extends KBaseTheme {
   ///
   /// Styles stuff
   ///
-  KThemeDataManager get themeDataManager =>
-      KThemeDataManager(this.paletteGroup);
 
-  ThemeData get themeData =>
-      this.themeDataManager.themeDataBuilder(this.activePalette);
+  ThemeData get themeData => KStyles.themeDataBuilder(activePalette);
 
   final double leftPanelWidth = 270;
   final double smallestSize = 600;
@@ -48,13 +45,13 @@ class KTheme extends KBaseTheme {
   final Color blue = Colors.blue;
 
   /* Theme Colors */
-  Color get colorButton => this.activePalette.palettePrimary;
+  Color get colorButton => activePalette.primary;
 
-  Color get colorButtonText => this.activePalette.paletteButtonText;
+  Color get colorButtonText => white;
 
-  Color get colorIcon => this.activePalette.palettePrimary;
+  Color get colorIcon => activePalette.primary;
 
-  Color get colorBGYes => this.activePalette.palettePrimary;
+  Color get colorBGYes => activePalette.primary;
 
   Color get colorBGNo => Colors.red;
 
@@ -66,9 +63,9 @@ class KTheme extends KBaseTheme {
 
   Color get colorRequiredField => Colors.red;
 
-  Color get colorPrimary => this.activePalette.palettePrimary;
+  Color get colorPrimary => activePalette.primary;
 
-  Color get colorSecondary => this.activePalette.paletteSecondary;
+  Color get colorSecondary => activePalette.contrasting;
 
   Color get colorFormBorder => Color(0xffdddddd);
 
@@ -129,7 +126,7 @@ class KTheme extends KBaseTheme {
 
   TextStyle get detailText => defaultText.copyWith(
         fontSize: fontSizeSmall,
-        color: this.isLightMode ? grey : extraExtraLightGrey,
+        color: isLightMode ? grey : extraExtraLightGrey,
       );
 
   TextStyle get normalText => defaultText.copyWith(fontSize: fontSizeNormal);
