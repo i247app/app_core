@@ -1,9 +1,10 @@
 import 'dart:ui';
 
+import 'package:app_core/helper/service/ktheme_service.dart';
 import 'package:app_core/style/kpalette.dart';
-import 'package:app_core/helper/krebuild_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // set _brightness to set default dark/light
 // _brightness > brightnessTheme > themeColor > palette
@@ -11,20 +12,11 @@ abstract class KStyles {
   static const double leftPanelWidth = 270;
   static const double smallestSize = 600;
   static const double maxWidth = 390;
-  static const Brightness DEFAULT_BRIGHTNESS = Brightness.light;
 
   /// Theme Brightness
-  static Brightness _brightness = DEFAULT_BRIGHTNESS;
 
-  static Brightness get brightnessTheme => _brightness;
-
-  static void setBrightnessTheme(Brightness brightness) {
-    _brightness = brightness;
-    KRebuildHelper.forceRebuild();
-  }
-
-  static void toggleBrightnessTheme() => setBrightnessTheme(
-      brightnessTheme == Brightness.dark ? Brightness.light : Brightness.dark);
+  static Brightness get brightnessTheme =>
+      KThemeService.isDarkMode() ? Brightness.dark : Brightness.light;
 
   /* Base Colors */
   static final Color white = Colors.white; //Color(0xfffafafa);
@@ -43,29 +35,29 @@ abstract class KStyles {
 
   /// Colors - perhaps better named as paletteColor
   static KPalette paletteLight = KPalette(
-    palettePrimary: Color(0xff0088DD),
-    paletteSecondary: Color(0xff0099EE),
-    paletteSupport: Color(0xff0099EE),
-    paletteButtonText: white,
-    palette4: Color(0xff0099EE),
-    palette5: Color(0xff0099EE),
-    yes: Color(0xff79AF2C),
-    no: Colors.red,
+    primary: Color(0xff0088DD),
+    primaryLight: Color(0xff0088DD),
+    contrasting: Color(0xff0099EE),
+    primaryFaded: Color(0xff0099EE),
+    active: Color(0xff0099EE),
+    error: Colors.red,
+    schemePrimary: Colors.blue,
+    schemeSecondary: Color(0xff0099EE),
   );
 
   static KPalette paletteDark = paletteLight;
 
   /* Theme Colors */
   static KPalette get themeColors =>
-      _brightness == Brightness.dark ? paletteDark : paletteLight;
+      brightnessTheme == Brightness.dark ? paletteDark : paletteLight;
 
-  static Color get colorButton => themeColors.palettePrimary;
+  static Color get colorButton => themeColors.primary;
 
-  static Color get colorButtonText => themeColors.paletteButtonText;
+  static Color get colorButtonText => Colors.white;
 
-  static Color get colorIcon => themeColors.palettePrimary;
+  static Color get colorIcon => themeColors.primary;
 
-  static Color get colorBGYes => themeColors.palettePrimary;
+  static Color get colorBGYes => themeColors.primary;
 
   static Color get colorBGNo => Colors.red;
 
@@ -77,9 +69,9 @@ abstract class KStyles {
 
   static Color get colorRequiredField => Colors.red;
 
-  static Color get colorPrimary => themeColors.palettePrimary;
+  static Color get colorPrimary => Colors.blue; // themeColors.primary;
 
-  static Color get colorSecondary => themeColors.paletteSecondary;
+  static Color get colorSecondary => themeColors.contrasting;
 
   static Color get colorFormBorder => Color(0xffdddddd);
 
@@ -177,8 +169,115 @@ abstract class KStyles {
         fontSize: 22,
       );
 
-  // TODO - delete
-  static const double SPACING_SMALL = 4;
-  static const double SPACING_NORMAL = 8;
-  static const double SPACING_LARGE = 12;
+  static ThemeData themeDataBuilder(KPalette palette) =>
+      ThemeData(brightness: brightnessTheme).copyWith(
+        colorScheme: brightnessTheme == Brightness.dark
+            ? ColorScheme.dark(
+                primary: palette.schemePrimary,
+                secondary: palette.schemeSecondary,
+              )
+            : ColorScheme.light(
+                primary: palette.schemePrimary,
+                secondary: palette.schemeSecondary,
+              ),
+        backgroundColor: palette.contrasting,
+        scaffoldBackgroundColor: palette.contrasting,
+        primaryColor: palette.primary,
+        primaryColorLight: palette.primaryLight,
+        errorColor: palette.error,
+        toggleableActiveColor: palette.active,
+        textSelectionTheme: TextSelectionThemeData(cursorColor: colorPrimary),
+        iconTheme: IconThemeData(color: palette.primaryLight),
+        primaryIconTheme: IconThemeData(color: palette.primaryLight),
+        textTheme: GoogleFonts.openSansTextTheme(
+          TextTheme(
+            headline1: TextStyle(
+                color: palette.primary, fontWeight: FontWeight.normal),
+            headline2: TextStyle(
+                color: palette.primary, fontWeight: FontWeight.normal),
+            headline4: TextStyle(
+                color: palette.primary, fontWeight: FontWeight.normal),
+            headline5: TextStyle(
+                color: palette.primary, fontWeight: FontWeight.normal),
+            headline6: TextStyle(
+                color: palette.primary, fontWeight: FontWeight.normal),
+            subtitle1: TextStyle(
+                color: palette.primary, fontWeight: FontWeight.normal),
+            subtitle2: TextStyle(
+                color: palette.primary, fontWeight: FontWeight.normal),
+            bodyText1: TextStyle(
+                color: palette.primary, fontWeight: FontWeight.normal),
+            bodyText2: TextStyle(
+                color: palette.primary, fontWeight: FontWeight.normal),
+            caption: TextStyle(
+                color: palette.primary, fontWeight: FontWeight.normal),
+          ),
+        ),
+        appBarTheme: AppBarTheme(
+          backgroundColor: palette.contrasting,
+          elevation: 0,
+          iconTheme: IconThemeData(color: palette.primary),
+          titleTextStyle: TextStyle(color: palette.primary, fontSize: 20),
+          centerTitle: false,
+        ),
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: palette.primary,
+          unselectedItemColor: palette.primaryLight,
+          elevation: 1,
+          backgroundColor: palette.contrasting,
+        ),
+        floatingActionButtonTheme:
+            FloatingActionButtonThemeData(backgroundColor: palette.primary),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            primary: palette.active,
+            textStyle: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              letterSpacing: 1.5,
+            ),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            primary: palette.schemePrimary,
+            onPrimary: Colors.white,
+            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(60),
+              side: BorderSide(color: Colors.transparent),
+            ),
+            textStyle: TextStyle(
+              color: palette.primary,
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+              letterSpacing: 1.5,
+            ),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          hintStyle: TextStyle(color: palette.primary),
+          labelStyle: TextStyle(
+            color: palette.primaryLight,
+            fontSize: 16,
+            letterSpacing: 0.15,
+          ),
+          enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: palette.primaryLight)),
+          focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: palette.primary)),
+          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          counterStyle: TextStyle(color: palette.primary),
+        ),
+        dividerTheme: DividerThemeData(
+          thickness: 1,
+          color: palette.primary,
+          // indent: 16,
+        ),
+        cardTheme: CardTheme(
+          color: palette.contrasting,
+          shadowColor: palette.primaryLight,
+        ),
+      );
 }

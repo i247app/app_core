@@ -17,6 +17,14 @@ class KMoney {
     required this.currency,
   });
 
+  KMoney.usd(this.amount)
+      : decimals = 2,
+        currency = USD;
+
+  KMoney.vnd(this.amount)
+      : decimals = 0,
+        currency = VND;
+
   KMoney operator +(KMoney m) => KMoney(
         amount: KMathHelper.add(amount, m.amount),
         decimals: decimals,

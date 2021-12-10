@@ -4,11 +4,12 @@ import 'dart:math' as Math;
 import 'dart:typed_data';
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/header/kassets.dart';
 import 'package:app_core/helper/kimage_animation_helper.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
-import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
+import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
 import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
 import 'package:app_core/ui/hero/widget/ktamago_chan_jumping.dart';
@@ -16,7 +17,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:app_core/header/kassets.dart';
 import 'package:path_provider/path_provider.dart';
 
 class KHeroMovingTapGame extends StatefulWidget {
@@ -200,6 +200,8 @@ class KMovingTapGameScreen extends StatefulWidget {
   final Function? onFinishLevel;
   final bool isShowEndLevel;
   final int? totalLevel;
+  final int? level;
+  final int? grade;
 
   const KMovingTapGameScreen({
     this.hero,
@@ -207,6 +209,8 @@ class KMovingTapGameScreen extends StatefulWidget {
     this.onFinishLevel,
     required this.isShowEndLevel,
     this.totalLevel,
+    this.level,
+    this.grade,
   });
 
   @override
@@ -309,6 +313,7 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
   void initState() {
     super.initState();
 
+    this.currentLevel = widget.level ?? 0;
     this.totalLevel = widget.totalLevel ?? 1;
     this.levelHardness = List.generate(
       this.totalLevel,

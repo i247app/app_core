@@ -203,6 +203,8 @@ class KTapGameScreen extends StatefulWidget {
   final Function? onFinishLevel;
   final bool isShowEndLevel;
   final int? totalLevel;
+  final int? level;
+  final int? grade;
 
   const KTapGameScreen({
     this.hero,
@@ -210,6 +212,8 @@ class KTapGameScreen extends StatefulWidget {
     this.onFinishLevel,
     this.totalLevel,
     required this.isShowEndLevel,
+    this.level,
+    this.grade,
   });
 
   @override
@@ -309,6 +313,7 @@ class _KTapGameScreenState extends State<KTapGameScreen>
   void initState() {
     super.initState();
 
+    this.currentLevel = widget.level ?? 0;
     this.totalLevel = widget.totalLevel ?? 1;
     this.levelHardness = List.generate(
       this.totalLevel,

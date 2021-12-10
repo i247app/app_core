@@ -204,6 +204,8 @@ class KJumpGameScreen extends StatefulWidget {
   final Function? onFinishLevel;
   final bool isShowEndLevel;
   final int? totalLevel;
+  final int? level;
+  final int? grade;
 
   const KJumpGameScreen({
     this.hero,
@@ -211,6 +213,8 @@ class KJumpGameScreen extends StatefulWidget {
     this.onFinishLevel,
     required this.isShowEndLevel,
     this.totalLevel,
+    this.level,
+    this.grade,
   });
 
   @override
@@ -325,6 +329,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
   void initState() {
     super.initState();
 
+    this.currentLevel = widget.level ?? 0;
     this.totalLevel = widget.totalLevel ?? 1;
     this.levelHardness = List.generate(
       this.totalLevel,
