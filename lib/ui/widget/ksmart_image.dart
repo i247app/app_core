@@ -21,7 +21,7 @@ class KSmartImage extends StatefulWidget {
 
 class _KSmartImageState extends State<KSmartImage> {
   static final Duration timeUntilDisplayLoadingBar =
-      Duration(milliseconds: 1500);
+      Duration(milliseconds: 3000);
 
   DateTime? timeStartedLoading;
 
@@ -39,7 +39,11 @@ class _KSmartImageState extends State<KSmartImage> {
     super.initState();
     loadImage();
   }
-  
+
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) super.setState(fn);
+  }
 
   void loadImage() async {
     setState(() {
