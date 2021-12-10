@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
+import 'package:app_core/model/kquestion.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -49,7 +50,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
 
   bool isShowPlusPoint = false;
 
-  List<String> questions = [
+  List<String> questionContents = [
     "1 + 1",
     "3 + 2",
     "4 - 1",
@@ -73,6 +74,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     5,
     7,
   ];
+
+  List<KQuestion> questions = [];
   int currentQuestionIndex = 0;
   int? spinningHeroIndex;
   int? currentShowStarIndex;
@@ -84,7 +87,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   Math.Random rand = new Math.Random();
 
   List<int> get listAnswers => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-      .where((item) => item != rightAnswers[currentQuestionIndex])
+      .where((item) => item != (questions[currentQuestionIndex].answer ?? 0))
       .toList();
 
   int get getRandomAnswer => listAnswers[rand.nextInt(listAnswers.length)];
@@ -96,6 +99,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   bool isPause = false;
   bool isBackgroundSoundPlaying = false;
   bool isShowSadTamago = false;
+  bool isAnimating = false;
 
   int tamagoJumpTimes = 5;
 
@@ -105,6 +109,13 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   @override
   void initState() {
     super.initState();
+
+    questions = List.generate(10, (index) => KQuestion()
+      ..pid=index.toString()
+      ..answer=rightAnswers[index]
+      ..question=questionContents[index]
+    );
+    questions.shuffle();
 
     loadAudioAsset();
 
@@ -146,7 +157,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
               } else {
                 this._bouncingAnimationController.stop(canceled: true);
                 this._bouncingAnimationController.reset();
-                guestAnswer();
+                // guestAnswer();
               }
             }
           });
@@ -193,7 +204,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
         if (status == AnimationStatus.completed) {
           this._shakeTheTopRightAnimationController.reverse();
         } else if (status == AnimationStatus.dismissed) {
-          this.handlePickAnswer(barrierValues[1], 1);
+          // this.handlePickAnswer(barrierValues[1], 1);
         }
       });
     this._shakeTheTopRightAnimation = Tween<double>(
@@ -210,7 +221,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
         if (status == AnimationStatus.completed) {
           this._shakeTheTopLeftAnimationController.reverse();
         } else if (status == AnimationStatus.dismissed) {
-          this.handlePickAnswer(barrierValues[0], 0);
+          // this.handlePickAnswer(barrierValues[0], 0);
         }
       });
     this._shakeTheTopLeftAnimation = Tween<double>(
@@ -220,11 +231,11 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
 
     getListAnswer();
 
-    Future.delayed(Duration(milliseconds: 200), () {
-      if (mounted) {
-        startAnswer();
-      }
-    });
+    // Future.delayed(Duration(milliseconds: 200), () {
+    //   if (mounted) {
+    //     startAnswer();
+    //   }
+    // });
   }
 
   @override
@@ -262,7 +273,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   }
 
   void getListAnswer() {
-    final currentRightAnswer = rightAnswers[currentQuestionIndex];
+    final currentRightAnswer = questions[currentQuestionIndex].answer!;
 
     this.setState(() {
       this.currentShowStarIndex = null;
@@ -312,70 +323,95 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   }
 
   void handlePickAnswer(int answer, int answerIndex) {
-    bool isTrueAnswer = answer == rightAnswers[currentQuestionIndex];
-
-    if (!widget.isMuted && !isPlaySound) {
-      this.setState(() {
-        this.isPlaySound = true;
-      });
-      playSound(isTrueAnswer);
+    if (isAnimating) {
+      return;
     }
 
     this.setState(() {
-      spinningHeroIndex = answerIndex;
+      isAnimating = true;
     });
-    this._spinAnimationController.reset();
-    this._spinAnimationController.forward();
 
-    if (isTrueAnswer) {
-      this.setState(() {
-        currentShowStarIndex = answerIndex;
-        if (!_moveUpAnimationController.isAnimating) {
-          this._moveUpAnimationController.reset();
-          this._moveUpAnimationController.forward();
-        }
-      });
-    } else {
-      this.setState(() {
-        this.isShowSadTamago = true;
-      });
-    }
+    this._bouncingAnimationController.forward();
+    bool isTrueAnswer = answer == questions[currentQuestionIndex].answer!;
 
-    Future.delayed(Duration(milliseconds: 1000), () {
-      if (mounted && currentQuestionIndex + 1 < questions.length) {
+    Future.delayed(Duration(milliseconds: 2200), () {
+      if (answerIndex == 0) {
+        this._shakeTheTopLeftAnimationController.forward();
+      } else {
+        this._shakeTheTopRightAnimationController.forward();
+      }
+
+      Future.delayed(Duration(milliseconds: 800), () {
         this.setState(() {
-          isShowSadTamago = false;
-          currentShowStarIndex = null;
-          spinningHeroIndex = null;
-          currentQuestionIndex = currentQuestionIndex + 1;
-          getListAnswer();
+          this.tamagoJumpTimes = 5;
         });
+        if (!widget.isMuted && !isPlaySound) {
+          this.setState(() {
+            this.isPlaySound = true;
+          });
+          playSound(isTrueAnswer);
+        }
 
-        Future.delayed(Duration(milliseconds: 500), () {
-          if (mounted) {
-            startAnswer();
+        this.setState(() {
+          spinningHeroIndex = answerIndex;
+        });
+        this._spinAnimationController.reset();
+        this._spinAnimationController.forward();
+
+        if (isTrueAnswer) {
+          this.setState(() {
+            currentShowStarIndex = answerIndex;
+            if (!_moveUpAnimationController.isAnimating) {
+              this._moveUpAnimationController.reset();
+              this._moveUpAnimationController.forward();
+            }
+          });
+        } else {
+          this.setState(() {
+            this.isShowSadTamago = true;
+          });
+        }
+
+        Future.delayed(Duration(milliseconds: 1000), () {
+          if (mounted && currentQuestionIndex + 1 < questions.length) {
+            this.setState(() {
+              isShowSadTamago = false;
+              currentShowStarIndex = null;
+              spinningHeroIndex = null;
+              currentQuestionIndex = currentQuestionIndex + 1;
+              getListAnswer();
+              isAnimating = false;
+            });
+
+            // Future.delayed(Duration(milliseconds: 500), () {
+            //   if (mounted) {
+            //     startAnswer();
+            //   }
+            // });
+          } else {
+            restartGame();
           }
         });
-      } else {
-        restartGame();
-      }
+      });
     });
   }
 
   void restartGame() {
     this.setState(() {
+      this.isAnimating = false;
       this.isPlaySound = false;
       this.currentQuestionIndex = 0;
       this.currentShowStarIndex = null;
       this.spinningHeroIndex = null;
+      questions.shuffle();
       getListAnswer();
     });
 
-    Future.delayed(Duration(milliseconds: 500), () {
-      if (mounted) {
-        startAnswer();
-      }
-    });
+    // Future.delayed(Duration(milliseconds: 500), () {
+    //   if (mounted) {
+    //     startAnswer();
+    //   }
+    // });
   }
 
   @override
@@ -395,7 +431,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                   width: MediaQuery.of(context).size.width * 0.75,
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                   child: Text(
-                    questions[currentQuestionIndex],
+                    questions[currentQuestionIndex].question!,
                     textScaleFactor: 1.0,
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -423,6 +459,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                         spinningHeroIndex == 0 ? _heroScaleAnimation : null,
                     starY: _moveUpAnimation.value,
                     isShowStar: currentShowStarIndex == 0,
+                    onTap: () => this.handlePickAnswer(barrierValues[0], 0),
                   ),
                   SizedBox(
                     width: 16,
@@ -444,7 +481,9 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                             ? _bouncingAnimation.value
                             : Offset(0, 0),
                         child: Image.asset(
-                          isShowSadTamago ? KAssets.IMG_TAMAGO_CHAN_SAD : KAssets.IMG_TAMAGO_CHAN,
+                          isShowSadTamago
+                              ? KAssets.IMG_TAMAGO_CHAN_SAD
+                              : KAssets.IMG_TAMAGO_CHAN,
                           width: eggWidth,
                           height: eggHeight,
                           package: 'app_core',
@@ -468,6 +507,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                         spinningHeroIndex == 1 ? _heroScaleAnimation : null,
                     starY: _moveUpAnimation.value,
                     isShowStar: currentShowStarIndex == 1,
+                    onTap: () => this.handlePickAnswer(barrierValues[1], 1),
                   ),
                 ],
               ),
@@ -491,6 +531,7 @@ class _Barrier extends StatelessWidget {
   final int value;
   final Offset bouncingAnimation;
   final double? starY;
+  final Function onTap;
   final bool? isShowStar;
 
   _Barrier({
@@ -499,6 +540,7 @@ class _Barrier extends StatelessWidget {
     required this.barrierY,
     required this.value,
     required this.bouncingAnimation,
+    required this.onTap,
     this.starY,
     this.isShowStar,
   });
@@ -528,43 +570,46 @@ class _Barrier extends StatelessWidget {
 
     return Container(
       alignment: Alignment(barrierY, 0),
-      child: Container(
-        width: 60,
-        height: 60,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            Align(
-              alignment: Alignment.topCenter,
-              child: Transform.translate(
-                offset: Offset(0, 0),
+      child: InkWell(
+        onTap: () => onTap(),
+        child: Container(
+          width: 60,
+          height: 60,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Align(
+                alignment: Alignment.topCenter,
                 child: Transform.translate(
-                  offset: Offset(0, -60 * (starY ?? 0)),
-                  child: AnimatedOpacity(
-                    duration: Duration(milliseconds: 500),
-                    opacity: (isShowStar ?? false) ? 1 : 0,
-                    child: Icon(
-                      Icons.star,
-                      color: Colors.amberAccent,
-                      size: 40,
+                  offset: Offset(0, 0),
+                  child: Transform.translate(
+                    offset: Offset(0, -60 * (starY ?? 0)),
+                    child: AnimatedOpacity(
+                      duration: Duration(milliseconds: 500),
+                      opacity: (isShowStar ?? false) ? 1 : 0,
+                      child: Icon(
+                        Icons.star,
+                        color: Colors.amberAccent,
+                        size: 40,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            Transform.translate(
-              offset: bouncingAnimation,
-              child: Transform.rotate(
-                angle: rotateAngle,
-                child: scaleAnimation != null
-                    ? (ScaleTransition(
-                        scale: scaleAnimation!,
-                        child: box,
-                      ))
-                    : box,
+              Transform.translate(
+                offset: bouncingAnimation,
+                child: Transform.rotate(
+                  angle: rotateAngle,
+                  child: scaleAnimation != null
+                      ? (ScaleTransition(
+                          scale: scaleAnimation!,
+                          child: box,
+                        ))
+                      : box,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
