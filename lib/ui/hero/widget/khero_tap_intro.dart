@@ -52,47 +52,87 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
 
   List<String> questionContents = [
     "1 + 1",
+    "2 + 2",
+    "2 + 6",
     "3 + 2",
+    "6 + 1",
     "4 - 1",
     "4 + 5",
+    "5 + 2",
+    "9 - 2",
+    "7 - 4",
     "2 x 1",
     "2 x 3",
+    "3 x 3",
+    "4 x 2",
+    "5 x 1",
+    "9 x 0",
+    "0 x 3",
+    "1 x 7",
+    "2 x 4",
+    "1 x 6",
+    "5 + 3 + 1",
     "1 + 2 - 1",
-    "4 + 8 - 5",
-    "3 + 4 - 2",
+    "6 + 8 - 5",
+    "3 + 4 - 1",
     "4 - 7 + 6",
-    "4 - 2 - 1",
+    "5 - 2 - 1",
     "9 + 1 - 5",
     "1 + 2 + 3",
     "4 + 2 - 3",
+    "7 + 2 - 1",
     "2 x 2 + 3",
-    "7 - 2 x 3",
+    "7 - 3 x 1",
     "4 x 2 - 6",
-    "5 x 2 - 4",
+    "5 - 2 x 2",
     "2 x 2 + 3",
-    "4 x 2 - 4",
+    "4 - 2 x 4",
+    "6 - 3 x 3",
+    "5 x 2 - 5",
+    "5 x 3 - 8",
+    "7 x 2 - 7"
   ];
   List<int> rightAnswers = [
     2,
+    4,
+    8,
     5,
+    7,
     3,
     9,
-    2,
-    6,
-    2,
     7,
-    5,
+    2,
     3,
-    1,
-    5,
-    6,
-    3,
-    7,
-    1,
     2,
     6,
+    9,
+    8,
+    5,
+    0,
+    0,
+    7,
+    8,
+    6,
+    9,
+    2,
+    9,
+    6,
+    3,
+    2,
+    5,
+    6,
+    3,
+    8,
     7,
     4,
+    2,
+    6,
+    7,
+    8,
+    9,
+    5,
+    7,
+    7
   ];
 
   List<KQuestion> questions = [];
@@ -100,8 +140,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   int? spinningHeroIndex;
   int? currentShowStarIndex;
   int correctCount = 0;
-
-  // int wrongAnswerCount = 0;
   int questionCount = 0;
   bool isPlaySound = false;
 
@@ -130,10 +168,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   double eggWidth = 90;
   double eggHeight = 90;
 
-  // int get totalAnswerCount => correctAnswerCount + wrongAnswerCount;
-  // int get correctAnswerPercent => totalAnswerCount > 0 ? (correctAnswerCount*100/totalAnswerCount).floor() : 0;
-
-  // int get correctPercent => questionCount > 0 ? ((correctCount*100)/questionCount).floor() : 0;
   int get correctPercent =>
       questionCount > 0 ? ((correctCount * 100) / questionCount).floor() : 0;
 
@@ -393,7 +427,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
         if (isTrueAnswer) {
           this.setState(() {
             questionCount++;
-            correctCount = correctCount + 1;
+            correctCount++;
             currentShowStarIndex = answerIndex;
             if (!_moveUpAnimationController.isAnimating) {
               this._moveUpAnimationController.reset();
@@ -403,7 +437,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
         } else {
           this.setState(() {
             questionCount++;
-            // wrongAnswerCount = wrongAnswerCount + 1;
             this.isShowSadTamago = true;
           });
         }
