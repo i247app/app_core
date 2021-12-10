@@ -241,7 +241,8 @@ abstract class KStyles {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            primary: palette.active,
+            primary: palette.schemePrimary,
+            onPrimary: Colors.white,
             padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(60),

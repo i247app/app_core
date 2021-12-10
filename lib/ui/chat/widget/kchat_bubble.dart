@@ -198,6 +198,7 @@ class KChatBubble extends StatelessWidget {
                     child: Icon(Icons.broken_image),
                   )
                 : KSmartImage(
+                    // key: Key(msg.messageID ?? "?"),
                     base64Data: msg.imageData,
                     url: msg.message,
                     onClick: () => onImageMessageClick(context, msg),
