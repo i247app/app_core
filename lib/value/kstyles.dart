@@ -57,7 +57,7 @@ abstract class KStyles {
 
   static Color get colorIcon => themeColors.primary;
 
-  static Color get colorBGYes => themeColors.primary;
+  static Color get colorBGYes => Colors.green;
 
   static Color get colorBGNo => Colors.red;
 

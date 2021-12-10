@@ -23,20 +23,20 @@ abstract class KSnackBarHelper {
           .hideCurrentSnackBar();
 
   /// Show an error snackbar
-  static error([String? text]) => show(
+  static ScaffoldFeatureController error([String? text]) => show(
         key: kScaffoldKey,
         text: text ?? "An error occur",
         isSuccess: false,
       );
 
   /// Show a success snackbar
-  static success([String? text]) => show(
+  static ScaffoldFeatureController success([String? text]) => show(
         key: kScaffoldKey,
         text: text ?? "Success",
         isSuccess: true,
       );
 
   /// Display generic success message
-  static Future<bool?> fromResponse(BaseResponse response) async =>
+  static ScaffoldFeatureController fromResponse(BaseResponse response) =>
       (response.isSuccess ? success : error).call(response.prettyMessage);
 }
