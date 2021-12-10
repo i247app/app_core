@@ -183,7 +183,6 @@ class _KTwoFactorState extends State<KTwoFactor> {
                     style: TextStyle(
                       fontSize: 60,
                       fontWeight: FontWeight.normal,
-                      color: KStyles.colorSecondary,
                     ),
                   ),
                 ],
