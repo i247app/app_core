@@ -59,8 +59,18 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     "2 x 3",
     "1 + 2 - 1",
     "4 + 8 - 5",
-    "1 x 2 + 3",
-    "1 + 2 x 3",
+    "3 + 4 - 2",
+    "4 - 7 + 6",
+    "4 - 2 - 1",
+    "9 + 1 - 5",
+    "1 + 2 + 3",
+    "4 + 2 - 3",
+    "2 x 2 + 3",
+    "7 - 2 x 3",
+    "4 x 2 - 6",
+    "5 x 2 - 4",
+    "2 x 2 + 3",
+    "4 x 2 - 4",
   ];
   List<int> rightAnswers = [
     2,
@@ -72,13 +82,25 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     2,
     7,
     5,
+    3,
+    1,
+    5,
+    6,
+    3,
     7,
+    1,
+    2,
+    6,
+    7,
+    4,
   ];
 
   List<KQuestion> questions = [];
   int currentQuestionIndex = 0;
   int? spinningHeroIndex;
   int? currentShowStarIndex;
+  int correctAnswerCount = 0;
+  int wrongAnswerCount = 0;
   bool isPlaySound = false;
 
   List<double> barrierX = [0, 0, 0, 0];
@@ -105,6 +127,9 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
 
   double eggWidth = 90;
   double eggHeight = 90;
+
+  int get totalAnswerCount => correctAnswerCount + wrongAnswerCount;
+  int get correctAnswerPercent => totalAnswerCount > 0 ? (correctAnswerCount*100/totalAnswerCount).floor() : 0;
 
   @override
   void initState() {
@@ -360,6 +385,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
 
         if (isTrueAnswer) {
           this.setState(() {
+            correctAnswerCount = correctAnswerCount + 1;
             currentShowStarIndex = answerIndex;
             if (!_moveUpAnimationController.isAnimating) {
               this._moveUpAnimationController.reset();
@@ -368,6 +394,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
           });
         } else {
           this.setState(() {
+            wrongAnswerCount = wrongAnswerCount + 1;
             this.isShowSadTamago = true;
           });
         }
@@ -510,6 +537,23 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                     onTap: () => this.handlePickAnswer(barrierValues[1], 1),
                   ),
                 ],
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: Text(
+                    "${correctAnswerPercent}%",
+                    textScaleFactor: 1.0,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
               ),
               SizedBox(
                 height: 60,
