@@ -73,7 +73,7 @@ class _KSmartImageState extends State<KSmartImage> {
 
   Future loadNetworkImage() async {
     try {
-      final response = await get(Uri.parse(widget.url! + "4"));
+      final response = await get(Uri.parse(widget.url!));
       final image = MemoryImage(response.bodyBytes);
       await precacheImage(image, context);
       setState(() => preparedImage = image);
