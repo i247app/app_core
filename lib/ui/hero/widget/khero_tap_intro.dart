@@ -101,7 +101,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     3,
     9,
     7,
-    2,
+    7,
     3,
     2,
     6,
