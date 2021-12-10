@@ -199,22 +199,20 @@ class KChatBubble extends StatelessWidget {
                     fit: BoxFit.fitWidth,
                     child: Icon(Icons.broken_image),
                   )
-                : InkWell(
-                    onTap: () => onImageMessageClick(context, msg),
-                    child: KSmartImage(
-                      base64Data: msg.imageData,
-                      url: msg.message,
-                    ),
-                    // FadeInImage(
-                    //   placeholder: AssetImage(KAssets.IMG_TRANSPARENCY),
-                    //   image: this.msg.imageData != null
-                    //       ? MemoryImage(base64Decode(this.msg.imageData!))
-                    //           as ImageProvider<Object>
-                    //       : NetworkImage(this.msg.message!),
-                    //   fit: BoxFit.contain,
-                    //   fadeInDuration: Duration(milliseconds: 100),
-                    // ),
+                : KSmartImage(
+                    base64Data: msg.imageData,
+                    url: msg.message,
+                    onClick: () => onImageMessageClick(context, msg),
                   ),
+            // FadeInImage(
+            //   placeholder: AssetImage(KAssets.IMG_TRANSPARENCY),
+            //   image: this.msg.imageData != null
+            //       ? MemoryImage(base64Decode(this.msg.imageData!))
+            //           as ImageProvider<Object>
+            //       : NetworkImage(this.msg.message!),
+            //   fit: BoxFit.contain,
+            //   fadeInDuration: Duration(milliseconds: 100),
+            // ),
           ),
         );
         break;
