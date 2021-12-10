@@ -101,7 +101,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   bool isShowSadTamago = false;
   bool isAnimating = false;
 
-  int tamagoJumpTimes = 5;
+  int tamagoJumpTimes = 0;
 
   double eggWidth = 90;
   double eggHeight = 90;
@@ -334,16 +334,16 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     this._bouncingAnimationController.forward();
     bool isTrueAnswer = answer == questions[currentQuestionIndex].answer!;
 
-    Future.delayed(Duration(milliseconds: 2200), () {
+    Future.delayed(Duration(milliseconds: 400), () {
       if (answerIndex == 0) {
         this._shakeTheTopLeftAnimationController.forward();
       } else {
         this._shakeTheTopRightAnimationController.forward();
       }
 
-      Future.delayed(Duration(milliseconds: 800), () {
+      Future.delayed(Duration(milliseconds: 700), () {
         this.setState(() {
-          this.tamagoJumpTimes = 5;
+          this.tamagoJumpTimes = 0;
         });
         if (!widget.isMuted && !isPlaySound) {
           this.setState(() {
