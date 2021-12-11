@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/header/kassets.dart';
 import 'package:path_provider/path_provider.dart';
+import 'dart:math';
 
 class KHeroTapIntro extends StatefulWidget {
   final Function(int)? onChangeLevel;
@@ -176,13 +177,16 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   void initState() {
     super.initState();
 
-    questions = List.generate(
-        10,
+    int numberOfQuestion = 10 + rand.nextInt(questionContents.length - 10);
+
+    var questionMixer = List.generate(
+        questionContents.length,
         (index) => KQuestion()
           ..pid = index.toString()
           ..answer = rightAnswers[index]
           ..question = questionContents[index]);
-    questions.shuffle();
+    questionMixer.shuffle();
+    questions = questionMixer.take(numberOfQuestion).toList();
 
     loadAudioAsset();
 
@@ -485,6 +489,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       this.currentQuestionIndex = 0;
       this.currentShowStarIndex = null;
       this.spinningHeroIndex = null;
+      this.questionCount = 0;
+      this.correctCount = 0;
       questions.shuffle();
       getListAnswer();
     });
@@ -600,7 +606,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       child: Text(
                         "${questionCount}",
                         textScaleFactor: 1.0,
@@ -616,7 +623,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       child: Text(
                         "${correctPercent}%",
                         textScaleFactor: 1.0,
@@ -633,16 +641,14 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                     child: Container(
                       width: 50,
                       height: 50,
-                      padding: EdgeInsets.only(
-                          top: 5, bottom: 5, left: 5, right: 5),
+                      padding:
+                          EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(40),
                       ),
                       child: Icon(
-                        this.isMuted
-                            ? Icons.volume_off
-                            : Icons.volume_up,
+                        this.isMuted ? Icons.volume_off : Icons.volume_up,
                         color: Color(0xff2c1c44),
                         size: 30,
                       ),
