@@ -136,7 +136,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     7
   ];
 
-  List<KQuestion> questions = [];
   int currentQuestionIndex = 0;
   int? spinningHeroIndex;
   int? currentShowStarIndex;
@@ -150,7 +149,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   Math.Random rand = new Math.Random();
 
   List<int> get listAnswers => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-      .where((item) => item != (questions[currentQuestionIndex].answer ?? 0))
+      .where((item) => item != (rightAnswers[currentQuestionIndex]))
       .toList();
 
   int get getRandomAnswer => listAnswers[rand.nextInt(listAnswers.length)];
@@ -176,17 +175,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   @override
   void initState() {
     super.initState();
-
-    int numberOfQuestion = 10 + rand.nextInt(questionContents.length - 10);
-
-    var questionMixer = List.generate(
-        questionContents.length,
-        (index) => KQuestion()
-          ..pid = index.toString()
-          ..answer = rightAnswers[index]
-          ..question = questionContents[index]);
-    questionMixer.shuffle();
-    questions = questionMixer.take(numberOfQuestion).toList();
 
     loadAudioAsset();
 
@@ -344,7 +332,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   }
 
   void getListAnswer() {
-    final currentRightAnswer = questions[currentQuestionIndex].answer!;
+    final currentRightAnswer = rightAnswers[currentQuestionIndex];
 
     this.setState(() {
       this.currentShowStarIndex = null;
@@ -403,7 +391,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     });
 
     this._bouncingAnimationController.forward();
-    bool isTrueAnswer = answer == questions[currentQuestionIndex].answer!;
+    bool isTrueAnswer = answer == rightAnswers[currentQuestionIndex];
 
     Future.delayed(Duration(milliseconds: 400), () {
       if (answerIndex == 0) {
@@ -447,23 +435,15 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
         }
 
         Future.delayed(Duration(milliseconds: 1000), () {
-          if (mounted && currentQuestionIndex + 1 < questions.length) {
+          if (mounted) {
             this.setState(() {
               isShowSadTamago = false;
               currentShowStarIndex = null;
               spinningHeroIndex = null;
-              currentQuestionIndex = currentQuestionIndex + 1;
+              currentQuestionIndex = rand.nextInt(rightAnswers.length - 1);
               getListAnswer();
               isAnimating = false;
             });
-
-            // Future.delayed(Duration(milliseconds: 500), () {
-            //   if (mounted) {
-            //     startAnswer();
-            //   }
-            // });
-          } else {
-            restartGame();
           }
         });
       });
@@ -491,7 +471,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       this.spinningHeroIndex = null;
       this.questionCount = 0;
       this.correctCount = 0;
-      questions.shuffle();
       getListAnswer();
     });
 
@@ -519,7 +498,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                   width: MediaQuery.of(context).size.width * 0.75,
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                   child: Text(
-                    questions[currentQuestionIndex].question!,
+                    questionContents[currentQuestionIndex],
                     textScaleFactor: 1.0,
                     textAlign: TextAlign.center,
                     style: TextStyle(
