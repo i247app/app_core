@@ -97,6 +97,15 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final body = Column(
       children: [
@@ -317,13 +326,13 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
     this.totalLevel = widget.totalLevel ?? 1;
     this.levelHardness = List.generate(
       this.totalLevel,
-          (index) => baseLevelHardness + (index * 0.1),
+      (index) => baseLevelHardness + (index * 0.1),
     );
     this.levelPlayTimes = List.filled(this.totalLevel, 0);
     this.levelIconAssets = List.generate(
       this.totalLevel,
-          (index) => baseLevelIconAssets[
-      Math.Random().nextInt(baseLevelIconAssets.length)],
+      (index) => baseLevelIconAssets[
+          Math.Random().nextInt(baseLevelIconAssets.length)],
     );
     this.levelQuestions = List.filled(
       this.totalLevel,
@@ -756,7 +765,8 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
               if (currentLevel + 1 < totalLevel) {
                 canAdvance = true;
                 if (widget.onFinishLevel != null) {
-                  widget.onFinishLevel!(currentLevel + 1, levelPlayTimes[currentLevel], wrongAnswerCount > 0);
+                  widget.onFinishLevel!(currentLevel + 1,
+                      levelPlayTimes[currentLevel], wrongAnswerCount > 0);
                 }
               }
             }
