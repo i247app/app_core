@@ -12,6 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/header/kassets.dart';
 import 'package:path_provider/path_provider.dart';
+import 'dart:math';
 
 class KHeroTapIntro extends StatefulWidget {
   final Function(int)? onChangeLevel;
@@ -135,7 +136,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     7
   ];
 
-  List<KQuestion> questions = [];
   int currentQuestionIndex = 0;
   int? spinningHeroIndex;
   int? currentShowStarIndex;
@@ -149,7 +149,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   Math.Random rand = new Math.Random();
 
   List<int> get listAnswers => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-      .where((item) => item != (questions[currentQuestionIndex].answer ?? 0))
+      .where((item) => item != (rightAnswers[currentQuestionIndex]))
       .toList();
 
   int get getRandomAnswer => listAnswers[rand.nextInt(listAnswers.length)];
@@ -175,14 +175,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   @override
   void initState() {
     super.initState();
-
-    questions = List.generate(
-        10,
-        (index) => KQuestion()
-          ..pid = index.toString()
-          ..answer = rightAnswers[index]
-          ..question = questionContents[index]);
-    questions.shuffle();
 
     loadAudioAsset();
 
@@ -340,7 +332,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   }
 
   void getListAnswer() {
-    final currentRightAnswer = questions[currentQuestionIndex].answer!;
+    final currentRightAnswer = rightAnswers[currentQuestionIndex];
 
     this.setState(() {
       this.currentShowStarIndex = null;
@@ -399,7 +391,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     });
 
     this._bouncingAnimationController.forward();
-    bool isTrueAnswer = answer == questions[currentQuestionIndex].answer!;
+    bool isTrueAnswer = answer == rightAnswers[currentQuestionIndex];
 
     Future.delayed(Duration(milliseconds: 400), () {
       if (answerIndex == 0) {
@@ -443,23 +435,15 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
         }
 
         Future.delayed(Duration(milliseconds: 1000), () {
-          if (mounted && currentQuestionIndex + 1 < questions.length) {
+          if (mounted) {
             this.setState(() {
               isShowSadTamago = false;
               currentShowStarIndex = null;
               spinningHeroIndex = null;
-              currentQuestionIndex = currentQuestionIndex + 1;
+              currentQuestionIndex = rand.nextInt(rightAnswers.length - 1);
               getListAnswer();
               isAnimating = false;
             });
-
-            // Future.delayed(Duration(milliseconds: 500), () {
-            //   if (mounted) {
-            //     startAnswer();
-            //   }
-            // });
-          } else {
-            restartGame();
           }
         });
       });
@@ -485,7 +469,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       this.currentQuestionIndex = 0;
       this.currentShowStarIndex = null;
       this.spinningHeroIndex = null;
-      questions.shuffle();
+      this.questionCount = 0;
+      this.correctCount = 0;
       getListAnswer();
     });
 
@@ -513,7 +498,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                   width: MediaQuery.of(context).size.width * 0.75,
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                   child: Text(
-                    questions[currentQuestionIndex].question!,
+                    questionContents[currentQuestionIndex],
                     textScaleFactor: 1.0,
                     textAlign: TextAlign.center,
                     style: TextStyle(
@@ -600,7 +585,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       child: Text(
                         "${questionCount}",
                         textScaleFactor: 1.0,
@@ -616,7 +602,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       child: Text(
                         "${correctPercent}%",
                         textScaleFactor: 1.0,
@@ -633,16 +620,14 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                     child: Container(
                       width: 50,
                       height: 50,
-                      padding: EdgeInsets.only(
-                          top: 5, bottom: 5, left: 5, right: 5),
+                      padding:
+                          EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(40),
                       ),
                       child: Icon(
-                        this.isMuted
-                            ? Icons.volume_off
-                            : Icons.volume_up,
+                        this.isMuted ? Icons.volume_off : Icons.volume_up,
                         color: Color(0xff2c1c44),
                         size: 30,
                       ),
