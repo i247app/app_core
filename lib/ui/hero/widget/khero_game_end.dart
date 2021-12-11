@@ -2,10 +2,7 @@ import 'dart:async';
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
-import 'package:app_core/helper/kimage_animation_helper.dart';
 import 'package:app_core/model/khero.dart';
-import 'package:app_core/header/kassets.dart';
-import 'package:app_core/ui/widget/kimage_animation/kimage_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:vector_math/vector_math_64.dart' as Vector;

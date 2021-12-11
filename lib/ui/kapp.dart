@@ -1,15 +1,12 @@
 import 'dart:async';
 
 import 'package:app_core/app_core.dart';
-import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/helper/service/ktheme_service.dart';
 import 'package:app_core/style/kpalette_group.dart';
 import 'package:app_core/style/ktheme.dart';
 import 'package:app_core/ui/kicon/kicon_manager.dart';
-import 'package:app_core/ui/widget/kembed_manager.dart';
 import 'package:app_core/ui/widget/kerror_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class KApp extends StatefulWidget {
   final Widget home;

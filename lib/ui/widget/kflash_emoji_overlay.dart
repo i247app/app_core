@@ -4,8 +4,6 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/model/kflash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:app_core/helper/kflash_helper.dart';
-import 'package:app_core/value/kstyles.dart';
 
 class KFlashEmojiOverlay extends StatefulWidget {
   @override

@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:app_core/helper/service/ktheme_service.dart';
 import 'package:app_core/style/kpalette.dart';
 import 'package:app_core/style/kpalette_group.dart';

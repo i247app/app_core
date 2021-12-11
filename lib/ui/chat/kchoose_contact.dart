@@ -7,7 +7,6 @@ import 'package:app_core/ui/chat/widget/kuser_profile_view.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class KChooseContact extends StatefulWidget {
   final bool multiselect;

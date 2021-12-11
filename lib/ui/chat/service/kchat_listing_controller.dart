@@ -1,5 +1,4 @@
 import 'package:app_core/app_core.dart';
-import 'package:app_core/ui/chat/service/kchat_listing_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 

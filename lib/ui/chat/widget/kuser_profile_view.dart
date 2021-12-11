@@ -4,12 +4,10 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kapp_nav_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/klink_helper.dart';
-import 'package:app_core/ui/chat/kchat_screen.dart';
 import 'package:app_core/ui/chat/widget/kgig_user_label.dart';
 import 'package:app_core/ui/widget/kdetail_view.dart';
 import 'package:app_core/ui/widget/kimage_viewer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class KUserProfileView extends StatefulWidget {
   final KUser? user;

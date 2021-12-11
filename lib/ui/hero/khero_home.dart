@@ -1,4 +1,7 @@
 import 'package:app_core/header/kassets.dart';
+import 'package:app_core/ui/hero/khero_jump_game.dart';
+import 'package:app_core/ui/hero/khero_moving_tap_game.dart';
+import 'package:app_core/ui/hero/khero_tap_game.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/helper/ksnackbar_helper.dart';
@@ -10,7 +13,6 @@ import 'package:app_core/ui/hero/khero_multi_game.dart';
 import 'package:app_core/ui/hero/widget/kegg_hatch_new_short_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_short_hatch_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/khero_helper.dart';
 import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/helper/kserver_handler.dart';
@@ -19,10 +21,6 @@ import 'package:app_core/ui/hero/khero_training.dart';
 import 'package:app_core/ui/hero/widget/khero_combine_view.dart';
 import 'package:app_core/ui/hero/widget/khero_grid_item.dart';
 import 'package:app_core/ui/widget/kstopwatch_label.dart';
-
-import 'khero_jump_game.dart';
-import 'khero_moving_tap_game.dart';
-import 'khero_tap_game.dart';
 
 final GlobalKey _draggableKey = GlobalKey();
 
@@ -106,8 +104,8 @@ class _KHeroHomeState extends State<KHeroHome> {
       KOverlayHelper.removeOverlay(this.overlayID!);
       this.overlayID = null;
     }
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (ctx) => KHeroMovingTapGame(hero: hero)));
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (ctx) => KHeroMovingTapGame(hero: hero)));
   }
 
   void onPlayJumpOverGame(KHero? hero) {

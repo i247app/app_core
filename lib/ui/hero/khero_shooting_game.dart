@@ -3,8 +3,6 @@ import 'dart:io';
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
-import 'package:app_core/helper/kimage_animation_helper.dart';
-import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
@@ -14,9 +12,6 @@ import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:app_core/ui/hero/widget/khero_game_level.dart';
-import 'package:app_core/header/kassets.dart';
 import 'package:path_provider/path_provider.dart';
 
 class KHeroShootingGame extends StatefulWidget {
