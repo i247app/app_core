@@ -393,61 +393,61 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     this._bouncingAnimationController.forward();
     bool isTrueAnswer = answer == rightAnswers[currentQuestionIndex];
 
-    Future.delayed(Duration(milliseconds: 400), () {
-      if (answerIndex == 0) {
-        this._shakeTheTopLeftAnimationController.forward();
-      } else {
-        this._shakeTheTopRightAnimationController.forward();
+    // Future.delayed(Duration(milliseconds: 400), () {
+    if (answerIndex == 0) {
+      this._shakeTheTopLeftAnimationController.forward();
+    } else {
+      this._shakeTheTopRightAnimationController.forward();
+    }
+
+    Future.delayed(Duration(milliseconds: 700), () {
+      this.setState(() {
+        this.tamagoJumpTimes = 0;
+      });
+      if (!isMuted && !isPlaySound) {
+        this.setState(() {
+          this.isPlaySound = true;
+        });
+        playSound(isTrueAnswer);
       }
 
-      Future.delayed(Duration(milliseconds: 700), () {
+      this.setState(() {
+        spinningHeroIndex = answerIndex;
+      });
+      this._spinAnimationController.reset();
+      this._spinAnimationController.forward();
+
+      if (isTrueAnswer) {
         this.setState(() {
-          this.tamagoJumpTimes = 0;
-        });
-        if (!isMuted && !isPlaySound) {
-          this.setState(() {
-            this.isPlaySound = true;
-          });
-          playSound(isTrueAnswer);
-        }
-
-        this.setState(() {
-          spinningHeroIndex = answerIndex;
-        });
-        this._spinAnimationController.reset();
-        this._spinAnimationController.forward();
-
-        if (isTrueAnswer) {
-          this.setState(() {
-            questionCount++;
-            correctCount++;
-            currentShowStarIndex = answerIndex;
-            if (!_moveUpAnimationController.isAnimating) {
-              this._moveUpAnimationController.reset();
-              this._moveUpAnimationController.forward();
-            }
-          });
-        } else {
-          this.setState(() {
-            questionCount++;
-            this.isShowSadTamago = true;
-          });
-        }
-
-        Future.delayed(Duration(milliseconds: 1000), () {
-          if (mounted) {
-            this.setState(() {
-              isShowSadTamago = false;
-              currentShowStarIndex = null;
-              spinningHeroIndex = null;
-              currentQuestionIndex = rand.nextInt(rightAnswers.length - 1);
-              getListAnswer();
-              isAnimating = false;
-            });
+          questionCount++;
+          correctCount++;
+          currentShowStarIndex = answerIndex;
+          if (!_moveUpAnimationController.isAnimating) {
+            this._moveUpAnimationController.reset();
+            this._moveUpAnimationController.forward();
           }
         });
+      } else {
+        this.setState(() {
+          questionCount++;
+          this.isShowSadTamago = true;
+        });
+      }
+
+      Future.delayed(Duration(milliseconds: 500), () {
+        if (mounted) {
+          this.setState(() {
+            isShowSadTamago = false;
+            currentShowStarIndex = null;
+            spinningHeroIndex = null;
+            currentQuestionIndex = rand.nextInt(rightAnswers.length - 1);
+            getListAnswer();
+            isAnimating = false;
+          });
+        }
       });
     });
+    // });
   }
 
   void toggleBackgroundSound() {
