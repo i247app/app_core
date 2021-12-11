@@ -8,6 +8,7 @@ import 'package:app_core/header/kassets.dart';
 import 'package:app_core/helper/kimage_animation_helper.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
+import 'package:app_core/model/kscore.dart';
 import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
@@ -18,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 class KHeroMovingTapGame extends StatefulWidget {
   final KHero? hero;
@@ -29,6 +31,8 @@ class KHeroMovingTapGame extends StatefulWidget {
 }
 
 class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
+  static const GAME_NAME = "tap_moving";
+
   static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
     KAssets.IMG_BG_COUNTRYSIDE_DARK,
@@ -45,7 +49,38 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
   int currentLevel = 0;
   bool isShowEndLevel = false;
 
-  List<int> levelHighscores = [];
+  String? scoreID;
+  List<KScore> scores = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadScore();
+  }
+
+  loadScore() async {
+    KPrefHelper.get(GAME_NAME).then((value) {
+      if (value != null) {
+        setState(() {
+          scores = KScore.decode(value);
+        });
+      }
+    });
+  }
+
+  saveScore() async {
+    KPrefHelper.put(GAME_NAME, KScore.encode(scores));
+  }
+
+  @override
+  void dispose() {
+    saveScore();
+    super.dispose();
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+  }
 
   void showHeroGameEndOverlay(Function() onFinish) async {
     final heroGameEnd = KHeroGameEnd(
@@ -73,8 +108,10 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
           alignment: Alignment.center,
           child: KGameHighscoreDialog(
             onClose: onClose,
-            scores: levelHighscores,
-            currentLevel: currentLevel,
+            game: GAME_NAME,
+            scores: this.scores,
+            scoreID: this.scoreID,
+            currentLevel: currentLevel + 1,
           ),
         ),
       ],
@@ -94,15 +131,6 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
       ],
     );
     this.overlayID = KOverlayHelper.addOverlay(overlay);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    if (this.overlayID != null) {
-      KOverlayHelper.removeOverlay(this.overlayID!);
-      this.overlayID = null;
-    }
   }
 
   @override
@@ -145,13 +173,25 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
                       totalLevel: totalLevel,
                       isShowEndLevel: isShowEndLevel,
                       onFinishLevel: (level, score, isHaveWrongAnswer) {
+                        final scoreID = Uuid().v4();
+                        this.setState(() {
+                          this.scoreID = scoreID;
+                          this.scores.add(
+                                KScore()
+                                  ..game = GAME_NAME
+                                  ..user = KSessionData.me
+                                  ..level = level
+                                  ..scoreID = scoreID
+                                  ..score = score.toDouble(),
+                              );
+                        });
                         if (level < totalLevel) {
                           print(isHaveWrongAnswer);
-                          if (!isHaveWrongAnswer) {
-                            this.setState(() {
-                              this.levelHighscores.add(score);
-                            });
-                          }
+                          // if (!isHaveWrongAnswer) {
+                          //   this.setState(() {
+                          //     this.levelHighscores.add(score);
+                          //   });
+                          // }
                           this.showHeroGameLevelOverlay(
                             () {
                               if (this.overlayID != null) {
@@ -206,7 +246,7 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
 class KMovingTapGameScreen extends StatefulWidget {
   final KHero? hero;
   final Function(int)? onChangeLevel;
-  final Function? onFinishLevel;
+  final Function(int, int, bool)? onFinishLevel;
   final bool isShowEndLevel;
   final int? totalLevel;
   final int? level;

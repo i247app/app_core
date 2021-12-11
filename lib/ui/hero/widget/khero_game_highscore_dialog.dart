@@ -1,42 +1,48 @@
 import 'package:app_core/app_core.dart';
+import 'package:app_core/model/kscore.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class KGameHighscoreDialog extends StatefulWidget {
   final Function onClose;
-  final List<int>? scores;
-  final int? currentLevel;
+  final String game;
+  final String? scoreID;
+  final List<KScore> scores;
+  final int currentLevel;
+  final bool ascendingSort;
 
-  const KGameHighscoreDialog(
-      {required this.onClose, this.scores, this.currentLevel});
+  const KGameHighscoreDialog({
+    required this.onClose,
+    required this.game,
+    required this.scores,
+    required this.currentLevel,
+    this.scoreID,
+    this.ascendingSort = true,
+  });
 
   @override
   _KGameHighscoreDialogState createState() => _KGameHighscoreDialogState();
 }
 
 class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
-  List<int> scores = [];
+  List<KScore> get filteredScores => widget.scores
+      .where((s) => (s.user?.puid == KSessionData.me?.puid &&
+          s.level == widget.currentLevel &&
+          s.game == widget.game))
+      .toList();
 
-  int? get currentLevelScore =>
-      widget.scores != null && widget.currentLevel != null
-          ? widget.scores![widget.scores!.length - 1]
-          : null;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    final _scores = widget.scores ?? [];
-    _scores.sort();
-    this.setState(() {
-      scores = _scores;
-    });
+  List<KScore> get sortedScores {
+    var scores = this.filteredScores;
+    scores.sort((a, b) => widget.ascendingSort
+        ? a.score!.compareTo(b.score!)
+        : b.score!.compareTo(a.score!));
+    return scores;
   }
 
   @override
   Widget build(BuildContext context) {
+    final scores = this.sortedScores;
     final body = Container(
       width: MediaQuery.of(context).size.width * 0.85,
       height: MediaQuery.of(context).size.height * 0.6,
@@ -109,7 +115,8 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
                   child: ListView.builder(
                     itemCount: scores.length,
                     itemBuilder: (context, index) {
-                      bool isCurrentLevel = currentLevelScore == scores[index];
+                      final score = scores[index];
+                      bool isCurrentLevel = widget.scoreID == score.scoreID;
 
                       return Container(
                         padding: EdgeInsets.symmetric(
@@ -142,14 +149,14 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
                             ),
                             Container(
                               height: 25,
-                              child: KUserAvatar.fromUser(KSessionData.me),
+                              child: KUserAvatar.fromUser(score.user),
                             ),
                             SizedBox(
                               width: 5,
                             ),
                             Expanded(
                               child: Text(
-                                KSessionData.userSession?.user?.kunm ?? "",
+                                score.user?.kunm ?? "",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,
@@ -161,7 +168,7 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
                               width: 10,
                             ),
                             Text(
-                              '${scores[index]}',
+                              '${score.score?.toStringAsFixed(0)}',
                               style: TextStyle(
                                 color: Colors.white,
                               ),

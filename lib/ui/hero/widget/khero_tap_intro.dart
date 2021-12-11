@@ -16,7 +16,7 @@ import 'dart:math';
 
 class KHeroTapIntro extends StatefulWidget {
   final Function(int)? onChangeLevel;
-  final Function? onFinishLevel;
+  final Function(int, int, bool)? onFinishLevel;
   final bool isShowEndLevel;
   final bool isMuted;
 

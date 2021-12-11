@@ -7,6 +7,7 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kimage_animation_helper.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
+import 'package:app_core/model/kscore.dart';
 import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
@@ -18,6 +19,7 @@ import 'package:app_core/ui/hero/widget/khero_game_level.dart';
 import 'package:app_core/header/kassets.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 class KHeroJumpOverGame extends StatefulWidget {
   final KHero? hero;
@@ -29,6 +31,8 @@ class KHeroJumpOverGame extends StatefulWidget {
 }
 
 class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
+  static const GAME_NAME = "jump_over";
+
   int? overlayID;
   List<String> levelBackground = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
@@ -47,20 +51,37 @@ class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
   int currentLevel = 0;
   bool isShowEndLevel = false;
 
-  List<int> levelHighscores = [];
+  String? scoreID;
+  List<KScore> scores = [];
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    // this.showHeroGameEndOverlay(
-    //       () {
-    //     if (this.overlayID != null) {
-    //       KOverlayHelper.removeOverlay(this.overlayID!);
-    //       this.overlayID = null;
-    //     }
-    //   },
-    // );
+    loadScore();
+  }
+
+  loadScore() async {
+    KPrefHelper.get(GAME_NAME).then((value) {
+      if (value != null) {
+        setState(() {
+          scores = KScore.decode(value);
+        });
+      }
+    });
+  }
+
+  saveScore() async {
+    KPrefHelper.put(GAME_NAME, KScore.encode(scores));
+  }
+
+  @override
+  void dispose() {
+    saveScore();
+    super.dispose();
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
   }
 
   void showHeroGameEndOverlay(Function() onFinish) async {
@@ -91,8 +112,11 @@ class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
           alignment: Alignment.center,
           child: KGameHighscoreDialog(
             onClose: onClose,
-            scores: levelHighscores,
-            currentLevel: currentLevel,
+            game: GAME_NAME,
+            scores: this.scores,
+            ascendingSort: false,
+            scoreID: this.scoreID,
+            currentLevel: currentLevel + 1,
           ),
         ),
       ],
@@ -140,15 +164,28 @@ class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
                       totalLevel: totalLevel,
                       isShowEndLevel: isShowEndLevel,
                       onFinishLevel: (level, score, isHaveWrongAnswer) {
+                        final scoreID = Uuid().v4();
+
+                        this.setState(() {
+                          this.scoreID = scoreID;
+                          this.scores.add(
+                                KScore()
+                                  ..game = GAME_NAME
+                                  ..user = KSessionData.me
+                                  ..level = level
+                                  ..scoreID = scoreID
+                                  ..score = score.toDouble(),
+                              );
+                        });
                         if (level < totalLevel) {
                           print(isHaveWrongAnswer);
-                          if (!isHaveWrongAnswer) {
-                            this.setState(() {
-                              this.levelHighscores.add(score);
-                            });
-                          }
+                          // if (!isHaveWrongAnswer) {
+                          //   this.setState(() {
+                          //     this.levelHighscores.add(score);
+                          //   });
+                          // }
                           this.showHeroGameLevelOverlay(
-                                () {
+                            () {
                               if (this.overlayID != null) {
                                 KOverlayHelper.removeOverlay(this.overlayID!);
                                 this.overlayID = null;
@@ -201,7 +238,7 @@ class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
 class KJumpGameScreen extends StatefulWidget {
   final KHero? hero;
   final Function(int)? onChangeLevel;
-  final Function? onFinishLevel;
+  final Function(int, int, bool)? onFinishLevel;
   final bool isShowEndLevel;
   final int? totalLevel;
   final int? level;
@@ -333,13 +370,13 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
     this.totalLevel = widget.totalLevel ?? 1;
     this.levelHardness = List.generate(
       this.totalLevel,
-          (index) => baseLevelHardness + (index * 0.1),
+      (index) => baseLevelHardness + (index * 0.1),
     );
     this.levelPoints = List.filled(this.totalLevel, 0);
     this.levelIconAssets = List.generate(
       this.totalLevel,
-          (index) => baseLevelIconAssets[
-      Math.Random().nextInt(baseLevelIconAssets.length)],
+      (index) => baseLevelIconAssets[
+          Math.Random().nextInt(baseLevelIconAssets.length)],
     );
     this.levelQuestions = List.filled(
       this.totalLevel,
@@ -858,7 +895,8 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
                       if (currentLevel + 1 < totalLevel) {
                         canAdvance = true;
                         if (widget.onFinishLevel != null) {
-                          widget.onFinishLevel!(currentLevel + 1, levelPoints[currentLevel], wrongAnswerCount > 0);
+                          widget.onFinishLevel!(currentLevel + 1,
+                              levelPoints[currentLevel], wrongAnswerCount > 0);
                         }
                       }
                     }
@@ -881,7 +919,9 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
               _playerScaleAnimationController.forward();
               this.setState(() {
                 result = false;
-                levelPoints[currentLevel] = levelPoints[currentLevel] > 0 ? levelPoints[currentLevel] - 1 : 0;
+                levelPoints[currentLevel] = levelPoints[currentLevel] > 0
+                    ? levelPoints[currentLevel] - 1
+                    : 0;
                 if (!isWrongAnswer) {
                   wrongAnswerCount += 1;
                   isWrongAnswer = true;
