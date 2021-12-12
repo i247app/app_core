@@ -10,7 +10,7 @@ import 'package:path_provider/path_provider.dart';
 
 class KHeroTapIntro extends StatefulWidget {
   final Function(int)? onChangeLevel;
-  final Function? onFinishLevel;
+  final Function(int, int, bool)? onFinishLevel;
   final bool isShowEndLevel;
   final bool isMuted;
 
@@ -81,10 +81,10 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     "4 x 2 - 6",
     "5 - 2 x 2",
     "2 x 2 + 3",
-    "4 - 2 x 4",
-    "6 - 3 x 3",
+    "4 + 2 x 2",
+    "3 x 3 - 3",
     "5 x 2 - 5",
-    "5 x 3 - 8",
+    "8 - 3 x 2",
     "7 x 2 - 7"
   ];
   List<int> rightAnswers = [
@@ -121,12 +121,12 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     7,
     4,
     2,
-    6,
+    1,
     7,
     8,
-    9,
+    6,
     5,
-    7,
+    2,
     7
   ];
 
