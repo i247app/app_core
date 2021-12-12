@@ -926,8 +926,12 @@ class _KVOIPCallState extends State<KVOIPCall>
         break;
     }
 
-    final chatroom =
-        this.chatCtrl == null ? Container() : KChatroom(this.chatCtrl!);
+    final chatroom = this.chatCtrl == null
+        ? Container()
+        : KChatroom(
+            this.chatCtrl!,
+            isEnableTakePhoto: false,
+          );
 
     final body = this.callState == _CallState.in_progress && this.isChatEnabled
         ? () {
