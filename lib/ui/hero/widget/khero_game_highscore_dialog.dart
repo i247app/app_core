@@ -2,7 +2,6 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/model/kscore.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class KGameHighscoreDialog extends StatefulWidget {
   final Function onClose;
@@ -137,11 +136,13 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
                                 ),
                               ),
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
                               "${index < 9 ? '0' : ''}${index + 1}",
                               style: TextStyle(
                                 color: Colors.white,
+                                fontSize: 18,
                               ),
                             ),
                             SizedBox(
@@ -168,10 +169,14 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
                               width: 10,
                             ),
                             Text(
-                              '${score.score?.toStringAsFixed(0)}',
+                              '${((score.score ?? 0) / 1000).toStringAsFixed(3)} s',
                               style: TextStyle(
                                 color: Colors.white,
+                                fontSize: 22,
                               ),
+                            ),
+                            SizedBox(
+                              width: 4,
                             ),
                           ],
                         ),
