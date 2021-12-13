@@ -5,7 +5,6 @@ import 'package:app_core/ui/kicon/kicon_manager.dart';
 import 'package:app_core/ui/widget/kembed_manager.dart';
 import 'package:app_core/ui/widget/kerror_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 @deprecated
 class OldKApp extends StatelessWidget {
