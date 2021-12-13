@@ -31,35 +31,36 @@ class KVOIPCall extends StatefulWidget {
   final KChatroomController? chatroomCtrl;
   final String? videoLogo;
 
-  KVOIPCall({
-    required this.perspective,
-    this.refUser,
-    this.invitePUIDs,
-    this.callID,
-    this.uuid,
-    this.autoPickup = false,
-    this.chatroomCtrl,
-    this.videoLogo,
-  });
+  // KVOIPCall({
+  //   required this.perspective,
+  //   this.refUser,
+  //   this.invitePUIDs,
+  //   this.callID,
+  //   this.uuid,
+  //   this.autoPickup = false,
+  //   this.chatroomCtrl,
+  //   this.videoLogo,
+  // });
 
   KVOIPCall.asSender(
-    KUser refUser, {
-    List<String>? invitePUIDs,
+    this.refUser, {
+    this.invitePUIDs,
     this.chatroomCtrl,
-    String? videoLogo,
-  })  : this.refUser = refUser,
-        this.invitePUIDs = invitePUIDs,
-        this.perspective = _CallPerspective.sender,
+    this.videoLogo,
+  })  : this.perspective = _CallPerspective.sender,
         this.autoPickup = false,
-        this.uuid = Uuid().v4(),
         this.callID = null,
-        this.videoLogo = videoLogo;
+        this.uuid = Uuid().v4();
 
-  KVOIPCall.asReceiver(String callID, String uuid,
-      {this.autoPickup = false, this.videoLogo, this.chatroomCtrl})
-      : this.refUser = null,
+  KVOIPCall.asReceiver(
+    String callID,
+    String uuid, {
+    this.autoPickup = false,
+    this.videoLogo,
+    this.chatroomCtrl,
+  })  : this.perspective = _CallPerspective.receiver,
+        this.refUser = null,
         this.invitePUIDs = null,
-        this.perspective = _CallPerspective.receiver,
         this.callID = callID,
         this.uuid = uuid;
 
