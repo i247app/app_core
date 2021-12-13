@@ -548,6 +548,21 @@ class _CreditFeedItem extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
+              if (KStringHelper.isExist(transaction.prettyName)) ...[
+                Text(
+                  transaction.prettyName,
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+                SizedBox(height: 5),
+              ],
+              if (KStringHelper.isExist(transaction.poiPUID) &&
+                  KStringHelper.isExist(transaction.poiKUNM)) ...[
+                Text(
+                  "${transaction.poiPUID}   @${transaction.poiKUNM}",
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+                SizedBox(height: 5),
+              ],
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -559,20 +574,6 @@ class _CreditFeedItem extends StatelessWidget {
                   ),
                 ],
               ),
-              if (KStringHelper.isExist(transaction.prettyName) &&
-                  KStringHelper.isExist(transaction.poiKUNM)) ...[
-                SizedBox(height: 5),
-                Wrap(
-                  children: <Widget>[
-                    socialName(context, transaction.poiKUNM ?? ""),
-                    Text(
-                      " • ",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    transactorPrettyName(context, transaction.prettyName),
-                  ],
-                ),
-              ],
               SizedBox(height: 5),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
