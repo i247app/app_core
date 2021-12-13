@@ -3,6 +3,9 @@ import 'package:app_core/ui/voip/kvoip_comm_manager.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
+enum KVoipPerspective { sender, receiver }
+enum KVoipCallState { ws_error, init, waiting, in_progress, ended }
+
 class KVoipFlags {
   bool isMySoundEnabled = true;
   bool isMySpeakerEnabled = true;
@@ -16,12 +19,21 @@ class KVoipContext extends ChangeNotifier {
 
   // Map<String, RTCVideoRenderer> remoteRenderers = {};
   // RTCVideoRenderer? localRenderer;
-  Map<String, MediaStream> remoteMedia = {};
   MediaStream? localMedia;
   KVOIPCommManager? commManager;
-  KVoipFlags flags = KVoipFlags();
 
-  KVoipContext(this.voipID);
+  Map<String, MediaStream> remoteMedia = {};
+  KVoipFlags flags = KVoipFlags();
+  KVoipCallState callState;
+  KVoipPerspective perspective;
+
+  KVoipContext.sender(this.voipID)
+      : perspective = KVoipPerspective.sender,
+        callState = KVoipCallState.waiting;
+
+  KVoipContext.receiver(this.voipID)
+      : perspective = KVoipPerspective.receiver,
+        callState = KVoipCallState.init;
 
   // /// Manipulate local renderer
   // void withLocalRenderer(void Function(RTCVideoRenderer? localRenderer) fn) {
@@ -60,6 +72,12 @@ class KVoipContext extends ChangeNotifier {
     notifyListeners();
   }
 
+  // /// Change the call state
+  // void setCallState(KVoipCallState callState) {
+  //   this.callState = callState;
+  //   notifyListeners();
+  // }
+
   /// Close all resources
   void close() {
     commManager?.close();
@@ -71,8 +89,88 @@ class KVoipContext extends ChangeNotifier {
     remoteMedia.clear();
 
     notifyListeners();
+  }
 
-    // KVoipService.removeContext(voipID);
+  /// Respond to comm manager state updates
+  void onCommSignal(SignalingState signalState) {
+    bool isNotifyRequired = false;
+    if (perspective == KVoipPerspective.sender) {
+      ///
+      /// SENDER
+      ///
+      switch (signalState) {
+        case SignalingState.CallStateNew:
+          callState = KVoipCallState.waiting;
+          isNotifyRequired = true;
+          break;
+        case SignalingState.CallStateRoomCreated:
+          break;
+        case SignalingState.CallStateRoomInfo:
+          break;
+        case SignalingState.CallStateRoomNewParticipant:
+          break;
+        case SignalingState.CallStateRoomEmpty:
+          callState = KVoipCallState.ended;
+          isNotifyRequired = true;
+          close();
+          break;
+        case SignalingState.CallStateInvite:
+          break;
+        case SignalingState.CallStateAccepted:
+          callState = KVoipCallState.in_progress;
+          isNotifyRequired = true;
+          break;
+        case SignalingState.CallStateBye:
+          callState = KVoipCallState.ended;
+          isNotifyRequired = true;
+          close();
+          break;
+        case SignalingState.CallStateRejected:
+          callState = KVoipCallState.ended;
+          isNotifyRequired = true;
+          close();
+          break;
+        case SignalingState.ConnectionOpen:
+          break;
+        case SignalingState.ConnectionClosed:
+          break;
+      }
+    } else if (perspective == KVoipPerspective.receiver) {
+      ///
+      /// RECEIVER
+      ///
+      switch (signalState) {
+        case SignalingState.CallStateNew:
+          break;
+        case SignalingState.CallStateRoomCreated:
+          break;
+        case SignalingState.CallStateRoomInfo:
+          callState = KVoipCallState.waiting;
+          isNotifyRequired = true;
+          break;
+        case SignalingState.CallStateRoomNewParticipant:
+          break;
+        case SignalingState.CallStateRoomEmpty:
+          callState = KVoipCallState.ended;
+          isNotifyRequired = true;
+          close();
+          break;
+        case SignalingState.CallStateInvite:
+          break;
+        case SignalingState.CallStateAccepted:
+          callState = KVoipCallState.in_progress;
+          isNotifyRequired = true;
+          break;
+        case SignalingState.CallStateBye:
+        case SignalingState.CallStateRejected:
+        case SignalingState.ConnectionOpen:
+        case SignalingState.ConnectionClosed:
+          break;
+      }
+    }
+    if (isNotifyRequired) {
+      notifyListeners();
+    }
   }
 
   /// Notify other user to join call using push notification

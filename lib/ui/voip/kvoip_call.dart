@@ -18,11 +18,8 @@ import 'package:uuid/uuid.dart';
 import 'package:app_core/app_core.dart';
 import 'package:wakelock/wakelock.dart';
 
-enum _CallPerspective { sender, receiver }
-enum _CallState { ws_error, init, waiting, in_progress, ended }
-
 class KVOIPCall extends StatefulWidget {
-  final _CallPerspective perspective;
+  final KVoipPerspective perspective;
   final bool autoPickup;
   final KUser? refUser;
   final List<String>? invitePUIDs;
@@ -47,7 +44,7 @@ class KVOIPCall extends StatefulWidget {
     this.invitePUIDs,
     this.chatroomCtrl,
     this.videoLogo,
-  })  : this.perspective = _CallPerspective.sender,
+  })  : this.perspective = KVoipPerspective.sender,
         this.autoPickup = false,
         this.callID = null,
         this.uuid = Uuid().v4();
@@ -58,7 +55,7 @@ class KVOIPCall extends StatefulWidget {
     this.autoPickup = false,
     this.videoLogo,
     this.chatroomCtrl,
-  })  : this.perspective = _CallPerspective.receiver,
+  })  : this.perspective = KVoipPerspective.receiver,
         this.refUser = null,
         this.invitePUIDs = null,
         this.callID = callID,
@@ -83,9 +80,10 @@ class _KVOIPCallState extends State<KVOIPCall>
 
   late KChatroomController? chatCtrl =
       widget.chatroomCtrl == null ? null : widget.chatroomCtrl!;
-  late _CallState callState = widget.perspective == _CallPerspective.sender
-      ? _CallState.waiting
-      : _CallState.init;
+
+  // late KVoipCallState callState = widget.perspective == KVoipPerspective.sender
+  //     ? KVoipCallState.waiting
+  //     : KVoipCallState.init;
 
   KVoipContext? voipContext;
   Timer? ringtoneTimer;
@@ -113,6 +111,8 @@ class _KVOIPCallState extends State<KVOIPCall>
 
   KVOIPCommManager? get commManager => voipContext?.commManager;
 
+  KVoipCallState get callState => voipContext?.callState ?? KVoipCallState.init;
+
   bool get isAccepted => widget.autoPickup;
 
   String get _uuid => widget.uuid ?? Uuid().v4();
@@ -130,11 +130,11 @@ class _KVOIPCallState extends State<KVOIPCall>
   String? get refID =>
       widget.chatroomCtrl?.value.refID ?? commManager?.session?.refID;
 
-  String? get refAvatarURL => widget.perspective == _CallPerspective.sender
+  String? get refAvatarURL => widget.perspective == KVoipPerspective.sender
       ? widget.refUser?.avatarURL
       : commManager?.session?.adminAvatarURL;
 
-  String? get refName => widget.perspective == _CallPerspective.sender
+  String? get refName => widget.perspective == KVoipPerspective.sender
       ? widget.refUser?.fullName
       : commManager?.session?.adminName;
 
@@ -265,11 +265,13 @@ class _KVOIPCallState extends State<KVOIPCall>
       voipContext = KVoipService.getContext(voipServiceID);
       setupLocalRenderer();
       setupRemoteRenderers();
-      setState(() => callState = _CallState.in_progress);
+      // setState(() => callState = KVoipCallState.in_progress);
       return;
     } else {
       print("###### KVoipService !! NO !! CONTEXT ID - $voipServiceID");
-      voipContext = KVoipContext(voipServiceID);
+      voipContext = widget.perspective == KVoipPerspective.sender
+          ? KVoipContext.sender(voipServiceID)
+          : KVoipContext.receiver(voipServiceID);
     }
     voipContext?.addListener(voipContextListener);
 
@@ -312,7 +314,8 @@ class _KVOIPCallState extends State<KVOIPCall>
         //     notification.data?.otherId != commManager?.session?.id;
 
         // If this call has already ended, respond to incoming call
-        if (notification.data?.id != null && callState == _CallState.ended) {
+        if (notification.data?.id != null &&
+            callState == KVoipCallState.ended) {
           Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (ctx) => KVOIPCall.asReceiver(
                   notification.data!.id!, notification.data!.uuid!,
@@ -347,7 +350,7 @@ class _KVOIPCallState extends State<KVOIPCall>
     commManager.onStateChange = (SignalingState ss) {
       genericSignalListener(ss);
       Function.apply(
-        widget.perspective == _CallPerspective.sender
+        widget.perspective == KVoipPerspective.sender
             ? senderSignalListener
             : receiverSignalListener,
         [ss],
@@ -418,7 +421,7 @@ class _KVOIPCallState extends State<KVOIPCall>
             ..chatID = chatID
             ..refApp = refApp
             ..refID = refID;
-          setState(() => callState = _CallState.waiting);
+          // setState(() => callState = KVoipCallState.waiting);
           commManager?.createRoom(p2pSession);
         }
         break;
@@ -430,17 +433,17 @@ class _KVOIPCallState extends State<KVOIPCall>
         break;
       case SignalingState.CallStateRoomEmpty:
         // safePop(false);
-        setState(() => callState = _CallState.ended);
+        // setState(() => callState = KVoipCallState.ended);
         endCallTimeout();
         // releaseResourceIfNeed();
         break;
       case SignalingState.CallStateBye:
-        if (!KHostConfig.isReleaseMode)
+        if (!KHostConfig.isReleaseMode) {
           print("senderSignalListener case CallStateBye");
-
+        }
         // TODO do we need to null out localRenderer/remoteRenderer
         // pop() will call dispose()
-        setState(() => callState = _CallState.ended);
+        // setState(() => callState = KVoipCallState.ended);
         // releaseResourceIfNeed();
         endCallTimeout();
         Future.delayed(
@@ -455,25 +458,25 @@ class _KVOIPCallState extends State<KVOIPCall>
         // invitePeer(refPUID ?? "", false);
         break;
       case SignalingState.CallStateAccepted:
-        if (!KHostConfig.isReleaseMode)
+        if (!KHostConfig.isReleaseMode) {
           print("senderSignalListener case CallStateAccepted");
-
+        }
         // stopCallerTune();
         stopRingtone();
         startPanelTimeout(6);
-        setState(() => callState = _CallState.in_progress);
+        // setState(() => callState = KVoipCallState.in_progress);
         break;
       case SignalingState.CallStateRejected:
-        if (!KHostConfig.isReleaseMode)
+        if (!KHostConfig.isReleaseMode) {
           print("senderSignalListener case CallStateRejected");
-
+        }
         // stopCallerTune();
         stopRingtone();
         KSnackBarHelper.error("Call declined");
         setState(() {
           // localRenderer.srcObject = null;
           // remoteRenderer.srcObject = null;
-          callState = _CallState.ended;
+          // callState = KVoipCallState.ended;
         });
         // releaseResourceIfNeed();
         endCallTimeout();
@@ -497,15 +500,15 @@ class _KVOIPCallState extends State<KVOIPCall>
   }
 
   void receiverSignalListener(SignalingState state) {
-    if (!KHostConfig.isReleaseMode)
+    if (!KHostConfig.isReleaseMode) {
       print("receiverSignalListener state $state");
-
+    }
     switch (state) {
       case SignalingState.CallStateNew:
         commManager?.getRoomInfo(widget.callID!);
         break;
       case SignalingState.CallStateRoomInfo:
-        setState(() => callState = _CallState.waiting);
+        // setState(() => callState = KVoipCallState.waiting);
         if (commManager?.session != null) {
           setState(() {
             chatCtrl = KChatroomController(
@@ -526,32 +529,33 @@ class _KVOIPCallState extends State<KVOIPCall>
       case SignalingState.CallStateRoomEmpty:
         // safePop(false);
         stopRingtone();
-        setState(() => callState = _CallState.ended);
+        // setState(() => callState = KVoipCallState.ended);
         // releaseResourceIfNeed();
         endCallTimeout();
         break;
       case SignalingState.CallStateBye:
-        if (!KHostConfig.isReleaseMode)
+        if (!KHostConfig.isReleaseMode) {
           print("receiverSignalListener case CallStateBye");
-
+        }
         stopRingtone();
         Future.delayed(Duration(milliseconds: 3500), () => safePop(true));
         break;
       case SignalingState.CallStateAccepted:
-        if (!KHostConfig.isReleaseMode)
+        if (!KHostConfig.isReleaseMode) {
           print("receiverSignalListener case CallStateAccepted");
-
-        setState(() => callState = _CallState.in_progress);
+        }
+        // setState(() => callState = KVoipCallState.in_progress);
         startPanelTimeout(6);
         stopRingtone();
         break;
       case SignalingState.ConnectionOpen:
-        if (!KHostConfig.isReleaseMode)
+        if (!KHostConfig.isReleaseMode) {
           print("receiverSignalListener case ConnectionOpen");
-
+        }
         // commManager?.receiverConnected(widget.refUser.puid ?? "");
-        if (!widget.autoPickup) startRingtone();
-
+        if (!widget.autoPickup) {
+          startRingtone();
+        }
         break;
       default:
         break;
@@ -813,7 +817,7 @@ class _KVOIPCallState extends State<KVOIPCall>
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              if (callState == _CallState.in_progress) ...[
+              if (callState == KVoipCallState.in_progress) ...[
                 SizedBox(height: 24),
                 Text(
                   infoLabel,
@@ -840,7 +844,7 @@ class _KVOIPCallState extends State<KVOIPCall>
             child: SafeArea(
               child: Container(
                 width: 200.0,
-                child: widget.perspective == _CallPerspective.sender
+                child: widget.perspective == KVoipPerspective.sender
                     ? senderConnectButtons
                     : receiverConnectButtons,
               ),
@@ -955,22 +959,22 @@ class _KVOIPCallState extends State<KVOIPCall>
 
     final voipView;
     switch (callState) {
-      case _CallState.ws_error:
+      case KVoipCallState.ws_error:
         voipView = wsErrorView;
         break;
-      case _CallState.init:
+      case KVoipCallState.init:
         // isStartedCall = widget.autoPickup;
         voipView = widget.autoPickup ? callView : initView;
         break;
-      case _CallState.waiting:
+      case KVoipCallState.waiting:
         // isStartedCall = widget.autoPickup;
         voipView = widget.autoPickup ? callView : connectView;
         break;
-      case _CallState.in_progress:
+      case KVoipCallState.in_progress:
         // isStartedCall = true;
         voipView = callView;
         break;
-      case _CallState.ended:
+      case KVoipCallState.ended:
         voipView = endedView;
         break;
     }
@@ -982,7 +986,7 @@ class _KVOIPCallState extends State<KVOIPCall>
             isEnableTakePhoto: false,
           );
 
-    final body = callState == _CallState.in_progress && isChatEnabled
+    final body = callState == KVoipCallState.in_progress && isChatEnabled
         ? () {
             final chatView = Column(
               children: [

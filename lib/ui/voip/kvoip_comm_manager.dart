@@ -206,7 +206,7 @@ class KVOIPCommManager {
   //   this.connectedPeerIDs.forEach((String peerID) {
   //     this._sessionID = "${this._selfPUID}_$peerID";
   //     this._offerID = peerID;
-  //     this.onStateChange?.call(SignalingState.CallStateNew);
+  //     onStateChangeWrapper(SignalingState.CallStateNew);
   //
   //     _createPeerConnection(peerID, media: media, isUserScreen: isUserScreen)
   //         .then((pc) => _createOffer(peerID, pc, media));
@@ -230,7 +230,7 @@ class KVOIPCommManager {
     switch (message['type']) {
       case 'introduction':
         {
-          this.onStateChange?.call(SignalingState.CallStateNew);
+          onStateChangeWrapper(SignalingState.CallStateNew);
         }
         break;
       case 'room.create':
@@ -238,7 +238,7 @@ class KVOIPCommManager {
           this.session = KP2PSession.fromJson(message["session"]);
           this.peerType = P2PPeerType.joined;
           print("CREATED ROOM ID - ${this.session?.id}");
-          this.onStateChange?.call(SignalingState.CallStateRoomCreated);
+          onStateChangeWrapper(SignalingState.CallStateRoomCreated);
         }
         break;
       case 'room.join':
@@ -251,7 +251,7 @@ class KVOIPCommManager {
         {
           this.session = KP2PSession.fromJson(message["session"]);
           this.peerType = P2PPeerType.spectating;
-          this.onStateChange?.call(SignalingState.CallStateRoomInfo);
+          onStateChangeWrapper(SignalingState.CallStateRoomInfo);
         }
         break;
       case 'room.new_participant':
@@ -280,7 +280,7 @@ class KVOIPCommManager {
         break;
       case 'room.is_empty':
         {
-          this.onStateChange?.call(SignalingState.CallStateRoomEmpty);
+          onStateChangeWrapper(SignalingState.CallStateRoomEmpty);
         }
         break;
       case 'peers':
@@ -302,7 +302,7 @@ class KVOIPCommManager {
           this._offerID = data["myClientID"];
           this._offerMedia = data['media'];
 
-          // this.onStateChange?.call(SignalingState.CallStateNew);
+          // onStateChangeWrapper(SignalingState.CallStateNew);
 
           final RTCPeerConnection? pc = await _createPeerConnection(
             this._offerID ?? "",
@@ -340,7 +340,7 @@ class KVOIPCommManager {
               description['type'],
             ));
           }
-          this.onStateChange?.call(SignalingState.CallStateAccepted);
+          onStateChangeWrapper(SignalingState.CallStateAccepted);
         }
         break;
       case 'candidate':
@@ -378,7 +378,7 @@ class KVOIPCommManager {
             this._localStreams.clear();
           }
 
-          this.onStateChange?.call(SignalingState.CallStateBye);
+          onStateChangeWrapper(SignalingState.CallStateBye);
           // close();
         }
         break;
@@ -387,7 +387,7 @@ class KVOIPCommManager {
           print("koip_comm_manager.onMessage case bye...");
 
           try {
-            this.onStateChange?.call(SignalingState.CallStateBye);
+            onStateChangeWrapper(SignalingState.CallStateBye);
           } catch (e) {
             print(e);
           }
@@ -431,7 +431,7 @@ class KVOIPCommManager {
         break;
       case 'receiver_connected':
         {
-          // this.onStateChange?.call(SignalingState.CallStateInvite);
+          // onStateChangeWrapper(SignalingState.CallStateInvite);
           this.connectedPeerIDs.add(data['from']);
         }
         break;
@@ -450,7 +450,7 @@ class KVOIPCommManager {
               .connectedPeerIDs
               .removeWhere((e) => callerIDsToRemove.contains(e));
 
-          this.onStateChange?.call(SignalingState.CallStateInvite);
+          onStateChangeWrapper(SignalingState.CallStateInvite);
         }
         break;
       case 'bye_device':
@@ -474,7 +474,7 @@ class KVOIPCommManager {
             this._dataChannels.remove(to);
           }
 
-          this.onStateChange?.call(SignalingState.CallStateBye);
+          onStateChangeWrapper(SignalingState.CallStateBye);
           // close();
         }
         break;
@@ -527,12 +527,17 @@ class KVOIPCommManager {
             this._dataChannels.remove(to);
           }
 
-          this.onStateChange?.call(SignalingState.CallStateRejected);
+          onStateChangeWrapper(SignalingState.CallStateRejected);
         }
         break;
       default:
         break;
     }
+  }
+
+  void onStateChangeWrapper(SignalingState signalState) {
+    onStateChange?.call(signalState);
+    voipContext?.onCommSignal(signalState);
   }
 
   Future connect([String? roomID]) async {
@@ -570,7 +575,7 @@ class KVOIPCommManager {
     }
 
     /// my puid its for registering this user to our server
-    this.onStateChange?.call(SignalingState.ConnectionOpen);
+    onStateChangeWrapper(SignalingState.ConnectionOpen);
   }
 
   Future<MediaStream> _createVideoStream(
@@ -801,7 +806,7 @@ class KVOIPCommManager {
 
   void _answerTheCall(RTCPeerConnection pc) async {
     await _createAnswer(this._offerID!, pc, this._offerMedia!);
-    this.onStateChange?.call(SignalingState.CallStateAccepted);
+    onStateChangeWrapper(SignalingState.CallStateAccepted);
   }
 
   Future<Map<String, dynamic>> _getTurnCredential(String host, int port) async {
