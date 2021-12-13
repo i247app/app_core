@@ -1,7 +1,4 @@
 import 'package:app_core/app_core.dart';
-import 'package:app_core/helper/kdate_helper.dart';
-import 'package:app_core/header/kcore_code.dart';
-import 'package:app_core/helper/kvalidate_helper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 // ignore: non_constant_identifier_names

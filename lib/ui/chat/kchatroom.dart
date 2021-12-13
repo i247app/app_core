@@ -24,11 +24,13 @@ class KChatroom extends StatefulWidget {
   final KChatroomController controller;
   final bool isReadOnly;
   final bool isSupport;
+  final bool isEnableTakePhoto;
 
   const KChatroom(
     this.controller, {
     this.isReadOnly = false,
     this.isSupport = false,
+    this.isEnableTakePhoto = true,
   });
 
   @override
@@ -115,6 +117,8 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
   }
 
   void onAddCameraImageClick() async {
+    // TODO: Camera permission
+
     final result = await KPhotoHelper.camera();
     if (result.status == KPhotoStatus.permission_error)
       showDialog(
@@ -251,7 +255,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          addCameraButton,
+          if (widget.isEnableTakePhoto) addCameraButton,
           addImageButton,
           SizedBox(width: 2),
           Expanded(

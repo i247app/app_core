@@ -1,13 +1,7 @@
 import 'dart:async';
 
 import 'package:app_core/app_core.dart';
-import 'package:app_core/ui/chat/service/kchat_listing_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:app_core/helper/kpush_data_helper.dart';
-import 'package:app_core/helper/kutil.dart';
-import 'package:app_core/model/kchat.dart';
-import 'package:app_core/model/kpush_data.dart';
 import 'package:app_core/ui/chat/widget/kchat_icon.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 

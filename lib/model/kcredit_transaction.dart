@@ -67,6 +67,9 @@ class KCreditTransaction {
   @JsonKey(name: "poiBusinessName")
   String? poiBusinessName;
 
+  @JsonKey(name: "memo")
+  String? memo;
+
   @JsonKey(ignore: true)
   String get atName => this.poiKUNM != null ? "@${this.poiKUNM}" : "";
 
@@ -74,9 +77,10 @@ class KCreditTransaction {
   String get prettyName {
     String z = this.poiBusinessName ??
         KUtil.prettyName(
-            fnm: this.poiFirstName ?? "",
-            mnm: this.poiMiddleName ?? "",
-            lnm: this.poiLastName ?? "") ??
+          fnm: this.poiFirstName ?? "",
+          mnm: this.poiMiddleName ?? "",
+          lnm: this.poiLastName ?? "",
+        ) ??
         this.poiFone ??
         "";
 

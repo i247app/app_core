@@ -1,20 +1,14 @@
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
-import 'package:app_core/helper/kimage_animation_helper.dart';
-import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/ui/hero/khero_jump_multirow_game.dart';
 import 'package:app_core/ui/hero/khero_jump_over_game.dart';
+import 'package:app_core/ui/hero/khero_moving_tap_game.dart';
 import 'package:app_core/ui/hero/khero_tap_game.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_intro.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:app_core/ui/hero/widget/khero_game_level.dart';
-import 'package:app_core/header/kassets.dart';
-
-import 'khero_moving_tap_game.dart';
 
 class KHeroMultiGame extends StatefulWidget {
   final KHero? hero;
@@ -78,7 +72,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
     final jumpOverGame = KJumpGameScreen(
       hero: widget.hero,
       isShowEndLevel: isShowEndLevel,
-      onFinishLevel: (level) {
+      onFinishLevel: (level, score, isWrongCount) {
         showHeroGameLevelOverlay(
           () {
             this.setState(() {
@@ -102,7 +96,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
     final shootingGame = KShootingGameScreen(
       hero: widget.hero,
       isShowEndLevel: isShowEndLevel,
-      onFinishLevel: (level) {
+      onFinishLevel: (level, score, isHaveWrongAnswer) {
         showHeroGameLevelOverlay(
           () {
             this.setState(() {
@@ -125,7 +119,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
     final jumpMultiRowGame = KJumpMultiRowGameScreen(
       hero: widget.hero,
       isShowEndLevel: isShowEndLevel,
-      onFinishLevel: (level) {
+      onFinishLevel: (level, score, isHaveWrongAnswer) {
         showHeroGameLevelOverlay(
           () {
             this.setState(() {
@@ -148,7 +142,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
     final tapGame = KTapGameScreen(
       hero: widget.hero,
       isShowEndLevel: isShowEndLevel,
-      onFinishLevel: (level) {
+      onFinishLevel: (level, score, isHaveWrongAnswer) {
         showHeroGameLevelOverlay(
           () {
             this.setState(() {
@@ -171,7 +165,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
     final tapMovingGame = KMovingTapGameScreen(
       hero: widget.hero,
       isShowEndLevel: isShowEndLevel,
-      onFinishLevel: (level) {
+      onFinishLevel: (level, score, isHaveWrongAnswer) {
         showHeroGameLevelOverlay(
           () {
             this.setState(() {

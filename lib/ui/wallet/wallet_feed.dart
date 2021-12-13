@@ -590,6 +590,13 @@ class _CreditFeedItem extends StatelessWidget {
                   transactionDate(context, transaction.lineDate ?? ""),
                 ],
               ),
+              if (transaction.memo != null) ...[
+                SizedBox(height: 5),
+                Text(
+                  transaction.memo ?? "",
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ],
             ],
           ),
         ),

@@ -1,5 +1,4 @@
 import 'package:app_core/app_core.dart';
-import 'package:app_core/model/store.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'business.g.dart';

@@ -23,7 +23,8 @@ KCreditTransaction _$KCreditTransactionFromJson(Map<String, dynamic> json) =>
       ..poiMiddleName = json['poiMiddleName'] as String?
       ..poiLastName = json['poiLastName'] as String?
       ..poiFone = json['poiFone'] as String?
-      ..poiBusinessName = json['poiBusinessName'] as String?;
+      ..poiBusinessName = json['poiBusinessName'] as String?
+      ..memo = json['memo'] as String?;
 
 Map<String, dynamic> _$KCreditTransactionToJson(KCreditTransaction instance) {
   final val = <String, dynamic>{};
@@ -50,5 +51,6 @@ Map<String, dynamic> _$KCreditTransactionToJson(KCreditTransaction instance) {
   writeNotNull('poiLastName', instance.poiLastName);
   writeNotNull('poiFone', instance.poiFone);
   writeNotNull('poiBusinessName', instance.poiBusinessName);
+  writeNotNull('memo', instance.memo);
   return val;
 }

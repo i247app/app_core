@@ -1,14 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as Math;
-import 'dart:typed_data';
 
 import 'package:app_core/app_core.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:app_core/header/kassets.dart';
 import 'package:path_provider/path_provider.dart';
 
 class KTamagoChanJumping extends StatefulWidget {

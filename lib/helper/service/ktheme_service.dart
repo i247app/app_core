@@ -28,10 +28,11 @@ abstract class KThemeService {
 
   static bool isDarkMode() {
     try {
-      // return Theme.of(kNavigatorKey.currentContext!).brightness ==
-      //     Brightness.dark;
-      return getThemeMode() == ThemeMode.dark;
-    } catch (_) {
+      return Theme.of(kNavigatorKey.currentContext!).brightness ==
+          Brightness.dark;
+      // return getThemeMode() == ThemeMode.dark;
+    } catch (e) {
+      print("=>>> ${e.toString()}");
       return false;
     }
   }

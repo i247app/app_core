@@ -1,10 +1,8 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kmath_helper.dart';
-import 'package:app_core/model/business.dart';
 import 'package:app_core/model/cost_summary_item.dart';
 import 'package:app_core/model/menu.dart';
 import 'package:app_core/model/order_item.dart';
-import 'package:app_core/model/store.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'order.g.dart';

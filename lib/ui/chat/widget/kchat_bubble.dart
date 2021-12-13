@@ -1,11 +1,8 @@
 import 'package:app_core/app_core.dart';
-import 'package:app_core/helper/kutil.dart';
-import 'package:app_core/model/kchat_message.dart';
 import 'package:app_core/ui/widget/kimage_viewer.dart';
 import 'package:app_core/ui/widget/ksmart_image.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class KChatBubble extends StatelessWidget {
   static const Duration SHORT_TIME_CUTOFF = Duration(minutes: 2);
@@ -198,6 +195,7 @@ class KChatBubble extends StatelessWidget {
                     child: Icon(Icons.broken_image),
                   )
                 : KSmartImage(
+                    // key: Key(msg.messageID ?? "?"),
                     base64Data: msg.imageData,
                     url: msg.message,
                     onClick: () => onImageMessageClick(context, msg),

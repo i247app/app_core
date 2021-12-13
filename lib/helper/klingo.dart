@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:app_core/app_core.dart';
-import 'package:app_core/helper/khost_config.dart';
-import 'package:app_core/helper/klocale_helper.dart';
 import 'package:flutter/services.dart';
 
 class KLingoDictionary {

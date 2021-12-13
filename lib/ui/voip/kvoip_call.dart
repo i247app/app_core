@@ -1,22 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:app_core/header/kassets.dart';
 import 'package:app_core/helper/service/kvoip_service.dart';
 import 'package:app_core/ui/voip/kvoip_context.dart';
 import 'package:app_core/ui/widget/dialog/boolean_dialog.dart';
 import 'package:app_core/value/kphrases.dart';
-import 'package:app_core/value/kstyles.dart';
-import 'package:app_core/helper/kcall_kit_helper.dart';
-import 'package:app_core/helper/knotif_stream_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/helper/ksnackbar_helper.dart';
-import 'package:app_core/helper/kwebrtc_helper.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
-import 'package:app_core/ui/voip/kvoip_comm_manager.dart';
 import 'package:app_core/ui/voip/widget/kp2p_button_view.dart';
 import 'package:app_core/ui/voip/widget/kp2p_video_view.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
@@ -982,7 +974,12 @@ class _KVOIPCallState extends State<KVOIPCall>
         break;
     }
 
-    final chatroom = chatCtrl == null ? Container() : KChatroom(chatCtrl!);
+    final chatroom = this.chatCtrl == null
+        ? Container()
+        : KChatroom(
+            this.chatCtrl!,
+            isEnableTakePhoto: false,
+          );
 
     final body = callState == _CallState.in_progress && isChatEnabled
         ? () {

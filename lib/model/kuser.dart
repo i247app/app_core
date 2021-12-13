@@ -1,5 +1,4 @@
 import 'package:app_core/app_core.dart';
-import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/kaddress.dart';
 import 'package:app_core/model/keducation.dart';
 import 'package:app_core/model/kobject.dart';

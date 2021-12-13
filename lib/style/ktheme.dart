@@ -1,6 +1,5 @@
 import 'package:app_core/style/kbase_theme.dart';
 import 'package:app_core/style/kpalette_group.dart';
-import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -23,7 +22,7 @@ class KTheme extends KBaseTheme {
   /// Styles stuff
   ///
 
-  ThemeData get themeData => KStyles.themeDataBuilder(activePalette);
+  // ThemeData get themeData => KStyles.themeDataBuilder(activePalette);
 
   final double leftPanelWidth = 270;
   final double smallestSize = 600;
