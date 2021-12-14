@@ -95,6 +95,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
 
     final shootingGame = KShootingGameScreen(
       hero: widget.hero,
+      questions: [],
       isShowEndLevel: isShowEndLevel,
       onFinishLevel: (level, score, isHaveWrongAnswer) {
         showHeroGameLevelOverlay(
@@ -160,6 +161,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
           this.currentGame = 5;
         });
       }),
+      questions: [],
     );
 
     final tapMovingGame = KMovingTapGameScreen(
@@ -183,6 +185,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
           this.currentGame = 6;
         });
       }),
+      questions: [],
     );
 
     final body = Column(
