@@ -281,7 +281,7 @@ abstract class KServerHandler {
     required double amount,
   }) async {
     final params = {
-      "svc": "bird",
+      "svc": "chao",
       "req": "bank.deposit",
       "amount": amount,
       "user": KUser()
@@ -301,7 +301,7 @@ abstract class KServerHandler {
     required double amount,
   }) async {
     final params = {
-      "svc": "bird",
+      "svc": "chao",
       "req": "bank.withdrawal",
       "amount": amount,
       "user": KUser()
