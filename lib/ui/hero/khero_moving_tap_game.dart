@@ -745,6 +745,9 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
   }
 
   void handlePickAnswer(int answer, int answerIndex) {
+    if (_spinAnimationController.value != 0) {
+      return;
+    }
     bool isTrueAnswer = answer == rightAnswers[currentQuestionIndex];
 
     if (!isPlaySound) {
