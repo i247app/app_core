@@ -146,107 +146,112 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
 
   @override
   Widget build(BuildContext context) {
-    final body = !isLoaded ? Container() : Column(
-      children: [
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(
-                  BACKGROUND_IMAGES[currentLevel],
-                  package: 'app_core',
-                ),
-                fit: BoxFit.cover,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Padding(
-                  //   padding: EdgeInsets.only(
-                  //     left: 15,
-                  //   ),
-                  //   child: GestureDetector(
-                  //     onTap: () {
-                  //       Navigator.of(context).pop();
-                  //     },
-                  //     child: Icon(
-                  //       Icons.arrow_back_ios,
-                  //       color: Colors.white,
-                  //     ),
-                  //   ),
-                  // ),
-                  Expanded(
-                    child: KTapGameScreen(
-                      hero: widget.hero,
-                      totalLevel: totalLevel,
-                      isShowEndLevel: isShowEndLevel,
-                      questions: questions,
-                      onFinishLevel: (level, score, isHaveWrongAnswer) {
-                        final scoreID = Uuid().v4();
-                        this.setState(() {
-                          this.scoreID = scoreID;
-                          this.scores.add(
-                                KScore()
-                                  ..game = GAME_NAME
-                                  ..user = KSessionData.me
-                                  ..level = level
-                                  ..scoreID = scoreID
-                                  ..score = score.toDouble(),
-                              );
-                        });
-                        if (level < totalLevel) {
-                          print(isHaveWrongAnswer);
-                          // if (!isHaveWrongAnswer) {
-                          //   this.setState(() {
-                          //     this.levelHighscores.add(score);
-                          //   });
-                          // }
-                          this.showHeroGameLevelOverlay(
-                            () {
-                              if (this.overlayID != null) {
-                                KOverlayHelper.removeOverlay(this.overlayID!);
-                                this.overlayID = null;
-                              }
-                              this.showHeroGameHighscoreOverlay(() {
-                                this.setState(() {
-                                  this.isShowEndLevel = false;
-                                });
-                                if (this.overlayID != null) {
-                                  KOverlayHelper.removeOverlay(this.overlayID!);
-                                  this.overlayID = null;
-                                }
-                              });
-                            },
-                          );
-                        } else {
-                          this.showHeroGameHighscoreOverlay(() {
-                            this.setState(() {
-                              this.isShowEndLevel = false;
-                            });
-                            if (this.overlayID != null) {
-                              KOverlayHelper.removeOverlay(this.overlayID!);
-                              this.overlayID = null;
-                            }
-                          });
-                        }
-                      },
-                      onChangeLevel: (level) => this.setState(
-                        () {
-                          this.currentLevel = level;
-                        },
+    final body = !isLoaded
+        ? Container()
+        : Column(
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(
+                        BACKGROUND_IMAGES[currentLevel],
+                        package: 'app_core',
                       ),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                ],
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: SafeArea(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Padding(
+                        //   padding: EdgeInsets.only(
+                        //     left: 15,
+                        //   ),
+                        //   child: GestureDetector(
+                        //     onTap: () {
+                        //       Navigator.of(context).pop();
+                        //     },
+                        //     child: Icon(
+                        //       Icons.arrow_back_ios,
+                        //       color: Colors.white,
+                        //     ),
+                        //   ),
+                        // ),
+                        Expanded(
+                          child: KTapGameScreen(
+                            hero: widget.hero,
+                            totalLevel: totalLevel,
+                            isShowEndLevel: isShowEndLevel,
+                            questions: questions,
+                            onFinishLevel: (level, score, isHaveWrongAnswer) {
+                              final scoreID = Uuid().v4();
+                              this.setState(() {
+                                this.scoreID = scoreID;
+                                this.scores.add(
+                                      KScore()
+                                        ..game = GAME_NAME
+                                        ..user = KSessionData.me
+                                        ..level = level
+                                        ..scoreID = scoreID
+                                        ..score = score.toDouble(),
+                                    );
+                              });
+                              if (level < totalLevel) {
+                                print(isHaveWrongAnswer);
+                                // if (!isHaveWrongAnswer) {
+                                //   this.setState(() {
+                                //     this.levelHighscores.add(score);
+                                //   });
+                                // }
+                                this.showHeroGameLevelOverlay(
+                                  () {
+                                    if (this.overlayID != null) {
+                                      KOverlayHelper.removeOverlay(
+                                          this.overlayID!);
+                                      this.overlayID = null;
+                                    }
+                                    this.showHeroGameHighscoreOverlay(() {
+                                      this.setState(() {
+                                        this.isShowEndLevel = false;
+                                      });
+                                      if (this.overlayID != null) {
+                                        KOverlayHelper.removeOverlay(
+                                            this.overlayID!);
+                                        this.overlayID = null;
+                                      }
+                                    });
+                                  },
+                                );
+                              } else {
+                                this.showHeroGameHighscoreOverlay(() {
+                                  this.setState(() {
+                                    this.isShowEndLevel = false;
+                                  });
+                                  if (this.overlayID != null) {
+                                    KOverlayHelper.removeOverlay(
+                                        this.overlayID!);
+                                    this.overlayID = null;
+                                  }
+                                });
+                              }
+                            },
+                            onChangeLevel: (level) => this.setState(
+                              () {
+                                this.currentLevel = level;
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-      ],
-    );
+            ],
+          );
 
     return Scaffold(
       // appBar: AppBar(title: Text("Play game")),
@@ -342,10 +347,15 @@ class _KTapGameScreenState extends State<KTapGameScreen>
   List<List<int>> levelRightAnswers = [];
 
   int currentQuestionIndex = 0;
+
   List<KQuestion> get questions => widget.questions;
+
   KQuestion get currentQuestion => questions[currentQuestionIndex];
+
   List<KAnswer> get currentQuestionAnswers => currentQuestion.answers ?? [];
-  int get currentCorrectAnswer => int.parse(currentQuestion.correctAnswer?.text ?? "0");
+
+  int get currentCorrectAnswer =>
+      int.parse(currentQuestion.correctAnswer?.text ?? "0");
   int? spinningHeroIndex;
   int? currentShowStarIndex;
   bool isPlaySound = false;
@@ -355,7 +365,8 @@ class _KTapGameScreenState extends State<KTapGameScreen>
 
   Math.Random rand = new Math.Random();
 
-  KAnswer get getRandomAnswer => currentQuestionAnswers[Math.Random().nextInt(currentQuestionAnswers.length)];
+  KAnswer get getRandomAnswer => currentQuestionAnswers[
+      Math.Random().nextInt(currentQuestionAnswers.length)];
 
   bool get canRestartGame =>
       currentLevel + 1 < totalLevel ||

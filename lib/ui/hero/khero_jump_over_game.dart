@@ -320,7 +320,9 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
 
   List<List<String>> levelQuestions = [];
   List<List<int>> levelRightAnswers = [];
+
   List<String> get questions => levelQuestions[currentLevel];
+
   List<int> get rightAnswers => levelRightAnswers[currentLevel];
   int currentQuestionIndex = 0;
   int? spinningHeroIndex;

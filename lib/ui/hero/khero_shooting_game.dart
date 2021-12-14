@@ -148,102 +148,106 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
 
   @override
   Widget build(BuildContext context) {
-    final body = !isLoaded ? Container() : Column(
-      children: [
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(this.gameBackground, package: 'app_core'),
-                fit: BoxFit.cover,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // BackButton(),
-                  Expanded(
-                    child: this.isShowIntro
-                        ? GestureDetector(
-                            onTap: () =>
-                                this.setState(() => this.isShowIntro = false),
-                            child: Container(
-                              child: KGameIntro(
-                                hero: widget.hero,
-                                onFinish: () => this
-                                    .setState(() => this.isShowIntro = false),
-                              ),
-                            ),
-                          )
-                        : KShootingGameScreen(
-                            hero: widget.hero,
-                            totalLevel: totalLevel,
-                            isShowEndLevel: isShowEndLevel,
-                            questions: questions,
-                            onFinishLevel: (level, score, isHaveWrongAnswer) {
-                              final scoreID = Uuid().v4();
-                              this.setState(() {
-                                this.scoreID = scoreID;
-                                this.scores.add(
-                                      KScore()
-                                        ..game = GAME_NAME
-                                        ..user = KSessionData.me
-                                        ..level = level
-                                        ..scoreID = scoreID
-                                        ..score = score.toDouble(),
-                                    );
-                              });
-                              if (level < totalLevel) {
-                                // if (!isHaveWrongAnswer) {
-                                //   this.setState(() {
-                                //     this.levelHighscores.add(score);
-                                //   });
-                                // }
-                                this.showHeroGameLevelOverlay(
-                                  () {
-                                    if (this.overlayID != null) {
-                                      KOverlayHelper.removeOverlay(
-                                          this.overlayID!);
-                                      this.overlayID = null;
-                                    }
-                                    this.showHeroGameHighscoreOverlay(() {
-                                      this.setState(() {
-                                        this.isShowEndLevel = false;
-                                      });
-                                      if (this.overlayID != null) {
-                                        KOverlayHelper.removeOverlay(
-                                            this.overlayID!);
-                                        this.overlayID = null;
-                                      }
-                                    });
-                                  },
-                                );
-                              } else {
-                                this.showHeroGameHighscoreOverlay(() {
-                                  this.setState(() {
-                                    this.isShowEndLevel = false;
-                                  });
-                                  if (this.overlayID != null) {
-                                    KOverlayHelper.removeOverlay(
-                                        this.overlayID!);
-                                    this.overlayID = null;
-                                  }
-                                });
-                              }
-                            },
-                            onChangeLevel: (level) =>
-                                this.setState(() => this.currentLevel = level),
-                          ),
+    final body = !isLoaded
+        ? Container()
+        : Column(
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image:
+                          AssetImage(this.gameBackground, package: 'app_core'),
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ],
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: SafeArea(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // BackButton(),
+                        Expanded(
+                          child: this.isShowIntro
+                              ? GestureDetector(
+                                  onTap: () => this
+                                      .setState(() => this.isShowIntro = false),
+                                  child: Container(
+                                    child: KGameIntro(
+                                      hero: widget.hero,
+                                      onFinish: () => this.setState(
+                                          () => this.isShowIntro = false),
+                                    ),
+                                  ),
+                                )
+                              : KShootingGameScreen(
+                                  hero: widget.hero,
+                                  totalLevel: totalLevel,
+                                  isShowEndLevel: isShowEndLevel,
+                                  questions: questions,
+                                  onFinishLevel:
+                                      (level, score, isHaveWrongAnswer) {
+                                    final scoreID = Uuid().v4();
+                                    this.setState(() {
+                                      this.scoreID = scoreID;
+                                      this.scores.add(
+                                            KScore()
+                                              ..game = GAME_NAME
+                                              ..user = KSessionData.me
+                                              ..level = level
+                                              ..scoreID = scoreID
+                                              ..score = score.toDouble(),
+                                          );
+                                    });
+                                    if (level < totalLevel) {
+                                      // if (!isHaveWrongAnswer) {
+                                      //   this.setState(() {
+                                      //     this.levelHighscores.add(score);
+                                      //   });
+                                      // }
+                                      this.showHeroGameLevelOverlay(
+                                        () {
+                                          if (this.overlayID != null) {
+                                            KOverlayHelper.removeOverlay(
+                                                this.overlayID!);
+                                            this.overlayID = null;
+                                          }
+                                          this.showHeroGameHighscoreOverlay(() {
+                                            this.setState(() {
+                                              this.isShowEndLevel = false;
+                                            });
+                                            if (this.overlayID != null) {
+                                              KOverlayHelper.removeOverlay(
+                                                  this.overlayID!);
+                                              this.overlayID = null;
+                                            }
+                                          });
+                                        },
+                                      );
+                                    } else {
+                                      this.showHeroGameHighscoreOverlay(() {
+                                        this.setState(() {
+                                          this.isShowEndLevel = false;
+                                        });
+                                        if (this.overlayID != null) {
+                                          KOverlayHelper.removeOverlay(
+                                              this.overlayID!);
+                                          this.overlayID = null;
+                                        }
+                                      });
+                                    }
+                                  },
+                                  onChangeLevel: (level) => this.setState(
+                                      () => this.currentLevel = level),
+                                ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-      ],
-    );
+            ],
+          );
 
     return Scaffold(body: body);
   }
@@ -345,10 +349,15 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
   List<List<String>> levelQuestions = [];
   List<List<int>> levelRightAnswers = [];
   int currentQuestionIndex = 0;
+
   List<KQuestion> get questions => widget.questions;
+
   KQuestion get currentQuestion => questions[currentQuestionIndex];
+
   List<KAnswer> get currentQuestionAnswers => currentQuestion.answers ?? [];
-  int get currentCorrectAnswer => int.parse(currentQuestion.correctAnswer?.text ?? "0");
+
+  int get currentCorrectAnswer =>
+      int.parse(currentQuestion.correctAnswer?.text ?? "0");
   int? spinningHeroIndex;
   int? currentShowStarIndex;
 
@@ -358,7 +367,8 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
     KImageAnimationHelper.randomImage,
   ];
 
-  KAnswer get getRandomAnswer => currentQuestionAnswers[Math.Random().nextInt(currentQuestionAnswers.length)];
+  KAnswer get getRandomAnswer => currentQuestionAnswers[
+      Math.Random().nextInt(currentQuestionAnswers.length)];
 
   bool get canRestartGame =>
       currentLevel + 1 < totalLevel ||
