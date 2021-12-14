@@ -796,16 +796,16 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
             });
           });
         } else {
+          if (widget.onFinishLevel != null) {
+            widget.onFinishLevel!(currentLevel + 1,
+                levelPlayTimes[currentLevel], wrongAnswerCount > 0);
+          }
           this.setState(() {
             if (rightAnswerCount / questions.length >=
                 levelHardness[currentLevel]) {
               eggReceive = eggReceive + 1;
               if (currentLevel + 1 < totalLevel) {
                 canAdvance = true;
-                if (widget.onFinishLevel != null) {
-                  widget.onFinishLevel!(currentLevel + 1,
-                      levelPlayTimes[currentLevel], wrongAnswerCount > 0);
-                }
               }
             }
             isStart = false;
