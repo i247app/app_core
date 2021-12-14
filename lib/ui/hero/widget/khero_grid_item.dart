@@ -2,7 +2,6 @@ import 'package:app_core/header/kassets.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/ui/widget/kimage_animation/kimage_animation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/khero_helper.dart';
 import 'package:app_core/value/kstyles.dart';
 
