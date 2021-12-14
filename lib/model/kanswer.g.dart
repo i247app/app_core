@@ -1,23 +1,24 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'kquestion.dart';
+part of 'kanswer.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-KQuestion _$KQuestionFromJson(Map<String, dynamic> json) => KQuestion()
+KAnswer _$KAnswerFromJson(Map<String, dynamic> json) => KAnswer()
   ..qaID = json['qaID'] as String?
   ..questionID = json['questionID'] as String?
-  ..questionType = json['questionType'] as String?
-  ..questionText = json['questionText'] as String?
+  ..answerID = json['answerID'] as String?
+  ..text = json['text'] as String?
+  ..isCorrect = zzz_str2Bool(json['isCorrect'] as String?)
   ..mediaURL = json['mediaURL'] as String?
   ..mediaType = json['mediaType'] as String?
-  ..answers = (json['answers'] as List<dynamic>?)
-      ?.map((e) => KAnswer.fromJson(e as Map<String, dynamic>))
-      .toList();
+  ..correctAnswer = json['correctAnswer'] as String?
+  ..buttonColor = json['buttonColor'] as String?
+  ..buttonStyle = json['buttonStyle'] as String?;
 
-Map<String, dynamic> _$KQuestionToJson(KQuestion instance) {
+Map<String, dynamic> _$KAnswerToJson(KAnswer instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {
@@ -28,10 +29,13 @@ Map<String, dynamic> _$KQuestionToJson(KQuestion instance) {
 
   writeNotNull('qaID', instance.qaID);
   writeNotNull('questionID', instance.questionID);
-  writeNotNull('questionType', instance.questionType);
-  writeNotNull('questionText', instance.questionText);
+  writeNotNull('answerID', instance.answerID);
+  writeNotNull('text', instance.text);
+  writeNotNull('isCorrect', zzz_bool2Str(instance.isCorrect));
   writeNotNull('mediaURL', instance.mediaURL);
   writeNotNull('mediaType', instance.mediaType);
-  writeNotNull('answers', instance.answers?.map((e) => e.toJson()).toList());
+  writeNotNull('correctAnswer', instance.correctAnswer);
+  writeNotNull('buttonColor', instance.buttonColor);
+  writeNotNull('buttonStyle', instance.buttonStyle);
   return val;
 }

@@ -18,7 +18,6 @@ import 'package:app_core/ui/chat/kchatroom.dart';
 import 'package:app_core/ui/chat/service/kchatroom_controller.dart';
 import 'package:app_core/ui/voip/kvoip_call.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class KChatScreen extends StatefulWidget {
   final List<KChatMember>? members;

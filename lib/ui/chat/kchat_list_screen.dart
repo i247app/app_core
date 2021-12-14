@@ -9,7 +9,6 @@ import 'package:app_core/ui/chat/kchat_listing_view.dart';
 import 'package:app_core/ui/chat/service/kchat_listing_controller.dart';
 import 'package:app_core/ui/chat/service/kchat_listing_data.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/ui/chat/kchat_screen.dart';

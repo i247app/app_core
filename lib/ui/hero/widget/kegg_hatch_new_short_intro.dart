@@ -135,9 +135,11 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
       ..addStatusListener((status) {
         if (mounted && status == AnimationStatus.completed) {
           Future.delayed(Duration(milliseconds: 1000), () {
-            setState(() {
-              time = 0;
-            });
+            if (mounted) {
+              setState(() {
+                time = 0;
+              });
+            }
             // this.fire();
             this._shakeTheTopAnimationController.forward();
           });

@@ -18,7 +18,6 @@ import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/value/kphrases.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class KChatroom extends StatefulWidget {
   final KChatroomController controller;

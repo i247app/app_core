@@ -745,6 +745,9 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
   }
 
   void handlePickAnswer(int answer, int answerIndex) {
+    if (_spinAnimationController.value != 0) {
+      return;
+    }
     bool isTrueAnswer = answer == rightAnswers[currentQuestionIndex];
 
     if (!isPlaySound) {
@@ -793,16 +796,16 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
             });
           });
         } else {
+          if (widget.onFinishLevel != null) {
+            widget.onFinishLevel!(currentLevel + 1,
+                levelPlayTimes[currentLevel], wrongAnswerCount > 0);
+          }
           this.setState(() {
             if (rightAnswerCount / questions.length >=
                 levelHardness[currentLevel]) {
               eggReceive = eggReceive + 1;
               if (currentLevel + 1 < totalLevel) {
                 canAdvance = true;
-                if (widget.onFinishLevel != null) {
-                  widget.onFinishLevel!(currentLevel + 1,
-                      levelPlayTimes[currentLevel], wrongAnswerCount > 0);
-                }
               }
             }
             isStart = false;

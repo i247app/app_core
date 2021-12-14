@@ -1,16 +1,15 @@
 import 'dart:async';
 
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/ui/widget/kcontact_name_view.dart';
-import 'package:app_core/ui/widget/kicon_label.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
+import 'package:app_core/ui/widget/kicon_label.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
+import 'package:flutter/material.dart';
 
 class KChatContactListing extends StatefulWidget {
   final Function(String? searchText) searchUsers;
