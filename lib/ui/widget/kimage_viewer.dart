@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:app_core/helper/kfile_helper.dart';
 import 'package:app_core/helper/ktoast_helper.dart';
 import 'package:app_core/value/kstyles.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 enum _ImageViewerType { url, file, none }
 
@@ -21,6 +21,8 @@ class KImageViewer extends StatefulWidget {
 }
 
 class _KImageViewerState extends State<KImageViewer> {
+  final ctrl = TransformationController();
+
   ImageProvider? imageProvider;
 
   _ImageViewerType get imageType {
@@ -64,11 +66,12 @@ class _KImageViewerState extends State<KImageViewer> {
     final backButton = IconButton(
       onPressed: () => Navigator.of(context).pop(),
       icon: CircleAvatar(
-          backgroundColor: KStyles.extraDarkGrey,
-          child: Icon(
-            Icons.close,
-            color: KStyles.colorButtonText,
-          )),
+        backgroundColor: KStyles.extraDarkGrey,
+        child: Icon(
+          Icons.close,
+          color: KStyles.colorButtonText,
+        ),
+      ),
     );
 
     final saveButton = IconButton(
@@ -97,6 +100,7 @@ class _KImageViewerState extends State<KImageViewer> {
     final imageViewer = Container(
       color: KStyles.black,
       child: InteractiveViewer(
+        transformationController: ctrl,
         panEnabled: false,
         minScale: 0.5,
         maxScale: 2,
