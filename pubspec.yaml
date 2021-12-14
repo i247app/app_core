@@ -65,7 +65,7 @@ dependencies:
     # path: ../flutter_voip_ios_local
 
   # Flutter WebRTC
-  flutter_webrtc: 0.6.3 # 0.5.8
+  flutter_webrtc: 0.8.0 # 0.6.3 # 0.5.8
   flutter_ringtone_player:
     git:
       url: https://github.com/huynhtuanhuy/flutter_ringtone_player.git
