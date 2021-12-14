@@ -5,10 +5,11 @@ abstract class KAssets {
   static const String JSON_BASE = "$ASSET_BASE/json";
   static const String I18N_BASE = "$ASSET_BASE/lingo";
 
-  /* old_lingo */
+  /* Lingo */
   static const String I18N_EN = "$I18N_BASE/en.json";
   static const String I18N_VN = "$I18N_BASE/vi.json";
 
+  /* Image */
   static const String NOTIF_ICON = IMG_PHONE;
   static const String IMG_TRANSPARENCY = "$IMG_BASE/1x1_transparency.png";
   static const String IMG_WHITE = "$IMG_BASE/1x1_white.png";
@@ -17,9 +18,12 @@ abstract class KAssets {
   static const String IMG_HERO_EGG = "$IMG_BASE/heroegg.png";
   static const String IMG_TAMAGO_OUTLINE = "$IMG_BASE/tamago_outline.png";
   static const String IMG_TAMAGO_CHAN = "$IMG_BASE/tamago_chan.png";
-  static const String IMG_TAMAGO_CHAN_JUMP_RIGHT = "$IMG_BASE/tamago_chan_jump_right.png";
-  static const String IMG_TAMAGO_CHAN_JUMP_LEFT = "$IMG_BASE/tamago_chan_jump_left.png";
-  static const String IMG_TAMAGO_CHAN_JUMP_UP = "$IMG_BASE/tamago_chan_jump_up.png";
+  static const String IMG_TAMAGO_CHAN_JUMP_RIGHT =
+      "$IMG_BASE/tamago_chan_jump_right.png";
+  static const String IMG_TAMAGO_CHAN_JUMP_LEFT =
+      "$IMG_BASE/tamago_chan_jump_left.png";
+  static const String IMG_TAMAGO_CHAN_JUMP_UP =
+      "$IMG_BASE/tamago_chan_jump_up.png";
   static const String IMG_TAMAGO_CHAN_SAD = "$IMG_BASE/tamago_chan_sad.png";
   static const String IMG_TAMAGO_1 = "$IMG_BASE/tamago_01.png";
   static const String IMG_TAMAGO_2 = "$IMG_BASE/tamago_02.png";
@@ -56,8 +60,8 @@ abstract class KAssets {
   static const String IMG_RANKING_BLUE = "$IMG_BASE/ranking_blue.png";
 
   // Sounds
-  static const String SOUND_CORRECT = "correct.mp3";
-  static const String SOUND_WRONG = "wrong.mp3";
+  static const String SOUND_CORRECT = "$SOUND_BASE/correct.mp3";
+  static const String SOUND_WRONG = "$SOUND_BASE/wrong.mp3";
 
   /* JSON */
   static const String JSON_VIETNAM_BANKS = "$JSON_BASE/vietnam_banks.json";
