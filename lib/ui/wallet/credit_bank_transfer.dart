@@ -38,10 +38,12 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
 
   void onSubmitClick() async {
     FocusScope.of(context).unfocus();
-    if (!formKey.currentState!.validate()) return;
+    if (!formKey.currentState!.validate()) {
+      return;
+    }
 
-    var hasModifyBank = false;
-    final bankId = this.bankCtrl.text;
+    bool hasModifyBank = false;
+    final bankID = this.bankCtrl.text;
     final banks = await KBankHelper.getBanks();
     final bankName =
         banks![int.parse(this.bankCtrl.text) - 100].shortName ?? "";
@@ -50,7 +52,7 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
         (KSessionData.me?.bankAccName ?? "") != accountNameCtrl.text ||
         (KSessionData.me?.bankAccNumber ?? "") != bankAccountNumberCtrl.text) {
       final response = await KServerHandler.modifyUserBank(
-        bankID: bankId,
+        bankID: bankID,
         bankName: bankName,
         bankAccount: accountNameCtrl.text,
         bankAccNumber: bankAccountNumberCtrl.text,
@@ -69,11 +71,11 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
         ? KServerHandler.bankWithdrawal
         : KServerHandler.bankDeposit;
     final response = await apiCall.call(
-      bankID: bankId,
+      bankID: bankID,
       bankName: bankName,
       bankAccount: accountNameCtrl.text,
       bankAccNumber: bankAccountNumberCtrl.text,
-      amount: double.tryParse(amountCtrl.text) ?? 0,
+      amount: amountCtrl.text.isEmpty ? "0" : amountCtrl.text,
     );
     KSnackBarHelper.fromResponse(response);
 

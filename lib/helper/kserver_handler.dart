@@ -278,10 +278,10 @@ abstract class KServerHandler {
     required String bankName,
     required String bankAccount,
     required String bankAccNumber,
-    required double amount,
+    required String amount,
   }) async {
     final params = {
-      "svc": "bird",
+      "svc": "chao",
       "req": "bank.deposit",
       "amount": amount,
       "user": KUser()
@@ -298,10 +298,10 @@ abstract class KServerHandler {
     required String bankName,
     required String bankAccount,
     required String bankAccNumber,
-    required double amount,
+    required String amount,
   }) async {
     final params = {
-      "svc": "bird",
+      "svc": "chao",
       "req": "bank.withdrawal",
       "amount": amount,
       "user": KUser()
