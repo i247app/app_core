@@ -172,15 +172,17 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
     );
 
     final shortestSide = MediaQuery.of(context).size.shortestSide;
-    if (shortestSide >= KStyles.smallestSize) return body;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.action == BankTransferAction.withdraw
-            ? KPhrases.withdrawal
-            : KPhrases.deposit),
-      ),
-      body: SafeArea(child: body),
-    );
+    if (shortestSide >= KStyles.smallestSize) {
+      return body;
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.action == BankTransferAction.withdraw
+              ? KPhrases.withdrawal
+              : KPhrases.deposit),
+        ),
+        body: SafeArea(child: body),
+      );
+    }
   }
 }
