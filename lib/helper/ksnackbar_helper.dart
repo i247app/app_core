@@ -13,7 +13,7 @@ abstract class KSnackBarHelper {
       ScaffoldMessenger.of((key ?? kNavigatorKey).currentContext!).showSnackBar(
         SnackBar(
           content: Text(text),
-          backgroundColor: isSuccess ? KStyles.colorBGYes : KStyles.colorBGNo,
+          backgroundColor: isSuccess ? Colors.green : Colors.red,
         ),
       );
 
