@@ -1,9 +1,11 @@
+import 'package:app_core/header/kassets.dart';
 import 'package:app_core/header/kcore_code.dart';
 import 'package:app_core/helper/kbank_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/helper/ksnackbar_helper.dart';
 import 'package:app_core/ui/kbank_picker.dart';
+import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/profile_input.dart';
 import 'package:app_core/value/kphrases.dart';
 import 'package:app_core/value/kstyles.dart';
@@ -76,6 +78,7 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
       bankAccount: accountNameCtrl.text,
       bankAccNumber: bankAccountNumberCtrl.text,
       amount: amountCtrl.text.isEmpty ? "0" : amountCtrl.text,
+      tokenName: widget.tokenName,
     );
     KSnackBarHelper.fromResponse(response);
 
@@ -144,9 +147,9 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
             bankAccountName,
             bankAccount,
             amount,
-            SizedBox(height: 20),
+            // SizedBox(height: 20),
             // FadeInImage(
-            //   placeholder: AssetImage(Assets.IMG_TRANSPARENCY),
+            //   placeholder: AssetImage(KAssets.IMG_TRANSPARENCY),
             //   image: AssetImage(KAssets.IMG_POWERED_BY_CHAO),
             //   height: 60,
             // ),
@@ -173,15 +176,17 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
 
     final shortestSide = MediaQuery.of(context).size.shortestSide;
     if (shortestSide >= KStyles.smallestSize) {
-      return body;
+      return KeyboardKiller(child: body);
     } else {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.action == BankTransferAction.withdraw
-              ? KPhrases.withdrawal
-              : KPhrases.deposit),
+      return KeyboardKiller(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(widget.action == BankTransferAction.withdraw
+                ? KPhrases.withdrawal
+                : KPhrases.deposit),
+          ),
+          body: SafeArea(child: body),
         ),
-        body: SafeArea(child: body),
       );
     }
   }

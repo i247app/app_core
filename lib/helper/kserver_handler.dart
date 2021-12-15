@@ -279,11 +279,13 @@ abstract class KServerHandler {
     required String bankAccount,
     required String bankAccNumber,
     required String amount,
+    required String tokenName,
   }) async {
     final params = {
       "svc": "chao",
       "req": "bank.deposit",
       "amount": amount,
+      "tokenName": tokenName,
       "user": KUser()
         ..bankID = bankID
         ..bankName = bankName
@@ -299,11 +301,13 @@ abstract class KServerHandler {
     required String bankAccount,
     required String bankAccNumber,
     required String amount,
+    required String tokenName,
   }) async {
     final params = {
       "svc": "chao",
       "req": "bank.withdrawal",
       "amount": amount,
+      "tokenName": tokenName,
       "user": KUser()
         ..bankID = bankID
         ..bankName = bankName
