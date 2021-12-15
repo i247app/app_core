@@ -278,7 +278,7 @@ abstract class KServerHandler {
     required String bankName,
     required String bankAccount,
     required String bankAccNumber,
-    required double amount,
+    required String amount,
   }) async {
     final params = {
       "svc": "chao",
@@ -298,7 +298,7 @@ abstract class KServerHandler {
     required String bankName,
     required String bankAccount,
     required String bankAccNumber,
-    required double amount,
+    required String amount,
   }) async {
     final params = {
       "svc": "chao",
