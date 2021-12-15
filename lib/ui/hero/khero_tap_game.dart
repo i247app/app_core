@@ -3,7 +3,10 @@ import 'dart:io';
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/helper/kserver_handler.dart';
+import 'package:app_core/model/kanswer.dart';
 import 'package:app_core/model/khero.dart';
+import 'package:app_core/model/kquestion.dart';
 import 'package:app_core/model/kscore.dart';
 import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
@@ -46,11 +49,21 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
 
   String? scoreID;
   List<KScore> scores = [];
+  List<KQuestion> questions = [];
+  bool isLoaded = false;
 
   @override
   void initState() {
     super.initState();
     loadScore();
+    loadGame();
+  }
+
+  loadGame() {
+    this.setState(() {
+      questions = KServerHandler.questionsMockup();
+      isLoaded = true;
+    });
   }
 
   loadScore() async {
@@ -133,106 +146,112 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
 
   @override
   Widget build(BuildContext context) {
-    final body = Column(
-      children: [
-        Expanded(
-          child: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(
-                  BACKGROUND_IMAGES[currentLevel],
-                  package: 'app_core',
-                ),
-                fit: BoxFit.cover,
-              ),
-            ),
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Padding(
-                  //   padding: EdgeInsets.only(
-                  //     left: 15,
-                  //   ),
-                  //   child: GestureDetector(
-                  //     onTap: () {
-                  //       Navigator.of(context).pop();
-                  //     },
-                  //     child: Icon(
-                  //       Icons.arrow_back_ios,
-                  //       color: Colors.white,
-                  //     ),
-                  //   ),
-                  // ),
-                  Expanded(
-                    child: KTapGameScreen(
-                      hero: widget.hero,
-                      totalLevel: totalLevel,
-                      isShowEndLevel: isShowEndLevel,
-                      onFinishLevel: (level, score, isHaveWrongAnswer) {
-                        final scoreID = Uuid().v4();
-                        this.setState(() {
-                          this.scoreID = scoreID;
-                          this.scores.add(
-                                KScore()
-                                  ..game = GAME_NAME
-                                  ..user = KSessionData.me
-                                  ..level = level
-                                  ..scoreID = scoreID
-                                  ..score = score.toDouble(),
-                              );
-                        });
-                        if (level < totalLevel) {
-                          print(isHaveWrongAnswer);
-                          // if (!isHaveWrongAnswer) {
-                          //   this.setState(() {
-                          //     this.levelHighscores.add(score);
-                          //   });
-                          // }
-                          this.showHeroGameLevelOverlay(
-                            () {
-                              if (this.overlayID != null) {
-                                KOverlayHelper.removeOverlay(this.overlayID!);
-                                this.overlayID = null;
-                              }
-                              this.showHeroGameHighscoreOverlay(() {
-                                this.setState(() {
-                                  this.isShowEndLevel = false;
-                                });
-                                if (this.overlayID != null) {
-                                  KOverlayHelper.removeOverlay(this.overlayID!);
-                                  this.overlayID = null;
-                                }
-                              });
-                            },
-                          );
-                        } else {
-                          this.showHeroGameHighscoreOverlay(() {
-                            this.setState(() {
-                              this.isShowEndLevel = false;
-                            });
-                            if (this.overlayID != null) {
-                              KOverlayHelper.removeOverlay(this.overlayID!);
-                              this.overlayID = null;
-                            }
-                          });
-                        }
-                      },
-                      onChangeLevel: (level) => this.setState(
-                        () {
-                          this.currentLevel = level;
-                        },
+    final body = !isLoaded
+        ? Container()
+        : Column(
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(
+                        BACKGROUND_IMAGES[currentLevel],
+                        package: 'app_core',
                       ),
+                      fit: BoxFit.cover,
                     ),
                   ),
-                ],
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: SafeArea(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Padding(
+                        //   padding: EdgeInsets.only(
+                        //     left: 15,
+                        //   ),
+                        //   child: GestureDetector(
+                        //     onTap: () {
+                        //       Navigator.of(context).pop();
+                        //     },
+                        //     child: Icon(
+                        //       Icons.arrow_back_ios,
+                        //       color: Colors.white,
+                        //     ),
+                        //   ),
+                        // ),
+                        Expanded(
+                          child: KTapGameScreen(
+                            hero: widget.hero,
+                            totalLevel: totalLevel,
+                            isShowEndLevel: isShowEndLevel,
+                            questions: questions,
+                            onFinishLevel: (level, score, isHaveWrongAnswer) {
+                              final scoreID = Uuid().v4();
+                              this.setState(() {
+                                this.scoreID = scoreID;
+                                this.scores.add(
+                                      KScore()
+                                        ..game = GAME_NAME
+                                        ..user = KSessionData.me
+                                        ..level = level
+                                        ..scoreID = scoreID
+                                        ..score = score.toDouble(),
+                                    );
+                              });
+                              if (level < totalLevel) {
+                                print(isHaveWrongAnswer);
+                                // if (!isHaveWrongAnswer) {
+                                //   this.setState(() {
+                                //     this.levelHighscores.add(score);
+                                //   });
+                                // }
+                                this.showHeroGameLevelOverlay(
+                                  () {
+                                    if (this.overlayID != null) {
+                                      KOverlayHelper.removeOverlay(
+                                          this.overlayID!);
+                                      this.overlayID = null;
+                                    }
+                                    this.showHeroGameHighscoreOverlay(() {
+                                      this.setState(() {
+                                        this.isShowEndLevel = false;
+                                      });
+                                      if (this.overlayID != null) {
+                                        KOverlayHelper.removeOverlay(
+                                            this.overlayID!);
+                                        this.overlayID = null;
+                                      }
+                                    });
+                                  },
+                                );
+                              } else {
+                                this.showHeroGameHighscoreOverlay(() {
+                                  this.setState(() {
+                                    this.isShowEndLevel = false;
+                                  });
+                                  if (this.overlayID != null) {
+                                    KOverlayHelper.removeOverlay(
+                                        this.overlayID!);
+                                    this.overlayID = null;
+                                  }
+                                });
+                              }
+                            },
+                            onChangeLevel: (level) => this.setState(
+                              () {
+                                this.currentLevel = level;
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-      ],
-    );
+            ],
+          );
 
     return Scaffold(
       // appBar: AppBar(title: Text("Play game")),
@@ -246,6 +265,7 @@ class KTapGameScreen extends StatefulWidget {
   final Function(int)? onChangeLevel;
   final Function(int, int, bool)? onFinishLevel;
   final bool isShowEndLevel;
+  final List<KQuestion> questions;
   final int? totalLevel;
   final int? level;
   final int? grade;
@@ -256,6 +276,7 @@ class KTapGameScreen extends StatefulWidget {
     this.onFinishLevel,
     this.totalLevel,
     required this.isShowEndLevel,
+    required this.questions,
     this.level,
     this.grade,
   });
@@ -325,10 +346,16 @@ class _KTapGameScreenState extends State<KTapGameScreen>
   List<List<String>> levelQuestions = [];
   List<List<int>> levelRightAnswers = [];
 
-  List<String> get questions => levelQuestions[currentLevel];
-
-  List<int> get rightAnswers => levelRightAnswers[currentLevel];
   int currentQuestionIndex = 0;
+
+  List<KQuestion> get questions => widget.questions;
+
+  KQuestion get currentQuestion => questions[currentQuestionIndex];
+
+  List<KAnswer> get currentQuestionAnswers => currentQuestion.answers ?? [];
+
+  int get currentCorrectAnswer =>
+      int.parse(currentQuestion.correctAnswer?.text ?? "0");
   int? spinningHeroIndex;
   int? currentShowStarIndex;
   bool isPlaySound = false;
@@ -338,16 +365,15 @@ class _KTapGameScreenState extends State<KTapGameScreen>
 
   Math.Random rand = new Math.Random();
 
-  int get getRandomAnswer => rightAnswers[currentQuestionIndex] <= 4
-      ? (rand.nextInt(4) + rightAnswers[currentQuestionIndex])
-      : (rand.nextInt(4) + rightAnswers[currentQuestionIndex] - 3);
+  KAnswer get getRandomAnswer => currentQuestionAnswers[
+      Math.Random().nextInt(currentQuestionAnswers.length)];
 
   bool get canRestartGame =>
       currentLevel + 1 < totalLevel ||
       (currentLevel < totalLevel &&
           (rightAnswerCount / questions.length) < levelHardness[currentLevel]);
 
-  List<int> barrierValues = [];
+  List<KAnswer> barrierValues = [];
   double topBoundary = -2.1;
 
   int? overlayID;
@@ -604,27 +630,9 @@ class _KTapGameScreenState extends State<KTapGameScreen>
   }
 
   void getListAnswer() {
-    final currentRightAnswer = rightAnswers[currentQuestionIndex];
-
     this.setState(() {
-      this.currentShowStarIndex = null;
-      if (currentRightAnswer <= 4) {
-        this.barrierValues = [
-          currentRightAnswer,
-          currentRightAnswer + 1,
-          currentRightAnswer + 2,
-          currentRightAnswer + 3,
-        ];
-        this.barrierValues.shuffle();
-      } else {
-        this.barrierValues = [
-          currentRightAnswer,
-          currentRightAnswer - 1,
-          currentRightAnswer - 2,
-          currentRightAnswer - 3,
-        ];
-        this.barrierValues.shuffle();
-      }
+      this.barrierValues = currentQuestionAnswers;
+      this.barrierValues.shuffle();
     });
   }
 
@@ -713,11 +721,11 @@ class _KTapGameScreenState extends State<KTapGameScreen>
     });
   }
 
-  void handlePickAnswer(int answer, int answerIndex) {
+  void handlePickAnswer(KAnswer answer, int answerIndex) {
     if (_spinAnimationController.value != 0) {
       return;
     }
-    bool isTrueAnswer = answer == rightAnswers[currentQuestionIndex];
+    bool isTrueAnswer = answer.isCorrect ?? false;
 
     if (!isPlaySound) {
       this.setState(() {
@@ -1089,10 +1097,10 @@ class _KTapGameScreenState extends State<KTapGameScreen>
                   ...List.generate(
                     barrierValues.length,
                     (i) => _Barrier(
-                      onTap: (int answer) => handlePickAnswer(answer, i),
+                      onTap: (KAnswer answer) => handlePickAnswer(answer, i),
                       barrierX: barrierX[i],
                       barrierY: barrierY[i],
-                      value: barrierValues[i],
+                      answer: barrierValues[i],
                       rotateAngle: spinningHeroIndex == i
                           ? -this._spinAnimationController.value * 4 * Math.pi
                           : 0,
@@ -1128,7 +1136,7 @@ class _KTapGameScreenState extends State<KTapGameScreen>
                   ],
                 ),
                 child: Text(
-                  questions[currentQuestionIndex],
+                  currentQuestion.questionText ?? "",
                   textScaleFactor: 1.0,
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -1207,18 +1215,18 @@ class _Barrier extends StatelessWidget {
   final double barrierY;
   final double rotateAngle;
   final Animation<double>? scaleAnimation;
-  final int value;
+  final KAnswer answer;
   final Offset bouncingAnimation;
   final double? starY;
   final bool? isShowStar;
-  final Function(int value) onTap;
+  final Function(KAnswer value) onTap;
 
   _Barrier({
     required this.barrierX,
     required this.barrierY,
     required this.rotateAngle,
     this.scaleAnimation,
-    required this.value,
+    required this.answer,
     required this.bouncingAnimation,
     this.starY,
     this.isShowStar,
@@ -1229,7 +1237,7 @@ class _Barrier extends StatelessWidget {
   Widget build(context) {
     final box = InkWell(
       onTap: () {
-        onTap(value);
+        onTap(answer);
       },
       child: Container(
         width: 80,
@@ -1240,7 +1248,7 @@ class _Barrier extends StatelessWidget {
         ),
         child: FittedBox(
           child: Text(
-            "${this.value}",
+            "${this.answer.text}",
             textScaleFactor: 1.0,
             textAlign: TextAlign.center,
             style: TextStyle(
