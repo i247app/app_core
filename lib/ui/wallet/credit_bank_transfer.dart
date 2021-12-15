@@ -1,4 +1,3 @@
-import 'package:app_core/header/kassets.dart';
 import 'package:app_core/header/kcore_code.dart';
 import 'package:app_core/helper/kbank_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
@@ -10,8 +9,6 @@ import 'package:app_core/ui/widget/profile_input.dart';
 import 'package:app_core/value/kphrases.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
-
-import 'credit_receipt.dart';
 
 enum BankTransferAction { withdraw, deposit }
 
@@ -86,18 +83,15 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
         (response.transactions?.length ?? 0) > 0) {
       final transaction = response.transactions![0];
 
-      await Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (ctx) => CreditReceipt(
-            transactionID: transaction.txID ?? "",
-            lineID: transaction.lineID ?? "",
-            tokenName: widget.tokenName,
-          ),
-        ),
-      );
       if (hasModifyBank) {
         await KSessionData.reload();
       }
+      Navigator.of(context).pop(transaction);
+    } else {
+      KSnackBarHelper.show(
+        text: response.kmessage ?? "",
+        isSuccess: false,
+      );
     }
   }
 
