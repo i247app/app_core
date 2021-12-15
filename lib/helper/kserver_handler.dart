@@ -277,7 +277,7 @@ abstract class KServerHandler {
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }
 
-  static Future<SimpleResponse> bankDeposit({
+  static Future<CreditTransferResponse> bankDeposit({
     required String bankID,
     required String bankName,
     required String bankAccount,
@@ -296,10 +296,11 @@ abstract class KServerHandler {
         ..bankAccName = bankAccount
         ..bankAccNumber = bankAccNumber,
     };
-    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+    return TLSHelper.send(params)
+        .then((data) => CreditTransferResponse.fromJson(data));
   }
 
-  static Future<SimpleResponse> bankWithdrawal({
+  static Future<CreditTransferResponse> bankWithdrawal({
     required String bankID,
     required String bankName,
     required String bankAccount,
@@ -318,7 +319,8 @@ abstract class KServerHandler {
         ..bankAccName = bankAccount
         ..bankAccNumber = bankAccNumber,
     };
-    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+    return TLSHelper.send(params)
+        .then((data) => CreditTransferResponse.fromJson(data));
   }
 
   static Future<ResumeSessionResponse> resumeSession(String? ktoken,
