@@ -181,21 +181,42 @@ class _WalletFeedState extends State<WalletFeed> {
         loadTransactions(),
       ]);
 
-  void onWithdrawClick() async => Navigator.of(context)
-      .push(MaterialPageRoute(
-          builder: (ctx) => CreditBankTransfer(
-                tokenName: currentBalance?.tokenName ?? "",
-                action: BankTransferAction.withdraw,
-              )))
-      .whenComplete(loadAllData);
+  void onWithdrawClick() async {
+    final result = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (ctx) => CreditBankTransfer(
+              total: currentBalance?.amount ?? "",
+              tokenName: currentBalance?.tokenName ?? "",
+              action: BankTransferAction.withdraw,
+            )));
+    showReceipt(result);
+  }
 
-  void onDepositClick() async => Navigator.of(context)
-      .push(MaterialPageRoute(
-          builder: (ctx) => CreditBankTransfer(
-                tokenName: currentBalance?.tokenName ?? "",
-                action: BankTransferAction.deposit,
-              )))
-      .whenComplete(loadAllData);
+  void showReceipt(dynamic result) async {
+    if (result != null) {
+      final transaction = result as KCreditTransaction;
+
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (ctx) => CreditReceipt(
+            transactionID: transaction.txID ?? "",
+            lineID: transaction.lineID ?? "",
+            tokenName: currentBalance?.tokenName ?? "",
+          ),
+        ),
+      );
+      await loadAllData();
+    }
+  }
+
+  void onDepositClick() async {
+    final result = Navigator.of(context).push(MaterialPageRoute(
+        builder: (ctx) => CreditBankTransfer(
+              total: currentBalance?.amount ?? "",
+              tokenName: currentBalance?.tokenName ?? "",
+              action: BankTransferAction.deposit,
+            )));
+    showReceipt(result);
+  }
 
   void onTransferClick() => Navigator.of(context)
       .push(MaterialPageRoute(

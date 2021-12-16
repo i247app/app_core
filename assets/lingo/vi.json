@@ -161,5 +161,6 @@
   "hi": "Chào",
   "app_faild": "App lỗi",
   "success": "Thành công",
-  "bxfr": "BXFR"
+  "bxfr": "BXFR",
+  "amount_must_lower_than_balance": "Số tiền phải nhỏ hơn số dư hiện tại "
 }

@@ -97,4 +97,7 @@ abstract class KPhrases {
   static String get appFailed => _klingo.yak("app_failed");
 
   static String get success => _klingo.yak("success");
+
+  static String get amountMustLowerThanBalance =>
+      _klingo.yak("amount_must_lower_than_balance");
 }
