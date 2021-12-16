@@ -3,6 +3,7 @@ import 'package:app_core/helper/kbank_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/helper/ksnackbar_helper.dart';
+import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/ui/kbank_picker.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/profile_input.dart';
@@ -14,9 +15,11 @@ enum BankTransferAction { withdraw, deposit }
 
 class CreditBankTransfer extends StatefulWidget {
   final String tokenName;
+  final String total;
   final BankTransferAction action;
 
-  const CreditBankTransfer({required this.tokenName, required this.action});
+  const CreditBankTransfer(
+      {required this.tokenName, required this.action, required this.total});
 
   @override
   _CreditBankTransferState createState() => _CreditBankTransferState();
@@ -28,6 +31,7 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
   final accountNameCtrl = TextEditingController();
   final bankAccountNumberCtrl = TextEditingController();
   final bankCtrl = TextEditingController();
+  bool isValidAmount = true;
 
   @override
   void initState() {
@@ -136,14 +140,36 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
     );
 
     final amount = KProfileInput(
-      keyboardType: TextInputType.number,
-      controller: amountCtrl,
-      headingWidth: 105,
-      readOnly: false,
-      heading: '${KPhrases.amount} (${widget.tokenName})',
-      hintText: KPhrases.amountPlaceHolder,
-      isRequired: true,
-    );
+        keyboardType: TextInputType.number,
+        controller: amountCtrl,
+        headingWidth: 105,
+        readOnly: false,
+        heading: '${KPhrases.amount} (${widget.tokenName})',
+        hintText: KPhrases.amountPlaceHolder,
+        isRequired: true,
+        onChanged: (value) {
+          if (BankTransferAction.deposit == widget.action) {
+            return;
+          }
+
+          if (value.isEmpty) {
+            setState(() {
+              isValidAmount = true;
+            });
+            return;
+          }
+          final amountDouble = double.tryParse(value);
+          if (amountDouble != null &&
+              amountDouble > (double.tryParse(widget.total) ?? 0)) {
+            setState(() {
+              isValidAmount = false;
+            });
+          } else {
+            setState(() {
+              isValidAmount = true;
+            });
+          }
+        });
 
     final content = Form(
       key: formKey,
@@ -155,6 +181,18 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
             bankAccountName,
             bankAccount,
             amount,
+            isValidAmount
+                ? Container()
+                : Container(
+                    margin: EdgeInsets.only(top: 10),
+                    child: Text(
+                      "${KPhrases.amountMustLowerThanBalance} ${KUtil.prettyMoney(amount: widget.total, tokenName: widget.tokenName)}",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(color: Theme.of(context).errorColor),
+                    ),
+                  ),
             // SizedBox(height: 20),
             // FadeInImage(
             //   placeholder: AssetImage(KAssets.IMG_TRANSPARENCY),

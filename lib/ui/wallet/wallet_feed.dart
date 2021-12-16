@@ -184,6 +184,7 @@ class _WalletFeedState extends State<WalletFeed> {
   void onWithdrawClick() async {
     final result = await Navigator.of(context).push(MaterialPageRoute(
         builder: (ctx) => CreditBankTransfer(
+              total: currentBalance?.amount ?? "",
               tokenName: currentBalance?.tokenName ?? "",
               action: BankTransferAction.withdraw,
             )));
@@ -210,6 +211,7 @@ class _WalletFeedState extends State<WalletFeed> {
   void onDepositClick() async {
     final result = Navigator.of(context).push(MaterialPageRoute(
         builder: (ctx) => CreditBankTransfer(
+              total: currentBalance?.amount ?? "",
               tokenName: currentBalance?.tokenName ?? "",
               action: BankTransferAction.deposit,
             )));

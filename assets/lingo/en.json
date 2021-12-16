@@ -162,5 +162,6 @@
   "hi": "Hi",
   "app_failed": "App Failed",
   "success": "Success",
-  "bxfr": "BXFR"
+  "bxfr": "BXFR",
+  "amount_must_lower_than_balance": "Amount must be lower than balance "
 }
