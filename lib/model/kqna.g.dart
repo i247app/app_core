@@ -1,26 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'kquestion_and_answer.dart';
+part of 'kqna.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-KQuestionAndAnswer _$KQuestionAndAnswerFromJson(Map<String, dynamic> json) =>
-    KQuestionAndAnswer()
-      ..qnaID = json['qnaID'] as String?
-      ..qnaType = json['qnaType'] as String?
-      ..title = json['title'] as String?
-      ..subtitle = json['subtitle'] as String?
-      ..text = json['text'] as String?
-      ..mediaURL = json['mediaURL'] as String?
-      ..mediaType = json['mediaType'] as String?
-      ..qnaStatus = json['qnaStatus'] as String?
-      ..questions = (json['questions'] as List<dynamic>?)
-          ?.map((e) => KQuestion.fromJson(e as Map<String, dynamic>))
-          .toList();
+KQNA _$KQNAFromJson(Map<String, dynamic> json) => KQNA()
+  ..qnaID = json['qnaID'] as String?
+  ..qnaType = json['qnaType'] as String?
+  ..title = json['title'] as String?
+  ..subtitle = json['subtitle'] as String?
+  ..text = json['text'] as String?
+  ..mediaURL = json['mediaURL'] as String?
+  ..mediaType = json['mediaType'] as String?
+  ..qnaStatus = json['qnaStatus'] as String?
+  ..questions = (json['questions'] as List<dynamic>?)
+      ?.map((e) => KQuestion.fromJson(e as Map<String, dynamic>))
+      .toList();
 
-Map<String, dynamic> _$KQuestionAndAnswerToJson(KQuestionAndAnswer instance) {
+Map<String, dynamic> _$KQNAToJson(KQNA instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {

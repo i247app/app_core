@@ -5,10 +5,10 @@ import 'package:app_core/model/kquestion.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'kquestion.dart';
-part 'kquestion_and_answer.g.dart';
+part 'kqna.g.dart';
 
 @JsonSerializable()
-class KQuestionAndAnswer {
+class KQNA {
   static const String QNA_ID = "qnaID";
   static const String QNA_TYPE = "qnaType";
   static const String TITLE = "title"; // MULT | WRITTEN
@@ -51,10 +51,10 @@ class KQuestionAndAnswer {
   List<KQuestion>? questions;
 
   // JSON
-  KQuestionAndAnswer();
+  KQNA();
 
-  factory KQuestionAndAnswer.fromJson(Map<String, dynamic> json) =>
-      _$KQuestionAndAnswerFromJson(json);
+  factory KQNA.fromJson(Map<String, dynamic> json) =>
+      _$KQNAFromJson(json);
 
-  Map<String, dynamic> toJson() => _$KQuestionAndAnswerToJson(this);
+  Map<String, dynamic> toJson() => _$KQNAToJson(this);
 }

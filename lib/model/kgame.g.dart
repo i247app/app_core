@@ -15,7 +15,7 @@ KGame _$KGameFromJson(Map<String, dynamic> json) => KGame()
   ..cat = json['cat'] as String?
   ..level = json['level'] as String?
   ..qnas = (json['qnas'] as List<dynamic>?)
-      ?.map((e) => KQuestionAndAnswer.fromJson(e as Map<String, dynamic>))
+      ?.map((e) => KQNA.fromJson(e as Map<String, dynamic>))
       .toList();
 
 Map<String, dynamic> _$KGameToJson(KGame instance) {
