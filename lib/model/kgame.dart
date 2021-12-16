@@ -5,7 +5,7 @@ import 'package:app_core/model/kquestion.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import 'kquestion.dart';
-import 'kquestion_and_answer.dart';
+import 'kqna.dart';
 part 'kgame.g.dart';
 
 @JsonSerializable()
@@ -41,7 +41,7 @@ class KGame {
   String? level; // image | video
 
   @JsonKey(name: QNAS)
-  List<KQuestionAndAnswer>? qnas;
+  List<KQNA>? qnas;
 
   // JSON
   KGame();
