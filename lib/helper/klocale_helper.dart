@@ -56,7 +56,7 @@ abstract class KLocaleHelper {
       print(e.toString());
       locale = defaultLocale;
     }
-    print("locale =>> ${locale.toString()}");
+
     return locale;
   }
 }

@@ -143,6 +143,10 @@ class _CreditReceiptState extends State<CreditReceipt> {
                       .bodyText1!
                       .copyWith(fontSize: 18),
                 ),
+                SizedBox(height: 8),
+                Text(
+                    "${this.transaction!.poiPUID}   @${this.transaction!.poiKUNM}",
+                    style: Theme.of(context).textTheme.bodyText1),
               ],
             ),
           );
