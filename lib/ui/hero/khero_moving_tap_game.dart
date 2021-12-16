@@ -350,10 +350,9 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
 
   KQuestion get currentQuestion => questions[currentQuestionIndex];
 
-  List<KAnswer> get currentQuestionAnswers => currentQuestion.answers ?? [];
+  List<KAnswer> get currentQuestionAnswers =>
+      currentQuestion.getAnswers() ?? [];
 
-  int get currentCorrectAnswer =>
-      int.parse(currentQuestion.correctAnswer?.text ?? "0");
   int? spinningHeroIndex;
   int? currentShowStarIndex;
   bool isPlaySound = false;
@@ -363,9 +362,6 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
   List<bool> barrierOutSide = [false, false, false, false];
 
   Math.Random rand = new Math.Random();
-
-  KAnswer get getRandomAnswer => currentQuestionAnswers[
-      Math.Random().nextInt(currentQuestionAnswers.length)];
 
   bool get canRestartGame =>
       currentLevel + 1 < levelHardness.length ||
@@ -662,7 +658,6 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
   void getListAnswer() {
     this.setState(() {
       this.barrierValues = currentQuestionAnswers;
-      this.barrierValues.shuffle();
     });
   }
 

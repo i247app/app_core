@@ -68,9 +68,12 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
         this.isLoaded = false;
       });
 
-      final response = await KServerHandler.getGames(gameID: TAP_GAME_ID, level: currentLevel.toString());
+      final response = await KServerHandler.getGames(
+          gameID: TAP_GAME_ID, level: currentLevel.toString());
 
-      if (response.isSuccess && response.games != null && response.games!.length > 0) {
+      if (response.isSuccess &&
+          response.games != null &&
+          response.games!.length > 0) {
         setState(() {
           this.game = response.games![0];
           this.isLoaded = true;
@@ -78,7 +81,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
       } else {
         KSnackBarHelper.error("Can not get game data");
       }
-    } catch(e) {}
+    } catch (e) {}
   }
 
   loadScore() async {
@@ -255,7 +258,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                             },
                             onChangeLevel: (level) {
                               this.setState(
-                                    () {
+                                () {
                                   this.currentLevel = level;
                                 },
                               );
@@ -370,16 +373,9 @@ class _KTapGameScreenState extends State<KTapGameScreen>
 
   KQuestion get currentQuestion => questions[currentQuestionIndex];
 
-  List<int> get BASE_ANSWER_VALUE => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].where((item) => item != int.parse(currentQuestion.correctAnswer?.text ?? "0")).toList();
-  List<KAnswer> get currentQuestionAnswers => [
-    currentQuestion.correctAnswer!,
-    KAnswer()..text=BASE_ANSWER_VALUE[Math.Random().nextInt(BASE_ANSWER_VALUE.length)].toString()..isCorrect=false,
-    KAnswer()..text=BASE_ANSWER_VALUE[Math.Random().nextInt(BASE_ANSWER_VALUE.length)].toString()..isCorrect=false,
-    KAnswer()..text=BASE_ANSWER_VALUE[Math.Random().nextInt(BASE_ANSWER_VALUE.length)].toString()..isCorrect=false,
-  ];
+  List<KAnswer> get currentQuestionAnswers =>
+      currentQuestion.getAnswers() ?? [];
 
-  int get currentCorrectAnswer =>
-      int.parse(currentQuestion.correctAnswer?.text ?? "0");
   int? spinningHeroIndex;
   int? currentShowStarIndex;
   bool isPlaySound = false;
@@ -388,9 +384,6 @@ class _KTapGameScreenState extends State<KTapGameScreen>
   List<double> barrierY = [0, 0, 0, 0];
 
   Math.Random rand = new Math.Random();
-
-  KAnswer get getRandomAnswer => currentQuestionAnswers[
-      Math.Random().nextInt(currentQuestionAnswers.length)];
 
   bool get canRestartGame =>
       currentLevel + 1 < totalLevel ||
@@ -656,7 +649,6 @@ class _KTapGameScreenState extends State<KTapGameScreen>
   void getListAnswer() {
     this.setState(() {
       this.barrierValues = currentQuestionAnswers;
-      this.barrierValues.shuffle();
     });
   }
 

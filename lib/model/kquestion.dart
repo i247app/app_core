@@ -44,6 +44,30 @@ class KQuestion {
   KAnswer? get correctAnswer =>
       (this.answers ?? []).firstWhere((a) => a.isCorrect ?? false);
 
+  List<KAnswer>? getAnswers() {
+    if (this.correctAnswer == null) {
+      return [];
+    }
+    final correct = int.tryParse(this.correctAnswer!.text ?? "0");
+
+    var list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        .where((element) => correct != element)
+        .toList();
+
+    var random = new Random();
+    var anwers = List<KAnswer>.generate(3, (index) {
+      var r = random.nextInt(list.length);
+      var item = list[r];
+      list.removeAt(r);
+      return KAnswer()
+        ..isCorrect = false
+        ..text = item.toString();
+    });
+    anwers.add(this.correctAnswer!);
+    anwers.shuffle();
+    return anwers;
+  }
+
   // JSON
   KQuestion();
 
