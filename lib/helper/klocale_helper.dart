@@ -50,7 +50,8 @@ abstract class KLocaleHelper {
         ctry = zz[1];
       }
 
-      locale = KLocale(language: lang, country: ctry);
+      locale =
+          KLocale(language: lang.toLowerCase(), country: ctry.toLowerCase());
     } catch (e) {
       print(e.toString());
       locale = defaultLocale;
