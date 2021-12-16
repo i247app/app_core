@@ -5,6 +5,7 @@ import 'dart:math' as Math;
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/kanswer.dart';
+import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/kquestion.dart';
 import 'package:app_core/model/kscore.dart';
@@ -30,6 +31,7 @@ class KHeroTapGame extends StatefulWidget {
 
 class _KHeroTapGameState extends State<KHeroTapGame> {
   static const GAME_NAME = "tap_game";
+  static const TAP_GAME_ID = "800";
 
   static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
@@ -49,7 +51,8 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
 
   String? scoreID;
   List<KScore> scores = [];
-  List<KQuestion> questions = [];
+  KGame? game = null;
+  List<KQuestion> get questions => game?.qnas?[0].questions ?? [];
   bool isLoaded = false;
 
   @override
@@ -59,11 +62,23 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
     loadGame();
   }
 
-  loadGame() {
-    this.setState(() {
-      questions = KServerHandler.questionsMockup();
-      isLoaded = true;
-    });
+  loadGame() async {
+    try {
+      setState(() {
+        this.isLoaded = false;
+      });
+
+      final response = await KServerHandler.getGames(gameID: TAP_GAME_ID, level: currentLevel.toString());
+
+      if (response.isSuccess && response.games != null && response.games!.length > 0) {
+        setState(() {
+          this.game = response.games![0];
+          this.isLoaded = true;
+        });
+      } else {
+        KSnackBarHelper.error("Can not get game data");
+      }
+    } catch(e) {}
   }
 
   loadScore() async {
@@ -146,7 +161,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
 
   @override
   Widget build(BuildContext context) {
-    final body = !isLoaded
+    final body = !isLoaded || game == null
         ? Container()
         : Column(
             children: [
@@ -238,11 +253,14 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                                 });
                               }
                             },
-                            onChangeLevel: (level) => this.setState(
-                              () {
-                                this.currentLevel = level;
-                              },
-                            ),
+                            onChangeLevel: (level) {
+                              this.setState(
+                                    () {
+                                  this.currentLevel = level;
+                                },
+                              );
+                              this.loadGame();
+                            },
                           ),
                         ),
                       ],
@@ -352,7 +370,13 @@ class _KTapGameScreenState extends State<KTapGameScreen>
 
   KQuestion get currentQuestion => questions[currentQuestionIndex];
 
-  List<KAnswer> get currentQuestionAnswers => currentQuestion.answers ?? [];
+  List<int> get BASE_ANSWER_VALUE => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10].where((item) => item != int.parse(currentQuestion.correctAnswer?.text ?? "0")).toList();
+  List<KAnswer> get currentQuestionAnswers => [
+    currentQuestion.correctAnswer!,
+    KAnswer()..text=BASE_ANSWER_VALUE[Math.Random().nextInt(BASE_ANSWER_VALUE.length)].toString()..isCorrect=false,
+    KAnswer()..text=BASE_ANSWER_VALUE[Math.Random().nextInt(BASE_ANSWER_VALUE.length)].toString()..isCorrect=false,
+    KAnswer()..text=BASE_ANSWER_VALUE[Math.Random().nextInt(BASE_ANSWER_VALUE.length)].toString()..isCorrect=false,
+  ];
 
   int get currentCorrectAnswer =>
       int.parse(currentQuestion.correctAnswer?.text ?? "0");
@@ -1136,7 +1160,7 @@ class _KTapGameScreenState extends State<KTapGameScreen>
                   ],
                 ),
                 child: Text(
-                  currentQuestion.questionText ?? "",
+                  currentQuestion.text ?? "",
                   textScaleFactor: 1.0,
                   textAlign: TextAlign.center,
                   style: TextStyle(

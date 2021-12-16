@@ -1279,7 +1279,7 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
                       ],
                     ),
                     child: Text(
-                      currentQuestion.questionText ?? "",
+                      currentQuestion.text ?? "",
                       textScaleFactor: 1.0,
                       textAlign: TextAlign.center,
                       style: TextStyle(

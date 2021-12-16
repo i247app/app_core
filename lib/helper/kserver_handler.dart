@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/kanswer.dart';
+import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/kquestion.dart';
 import 'package:app_core/model/response/chat_add_members_response.dart';
@@ -12,6 +13,7 @@ import 'package:app_core/model/response/get_business_response.dart';
 import 'package:app_core/model/response/get_chat_response.dart';
 import 'package:app_core/model/response/get_chats_response.dart';
 import 'package:app_core/model/response/get_credit_transactions_response.dart';
+import 'package:app_core/model/response/get_games_response.dart';
 import 'package:app_core/model/response/get_users_response.dart';
 import 'package:app_core/model/response/list_heroes_response.dart';
 import 'package:app_core/model/response/list_xfr_proxy_response.dart';
@@ -450,6 +452,19 @@ abstract class KServerHandler {
         .then((data) => ListXFRProxyResponse.fromJson(data));
   }
 
+  static Future<KGetGamesResponse> getGames({ required String gameID, required String level, String? cat }) async {
+    final params = {
+      "svc": "game",
+      "req": "game.get",
+      "game": KGame()
+        ..gameID = gameID
+        ..level = level
+        ..cat = cat ?? "edu",
+    };
+    return TLSHelper.send(params)
+        .then((data) => KGetGamesResponse.fromJson(data));
+  }
+
   static List<KQuestion> questionsMockup() {
     final questions = [
       "1 + 1",
@@ -483,7 +498,7 @@ abstract class KServerHandler {
       var list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       return KQuestion()
         ..questionID = "q${indexQuestion + 1}"
-        ..questionText = questions[indexQuestion]
+        ..text = questions[indexQuestion]
         ..answers = List.generate(4, (index) {
           final dummyAnswer = list.removeAt(_random.nextInt(list.length));
           return KAnswer()

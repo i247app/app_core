@@ -9,7 +9,7 @@ class KQuestion {
   static const String QA_ID = "qaID";
   static const String QUESTION_ID = "questionID";
   static const String QUESTION_TYPE = "questionType"; // MULT | WRITTEN
-  static const String QUESTION_TEXT = "questionText";
+  static const String TEXT = "text";
   static const String MEDIA_URL = "mediaURL"; // kquestion image or video
   static const String MEDIA_TYPE = "mediaType"; // image | video
   static const String ANSWERS = "answers";
@@ -28,8 +28,8 @@ class KQuestion {
   @JsonKey(name: QUESTION_TYPE)
   String? questionType;
 
-  @JsonKey(name: QUESTION_TEXT)
-  String? questionText;
+  @JsonKey(name: TEXT)
+  String? text;
 
   @JsonKey(name: MEDIA_URL)
   String? mediaURL;

@@ -1194,7 +1194,7 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
                   ],
                 ),
                 child: Text(
-                  currentQuestion.questionText ?? "",
+                  currentQuestion.text ?? "",
                   textScaleFactor: 1.0,
                   textAlign: TextAlign.center,
                   style: TextStyle(
