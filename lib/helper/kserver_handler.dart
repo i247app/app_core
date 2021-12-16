@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/model/bank_withdrawal.dart';
 import 'package:app_core/model/kanswer.dart';
 import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/khero.dart';
@@ -313,13 +314,13 @@ abstract class KServerHandler {
     final params = {
       "svc": "chao",
       "req": "bank.withdrawal",
-      "amount": amount,
-      "tokenName": tokenName,
-      "user": KUser()
+      "bankWithdrawal": BankWithdrawal()
         ..bankID = bankID
         ..bankName = bankName
-        ..bankAccName = bankAccount
-        ..bankAccNumber = bankAccNumber,
+        ..bankAccountName = bankAccount
+        ..bankAccountNumber = bankAccNumber
+        ..amount = amount
+        ..tokenName = tokenName,
     };
     return TLSHelper.send(params)
         .then((data) => CreditTransferResponse.fromJson(data));
