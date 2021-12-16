@@ -14,6 +14,7 @@ class KProfileInput extends StatelessWidget {
   final Widget? customChild;
   final Widget? prefixIcon;
   final TextInputType? keyboardType;
+  final Function(String)? onChanged;
 
   KProfileInput({
     required this.heading,
@@ -26,6 +27,7 @@ class KProfileInput extends StatelessWidget {
     this.autoFocus,
     this.readOnly,
     this.showCursor,
+    this.onChanged,
     this.onTap,
     this.isRequired = false,
   });
@@ -35,6 +37,7 @@ class KProfileInput extends StatelessWidget {
     final inputChild = this.customChild ??
         TextFormField(
           keyboardType: keyboardType,
+          onChanged: this.onChanged,
           controller: this.controller,
           autofocus: this.autoFocus ?? false,
           readOnly: this.readOnly ?? false,
