@@ -451,7 +451,9 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
           this.isShowSadTamago = true;
         });
       }
-
+      if (questionCount % questionContents.length == 0) {
+        loadGame();
+      }
       Future.delayed(Duration(milliseconds: 500), () {
         if (mounted) {
           this.setState(() {
