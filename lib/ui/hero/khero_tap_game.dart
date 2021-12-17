@@ -52,6 +52,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
   String? scoreID;
   List<KScore> scores = [];
   KGame? game = null;
+
   List<KQuestion> get questions => game?.qnas?[0].questions ?? [];
   bool isLoaded = false;
 
@@ -164,23 +165,23 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
 
   @override
   Widget build(BuildContext context) {
-    final body = !isLoaded || game == null
-        ? Container()
-        : Column(
-            children: [
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                        BACKGROUND_IMAGES[currentLevel],
-                        package: 'app_core',
-                      ),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  child: SafeArea(
+    final body = Column(
+      children: [
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                  BACKGROUND_IMAGES[currentLevel],
+                  package: 'app_core',
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: game == null
+                ? Container()
+                : SafeArea(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -204,6 +205,8 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                             totalLevel: totalLevel,
                             isShowEndLevel: isShowEndLevel,
                             questions: questions,
+                            level: currentLevel,
+                            isLoaded: isLoaded,
                             onFinishLevel: (level, score, isHaveWrongAnswer) {
                               final scoreID = Uuid().v4();
                               this.setState(() {
@@ -218,7 +221,6 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                                     );
                               });
                               if (level < totalLevel) {
-                                print(isHaveWrongAnswer);
                                 // if (!isHaveWrongAnswer) {
                                 //   this.setState(() {
                                 //     this.levelHighscores.add(score);
@@ -269,10 +271,10 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                       ],
                     ),
                   ),
-                ),
-              ),
-            ],
-          );
+          ),
+        ),
+      ],
+    );
 
     return Scaffold(
       // appBar: AppBar(title: Text("Play game")),
@@ -286,6 +288,7 @@ class KTapGameScreen extends StatefulWidget {
   final Function(int)? onChangeLevel;
   final Function(int, int, bool)? onFinishLevel;
   final bool isShowEndLevel;
+  final bool isLoaded;
   final List<KQuestion> questions;
   final int? totalLevel;
   final int? level;
@@ -297,6 +300,7 @@ class KTapGameScreen extends StatefulWidget {
     this.onFinishLevel,
     this.totalLevel,
     required this.isShowEndLevel,
+    required this.isLoaded,
     required this.questions,
     this.level,
     this.grade,
@@ -373,8 +377,7 @@ class _KTapGameScreenState extends State<KTapGameScreen>
 
   KQuestion get currentQuestion => questions[currentQuestionIndex];
 
-  List<KAnswer> get currentQuestionAnswers =>
-      currentQuestion.generateAnswers() ;
+  List<KAnswer> get currentQuestionAnswers => currentQuestion.generateAnswers();
 
   int? spinningHeroIndex;
   int? currentShowStarIndex;
@@ -817,7 +820,7 @@ class _KTapGameScreenState extends State<KTapGameScreen>
   }
 
   void restartGame() {
-    if (currentLevel + 1 < levelHardness.length &&
+    if (currentLevel + 1 < totalLevel &&
         (rightAnswerCount / questions.length) >= levelHardness[currentLevel]) {
       this.setState(() {
         if (widget.onChangeLevel != null)
@@ -845,6 +848,10 @@ class _KTapGameScreenState extends State<KTapGameScreen>
 
   @override
   Widget build(BuildContext context) {
+    if (!widget.isLoaded) {
+      return Container();
+    }
+
     final body = Stack(
       fit: StackFit.expand,
       children: [
@@ -1293,7 +1300,10 @@ class _Barrier extends StatelessWidget {
                   offset: Offset(0, -60 * (starY ?? 0)),
                   child: AnimatedOpacity(
                     duration: Duration(milliseconds: 500),
-                    opacity: (isShowStar ?? false) ? 1 : 0,
+                    opacity:
+                        (isShowStar ?? false) && (answer.isCorrect ?? false)
+                            ? 1
+                            : 0,
                     child: Icon(
                       Icons.star,
                       color: Colors.amberAccent,

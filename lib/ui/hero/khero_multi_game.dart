@@ -161,6 +161,8 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
           this.currentGame = 5;
         });
       }),
+      level: 0,
+      isLoaded: true,
       questions: [],
     );
 
