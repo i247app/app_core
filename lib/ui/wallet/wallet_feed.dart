@@ -349,13 +349,13 @@ class _WalletFeedState extends State<WalletFeed> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.list, color: Colors.black, size: 18),
+          Icon(Icons.list, size: 18),
           SizedBox(width: 6),
           Text(
             currentBalance?.tokenName ?? "    ",
             style: Theme.of(context)
                 .textTheme
-                .subtitle1!
+                .headline6!
                 .copyWith(color: Colors.blue),
           ),
         ],

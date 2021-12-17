@@ -256,10 +256,11 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
         amount: balanceAmount ?? "",
         tokenName: widget.tokenName,
       );
-      final alexVersion = Text("You have $amt available");
       // ignore: unused_local_variable
-      final ronVersion = Text("Balance: $amt");
-      return balanceAmount == null ? Text("") : alexVersion;
+      final alexVersion = Text("You have $amt available");
+      // Good version (Ron said)
+      final balanceText = Text("Balance: $amt");
+      return balanceAmount == null ? Text("") : balanceText;
     }.call();
 
     final transferTo = _CreditInput(
