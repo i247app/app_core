@@ -11,6 +11,7 @@ import 'package:app_core/ui/wallet/credit_receipt.dart';
 import 'package:app_core/ui/wallet/wallet_transfer.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
+import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -41,11 +42,12 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
   bool isNetworking = false;
 
   void Function()? get actionButtonHandler {
-    if (!(amountCtrl.text.isNotEmpty &&
-        (double.tryParse(amountCtrl.text) ?? 0) > 0)) {
+    final amount = double.tryParse(amountCtrl.text) ?? 0;
+
+    if (amount > (double.tryParse(balanceAmount ?? "0") ?? 0) ||
+        amount == 0 ||
+        selectedUser == null) {
       return null;
-    } else if (selectedUser == null) {
-      return toChooseContact;
     } else {
       return attemptTransferCredit;
     }
@@ -289,11 +291,7 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
       child: Container(
         height: 26,
         child: Center(
-          child: isNetworking
-              ? CircularProgressIndicator()
-              : selectedUser == null
-                  ? Text("CHOOSE RECIPIENT")
-                  : Text("TRANSFER"),
+          child: isNetworking ? CircularProgressIndicator() : Text("TRANSFER"),
         ),
       ),
     );
@@ -320,11 +318,28 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
     );
 
     final actions = [
-      IconButton(
-        onPressed: onRecipientClick,
-        icon: selectedUser == null
-            ? KUserAvatar(initial: "?")
-            : KUserAvatar.fromUser(selectedUser!),
+      InkWell(
+        onTap: onRecipientClick,
+        child: selectedUser == null
+            ? Row(
+                children: [
+                  Text(KPhrases.chooseRecipient,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline6!
+                          .copyWith(color: Colors.red)),
+                  SizedBox(width: 12),
+                  Icon(Icons.account_circle, size: 32)
+                ],
+              )
+            : Row(
+                children: [
+                  Text(selectedUser!.fullName ?? "",
+                      style: Theme.of(context).textTheme.headline6),
+                  SizedBox(width: 12),
+                  KUserAvatar.fromUser(selectedUser!, size: 32)
+                ],
+              ),
       ),
       IconButton(
         onPressed: onScanQR,

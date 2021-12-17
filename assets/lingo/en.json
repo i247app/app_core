@@ -163,5 +163,6 @@
   "app_failed": "App Failed",
   "success": "Success",
   "bxfr": "BXFR",
-  "amount_must_lower_than_balance": "Amount must be lower than balance "
+  "amount_must_lower_than_balance": "Amount must be lower than balance ",
+  "choose_recipient": "Choose recipient"
 }
