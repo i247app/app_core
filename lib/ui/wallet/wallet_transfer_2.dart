@@ -267,11 +267,11 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
       final balanceText = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Balance"),
+          Text("Balance", style: Theme.of(context).textTheme.headline6),
           SizedBox(
             width: 32,
           ),
-          Text(amt)
+          Text(amt, style: Theme.of(context).textTheme.headline6)
         ],
       );
       return balanceAmount == null ? Text("") : balanceText;
