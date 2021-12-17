@@ -3,7 +3,6 @@ import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/model/krole.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class KRolePicker extends StatefulWidget {
   final Function(KRole?)? onChange;

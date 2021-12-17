@@ -6,7 +6,6 @@ import 'package:app_core/model/khero.dart';
 import 'package:app_core/header/kassets.dart';
 import 'package:app_core/ui/widget/kimage_animation/kimage_animation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:vector_math/vector_math_64.dart' as Vector;
 
 class KHeroShortHatchView extends StatefulWidget {
@@ -27,7 +26,7 @@ class _KHeroShortHatchViewState extends State<KHeroShortHatchView>
       _flashingAnimationController;
 
   final List<String> heroImageUrls =
-  List.generate(1, (_) => KImageAnimationHelper.randomImage);
+      List.generate(1, (_) => KImageAnimationHelper.randomImage);
 
   final Duration delay = Duration(milliseconds: 200);
 
@@ -48,13 +47,15 @@ class _KHeroShortHatchViewState extends State<KHeroShortHatchView>
   void initState() {
     super.initState();
 
-    _adultBouncingAnimationController = AnimationController(vsync: this, duration: adultBouncingDuration)
-        ..addListener(() => setState(() {}));
+    _adultBouncingAnimationController =
+        AnimationController(vsync: this, duration: adultBouncingDuration)
+          ..addListener(() => setState(() {}));
     _adultBouncingAnimation = Tween(begin: Offset(0, 0), end: Offset(0, -10.0))
         .animate(_adultBouncingAnimationController);
 
-    _flashingAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 250))
-        ..addListener(() => setState(() {}));
+    _flashingAnimationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 250))
+          ..addListener(() => setState(() {}));
 
     this._adultShakeAnimationController = AnimationController(
       vsync: this,
@@ -117,15 +118,17 @@ class _KHeroShortHatchViewState extends State<KHeroShortHatchView>
       child: AnimatedOpacity(
         duration: Duration(milliseconds: 0),
         opacity: this.showAdult ? 1.0 : 0.0,
-        child: this.showAdult ? KImageAnimation(
-          imageUrls: [widget.hero.imageURL!],
-          animationType: KImageAnimationType.TINY_ZOOM_SHAKE,
-          maxLoop: 1,
-          onFinish: () => Future.delayed(
-            Duration(milliseconds: 1000),
-            widget.onFinish,
-          ),
-        ) : Container(),
+        child: this.showAdult
+            ? KImageAnimation(
+                imageUrls: [widget.hero.imageURL!],
+                animationType: KImageAnimationType.TINY_ZOOM_SHAKE,
+                maxLoop: 1,
+                onFinish: () => Future.delayed(
+                  Duration(milliseconds: 1000),
+                  widget.onFinish,
+                ),
+              )
+            : Container(),
       ),
     );
 
@@ -134,42 +137,42 @@ class _KHeroShortHatchViewState extends State<KHeroShortHatchView>
       opacity: this.showEgg && this.eggBreakStep == 1 ? 1.0 : 0.0,
       child: this.eggBreakStep == 1
           ? Transform.scale(
-        scale: 0.5,
-        child: KImageAnimation(
-          animationType: KImageAnimationType.SHAKE_THE_TOP,
-          imageUrls: [
-            KAssets.IMG_TAMAGO_1,
-          ],
-          isAssetImage: true,
-          maxLoop: 2,
-          onFinish: () {
-            Future.delayed(Duration(milliseconds: 750), () {
-              this.setState(() {
-                this.eggBreakStep = this.eggBreakStep + 1;
-              });
-
-              Future.delayed(Duration(milliseconds: 1000), () {
-                this.setState(() {
-                  this.eggBreakStep = this.eggBreakStep + 1;
-                });
-
-                Future.delayed(Duration(milliseconds: 1000), () {
-                  this.setState(() {
-                    this.eggBreakStep = this.eggBreakStep + 1;
-                  });
-
-                  Future.delayed(Duration(milliseconds: 1500), () {
+              scale: 0.5,
+              child: KImageAnimation(
+                animationType: KImageAnimationType.SHAKE_THE_TOP,
+                imageUrls: [
+                  KAssets.IMG_TAMAGO_1,
+                ],
+                isAssetImage: true,
+                maxLoop: 2,
+                onFinish: () {
+                  Future.delayed(Duration(milliseconds: 750), () {
                     this.setState(() {
                       this.eggBreakStep = this.eggBreakStep + 1;
-                      this.showAdult = true;
+                    });
+
+                    Future.delayed(Duration(milliseconds: 1000), () {
+                      this.setState(() {
+                        this.eggBreakStep = this.eggBreakStep + 1;
+                      });
+
+                      Future.delayed(Duration(milliseconds: 1000), () {
+                        this.setState(() {
+                          this.eggBreakStep = this.eggBreakStep + 1;
+                        });
+
+                        Future.delayed(Duration(milliseconds: 1500), () {
+                          this.setState(() {
+                            this.eggBreakStep = this.eggBreakStep + 1;
+                            this.showAdult = true;
+                          });
+                        });
+                      });
                     });
                   });
-                });
-              });
-            });
-          },
-        ),
-      )
+                },
+              ),
+            )
           : Container(),
     );
 
@@ -178,12 +181,12 @@ class _KHeroShortHatchViewState extends State<KHeroShortHatchView>
       opacity: this.showEgg && this.eggBreakStep == 2 ? 1.0 : 0.0,
       child: this.eggBreakStep == 2
           ? Transform.scale(
-        scale: 0.5,
-        child: Image.asset(
-          KAssets.IMG_TAMAGO_2,
-          package: 'app_core',
-        ),
-      )
+              scale: 0.5,
+              child: Image.asset(
+                KAssets.IMG_TAMAGO_2,
+                package: 'app_core',
+              ),
+            )
           : Container(),
     );
 
@@ -192,12 +195,12 @@ class _KHeroShortHatchViewState extends State<KHeroShortHatchView>
       opacity: this.showEgg && this.eggBreakStep == 3 ? 1.0 : 0.0,
       child: this.eggBreakStep == 3
           ? Transform.scale(
-        scale: 0.5,
-        child: Image.asset(
-          KAssets.IMG_TAMAGO_3,
-          package: 'app_core',
-        ),
-      )
+              scale: 0.5,
+              child: Image.asset(
+                KAssets.IMG_TAMAGO_3,
+                package: 'app_core',
+              ),
+            )
           : Container(),
     );
 
@@ -206,12 +209,12 @@ class _KHeroShortHatchViewState extends State<KHeroShortHatchView>
       opacity: this.showEgg && this.eggBreakStep == 4 ? 1.0 : 0.0,
       child: this.eggBreakStep == 4
           ? Transform.scale(
-        scale: 0.5,
-        child: Image.asset(
-          KAssets.IMG_TAMAGO_4,
-          package: 'app_core',
-        ),
-      )
+              scale: 0.5,
+              child: Image.asset(
+                KAssets.IMG_TAMAGO_4,
+                package: 'app_core',
+              ),
+            )
           : Container(),
     );
 

@@ -1,11 +1,6 @@
-import 'dart:math';
-
-import 'package:app_core/model/kanswer.dart';
-import 'package:app_core/model/kquestion.dart';
+import 'package:app_core/model/kqna.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'kquestion.dart';
-import 'kqna.dart';
 part 'kgame.g.dart';
 
 @JsonSerializable()
@@ -46,8 +41,7 @@ class KGame {
   // JSON
   KGame();
 
-  factory KGame.fromJson(Map<String, dynamic> json) =>
-      _$KGameFromJson(json);
+  factory KGame.fromJson(Map<String, dynamic> json) => _$KGameFromJson(json);
 
   Map<String, dynamic> toJson() => _$KGameToJson(this);
 }

@@ -5,7 +5,6 @@ import 'package:app_core/model/khero.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:app_core/header/kassets.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -134,23 +133,24 @@ class _KHeroTrainingState extends State<KHeroTraining>
     try {
       Directory tempDir = await getTemporaryDirectory();
 
-      ByteData correctAudioFileData = await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
+      ByteData correctAudioFileData =
+          await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
 
       File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
-      await correctAudioTempFile.writeAsBytes(correctAudioFileData.buffer.asUint8List(), flush: true);
+      await correctAudioTempFile
+          .writeAsBytes(correctAudioFileData.buffer.asUint8List(), flush: true);
 
       this.setState(() {
         this.correctAudioFileUri = correctAudioTempFile.uri.toString();
       });
-    } catch(e) {}
+    } catch (e) {}
   }
 
   void playSound(bool isTrueAnswer) async {
     try {
       if (isTrueAnswer) {
         await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
-      } else {
-      }
+      } else {}
     } catch (e) {}
     this.setState(() {
       this.isPlaySound = false;
@@ -197,7 +197,8 @@ class _KHeroTrainingState extends State<KHeroTraining>
                         child: Container(
                           width: 50,
                           height: 50,
-                          padding: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                          padding: EdgeInsets.only(
+                              top: 5, bottom: 5, left: 5, right: 5),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(40),

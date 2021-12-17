@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:app_core/helper/ksession_data.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class KQRViewer extends StatelessWidget {

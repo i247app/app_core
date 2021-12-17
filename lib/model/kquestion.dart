@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:app_core/model/kanswer.dart';
 import 'package:json_annotation/json_annotation.dart';
+
 part 'kquestion.g.dart';
 
 @JsonSerializable()
@@ -44,28 +45,32 @@ class KQuestion {
   KAnswer? get correctAnswer =>
       (this.answers ?? []).firstWhere((a) => a.isCorrect ?? false);
 
-  List<KAnswer>? getAnswers() {
-    if (this.correctAnswer == null) {
+  List<KAnswer> generateAnswers([int count = 4]) {
+    try {
+      final correct = int.tryParse(correctAnswer?.text ?? "");
+      if (correct == null) {
+        throw Exception();
+      }
+
+      final random = Random();
+      final answerValues = [correct];
+
+      // Generate unique random values
+      while (answerValues.length < count) {
+        final number = random.nextInt(10);
+        if (!answerValues.contains(number)) {
+          answerValues.add(number);
+        }
+      }
+
+      return (answerValues..shuffle())
+          .map((av) => KAnswer()
+            ..text = av.toString()
+            ..isCorrect = correct == av)
+          .toList();
+    } catch (_) {
       return [];
     }
-    final correct = int.tryParse(this.correctAnswer!.text ?? "0");
-
-    var list = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-        .where((element) => correct != element)
-        .toList();
-
-    var random = new Random();
-    var anwers = List<KAnswer>.generate(3, (index) {
-      var r = random.nextInt(list.length);
-      var item = list[r];
-      list.removeAt(r);
-      return KAnswer()
-        ..isCorrect = false
-        ..text = item.toString();
-    });
-    anwers.add(this.correctAnswer!);
-    anwers.shuffle();
-    return anwers;
   }
 
   // JSON

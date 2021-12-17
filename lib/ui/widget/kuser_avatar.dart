@@ -5,7 +5,6 @@ import 'package:app_core/model/kchat.dart';
 import 'package:app_core/model/kchat_member.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class KUserAvatar extends StatelessWidget {
   final String? initial;

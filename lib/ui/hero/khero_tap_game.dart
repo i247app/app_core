@@ -374,7 +374,7 @@ class _KTapGameScreenState extends State<KTapGameScreen>
   KQuestion get currentQuestion => questions[currentQuestionIndex];
 
   List<KAnswer> get currentQuestionAnswers =>
-      currentQuestion.getAnswers() ?? [];
+      currentQuestion.generateAnswers() ;
 
   int? spinningHeroIndex;
   int? currentShowStarIndex;

@@ -1,8 +1,6 @@
+import 'package:app_core/model/kgame.dart';
+import 'package:app_core/model/response/base_response.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import '../kchat.dart';
-import '../kgame.dart';
-import 'base_response.dart';
 
 part 'get_games_response.g.dart';
 

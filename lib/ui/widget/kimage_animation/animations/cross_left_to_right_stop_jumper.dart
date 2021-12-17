@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/model/kimage_animation_parameters.dart';
 import 'package:app_core/header/kassets.dart';
-import 'package:vector_math/vector_math_64.dart';
 
 class CrossLeftToRightStopJumperImage extends StatefulWidget {
   final List<String> imageUrls;

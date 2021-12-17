@@ -1,10 +1,6 @@
-import 'dart:math';
-
-import 'package:app_core/model/kanswer.dart';
 import 'package:app_core/model/kquestion.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import 'kquestion.dart';
 part 'kqna.g.dart';
 
 @JsonSerializable()
@@ -53,8 +49,7 @@ class KQNA {
   // JSON
   KQNA();
 
-  factory KQNA.fromJson(Map<String, dynamic> json) =>
-      _$KQNAFromJson(json);
+  factory KQNA.fromJson(Map<String, dynamic> json) => _$KQNAFromJson(json);
 
   Map<String, dynamic> toJson() => _$KQNAToJson(this);
 }

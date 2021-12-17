@@ -350,8 +350,7 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
 
   KQuestion get currentQuestion => questions[currentQuestionIndex];
 
-  List<KAnswer> get currentQuestionAnswers =>
-      currentQuestion.getAnswers() ?? [];
+  List<KAnswer> get currentQuestionAnswers => currentQuestion.generateAnswers();
 
   int? spinningHeroIndex;
   int? currentShowStarIndex;
