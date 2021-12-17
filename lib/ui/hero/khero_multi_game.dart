@@ -91,6 +91,8 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
           this.isShowShootingIntro = true;
         });
       }),
+      isLoaded: true,
+      questions: [],
     );
 
     final shootingGame = KShootingGameScreen(
@@ -115,6 +117,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
           this.currentGame = 3;
         });
       }),
+      isLoaded: true,
     );
 
     final jumpMultiRowGame = KJumpMultiRowGameScreen(
@@ -188,7 +191,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
         });
       }),
       questions: [],
-      isLoaded: false,
+      isLoaded: true,
     );
 
     final body = Column(

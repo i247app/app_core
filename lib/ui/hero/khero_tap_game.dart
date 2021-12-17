@@ -31,7 +31,7 @@ class KHeroTapGame extends StatefulWidget {
 
 class _KHeroTapGameState extends State<KHeroTapGame> {
   static const GAME_NAME = "tap_game";
-  static const TAP_GAME_ID = "800";
+  static const GAME_ID = "800";
 
   static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
@@ -70,7 +70,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
       });
 
       final response = await KServerHandler.getGames(
-          gameID: TAP_GAME_ID, level: currentLevel.toString());
+          gameID: GAME_ID, level: currentLevel.toString());
 
       if (response.isSuccess &&
           response.games != null &&
@@ -110,6 +110,9 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
   }
 
   void showHeroGameEndOverlay(Function() onFinish) async {
+    this.setState(() {
+      this.isShowEndLevel = true;
+    });
     final heroGameEnd = KHeroGameEnd(
       hero: KHero()..imageURL = KImageAnimationHelper.randomImage,
       onFinish: onFinish,
@@ -800,9 +803,9 @@ class _KTapGameScreenState extends State<KTapGameScreen>
           });
         } else {
           if (widget.onFinishLevel != null) {
-            print("onFinishLevel");
             widget.onFinishLevel!(currentLevel + 1,
-                levelPlayTimes[currentLevel], wrongAnswerCount == 0);
+                levelPlayTimes[currentLevel], rightAnswerCount / questions.length >=
+                    levelHardness[currentLevel]);
           }
           this.setState(() {
             if (rightAnswerCount / questions.length >=
