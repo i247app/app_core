@@ -247,7 +247,7 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
                                 );
                               } else {
                                 this.showHeroGameEndOverlay(
-                                      () {
+                                  () {
                                     if (this.overlayID != null) {
                                       KOverlayHelper.removeOverlay(
                                           this.overlayID!);
@@ -269,7 +269,7 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
                             },
                             onChangeLevel: (level) {
                               this.setState(
-                                    () {
+                                () {
                                   this.currentLevel = level;
                                 },
                               );
@@ -401,8 +401,8 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
 
   bool get canRestartGame =>
       currentLevel + 1 < totalLevel ||
-          (currentLevel < totalLevel &&
-              (rightAnswerCount / questions.length) < levelHardness[currentLevel]);
+      (currentLevel < totalLevel &&
+          (rightAnswerCount / questions.length) < levelHardness[currentLevel]);
 
   List<KAnswer> barrierValues = [];
   double topBoundary = -2.1;
@@ -641,19 +641,10 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
           this.overlayID = null;
         }
 
-        if (!isStart && currentLevel == 0) {
-          if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
-            this.setState(() {
-              this.isBackgroundSoundPlaying = true;
-            });
-            backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
-                isLocal: true);
-          }
-          setState(() {
-            isStart = true;
-            time = 0;
-          });
-        }
+        setState(() {
+          isStart = true;
+          time = 0;
+        });
       },
     );
     final overlay = Stack(
@@ -733,6 +724,13 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
           isStart = true;
           time = 0;
         });
+      }
+
+      if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+        this.setState(() {
+          this.isBackgroundSoundPlaying = true;
+        });
+        backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
       }
     }
   }
@@ -1410,7 +1408,10 @@ class _BarrierState extends State<_Barrier>
                   offset: Offset(0, -60 * (widget.starY ?? 0)),
                   child: AnimatedOpacity(
                     duration: Duration(milliseconds: 500),
-                    opacity: (widget.isShowStar ?? false) && (widget.answer.isCorrect ?? false) ? 1 : 0,
+                    opacity: (widget.isShowStar ?? false) &&
+                            (widget.answer.isCorrect ?? false)
+                        ? 1
+                        : 0,
                     child: Icon(
                       Icons.star,
                       color: Colors.amberAccent,
