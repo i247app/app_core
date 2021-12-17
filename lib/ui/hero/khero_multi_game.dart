@@ -188,6 +188,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
         });
       }),
       questions: [],
+      isLoaded: false,
     );
 
     final body = Column(
