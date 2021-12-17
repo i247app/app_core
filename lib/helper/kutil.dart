@@ -246,6 +246,7 @@ abstract class KUtil {
     bool useCurrencySymbol = true,
     bool useCurrencyName = false,
     bool acceptZero = true,
+    bool tokenToRight = false,
   }) {
     if (amount == null) return "";
     double dAmount = double.tryParse(amount) ?? 0;
@@ -254,8 +255,15 @@ abstract class KUtil {
     try {
       switch (uppercaseToken) {
         case "USD":
-          if (useCurrencyName) // USD1,234.56 or USD1,234.00
-            pretty = NumberFormat.currency(locale: "en").format(dAmount);
+          if (useCurrencyName) {
+            if (tokenToRight) {
+              pretty = NumberFormat.currency(locale: "en").format(dAmount);
+              pretty = pretty.replaceAll("USD", "");
+              pretty = "$pretty USD";
+            } else {
+              pretty = NumberFormat.currency(locale: "en").format(dAmount);
+            }
+          } // USD1,234.56 or USD1,234.00
           else if (useCurrencySymbol) // $1,234.56 or $1,234.00
             pretty = NumberFormat.simpleCurrency(locale: "en").format(dAmount);
           else // 1,234.56 or 1,234.00
