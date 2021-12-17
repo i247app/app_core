@@ -100,4 +100,6 @@ abstract class KPhrases {
 
   static String get amountMustLowerThanBalance =>
       _klingo.yak("amount_must_lower_than_balance");
+
+  static String get chooseRecipient => _klingo.yak("choose_recipient");
 }
