@@ -172,28 +172,33 @@ class _SearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final searchField = TextField(
-      maxLength: 12,
-      maxLines: null,
-      focusNode: this.focusNode,
-      textAlign: TextAlign.left,
-      controller: this.searchFieldController,
-      onChanged: this.onChanged,
-      autofocus: true,
-      showCursor: true,
-      onTap: this.onTap,
-      readOnly: this.readOnly,
-      style: Theme.of(context).textTheme.bodyText1,
-      decoration: InputDecoration(
-        hintText: "Type a name or phone number",
-        counterText: "",
+    final searchField = Theme(
+      data: ThemeData(
+          inputDecorationTheme:
+              InputDecorationTheme(border: OutlineInputBorder())),
+      child: TextField(
+        maxLength: 12,
+        maxLines: null,
+        focusNode: this.focusNode,
+        textAlign: TextAlign.left,
+        controller: this.searchFieldController,
+        onChanged: this.onChanged,
+        autofocus: true,
+        showCursor: true,
+        onTap: this.onTap,
+        readOnly: this.readOnly,
+        style: Theme.of(context).textTheme.bodyText1,
+        decoration: InputDecoration(
+          hintText: "Type a name or phone number",
+          counterText: "",
+        ),
       ),
     );
 
     final selectedUserChips = this
         .selectedUsers
         .map((su) => GestureDetector(
-              onTap: () => this.onSelectedUserTap.call(su),
+              onTap: () => onSelectedUserTap.call(su),
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(

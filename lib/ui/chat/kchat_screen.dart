@@ -217,12 +217,12 @@ class _KChatScreenState extends State<KChatScreen> {
   @override
   Widget build(BuildContext context) {
     final body = KChatroom(
-      this.chatroomCtrl,
+      chatroomCtrl,
       isSupport: widget.isSupport,
     );
 
     final addMemberAction = IconButton(
-      onPressed: () => this.onManagerMember(),
+      onPressed: onManagerMember,
       icon: Icon(
         Icons.group_add,
         color: Theme.of(context).colorScheme.primaryVariant,
@@ -230,7 +230,7 @@ class _KChatScreenState extends State<KChatScreen> {
     );
 
     final videoCallAction = IconButton(
-      onPressed: this.isVideoCallEnabled ? onCallUser : null,
+      onPressed: isVideoCallEnabled ? onCallUser : null,
       icon: Icon(
         Icons.video_call,
         color: Theme.of(context).colorScheme.primaryVariant,
@@ -243,8 +243,8 @@ class _KChatScreenState extends State<KChatScreen> {
       return Scaffold(
         appBar: AppBar(
           title: InkWell(
-            onTap: () => this.onManagerMember(),
-            child: Text(this.chatroomCtrl.value.chatTitle ??
+            onTap:  onManagerMember,
+            child: Text(chatroomCtrl.value.chatTitle ??
                 (widget.isSupport ? "Support" : "Chat")),
           ),
           actions: <Widget>[
@@ -274,7 +274,7 @@ class _KChatScreenState extends State<KChatScreen> {
                 SizedBox(width: 10),
                 Expanded(
                   child: InkWell(
-                    onTap: () => this.onManagerMember(),
+                    onTap: onManagerMember,
                     child: Text(
                       this.chatroomCtrl.value.chatTitle ?? "Chat",
                       style: Theme.of(context).textTheme.headline5,
