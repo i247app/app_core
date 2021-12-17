@@ -179,7 +179,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
               ),
             ),
             padding: EdgeInsets.symmetric(vertical: 20),
-            child: game == null
+            child: !isLoaded || game == null
                 ? Container()
                 : SafeArea(
                     child: Column(
@@ -941,7 +941,7 @@ class _KTapGameScreenState extends State<KTapGameScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (currentLevel == 0 && result == null) ...[
+                  if (result == null) ...[
                     Text(
                       "Level ${currentLevel + 1}",
                       style: TextStyle(fontSize: 30, color: Colors.white),
@@ -976,8 +976,7 @@ class _KTapGameScreenState extends State<KTapGameScreen>
                       ),
                     ),
                   ],
-                  if (currentLevel >= 0 &&
-                      result != null &&
+                  if (result != null &&
                       canRestartGame) ...[
                     Text(
                       "${((rightAnswerCount / questions.length) * 100).floor()}% Correct",
