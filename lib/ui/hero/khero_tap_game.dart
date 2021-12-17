@@ -247,7 +247,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                                 );
                               } else {
                                 this.showHeroGameEndOverlay(
-                                      () {
+                                  () {
                                     if (this.overlayID != null) {
                                       KOverlayHelper.removeOverlay(
                                           this.overlayID!);
@@ -617,19 +617,10 @@ class _KTapGameScreenState extends State<KTapGameScreen>
           this.overlayID = null;
         }
 
-        if (!isStart && currentLevel == 0) {
-          if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
-            this.setState(() {
-              this.isBackgroundSoundPlaying = true;
-            });
-            backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
-                isLocal: true);
-          }
-          setState(() {
-            isStart = true;
-            time = 0;
-          });
-        }
+        setState(() {
+          isStart = true;
+          time = 0;
+        });
       },
     );
     final overlay = Stack(
@@ -698,6 +689,13 @@ class _KTapGameScreenState extends State<KTapGameScreen>
           isStart = true;
           time = 0;
         });
+      }
+
+      if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+        this.setState(() {
+          this.isBackgroundSoundPlaying = true;
+        });
+        backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
       }
     }
   }
@@ -986,8 +984,7 @@ class _KTapGameScreenState extends State<KTapGameScreen>
                       ),
                     ),
                   ],
-                  if (result != null &&
-                      canRestartGame) ...[
+                  if (result != null && canRestartGame) ...[
                     Text(
                       "${((rightAnswerCount / questions.length) * 100).floor()}% Correct",
                       style: TextStyle(fontSize: 30, color: Colors.white),

@@ -5,6 +5,7 @@ import 'dart:math' as Math;
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/kanswer.dart';
+import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/kquestion.dart';
 import 'package:app_core/model/kscore.dart';
@@ -30,6 +31,7 @@ class KHeroMovingTapGame extends StatefulWidget {
 
 class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
   static const GAME_NAME = "tap_moving";
+  static const TAP_GAME_ID = "801";
 
   static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
@@ -49,7 +51,9 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
 
   String? scoreID;
   List<KScore> scores = [];
-  List<KQuestion> questions = [];
+  KGame? game = null;
+
+  List<KQuestion> get questions => game?.qnas?[0].questions ?? [];
   bool isLoaded = false;
 
   @override
@@ -59,11 +63,26 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
     loadGame();
   }
 
-  loadGame() {
-    this.setState(() {
-      questions = KServerHandler.questionsMockup();
-      isLoaded = true;
-    });
+  loadGame() async {
+    try {
+      setState(() {
+        this.isLoaded = false;
+      });
+
+      final response = await KServerHandler.getGames(
+          gameID: TAP_GAME_ID, level: currentLevel.toString());
+
+      if (response.isSuccess &&
+          response.games != null &&
+          response.games!.length > 0) {
+        setState(() {
+          this.game = response.games![0];
+          this.isLoaded = true;
+        });
+      } else {
+        KSnackBarHelper.error("Can not get game data");
+      }
+    } catch (e) {}
   }
 
   loadScore() async {
@@ -128,6 +147,9 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
   }
 
   void showCustomOverlay(Widget view) {
+    this.setState(() {
+      this.isShowEndLevel = true;
+    });
     final overlay = Stack(
       fit: StackFit.expand,
       children: [
@@ -143,23 +165,23 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
 
   @override
   Widget build(BuildContext context) {
-    final body = !isLoaded
-        ? Container()
-        : Column(
-            children: [
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(
-                        BACKGROUND_IMAGES[currentLevel],
-                        package: 'app_core',
-                      ),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  child: SafeArea(
+    final body = Column(
+      children: [
+        Expanded(
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(
+                  BACKGROUND_IMAGES[currentLevel],
+                  package: 'app_core',
+                ),
+                fit: BoxFit.cover,
+              ),
+            ),
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: !isLoaded || game == null
+                ? Container()
+                : SafeArea(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -183,6 +205,8 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
                             totalLevel: totalLevel,
                             isShowEndLevel: isShowEndLevel,
                             questions: questions,
+                            level: currentLevel,
+                            isLoaded: isLoaded,
                             onFinishLevel: (level, score, isHaveWrongAnswer) {
                               final scoreID = Uuid().v4();
                               this.setState(() {
@@ -197,7 +221,6 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
                                     );
                               });
                               if (level < totalLevel) {
-                                print(isHaveWrongAnswer);
                                 // if (!isHaveWrongAnswer) {
                                 //   this.setState(() {
                                 //     this.levelHighscores.add(score);
@@ -223,32 +246,44 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
                                   },
                                 );
                               } else {
-                                this.showHeroGameHighscoreOverlay(() {
-                                  this.setState(() {
-                                    this.isShowEndLevel = false;
-                                  });
-                                  if (this.overlayID != null) {
-                                    KOverlayHelper.removeOverlay(
-                                        this.overlayID!);
-                                    this.overlayID = null;
-                                  }
-                                });
+                                this.showHeroGameEndOverlay(
+                                  () {
+                                    if (this.overlayID != null) {
+                                      KOverlayHelper.removeOverlay(
+                                          this.overlayID!);
+                                      this.overlayID = null;
+                                    }
+                                    this.showHeroGameHighscoreOverlay(() {
+                                      this.setState(() {
+                                        this.isShowEndLevel = false;
+                                      });
+                                      if (this.overlayID != null) {
+                                        KOverlayHelper.removeOverlay(
+                                            this.overlayID!);
+                                        this.overlayID = null;
+                                      }
+                                    });
+                                  },
+                                );
                               }
                             },
-                            onChangeLevel: (level) => this.setState(
-                              () {
-                                this.currentLevel = level;
-                              },
-                            ),
+                            onChangeLevel: (level) {
+                              this.setState(
+                                () {
+                                  this.currentLevel = level;
+                                },
+                              );
+                              this.loadGame();
+                            },
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
-              ),
-            ],
-          );
+          ),
+        ),
+      ],
+    );
 
     return Scaffold(
       // appBar: AppBar(title: Text("Play game")),
@@ -262,6 +297,7 @@ class KMovingTapGameScreen extends StatefulWidget {
   final Function(int)? onChangeLevel;
   final Function(int, int, bool)? onFinishLevel;
   final bool isShowEndLevel;
+  final bool isLoaded;
   final List<KQuestion> questions;
   final int? totalLevel;
   final int? level;
@@ -271,9 +307,10 @@ class KMovingTapGameScreen extends StatefulWidget {
     this.hero,
     this.onChangeLevel,
     this.onFinishLevel,
-    required this.questions,
-    required this.isShowEndLevel,
     this.totalLevel,
+    required this.isShowEndLevel,
+    required this.questions,
+    required this.isLoaded,
     this.level,
     this.grade,
   });
@@ -363,8 +400,8 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
   Math.Random rand = new Math.Random();
 
   bool get canRestartGame =>
-      currentLevel + 1 < levelHardness.length ||
-      (currentLevel < levelHardness.length &&
+      currentLevel + 1 < totalLevel ||
+      (currentLevel < totalLevel &&
           (rightAnswerCount / questions.length) < levelHardness[currentLevel]);
 
   List<KAnswer> barrierValues = [];
@@ -604,19 +641,10 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
           this.overlayID = null;
         }
 
-        if (!isStart && currentLevel == 0) {
-          if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
-            this.setState(() {
-              this.isBackgroundSoundPlaying = true;
-            });
-            backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
-                isLocal: true);
-          }
-          setState(() {
-            isStart = true;
-            time = 0;
-          });
-        }
+        setState(() {
+          isStart = true;
+          time = 0;
+        });
       },
     );
     final overlay = Stack(
@@ -696,6 +724,13 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
           isStart = true;
           time = 0;
         });
+      }
+
+      if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+        this.setState(() {
+          this.isBackgroundSoundPlaying = true;
+        });
+        backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
       }
     }
   }
@@ -952,7 +987,7 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (currentLevel == 0 && result == null) ...[
+                  if (result == null) ...[
                     Text(
                       "Level ${currentLevel + 1}",
                       style: TextStyle(fontSize: 30, color: Colors.white),
@@ -1373,7 +1408,10 @@ class _BarrierState extends State<_Barrier>
                   offset: Offset(0, -60 * (widget.starY ?? 0)),
                   child: AnimatedOpacity(
                     duration: Duration(milliseconds: 500),
-                    opacity: (widget.isShowStar ?? false) ? 1 : 0,
+                    opacity: (widget.isShowStar ?? false) &&
+                            (widget.answer.isCorrect ?? false)
+                        ? 1
+                        : 0,
                     child: Icon(
                       Icons.star,
                       color: Colors.amberAccent,
