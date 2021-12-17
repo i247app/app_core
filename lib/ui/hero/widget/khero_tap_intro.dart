@@ -136,6 +136,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   int? currentShowStarIndex;
   int correctCount = 0;
   int questionCount = 0;
+  int level = 0;
   bool isPlaySound = false;
 
   List<double> barrierX = [0, 0, 0, 0];
@@ -293,14 +294,19 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
 
   loadGame() async {
     try {
-      final response = await KServerHandler.getGames(
-          gameID: "800", level: "${rand.nextInt(3) + 1}");
+      final response =
+          await KServerHandler.getGames(gameID: "200", level: "$level");
 
       if (response.isSuccess &&
           response.games != null &&
           response.games!.length > 0) {
         final game = response.games![0];
         setState(() {
+          if (level == 3) {
+            level = 0;
+          } else {
+            level++;
+          }
           this.questionContents =
               (game.qnas?[0].questions ?? []).map((e) => e.text ?? "").toList();
           this.rightAnswers = (game.qnas?[0].questions ?? [])
@@ -451,7 +457,9 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
           this.isShowSadTamago = true;
         });
       }
-
+      if (questionCount % questionContents.length == 0) {
+        loadGame();
+      }
       Future.delayed(Duration(milliseconds: 500), () {
         if (mounted) {
           this.setState(() {
