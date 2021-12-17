@@ -271,7 +271,12 @@ abstract class KUtil {
           break;
         default: // default locale most likely en or vi
           // 1.234,56 or 1.234
-          pretty = NumberFormat("#,###.##").format(dAmount);
+          if (useCurrencyName) {
+            pretty = NumberFormat("#,###.## ${uppercaseToken}").format(dAmount);
+          } else {
+            pretty = NumberFormat("#,###.##").format(dAmount);
+          }
+
           break;
       }
     } catch (e) {

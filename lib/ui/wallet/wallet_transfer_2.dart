@@ -255,9 +255,10 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
 
     final balanceView = () {
       final amt = KUtil.prettyMoney(
-        amount: balanceAmount ?? "",
-        tokenName: widget.tokenName,
-      );
+          amount: balanceAmount ?? "",
+          tokenName: widget.tokenName,
+          useCurrencyName: true,
+          useCurrencySymbol: false);
       // ignore: unused_local_variable
       final alexVersion = Text("You have $amt available");
       // Good version (Ron said)
