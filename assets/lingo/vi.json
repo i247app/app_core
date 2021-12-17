@@ -162,5 +162,6 @@
   "app_faild": "App lỗi",
   "success": "Thành công",
   "bxfr": "BXFR",
-  "amount_must_lower_than_balance": "Số tiền phải nhỏ hơn số dư hiện tại "
+  "amount_must_lower_than_balance": "Số tiền phải nhỏ hơn số dư hiện tại ",
+  "choose_recipient": "Chọn người nhận"
 }
