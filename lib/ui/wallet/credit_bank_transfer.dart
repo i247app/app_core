@@ -31,6 +31,7 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
   final accountNameCtrl = TextEditingController();
   final bankAccountNumberCtrl = TextEditingController();
   final bankCtrl = TextEditingController();
+
   bool isValidAmount = true;
 
   @override
@@ -114,7 +115,7 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
       headingWidth: 105,
       readOnly: true,
       customChild: KBankPicker(
-        controller: this.bankCtrl,
+        controller: bankCtrl,
         decoration: BoxDecoration(),
         height: 59,
       ),
@@ -158,6 +159,7 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
             });
             return;
           }
+
           final amountDouble = double.tryParse(value);
           if (amountDouble != null &&
               amountDouble > (double.tryParse(widget.total) ?? 0)) {
