@@ -207,7 +207,10 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
                             questions: questions,
                             level: currentLevel,
                             isLoaded: isLoaded,
-                            onFinishLevel: (level, score, isHaveWrongAnswer) {
+                            onFinishLevel: (level, score, canAdvance) {
+                              if (!canAdvance) {
+                                return;
+                              }
                               final scoreID = Uuid().v4();
                               this.setState(() {
                                 this.scoreID = scoreID;
@@ -836,7 +839,7 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
         } else {
           if (widget.onFinishLevel != null) {
             widget.onFinishLevel!(currentLevel + 1,
-                levelPlayTimes[currentLevel], wrongAnswerCount > 0);
+                levelPlayTimes[currentLevel], wrongAnswerCount == 0);
           }
           this.setState(() {
             if (rightAnswerCount / questions.length >=
@@ -875,7 +878,12 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
           widget.onChangeLevel!(currentLevel + 1);
         currentLevel += 1;
       });
+    } else {
+      this.setState(() {
+        levelPlayTimes[currentLevel] = 0;
+      });
     }
+
     this.setState(() {
       this.isStart = true;
       this.isScroll = true;
