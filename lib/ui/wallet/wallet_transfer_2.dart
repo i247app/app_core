@@ -262,7 +262,7 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
       // ignore: unused_local_variable
       final alexVersion = Text("You have $amt available");
       // Good version (Ron said)
-      final balanceText = Text("Balance: $amt");
+      final balanceText = Text("Balance $amt");
       return balanceAmount == null ? Text("") : balanceText;
     }.call();
 
