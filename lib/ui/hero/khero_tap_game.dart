@@ -246,16 +246,25 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                                   },
                                 );
                               } else {
-                                this.showHeroGameHighscoreOverlay(() {
-                                  this.setState(() {
-                                    this.isShowEndLevel = false;
-                                  });
-                                  if (this.overlayID != null) {
-                                    KOverlayHelper.removeOverlay(
-                                        this.overlayID!);
-                                    this.overlayID = null;
-                                  }
-                                });
+                                this.showHeroGameEndOverlay(
+                                      () {
+                                    if (this.overlayID != null) {
+                                      KOverlayHelper.removeOverlay(
+                                          this.overlayID!);
+                                      this.overlayID = null;
+                                    }
+                                    this.showHeroGameHighscoreOverlay(() {
+                                      this.setState(() {
+                                        this.isShowEndLevel = false;
+                                      });
+                                      if (this.overlayID != null) {
+                                        KOverlayHelper.removeOverlay(
+                                            this.overlayID!);
+                                        this.overlayID = null;
+                                      }
+                                    });
+                                  },
+                                );
                               }
                             },
                             onChangeLevel: (level) {
@@ -790,6 +799,7 @@ class _KTapGameScreenState extends State<KTapGameScreen>
           });
         } else {
           if (widget.onFinishLevel != null) {
+            print("onFinishLevel");
             widget.onFinishLevel!(currentLevel + 1,
                 levelPlayTimes[currentLevel], wrongAnswerCount > 0);
           }
