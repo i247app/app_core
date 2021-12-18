@@ -312,6 +312,11 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
           this.rightAnswers = (game.qnas?[0].questions ?? [])
               .map((e) => int.tryParse(e.correctAnswer?.text ?? "0") ?? 0)
               .toList();
+          isShowSadTamago = false;
+          currentShowStarIndex = null;
+          spinningHeroIndex = null;
+          isAnimating = false;
+          currentQuestionIndex = 0;
           this.getListAnswer();
         });
         // Future.delayed(Duration(milliseconds: 400), getListAnswer);
@@ -457,21 +462,22 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
           this.isShowSadTamago = true;
         });
       }
-      if (questionCount % questionContents.length == 0) {
+      if (currentQuestionIndex == 9) {
         loadGame();
+      } else {
+        Future.delayed(Duration(milliseconds: 500), () {
+          if (mounted) {
+            this.setState(() {
+              isShowSadTamago = false;
+              currentShowStarIndex = null;
+              spinningHeroIndex = null;
+              currentQuestionIndex++;
+              getListAnswer();
+              isAnimating = false;
+            });
+          }
+        });
       }
-      Future.delayed(Duration(milliseconds: 500), () {
-        if (mounted) {
-          this.setState(() {
-            isShowSadTamago = false;
-            currentShowStarIndex = null;
-            spinningHeroIndex = null;
-            currentQuestionIndex = rand.nextInt(rightAnswers.length - 1);
-            getListAnswer();
-            isAnimating = false;
-          });
-        }
-      });
     });
     // });
   }
