@@ -10,6 +10,7 @@ import 'package:app_core/model/response/get_credit_transactions_response.dart';
 import 'package:app_core/model/xfr_proxy.dart';
 import 'package:app_core/ui/wallet/credit_bank_transfer.dart';
 import 'package:app_core/ui/wallet/transfer_receipt.dart';
+import 'package:app_core/ui/wallet/wallet_transfer.dart';
 import 'package:app_core/ui/wallet/wallet_transfer_v1.dart';
 import 'package:app_core/ui/wallet/widget/credit_token_picker.dart';
 import 'package:app_core/ui/wallet/widget/kcredit_banner.dart';

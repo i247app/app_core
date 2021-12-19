@@ -8,13 +8,14 @@ import 'package:app_core/model/krole.dart';
 import 'package:app_core/model/response/credit_transfer_response.dart';
 import 'package:app_core/model/xfr_ticket.dart';
 import 'package:app_core/ui/wallet/transfer_receipt.dart';
-import 'package:app_core/ui/wallet/wallet_transfer_v1.dart';
 import 'package:app_core/ui/wallet/widget/transfer_confirm.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+enum KTransferType { direct, proxy }
 
 class WalletTransfer extends StatefulWidget {
   final String? rcvPUID;
