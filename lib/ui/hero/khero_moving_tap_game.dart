@@ -120,11 +120,11 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
     showCustomOverlay(heroGameEnd);
   }
 
-  void showHeroGameLevelOverlay(Function() onFinish) async {
+  void showHeroGameLevelOverlay(Function() onFinish, { bool? canAdvance }) async {
     this.setState(() {
       this.isShowEndLevel = true;
     });
-    final heroGameLevel = KTamagoChanJumping(onFinish: onFinish);
+    final heroGameLevel = KTamagoChanJumping(onFinish: onFinish, canAdvance: canAdvance);
     showCustomOverlay(heroGameLevel);
   }
 
@@ -212,6 +212,16 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
                             isLoaded: isLoaded,
                             onFinishLevel: (level, score, canAdvance) {
                               if (!canAdvance) {
+                                this.showHeroGameLevelOverlay(() {
+                                  this.setState(() {
+                                    this.isShowEndLevel = false;
+                                  });
+                                  if (this.overlayID != null) {
+                                    KOverlayHelper.removeOverlay(
+                                        this.overlayID!);
+                                    this.overlayID = null;
+                                  }
+                                }, canAdvance: canAdvance);
                                 return;
                               }
                               final scoreID = Uuid().v4();
