@@ -646,23 +646,36 @@ abstract class KUtil {
           .join();
 
   // TODO move somewhere else later
+  // static Widget getPaymentScreen({
+  //   required String? rcvPUID,
+  //   required KRole? sndRole,
+  //   required KTransferType transferType,
+  //   required String tokenName,
+  // }) =>
+  //     KHostConfig.isReleaseMode
+  //         ? WalletTransfer(
+  //             transferType: transferType,
+  //             tokenName: tokenName,
+  //             rcvPUID: rcvPUID,
+  //             sndRole: sndRole,
+  //           )
+  //         : WalletTransfer2(
+  //             transferType: transferType,
+  //             tokenName: tokenName,
+  //             rcvPUID: rcvPUID,
+  //             sndRole: sndRole,
+  //           );
+
   static Widget getPaymentScreen({
     required String? rcvPUID,
     required KRole? sndRole,
     required KTransferType transferType,
     required String tokenName,
   }) =>
-      KHostConfig.isReleaseMode
-          ? WalletTransfer(
-              transferType: transferType,
-              tokenName: tokenName,
-              rcvPUID: rcvPUID,
-              sndRole: sndRole,
-            )
-          : WalletTransfer2(
-              transferType: transferType,
-              tokenName: tokenName,
-              rcvPUID: rcvPUID,
-              sndRole: sndRole,
-            );
+      WalletTransfer2(
+        transferType: transferType,
+        tokenName: tokenName,
+        rcvPUID: rcvPUID,
+        sndRole: sndRole,
+      );
 }
