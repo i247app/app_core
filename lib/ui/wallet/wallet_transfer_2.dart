@@ -9,6 +9,7 @@ import 'package:app_core/model/response/credit_transfer_response.dart';
 import 'package:app_core/model/xfr_ticket.dart';
 import 'package:app_core/ui/wallet/credit_receipt.dart';
 import 'package:app_core/ui/wallet/wallet_transfer.dart';
+import 'package:app_core/ui/wallet/widget/transfer_confirm.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:app_core/value/kphrases.dart';
@@ -89,28 +90,32 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
     }
   }
 
-  void attemptTransferCredit() {
+  void attemptTransferCredit() async {
     final rcvPUID = selectedUser?.puid ?? "";
     final amount = amountCtrl.text.endsWith(".")
         ? amountCtrl.text.replaceAll(".", "")
         : amountCtrl.text;
 
     if (rcvPUID.isNotEmpty && amount.isNotEmpty) {
+      // Open TransferConfirm screen
+      final memo = await openConfirmScreen(
+          amount, widget.tokenName, selectedUser!, balanceAmount ?? "");
+      if (memo == null) return;
       transferCredit(
-        rcvPUID: rcvPUID,
-        amount: amount,
-        tokenName: widget.tokenName,
-      );
+          rcvPUID: rcvPUID,
+          amount: amount,
+          tokenName: widget.tokenName,
+          memo: memo);
     }
 
     FocusScope.of(context).unfocus(); // dismiss keyboard
   }
 
-  void transferCredit({
-    required String rcvPUID,
-    required String amount,
-    String? tokenName,
-  }) async {
+  void transferCredit(
+      {required String rcvPUID,
+      required String amount,
+      String? tokenName,
+      String? memo}) async {
     try {
       setState(() => isNetworking = true);
 
@@ -119,6 +124,7 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
         rcvPUID: rcvPUID,
         amount: amount,
         tokenName: tokenName,
+        memo: memo,
       );
       final Future<CreditTransferResponse> Function(XFRTicket) fn =
           widget.transferType == KTransferType.direct
@@ -182,6 +188,21 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
     final KUser? user = await Navigator.of(context)
         .push(MaterialPageRoute(builder: (ctx) => KChooseContact()));
     if (user?.puid != null) loadUserInfo(puid: user!.puid!);
+  }
+
+  Future<String?> openConfirmScreen(
+      String amout, String tokenName, KUser user, String balanceAmount) async {
+    final String? memo = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => TransferConfirm(
+          amount: amout,
+          tokenName: tokenName,
+          user: user,
+          balanceAmount: balanceAmount,
+        ),
+      ),
+    );
+    return Future.value(memo);
   }
 
   void loadUserInfo({required String puid}) async {
@@ -285,16 +306,19 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
       onClick: toChooseContact,
     );
 
-    final transferAmount = FittedBox(
-      fit: BoxFit.contain,
-      child: Text(
-        prettyPartialDecimal(amountCtrl.text),
-        // KUtil.prettyMoney(
-        //   amount: amountController.text,
-        //   tokenName: widget.tokenName,
-        //   useCurrencySymbol: false,
-        // ),
-        style: TextStyle(fontWeight: FontWeight.bold),
+    final transferAmount = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: Text(
+          prettyPartialDecimal(amountCtrl.text),
+          // KUtil.prettyMoney(
+          //   amount: amountController.text,
+          //   tokenName: widget.tokenName,
+          //   useCurrencySymbol: false,
+          // ),
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
     );
 
@@ -303,7 +327,7 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
       child: Container(
         height: 26,
         child: Center(
-          child: isNetworking ? CircularProgressIndicator() : Text("TRANSFER"),
+          child: isNetworking ? CircularProgressIndicator() : Text("NEXT"),
         ),
       ),
     );
