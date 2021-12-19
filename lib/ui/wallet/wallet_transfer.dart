@@ -16,13 +16,13 @@ import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class WalletTransfer2 extends StatefulWidget {
+class WalletTransfer extends StatefulWidget {
   final String? rcvPUID;
   final KRole? sndRole;
   final KTransferType transferType;
   final String tokenName;
 
-  WalletTransfer2({
+  WalletTransfer({
     this.rcvPUID,
     this.sndRole,
     required this.transferType,
@@ -30,10 +30,10 @@ class WalletTransfer2 extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _WalletTransfer2State();
+  State<StatefulWidget> createState() => _WalletTransferState();
 }
 
-class _WalletTransfer2State extends State<WalletTransfer2> {
+class _WalletTransferState extends State<WalletTransfer> {
   final TextEditingController userController = TextEditingController();
   final TextEditingController amountCtrl = TextEditingController();
 
