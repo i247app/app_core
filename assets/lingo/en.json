@@ -164,5 +164,5 @@
   "success": "Success",
   "bxfr": "BXFR",
   "amount_must_lower_than_balance": "Amount must be lower than balance ",
-  "transfer_to": "Recipient name %"
+  "transfer_to": "Recipient name"
 }

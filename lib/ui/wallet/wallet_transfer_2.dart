@@ -365,6 +365,8 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
                           .textTheme
                           .headline6!
                           .copyWith(color: Colors.red)),
+                  SizedBox(width: 4),
+                  Icon(Icons.search),
                   SizedBox(width: 12),
                   Icon(Icons.account_circle, size: 32)
                 ],

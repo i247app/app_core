@@ -69,53 +69,40 @@ class _CreditReceiptState extends State<CreditReceipt> {
     final info = this.transaction == null
         ? Container()
         : Container(
-            padding: EdgeInsets.all(10),
-            child: Row(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Expanded(
-                  flex: 3,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      FittedBox(
-                        fit: BoxFit.contain,
-                        child: Text(
-                          KMoneyHelper.prettyMoney(
-                            amount: this.transaction!.amount ?? "",
-                            currency: KMoney.VND,
-                            showSymbol: false,
-                          ),
-                          style: Theme.of(context).textTheme.headline2,
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      Text(
-                        KUtil.prettyDate(this.transaction!.lineDate,
-                            showTime: true),
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyText1!
-                            .copyWith(fontSize: 18),
-                      ),
-                    ],
+                FittedBox(
+                  fit: BoxFit.contain,
+                  child: Text(
+                    KMoneyHelper.prettyMoney(
+                      amount: this.transaction!.amount ?? "",
+                      currency: KMoney.VND,
+                      showSymbol: false,
+                    ),
+                    style: Theme.of(context).textTheme.headline2,
                   ),
                 ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.only(bottom: 20),
-                    child: Text(
-                      (this.transaction!.tokenName ?? "") +
-                          ((this.transaction!.tokenName != "USD" &&
-                                  this.transaction!.tokenName != null)
-                              ? ""
-                              : ""),
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle1!
-                          .copyWith(fontSize: 18),
-                    ),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 30.0),
+                      child: Text(
+                        (this.transaction!.tokenName ?? "") +
+                            ((this.transaction!.tokenName != "USD" &&
+                                    this.transaction!.tokenName != null)
+                                ? ""
+                                : ""),
+                        style: Theme.of(context)
+                            .textTheme
+                            .subtitle1!
+                            .copyWith(fontSize: 18),
+                        textAlign: TextAlign.right,
+                      ),
+                    )
+                  ],
                 ),
               ],
             ),
@@ -124,7 +111,7 @@ class _CreditReceiptState extends State<CreditReceipt> {
     final recipient = this.transaction == null
         ? Container()
         : Container(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.symmetric(vertical: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -154,13 +141,18 @@ class _CreditReceiptState extends State<CreditReceipt> {
     final transactionDescription = this.transaction == null
         ? Container()
         : Container(
-            padding: EdgeInsets.all(10),
-            child: Column(children: [
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text(KUtil.prettyDate(this.transaction!.lineDate, showTime: true),
+                  textAlign: TextAlign.left,
+                  style: Theme.of(context).textTheme.bodyText1!),
+              SizedBox(height: 10),
               Row(
                 children: [
                   Text(
-                    "Transaction ID",
-                    style: Theme.of(context).textTheme.subtitle2!,
+                    "Transaction",
+                    style: Theme.of(context).textTheme.bodyText1!,
                   ),
                   SizedBox(width: 10),
                   Text(
@@ -174,6 +166,30 @@ class _CreditReceiptState extends State<CreditReceipt> {
                 children: [
                   Text(
                     this.transaction!.prettyXFRDescription,
+                    style: Theme.of(context).textTheme.bodyText1!,
+                  ),
+                ],
+              ),
+            ]),
+          );
+    final memo = (this.transaction?.memo ?? "").isEmpty
+        ? Container()
+        : Container(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Column(children: [
+              Row(
+                children: [
+                  Text(
+                    "Memo",
+                    style: Theme.of(context).textTheme.subtitle2!,
+                  ),
+                ],
+              ),
+              SizedBox(height: 8),
+              Row(
+                children: [
+                  Text(
+                    this.transaction?.memo ?? "",
                     style: Theme.of(context)
                         .textTheme
                         .bodyText1!
@@ -183,7 +199,6 @@ class _CreditReceiptState extends State<CreditReceipt> {
               ),
             ]),
           );
-
     final body = this.isLoading && this.transaction == null
         ? Center(child: CircularProgressIndicator())
         : !this.isLoading && this.transaction == null
@@ -191,22 +206,24 @@ class _CreditReceiptState extends State<CreditReceipt> {
             : ScrollConfiguration(
                 behavior: NoOverscroll(),
                 child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Center(child: icon),
-                      info,
-                      SizedBox(height: 8),
-                      Divider(),
-                      SizedBox(height: 8),
-                      recipient,
-                      SizedBox(height: 8),
-                      Divider(),
-                      SizedBox(height: 8),
-                      transactionDescription,
-                      SizedBox(height: 8),
-                      Divider(),
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Center(child: icon),
+                        info,
+                        SizedBox(height: 8),
+                        SizedBox(height: 8),
+                        transactionDescription,
+                        SizedBox(height: 8),
+                        SizedBox(height: 8),
+                        recipient,
+                        SizedBox(height: 8),
+                        SizedBox(height: 8),
+                        memo,
+                      ],
+                    ),
                   ),
                 ),
               );
