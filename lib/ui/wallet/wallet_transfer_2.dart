@@ -284,7 +284,8 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
       );
       // ignore: unused_local_variable
       final alexVersion = Text("You have $amt available");
-      // Good version (Ron said)
+      // unnecessary nice lol
+
       final balanceText = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -359,7 +360,7 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
         child: selectedUser == null
             ? Row(
                 children: [
-                  Text(KPhrases.chooseRecipient,
+                  Text(KPhrases.transferTo,
                       style: Theme.of(context)
                           .textTheme
                           .headline6!

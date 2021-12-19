@@ -53,9 +53,9 @@ class _TransferConfirmState extends State<TransferConfirm> {
       final balanceText = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Balance", style: Theme.of(context).textTheme.headline6),
+          Text("New Balance", style: Theme.of(context).textTheme.headline6),
           SizedBox(
-            width: 32,
+            width: 18,
           ),
           Text(amt, style: Theme.of(context).textTheme.headline6)
         ],
@@ -73,10 +73,10 @@ class _TransferConfirmState extends State<TransferConfirm> {
             child: KUserAvatar.fromUser(user, size: 32),
           ),
         ),
-        SizedBox(width: 10),
+        SizedBox(width: 8),
         Text(
           user.fullName ?? "",
-          style: Theme.of(context).textTheme.bodyText1,
+          style: Theme.of(context).textTheme.headline6,
         ),
       ],
     );
@@ -85,15 +85,16 @@ class _TransferConfirmState extends State<TransferConfirm> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          "${user.puid}   @${user.kunm}",
-          style: Theme.of(context).textTheme.caption,
+          "${user.puid} @${user.kunm}",
+          style: Theme.of(context).textTheme.subtitle1,
         ),
       ],
     );
 
     final titleMemo = Text("Memo",
-        style: Theme.of(context).textTheme.bodyText1,
+        style: Theme.of(context).textTheme.headline6,
         textAlign: TextAlign.left);
+
     final memoTextField = TextField(
       keyboardType: TextInputType.multiline,
       minLines: 1, //Normal textInputField will be displayed
@@ -101,7 +102,7 @@ class _TransferConfirmState extends State<TransferConfirm> {
       controller: memoController,
       decoration: InputDecoration(
         border: InputBorder.none,
-        hintText: "Optional",
+        hintText: "Coffee money",
         hintStyle: Theme.of(context).textTheme.caption,
       ),
     );
@@ -129,13 +130,14 @@ class _TransferConfirmState extends State<TransferConfirm> {
               children: [Expanded(child: transferAmount)],
             ),
             balanceView,
-            SizedBox(height: 20),
+            SizedBox(height: 40),
             avatarAndNameRow,
+            SizedBox(height: 8),
             kunmRow,
-            SizedBox(height: 20),
+            SizedBox(height: 40),
             titleMemo,
             memoTextField,
-            SizedBox(height: 20),
+            SizedBox(height: 40),
             sendButton,
           ],
         ),
