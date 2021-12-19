@@ -13,6 +13,7 @@ import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
 import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
+import 'package:app_core/ui/hero/widget/ktamago_chan_jumping.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -121,13 +122,12 @@ class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
     showCustomOverlay(heroGameEnd);
   }
 
-  void showHeroGameLevelOverlay(Function() onFinish) async {
+  void showHeroGameLevelOverlay(Function() onFinish, {bool? canAdvance}) async {
     this.setState(() {
       this.isShowEndLevel = true;
     });
-    final heroGameLevel = KHeroGameLevel(
-      onFinish: onFinish,
-    );
+    final heroGameLevel =
+        KTamagoChanJumping(onFinish: onFinish, canAdvance: canAdvance);
     showCustomOverlay(heroGameLevel);
   }
 
@@ -199,6 +199,16 @@ class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
                             isLoaded: isLoaded,
                             onFinishLevel: (level, score, canAdvance) {
                               if (!canAdvance) {
+                                this.showHeroGameLevelOverlay(() {
+                                  this.setState(() {
+                                    this.isShowEndLevel = false;
+                                  });
+                                  if (this.overlayID != null) {
+                                    KOverlayHelper.removeOverlay(
+                                        this.overlayID!);
+                                    this.overlayID = null;
+                                  }
+                                }, canAdvance: canAdvance);
                                 return;
                               }
                               final scoreID = Uuid().v4();

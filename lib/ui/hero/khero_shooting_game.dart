@@ -14,6 +14,7 @@ import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
 import 'package:app_core/ui/hero/widget/khero_game_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
 import 'package:app_core/helper/kserver_handler.dart';
+import 'package:app_core/ui/hero/widget/ktamago_chan_jumping.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -122,13 +123,12 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
     showCustomOverlay(heroGameEnd);
   }
 
-  void showHeroGameLevelOverlay(Function() onFinish) async {
+  void showHeroGameLevelOverlay(Function() onFinish, {bool? canAdvance}) async {
     this.setState(() {
       this.isShowEndLevel = true;
     });
-    final heroGameLevel = KHeroGameLevel(
-      onFinish: onFinish,
-    );
+    final heroGameLevel =
+        KTamagoChanJumping(onFinish: onFinish, canAdvance: canAdvance);
     showCustomOverlay(heroGameLevel);
   }
 
@@ -213,6 +213,19 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
                                   isLoaded: isLoaded,
                                   onFinishLevel: (level, score, canAdvance) {
                                     if (!canAdvance) {
+                                      this.showHeroGameLevelOverlay(
+                                              () {
+                                            this.setState(() {
+                                              this.isShowEndLevel = false;
+                                            });
+                                            if (this.overlayID != null) {
+                                              KOverlayHelper.removeOverlay(
+                                                  this.overlayID!);
+                                              this.overlayID = null;
+                                            }
+                                          },
+                                          canAdvance: canAdvance
+                                      );
                                       return;
                                     }
                                     final scoreID = Uuid().v4();
