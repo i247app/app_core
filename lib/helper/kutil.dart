@@ -9,7 +9,7 @@ import 'package:app_core/helper/klocale_helper.dart';
 import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/helper/ktablet_detector.dart';
 import 'package:app_core/model/krole.dart';
-import 'package:app_core/ui/wallet/wallet_transfer.dart';
+import 'package:app_core/ui/wallet/wallet_transfer_v1.dart';
 import 'package:app_core/ui/wallet/wallet_transfer_2.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';

@@ -7,7 +7,7 @@ import 'package:app_core/model/kcredit_transaction.dart';
 import 'package:app_core/model/krole.dart';
 import 'package:app_core/model/response/credit_transfer_response.dart';
 import 'package:app_core/model/xfr_ticket.dart';
-import 'package:app_core/ui/wallet/credit_receipt.dart';
+import 'package:app_core/ui/wallet/transfer_receipt.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
@@ -15,13 +15,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 enum KTransferType { direct, proxy }
 
-class WalletTransfer extends StatefulWidget {
+class WalletTransferV1 extends StatefulWidget {
   final String? rcvPUID;
   final KRole? sndRole;
   final KTransferType transferType;
   final String tokenName;
 
-  WalletTransfer({
+  WalletTransferV1({
     this.rcvPUID,
     this.sndRole,
     required this.transferType,
@@ -29,10 +29,10 @@ class WalletTransfer extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _WalletTransferState();
+  State<StatefulWidget> createState() => _WalletTransferV1State();
 }
 
-class _WalletTransferState extends State<WalletTransfer> {
+class _WalletTransferV1State extends State<WalletTransferV1> {
   final TextEditingController userCtrl = TextEditingController();
   final TextEditingController amountCtrl = TextEditingController();
   final TextEditingController memoCtrl = TextEditingController();
@@ -136,7 +136,7 @@ class _WalletTransferState extends State<WalletTransfer> {
           }
           if (theTx != null) {
             await Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (ctx) => CreditReceipt(
+              builder: (ctx) => TransferReceipt(
                 transactionID: theTx!.txID ?? "",
                 lineID: theTx.lineID ?? "",
                 tokenName: widget.tokenName,

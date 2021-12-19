@@ -1,7 +1,8 @@
 {
+  "success": "Thành công",
+  "no_data": "No Data",
   "required": "Cần thiết",
   "optional": "Không bắt buộc",
-  "no_data_found": "No Data Found",
   "signup": "Sign Up",
   "next": "Next",
   "continue": "Tiếp tục",
@@ -107,6 +108,10 @@
   "withdrawal": "Rút Tiền",
   "transfer": "Chuyển Giao",
   "confirm": "Xác Nhận",
+  "bxfr": "BXFR",
+  "amount_must_lower_than_balance": "Số tiền phải nhỏ hơn số dư hiện tại ",
+  "transfer_to": "Tên người nhận",
+  "memo_hint_text": "vd Tiền cafe",
   "account_name": "Tên Tài Khoản",
   "account_number": "Số Tài Khoản",
   "bank": "Bank",
@@ -134,7 +139,6 @@
   "bank_account": "Tài Khoản Bank",
   "gig_list_ready_waiting": "Ready and Waiting",
   "gig_list_for_gigs": "Gigs",
-  "no_transactions_found": "Chưa có thu nhập",
   "waiting_for_other_user": "Đang đợi...",
   "session_ended": "Phiên Đã Kết Thúc",
   "save": "LƯU",
@@ -159,9 +163,5 @@
   "insufficient_credits": "Không đủ điểm",
   "say_hi_to_x": "Gửi lời chào tới",
   "hi": "Chào",
-  "app_faild": "App lỗi",
-  "success": "Thành công",
-  "bxfr": "BXFR",
-  "amount_must_lower_than_balance": "Số tiền phải nhỏ hơn số dư hiện tại ",
-  "transfer_to": "Tên người nhận"
+  "app_faild": "App lỗi"
 }

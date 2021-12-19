@@ -6,22 +6,22 @@ import 'package:app_core/model/kcredit_transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class CreditReceipt extends StatefulWidget {
+class TransferReceipt extends StatefulWidget {
   final String transactionID;
   final String lineID;
   final String? tokenName;
 
-  CreditReceipt({
+  TransferReceipt({
     required this.transactionID,
     required this.lineID,
     this.tokenName,
   });
 
   @override
-  State<StatefulWidget> createState() => _CreditReceiptState();
+  State<StatefulWidget> createState() => _TransferReceiptState();
 }
 
-class _CreditReceiptState extends State<CreditReceipt> {
+class _TransferReceiptState extends State<TransferReceipt> {
   KCreditTransaction? transaction;
 
   bool isSuccess = true;
@@ -66,7 +66,7 @@ class _CreditReceiptState extends State<CreditReceipt> {
       ),
     );
 
-    final info = this.transaction == null
+    final amountInfo = this.transaction == null
         ? Container()
         : Container(
             padding: EdgeInsets.symmetric(vertical: 8),
@@ -118,22 +118,19 @@ class _CreditReceiptState extends State<CreditReceipt> {
                 Text(
                   this.transaction!.lineType ==
                           KCreditTransaction.LINE_TYPE_CREDIT
-                      ? "Transfer from"
-                      : "Transfer to",
-                  style: Theme.of(context).textTheme.subtitle2!,
+                      ? "TRANSFER FROM"
+                      : "TRANSFER TO",
+                  style: Theme.of(context).textTheme.subtitle1,
                 ),
                 SizedBox(height: 8),
                 Text(
                   this.transaction!.prettyName,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(fontSize: 18),
+                  style: Theme.of(context).textTheme.headline6,
                 ),
                 SizedBox(height: 8),
                 Text(
                     "${this.transaction!.poiPUID}   @${this.transaction!.poiKUNM}",
-                    style: Theme.of(context).textTheme.bodyText1),
+                    style: Theme.of(context).textTheme.subtitle1),
               ],
             ),
           );
@@ -146,18 +143,18 @@ class _CreditReceiptState extends State<CreditReceipt> {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(KUtil.prettyDate(this.transaction!.lineDate, showTime: true),
                   textAlign: TextAlign.left,
-                  style: Theme.of(context).textTheme.bodyText1!),
-              SizedBox(height: 10),
+                  style: Theme.of(context).textTheme.subtitle1!),
+              SizedBox(height: 8),
               Row(
                 children: [
                   Text(
-                    "Transaction",
-                    style: Theme.of(context).textTheme.bodyText1!,
+                    "ID",
+                    style: Theme.of(context).textTheme.subtitle1!,
                   ),
-                  SizedBox(width: 10),
+                  SizedBox(width: 8),
                   Text(
                     "${this.transaction!.txID}",
-                    style: Theme.of(context).textTheme.bodyText1!,
+                    style: Theme.of(context).textTheme.subtitle1,
                   ),
                 ],
               ),
@@ -166,12 +163,13 @@ class _CreditReceiptState extends State<CreditReceipt> {
                 children: [
                   Text(
                     this.transaction!.prettyXFRDescription,
-                    style: Theme.of(context).textTheme.bodyText1!,
+                    style: Theme.of(context).textTheme.subtitle2,
                   ),
                 ],
               ),
             ]),
           );
+
     final memo = (this.transaction?.memo ?? "").isEmpty
         ? Container()
         : Container(
@@ -180,8 +178,8 @@ class _CreditReceiptState extends State<CreditReceipt> {
               Row(
                 children: [
                   Text(
-                    "Memo",
-                    style: Theme.of(context).textTheme.subtitle2!,
+                    "MEMO",
+                    style: Theme.of(context).textTheme.subtitle1,
                   ),
                 ],
               ),
@@ -190,15 +188,13 @@ class _CreditReceiptState extends State<CreditReceipt> {
                 children: [
                   Text(
                     this.transaction?.memo ?? "",
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1!
-                        .copyWith(fontSize: 18),
+                    style: Theme.of(context).textTheme.subtitle1,
                   ),
                 ],
               ),
             ]),
           );
+
     final body = this.isLoading && this.transaction == null
         ? Center(child: CircularProgressIndicator())
         : !this.isLoading && this.transaction == null
@@ -212,16 +208,13 @@ class _CreditReceiptState extends State<CreditReceipt> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Center(child: icon),
-                        info,
-                        SizedBox(height: 8),
-                        SizedBox(height: 8),
-                        transactionDescription,
-                        SizedBox(height: 8),
-                        SizedBox(height: 8),
+                        amountInfo,
+                        SizedBox(height: 16),
                         recipient,
-                        SizedBox(height: 8),
-                        SizedBox(height: 8),
+                        SizedBox(height: 16),
                         memo,
+                        SizedBox(height: 20),
+                        transactionDescription,
                       ],
                     ),
                   ),

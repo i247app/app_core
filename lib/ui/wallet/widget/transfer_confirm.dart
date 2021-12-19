@@ -3,6 +3,7 @@ import 'package:app_core/model/kuser.dart';
 import 'package:app_core/ui/chat/widget/kuser_profile_view.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
+import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
 
 class TransferConfirm extends StatefulWidget {
@@ -50,14 +51,15 @@ class _TransferConfirmState extends State<TransferConfirm> {
         useCurrencySymbol: false,
         tokenToRight: true,
       );
+
       final balanceText = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("New Balance", style: Theme.of(context).textTheme.headline6),
+          Text("New Balance", style: Theme.of(context).textTheme.subtitle1),
           SizedBox(
-            width: 18,
+            width: 20,
           ),
-          Text(amt, style: Theme.of(context).textTheme.headline6)
+          Text(amt, style: Theme.of(context).textTheme.subtitle1)
         ],
       );
       return balanceText;
@@ -102,7 +104,7 @@ class _TransferConfirmState extends State<TransferConfirm> {
       controller: memoController,
       decoration: InputDecoration(
         border: InputBorder.none,
-        hintText: "Coffee money",
+        hintText: KPhrases.memoHintText,
         hintStyle: Theme.of(context).textTheme.caption,
       ),
     );

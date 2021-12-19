@@ -7,8 +7,8 @@ import 'package:app_core/model/kcredit_transaction.dart';
 import 'package:app_core/model/krole.dart';
 import 'package:app_core/model/response/credit_transfer_response.dart';
 import 'package:app_core/model/xfr_ticket.dart';
-import 'package:app_core/ui/wallet/credit_receipt.dart';
-import 'package:app_core/ui/wallet/wallet_transfer.dart';
+import 'package:app_core/ui/wallet/transfer_receipt.dart';
+import 'package:app_core/ui/wallet/wallet_transfer_v1.dart';
 import 'package:app_core/ui/wallet/widget/transfer_confirm.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
@@ -151,7 +151,7 @@ class _WalletTransfer2State extends State<WalletTransfer2> {
           }
           if (theTx != null) {
             await Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (ctx) => CreditReceipt(
+              builder: (ctx) => TransferReceipt(
                 transactionID: theTx!.txID ?? "",
                 lineID: theTx.lineID ?? "",
                 tokenName: widget.tokenName,
