@@ -18,13 +18,13 @@ import 'package:app_core/ui/widget/kqr_viewer.dart';
 import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
 
-class WalletFeed extends StatefulWidget {
+class WalletHome extends StatefulWidget {
   final String? defaultTokenName;
   final bool showBankButtons;
   final bool isDirectTransferEnabled;
   final bool isPartOfBubba; // Hacky but also only affects UI
 
-  WalletFeed({
+  WalletHome({
     this.defaultTokenName,
     required this.showBankButtons,
     required this.isDirectTransferEnabled,
@@ -32,10 +32,10 @@ class WalletFeed extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _WalletFeedState();
+  State<StatefulWidget> createState() => _WalletHomeState();
 }
 
-class _WalletFeedState extends State<WalletFeed> {
+class _WalletHomeState extends State<WalletHome> {
   late final String initialToken = widget.defaultTokenName ?? localeToken;
 
   final xfrRoleCtrl = ValueNotifier<KRole?>(null);
@@ -273,7 +273,7 @@ class _WalletFeedState extends State<WalletFeed> {
             itemCount: transactions.length,
             shrinkWrap: true,
             padding: EdgeInsets.only(bottom: 100),
-            itemBuilder: (_, i) => _CreditFeedItem(
+            itemBuilder: (_, i) => _WalletItem(
               transactions[i],
               transactions[i].tokenName ?? currentBalance?.tokenName ?? "",
               onClick: onTransactionClick,
@@ -480,12 +480,12 @@ class _WalletFeedState extends State<WalletFeed> {
   }
 }
 
-class _CreditFeedItem extends StatelessWidget {
+class _WalletItem extends StatelessWidget {
   final KCreditTransaction transaction;
   final String tokenName;
   final Function(KCreditTransaction)? onClick;
 
-  const _CreditFeedItem(this.transaction, this.tokenName, {this.onClick});
+  const _WalletItem(this.transaction, this.tokenName, {this.onClick});
 
   Widget transactorPrettyName(ctx, String name) => Text(
         name,

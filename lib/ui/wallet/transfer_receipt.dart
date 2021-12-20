@@ -181,9 +181,10 @@ class _TransferReceiptState extends State<TransferReceipt> {
                 children: [
                   Text(
                     "MEMO",
-                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
-                          color: Theme.of(context).primaryColorLight,
-                        ),
+                    style: Theme.of(context)
+                        .textTheme
+                        .subtitle1!
+                        .copyWith(color: Theme.of(context).primaryColorLight),
                   ),
                 ],
               ),

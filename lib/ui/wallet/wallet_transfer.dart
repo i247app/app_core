@@ -8,7 +8,7 @@ import 'package:app_core/model/krole.dart';
 import 'package:app_core/model/response/credit_transfer_response.dart';
 import 'package:app_core/model/xfr_ticket.dart';
 import 'package:app_core/ui/wallet/transfer_receipt.dart';
-import 'package:app_core/ui/wallet/widget/transfer_confirm.dart';
+import 'package:app_core/ui/wallet/transfer_confirm.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:app_core/value/kphrases.dart';
@@ -290,7 +290,13 @@ class _WalletTransferState extends State<WalletTransfer> {
       final balanceText = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("Balance", style: Theme.of(context).textTheme.headline6),
+          Text(
+            "Balance",
+            style: Theme.of(context)
+                .textTheme
+                .headline6!
+                .copyWith(color: Theme.of(context).primaryColorLight),
+          ),
           SizedBox(
             width: 32,
           ),

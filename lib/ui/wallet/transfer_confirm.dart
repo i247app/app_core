@@ -27,6 +27,7 @@ class TransferConfirm extends StatefulWidget {
 class _TransferConfirmState extends State<TransferConfirm> {
   KUser get user => widget.user;
   final TextEditingController memoController = TextEditingController();
+
   String get balanceAmount =>
       "${(double.tryParse(widget.balanceAmount) ?? 0) - (double.tryParse(widget.amount) ?? 0)}";
 
@@ -55,7 +56,13 @@ class _TransferConfirmState extends State<TransferConfirm> {
       final balanceText = Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("New Balance", style: Theme.of(context).textTheme.subtitle1),
+          Text(
+            "New Balance",
+            style: Theme.of(context)
+                .textTheme
+                .subtitle1!
+                .copyWith(color: Theme.of(context).primaryColorLight),
+          ),
           SizedBox(
             width: 20,
           ),
@@ -94,12 +101,16 @@ class _TransferConfirmState extends State<TransferConfirm> {
     );
 
     final titleMemo = Text("Memo",
-        style: Theme.of(context).textTheme.headline6,
+        style: Theme.of(context)
+            .textTheme
+            .headline6!
+            .copyWith(color: Theme.of(context).primaryColorLight),
         textAlign: TextAlign.left);
 
     final memoTextField = TextField(
       keyboardType: TextInputType.multiline,
-      minLines: 1, //Normal textInputField will be displayed
+      minLines: 1,
+      //Normal textInputField will be displayed
       maxLines: 5,
       controller: memoController,
       decoration: InputDecoration(
