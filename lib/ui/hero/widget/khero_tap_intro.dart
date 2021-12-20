@@ -626,47 +626,56 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                     ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 15),
-                            child: Text(
-                              "${correctCount}/${questionCount}",
-                              textScaleFactor: 1.0,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
+                        Container(
+                          width: 80,
+                          height: 50,
+                          child: FittedBox(
+                            fit: BoxFit.contain,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 0),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 15),
+                                child: Text(
+                                  "${correctCount}/${questionCount}",
+                                  textScaleFactor: 1.0,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                        Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                          child: Container(
+                        Expanded(
+                          child: Padding(
                             padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 15),
-                            child: Text(
-                              "${correctPercent}%",
-                              textScaleFactor: 1.0,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 25,
-                                fontWeight: FontWeight.w600,
+                                horizontal: 10, vertical: 0),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 15),
+                              child: Text(
+                                "${correctPercent}%",
+                                textScaleFactor: 1.0,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
                           ),
                         ),
                         InkWell(
                           child: Container(
-                            width: 50,
+                            width: 80,
                             height: 50,
                             padding: EdgeInsets.only(
                                 top: 5, bottom: 5, left: 5, right: 5),
