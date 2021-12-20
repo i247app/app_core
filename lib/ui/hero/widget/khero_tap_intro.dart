@@ -514,13 +514,28 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      padding:
+                      EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      child: Text(
+                        "${timeToAnswer}",
+                        textScaleFactor: 1.0,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 70,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                     Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.75,
                         padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                         child: Text(
                           questionContents[currentQuestionIndex],
                           textScaleFactor: 1.0,
@@ -530,20 +545,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                             fontSize: 35,
                             fontWeight: FontWeight.w600,
                           ),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.75,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      child: Text(
-                        "${timeToAnswer}",
-                        textScaleFactor: 1.0,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 25,
                         ),
                       ),
                     ),
