@@ -14,12 +14,14 @@ class KHeroTapIntro extends StatefulWidget {
   final Function(int, int, bool)? onFinishLevel;
   final bool isShowEndLevel;
   final bool isMuted;
+  final bool? isPause;
 
   const KHeroTapIntro({
     this.onChangeLevel,
     this.onFinishLevel,
     required this.isShowEndLevel,
     required this.isMuted,
+    this.isPause,
   });
 
   @override
@@ -72,7 +74,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   double topBoundary = -2.1;
 
   int? overlayID;
-  bool isPause = false;
   bool isBackgroundSoundPlaying = false;
   bool isMuted = true;
   bool isShowSadTamago = false;
@@ -85,6 +86,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
 
   int get correctPercent =>
       questionCount > 0 ? ((correctCount * 100) / questionCount).floor() : 0;
+
+  bool get isPause => widget.isPause ?? false;
 
   Timer? _timer;
   int timeToAnswer = 3;
@@ -274,55 +277,57 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       _timer!.cancel();
     }
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (timeToAnswer > 0) {
-        setState(() {
-          timeToAnswer = timeToAnswer - 1;
-        });
-      } else if (timeToAnswer == 0 && !isAnimating) {
-        _timer?.cancel();
-        setState(() {
-          isAnimating = true;
-          timeToAnswer = 3;
-        });
-
-        this._bouncingAnimationController.forward();
-
-        Future.delayed(Duration(milliseconds: 700), () {
-          this.setState(() {
-            this.tamagoJumpTimes = 0;
+      if (!isPause) {
+        if (timeToAnswer > 0) {
+          setState(() {
+            timeToAnswer = timeToAnswer - 1;
           });
-          if (!isMuted && !isPlaySound) {
-            this.setState(() {
-              this.isPlaySound = true;
-            });
-            playSound(false);
-          }
+        } else if (timeToAnswer == 0 && !isAnimating) {
+          _timer?.cancel();
+          setState(() {
+            isAnimating = true;
+            timeToAnswer = 3;
+          });
 
-          Future.delayed(Duration(milliseconds: 500), () {
-            this.setState(() {
-              questionCount++;
-              this.isShowSadTamago = true;
-            });
+          this._bouncingAnimationController.forward();
 
-            if (currentQuestionIndex == 9) {
-              loadGame();
-            } else {
-              Future.delayed(Duration(milliseconds: 500), () {
-                if (mounted) {
-                  this.setState(() {
-                    isShowSadTamago = false;
-                    currentShowStarIndex = null;
-                    spinningHeroIndex = null;
-                    currentQuestionIndex++;
-                    getListAnswer();
-                    isAnimating = false;
-                  });
-                  startCount();
-                }
+          Future.delayed(Duration(milliseconds: 700), () {
+            this.setState(() {
+              this.tamagoJumpTimes = 0;
+            });
+            if (!isMuted && !isPlaySound) {
+              this.setState(() {
+                this.isPlaySound = true;
               });
+              playSound(false);
             }
+
+            Future.delayed(Duration(milliseconds: 500), () {
+              this.setState(() {
+                questionCount++;
+                this.isShowSadTamago = true;
+              });
+
+              if (currentQuestionIndex == 9) {
+                loadGame();
+              } else {
+                Future.delayed(Duration(milliseconds: 500), () {
+                  if (mounted) {
+                    this.setState(() {
+                      isShowSadTamago = false;
+                      currentShowStarIndex = null;
+                      spinningHeroIndex = null;
+                      currentQuestionIndex++;
+                      getListAnswer();
+                      isAnimating = false;
+                    });
+                    startCount();
+                  }
+                });
+              }
+            });
           });
-        });
+        }
       }
     });
   }
@@ -517,7 +522,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                     Container(
                       width: MediaQuery.of(context).size.width * 0.75,
                       padding:
-                      EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       child: Text(
                         "${timeToAnswer}",
                         textScaleFactor: 1.0,
