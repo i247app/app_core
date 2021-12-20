@@ -332,7 +332,7 @@ class KShootingGameScreen extends StatefulWidget {
 }
 
 class KShootingGameScreenState extends State<KShootingGameScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
@@ -443,6 +443,7 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance?.addObserver(this);
 
     this.currentLevel = widget.level ?? 0;
     this.totalLevel = widget.totalLevel ?? 1;
@@ -650,7 +651,13 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused && !this.isPause) showPauseDialog();
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
     _timer?.cancel();
     _barrelScaleAnimationController.dispose();
     _heroScaleAnimationController.dispose();
