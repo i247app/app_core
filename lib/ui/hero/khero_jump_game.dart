@@ -223,25 +223,23 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
                                     );
                               });
                               if (level < totalLevel) {
-                                this.showHeroGameLevelOverlay(
-                                  () {
+                                this.showHeroGameLevelOverlay(() {
+                                  if (this.overlayID != null) {
+                                    KOverlayHelper.removeOverlay(
+                                        this.overlayID!);
+                                    this.overlayID = null;
+                                  }
+                                  this.showHeroGameHighscoreOverlay(() {
+                                    this.setState(() {
+                                      this.isShowEndLevel = false;
+                                    });
                                     if (this.overlayID != null) {
                                       KOverlayHelper.removeOverlay(
                                           this.overlayID!);
                                       this.overlayID = null;
                                     }
-                                    this.showHeroGameHighscoreOverlay(() {
-                                      this.setState(() {
-                                        this.isShowEndLevel = false;
-                                      });
-                                      if (this.overlayID != null) {
-                                        KOverlayHelper.removeOverlay(
-                                            this.overlayID!);
-                                        this.overlayID = null;
-                                      }
-                                    });
-                                  },
-                                );
+                                  });
+                                }, canAdvance: canAdvance);
                               } else {
                                 this.showHeroGameEndOverlay(
                                   () {

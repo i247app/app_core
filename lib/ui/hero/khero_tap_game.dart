@@ -120,11 +120,13 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
     showCustomOverlay(heroGameEnd);
   }
 
-  void showHeroGameLevelOverlay(Function() onFinish, { bool? canAdvance }) async {
+  void showHeroGameLevelOverlay(Function() onFinish, {bool? canAdvance}) async {
     this.setState(() {
       this.isShowEndLevel = true;
     });
-    final heroGameLevel = KTamagoChanJumping(onFinish: onFinish, canAdvance: canAdvance);
+    print(canAdvance);
+    final heroGameLevel =
+        KTamagoChanJumping(onFinish: onFinish, canAdvance: canAdvance);
     showCustomOverlay(heroGameLevel);
   }
 
@@ -212,19 +214,16 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                             isLoaded: isLoaded,
                             onFinishLevel: (level, score, canAdvance) {
                               if (!canAdvance) {
-                                this.showHeroGameLevelOverlay(
-                                      () {
-                                    this.setState(() {
-                                      this.isShowEndLevel = false;
-                                    });
-                                    if (this.overlayID != null) {
-                                      KOverlayHelper.removeOverlay(
-                                          this.overlayID!);
-                                      this.overlayID = null;
-                                    }
-                                  },
-                                  canAdvance: canAdvance
-                                );
+                                this.showHeroGameLevelOverlay(() {
+                                  this.setState(() {
+                                    this.isShowEndLevel = false;
+                                  });
+                                  if (this.overlayID != null) {
+                                    KOverlayHelper.removeOverlay(
+                                        this.overlayID!);
+                                    this.overlayID = null;
+                                  }
+                                }, canAdvance: canAdvance);
                                 return;
                               }
                               final scoreID = Uuid().v4();
@@ -245,25 +244,23 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                                 //     this.levelHighscores.add(score);
                                 //   });
                                 // }
-                                this.showHeroGameLevelOverlay(
-                                  () {
+                                this.showHeroGameLevelOverlay(() {
+                                  if (this.overlayID != null) {
+                                    KOverlayHelper.removeOverlay(
+                                        this.overlayID!);
+                                    this.overlayID = null;
+                                  }
+                                  this.showHeroGameHighscoreOverlay(() {
+                                    this.setState(() {
+                                      this.isShowEndLevel = false;
+                                    });
                                     if (this.overlayID != null) {
                                       KOverlayHelper.removeOverlay(
                                           this.overlayID!);
                                       this.overlayID = null;
                                     }
-                                    this.showHeroGameHighscoreOverlay(() {
-                                      this.setState(() {
-                                        this.isShowEndLevel = false;
-                                      });
-                                      if (this.overlayID != null) {
-                                        KOverlayHelper.removeOverlay(
-                                            this.overlayID!);
-                                        this.overlayID = null;
-                                      }
-                                    });
-                                  },
-                                );
+                                  });
+                                }, canAdvance: canAdvance);
                               } else {
                                 this.showHeroGameEndOverlay(
                                   () {
@@ -816,8 +813,10 @@ class _KTapGameScreenState extends State<KTapGameScreen>
           });
         } else {
           if (widget.onFinishLevel != null) {
-            widget.onFinishLevel!(currentLevel + 1,
-                levelPlayTimes[currentLevel], rightAnswerCount / questions.length >=
+            widget.onFinishLevel!(
+                currentLevel + 1,
+                levelPlayTimes[currentLevel],
+                rightAnswerCount / questions.length >=
                     levelHardness[currentLevel]);
           }
           this.setState(() {

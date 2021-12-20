@@ -173,19 +173,15 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
       isLoaded: isLoaded,
       onFinishLevel: (level, score, canAdvance) {
         if (!canAdvance) {
-          this.showHeroGameLevelOverlay(
-                  () {
-                this.setState(() {
-                  this.isShowEndLevel = false;
-                });
-                if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(
-                      this.overlayID!);
-                  this.overlayID = null;
-                }
-              },
-              canAdvance: canAdvance
-          );
+          this.showHeroGameLevelOverlay(() {
+            this.setState(() {
+              this.isShowEndLevel = false;
+            });
+            if (this.overlayID != null) {
+              KOverlayHelper.removeOverlay(this.overlayID!);
+              this.overlayID = null;
+            }
+          }, canAdvance: canAdvance);
           return;
         }
         final scoreID = Uuid().v4();
@@ -193,40 +189,35 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
         this.setState(() {
           this.scoreID = scoreID;
           this.scores.add(
-            KScore()
-              ..game = GAME_NAME
-              ..user = KSessionData.me
-              ..level = level
-              ..scoreID = scoreID
-              ..score = score.toDouble(),
-          );
+                KScore()
+                  ..game = GAME_NAME
+                  ..user = KSessionData.me
+                  ..level = level
+                  ..scoreID = scoreID
+                  ..score = score.toDouble(),
+              );
         });
         if (level < totalLevel) {
-          this.showHeroGameLevelOverlay(
-                () {
+          this.showHeroGameLevelOverlay(() {
+            if (this.overlayID != null) {
+              KOverlayHelper.removeOverlay(this.overlayID!);
+              this.overlayID = null;
+            }
+            this.showHeroGameHighscoreOverlay(() {
+              this.setState(() {
+                this.isShowEndLevel = false;
+              });
               if (this.overlayID != null) {
-                KOverlayHelper.removeOverlay(
-                    this.overlayID!);
+                KOverlayHelper.removeOverlay(this.overlayID!);
                 this.overlayID = null;
               }
-              this.showHeroGameHighscoreOverlay(() {
-                this.setState(() {
-                  this.isShowEndLevel = false;
-                });
-                if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(
-                      this.overlayID!);
-                  this.overlayID = null;
-                }
-              });
-            },
-          );
+            });
+          }, canAdvance: canAdvance);
         } else {
           this.showHeroGameEndOverlay(
-                () {
+            () {
               if (this.overlayID != null) {
-                KOverlayHelper.removeOverlay(
-                    this.overlayID!);
+                KOverlayHelper.removeOverlay(this.overlayID!);
                 this.overlayID = null;
               }
               this.showHeroGameHighscoreOverlay(() {
@@ -234,8 +225,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
                   this.isShowEndLevel = false;
                 });
                 if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(
-                      this.overlayID!);
+                  KOverlayHelper.removeOverlay(this.overlayID!);
                   this.overlayID = null;
                 }
               });
@@ -261,19 +251,15 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
       isLoaded: isLoaded,
       onFinishLevel: (level, score, canAdvance) {
         if (!canAdvance) {
-          this.showHeroGameLevelOverlay(
-                  () {
-                this.setState(() {
-                  this.isShowEndLevel = false;
-                });
-                if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(
-                      this.overlayID!);
-                  this.overlayID = null;
-                }
-              },
-              canAdvance: canAdvance
-          );
+          this.showHeroGameLevelOverlay(() {
+            this.setState(() {
+              this.isShowEndLevel = false;
+            });
+            if (this.overlayID != null) {
+              KOverlayHelper.removeOverlay(this.overlayID!);
+              this.overlayID = null;
+            }
+          }, canAdvance: canAdvance);
           return;
         }
         final scoreID = Uuid().v4();
@@ -281,40 +267,35 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
         this.setState(() {
           this.scoreID = scoreID;
           this.scores.add(
-            KScore()
-              ..game = GAME_NAME
-              ..user = KSessionData.me
-              ..level = level
-              ..scoreID = scoreID
-              ..score = score.toDouble(),
-          );
+                KScore()
+                  ..game = GAME_NAME
+                  ..user = KSessionData.me
+                  ..level = level
+                  ..scoreID = scoreID
+                  ..score = score.toDouble(),
+              );
         });
         if (level < totalLevel) {
-          this.showHeroGameLevelOverlay(
-                () {
+          this.showHeroGameLevelOverlay(() {
+            if (this.overlayID != null) {
+              KOverlayHelper.removeOverlay(this.overlayID!);
+              this.overlayID = null;
+            }
+            this.showHeroGameHighscoreOverlay(() {
+              this.setState(() {
+                this.isShowEndLevel = false;
+              });
               if (this.overlayID != null) {
-                KOverlayHelper.removeOverlay(
-                    this.overlayID!);
+                KOverlayHelper.removeOverlay(this.overlayID!);
                 this.overlayID = null;
               }
-              this.showHeroGameHighscoreOverlay(() {
-                this.setState(() {
-                  this.isShowEndLevel = false;
-                });
-                if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(
-                      this.overlayID!);
-                  this.overlayID = null;
-                }
-              });
-            },
-          );
+            });
+          }, canAdvance: canAdvance);
         } else {
           this.showHeroGameEndOverlay(
-                () {
+            () {
               if (this.overlayID != null) {
-                KOverlayHelper.removeOverlay(
-                    this.overlayID!);
+                KOverlayHelper.removeOverlay(this.overlayID!);
                 this.overlayID = null;
               }
               this.showHeroGameHighscoreOverlay(() {
@@ -322,8 +303,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
                   this.isShowEndLevel = false;
                 });
                 if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(
-                      this.overlayID!);
+                  KOverlayHelper.removeOverlay(this.overlayID!);
                   this.overlayID = null;
                 }
               });
@@ -348,19 +328,15 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
       isLoaded: isLoaded,
       onFinishLevel: (level, score, canAdvance) {
         if (!canAdvance) {
-          this.showHeroGameLevelOverlay(
-                  () {
-                this.setState(() {
-                  this.isShowEndLevel = false;
-                });
-                if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(
-                      this.overlayID!);
-                  this.overlayID = null;
-                }
-              },
-              canAdvance: canAdvance
-          );
+          this.showHeroGameLevelOverlay(() {
+            this.setState(() {
+              this.isShowEndLevel = false;
+            });
+            if (this.overlayID != null) {
+              KOverlayHelper.removeOverlay(this.overlayID!);
+              this.overlayID = null;
+            }
+          }, canAdvance: canAdvance);
           return;
         }
         final scoreID = Uuid().v4();
@@ -368,40 +344,35 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
         this.setState(() {
           this.scoreID = scoreID;
           this.scores.add(
-            KScore()
-              ..game = GAME_NAME
-              ..user = KSessionData.me
-              ..level = level
-              ..scoreID = scoreID
-              ..score = score.toDouble(),
-          );
+                KScore()
+                  ..game = GAME_NAME
+                  ..user = KSessionData.me
+                  ..level = level
+                  ..scoreID = scoreID
+                  ..score = score.toDouble(),
+              );
         });
         if (level < totalLevel) {
-          this.showHeroGameLevelOverlay(
-                () {
+          this.showHeroGameLevelOverlay(() {
+            if (this.overlayID != null) {
+              KOverlayHelper.removeOverlay(this.overlayID!);
+              this.overlayID = null;
+            }
+            this.showHeroGameHighscoreOverlay(() {
+              this.setState(() {
+                this.isShowEndLevel = false;
+              });
               if (this.overlayID != null) {
-                KOverlayHelper.removeOverlay(
-                    this.overlayID!);
+                KOverlayHelper.removeOverlay(this.overlayID!);
                 this.overlayID = null;
               }
-              this.showHeroGameHighscoreOverlay(() {
-                this.setState(() {
-                  this.isShowEndLevel = false;
-                });
-                if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(
-                      this.overlayID!);
-                  this.overlayID = null;
-                }
-              });
-            },
-          );
+            });
+          }, canAdvance: canAdvance);
         } else {
           this.showHeroGameEndOverlay(
-                () {
+            () {
               if (this.overlayID != null) {
-                KOverlayHelper.removeOverlay(
-                    this.overlayID!);
+                KOverlayHelper.removeOverlay(this.overlayID!);
                 this.overlayID = null;
               }
               this.showHeroGameHighscoreOverlay(() {
@@ -409,8 +380,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
                   this.isShowEndLevel = false;
                 });
                 if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(
-                      this.overlayID!);
+                  KOverlayHelper.removeOverlay(this.overlayID!);
                   this.overlayID = null;
                 }
               });
@@ -435,19 +405,15 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
       isLoaded: isLoaded,
       onFinishLevel: (level, score, canAdvance) {
         if (!canAdvance) {
-          this.showHeroGameLevelOverlay(
-                  () {
-                this.setState(() {
-                  this.isShowEndLevel = false;
-                });
-                if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(
-                      this.overlayID!);
-                  this.overlayID = null;
-                }
-              },
-              canAdvance: canAdvance
-          );
+          this.showHeroGameLevelOverlay(() {
+            this.setState(() {
+              this.isShowEndLevel = false;
+            });
+            if (this.overlayID != null) {
+              KOverlayHelper.removeOverlay(this.overlayID!);
+              this.overlayID = null;
+            }
+          }, canAdvance: canAdvance);
           return;
         }
         final scoreID = Uuid().v4();
@@ -455,40 +421,35 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
         this.setState(() {
           this.scoreID = scoreID;
           this.scores.add(
-            KScore()
-              ..game = GAME_NAME
-              ..user = KSessionData.me
-              ..level = level
-              ..scoreID = scoreID
-              ..score = score.toDouble(),
-          );
+                KScore()
+                  ..game = GAME_NAME
+                  ..user = KSessionData.me
+                  ..level = level
+                  ..scoreID = scoreID
+                  ..score = score.toDouble(),
+              );
         });
         if (level < totalLevel) {
-          this.showHeroGameLevelOverlay(
-                () {
+          this.showHeroGameLevelOverlay(() {
+            if (this.overlayID != null) {
+              KOverlayHelper.removeOverlay(this.overlayID!);
+              this.overlayID = null;
+            }
+            this.showHeroGameHighscoreOverlay(() {
+              this.setState(() {
+                this.isShowEndLevel = false;
+              });
               if (this.overlayID != null) {
-                KOverlayHelper.removeOverlay(
-                    this.overlayID!);
+                KOverlayHelper.removeOverlay(this.overlayID!);
                 this.overlayID = null;
               }
-              this.showHeroGameHighscoreOverlay(() {
-                this.setState(() {
-                  this.isShowEndLevel = false;
-                });
-                if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(
-                      this.overlayID!);
-                  this.overlayID = null;
-                }
-              });
-            },
-          );
+            });
+          }, canAdvance: canAdvance);
         } else {
           this.showHeroGameEndOverlay(
-                () {
+            () {
               if (this.overlayID != null) {
-                KOverlayHelper.removeOverlay(
-                    this.overlayID!);
+                KOverlayHelper.removeOverlay(this.overlayID!);
                 this.overlayID = null;
               }
               this.showHeroGameHighscoreOverlay(() {
@@ -496,8 +457,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
                   this.isShowEndLevel = false;
                 });
                 if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(
-                      this.overlayID!);
+                  KOverlayHelper.removeOverlay(this.overlayID!);
                   this.overlayID = null;
                 }
               });
@@ -522,19 +482,15 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
       isLoaded: isLoaded,
       onFinishLevel: (level, score, canAdvance) {
         if (!canAdvance) {
-          this.showHeroGameLevelOverlay(
-                  () {
-                this.setState(() {
-                  this.isShowEndLevel = false;
-                });
-                if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(
-                      this.overlayID!);
-                  this.overlayID = null;
-                }
-              },
-              canAdvance: canAdvance
-          );
+          this.showHeroGameLevelOverlay(() {
+            this.setState(() {
+              this.isShowEndLevel = false;
+            });
+            if (this.overlayID != null) {
+              KOverlayHelper.removeOverlay(this.overlayID!);
+              this.overlayID = null;
+            }
+          }, canAdvance: canAdvance);
           return;
         }
         final scoreID = Uuid().v4();
@@ -542,40 +498,35 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
         this.setState(() {
           this.scoreID = scoreID;
           this.scores.add(
-            KScore()
-              ..game = GAME_NAME
-              ..user = KSessionData.me
-              ..level = level
-              ..scoreID = scoreID
-              ..score = score.toDouble(),
-          );
+                KScore()
+                  ..game = GAME_NAME
+                  ..user = KSessionData.me
+                  ..level = level
+                  ..scoreID = scoreID
+                  ..score = score.toDouble(),
+              );
         });
         if (level < totalLevel) {
-          this.showHeroGameLevelOverlay(
-                () {
+          this.showHeroGameLevelOverlay(() {
+            if (this.overlayID != null) {
+              KOverlayHelper.removeOverlay(this.overlayID!);
+              this.overlayID = null;
+            }
+            this.showHeroGameHighscoreOverlay(() {
+              this.setState(() {
+                this.isShowEndLevel = false;
+              });
               if (this.overlayID != null) {
-                KOverlayHelper.removeOverlay(
-                    this.overlayID!);
+                KOverlayHelper.removeOverlay(this.overlayID!);
                 this.overlayID = null;
               }
-              this.showHeroGameHighscoreOverlay(() {
-                this.setState(() {
-                  this.isShowEndLevel = false;
-                });
-                if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(
-                      this.overlayID!);
-                  this.overlayID = null;
-                }
-              });
-            },
-          );
+            });
+          }, canAdvance: canAdvance);
         } else {
           this.showHeroGameEndOverlay(
-                () {
+            () {
               if (this.overlayID != null) {
-                KOverlayHelper.removeOverlay(
-                    this.overlayID!);
+                KOverlayHelper.removeOverlay(this.overlayID!);
                 this.overlayID = null;
               }
               this.showHeroGameHighscoreOverlay(() {
@@ -583,8 +534,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
                   this.isShowEndLevel = false;
                 });
                 if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(
-                      this.overlayID!);
+                  KOverlayHelper.removeOverlay(this.overlayID!);
                   this.overlayID = null;
                 }
               });
@@ -614,37 +564,37 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
             child: !isLoaded || game == null
                 ? Container()
                 : SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: this.isShowShootingIntro
-                        ? GestureDetector(
-                            onTap: () => this.setState(
-                                () => this.isShowShootingIntro = false),
-                            child: Container(
-                              child: KGameIntro(
-                                hero: widget.hero,
-                                onFinish: () => this.setState(
-                                    () => this.isShowShootingIntro = false),
-                              ),
-                            ),
-                          )
-                        : (currentLevel == 0
-                            ? jumpOverGame
-                            : (currentLevel == 1
-                                ? tapGame
-                                : (currentLevel == 2
-                                    ? shootingGame
-                                    : (currentLevel == 3
-                                        ? tapMovingGame
-                                        : (currentLevel == 4
-                                            ? jumpGame
-                                            : Container()))))),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: this.isShowShootingIntro
+                              ? GestureDetector(
+                                  onTap: () => this.setState(
+                                      () => this.isShowShootingIntro = false),
+                                  child: Container(
+                                    child: KGameIntro(
+                                      hero: widget.hero,
+                                      onFinish: () => this.setState(() =>
+                                          this.isShowShootingIntro = false),
+                                    ),
+                                  ),
+                                )
+                              : (currentLevel == 0
+                                  ? jumpOverGame
+                                  : (currentLevel == 1
+                                      ? tapGame
+                                      : (currentLevel == 2
+                                          ? shootingGame
+                                          : (currentLevel == 3
+                                              ? tapMovingGame
+                                              : (currentLevel == 4
+                                                  ? jumpGame
+                                                  : Container()))))),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
           ),
         ),
       ],

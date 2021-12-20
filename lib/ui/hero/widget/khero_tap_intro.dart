@@ -46,90 +46,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
 
   bool isShowPlusPoint = false;
 
-  List<String> questionContents = [
-    "1 + 1",
-    "2 + 2",
-    "2 + 6",
-    "3 + 2",
-    "6 + 1",
-    "4 - 1",
-    "4 + 5",
-    "5 + 2",
-    "9 - 2",
-    "7 - 4",
-    "2 x 1",
-    "2 x 3",
-    "3 x 3",
-    "4 x 2",
-    "5 x 1",
-    "9 x 0",
-    "0 x 3",
-    "1 x 7",
-    "2 x 4",
-    "1 x 6",
-    "5 + 3 + 1",
-    "1 + 2 - 1",
-    "6 + 8 - 5",
-    "3 + 4 - 1",
-    "4 - 7 + 6",
-    "5 - 2 - 1",
-    "9 + 1 - 5",
-    "1 + 2 + 3",
-    "4 + 2 - 3",
-    "7 + 2 - 1",
-    "2 x 2 + 3",
-    "7 - 3 x 1",
-    "4 x 2 - 6",
-    "5 - 2 x 2",
-    "2 x 2 + 3",
-    "4 + 2 x 2",
-    "3 x 3 - 3",
-    "5 x 2 - 5",
-    "8 - 3 x 2",
-    "7 x 2 - 7"
-  ];
-  List<int> rightAnswers = [
-    2,
-    4,
-    8,
-    5,
-    7,
-    3,
-    9,
-    7,
-    7,
-    3,
-    2,
-    6,
-    9,
-    8,
-    5,
-    0,
-    0,
-    7,
-    8,
-    6,
-    9,
-    2,
-    9,
-    6,
-    3,
-    2,
-    5,
-    6,
-    3,
-    8,
-    7,
-    4,
-    2,
-    1,
-    7,
-    8,
-    6,
-    5,
-    2,
-    7
-  ];
+  List<String> questionContents = [];
+  List<int> rightAnswers = [];
 
   int currentQuestionIndex = 0;
   int? spinningHeroIndex;
@@ -167,6 +85,9 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
 
   int get correctPercent =>
       questionCount > 0 ? ((correctCount * 100) / questionCount).floor() : 0;
+
+  Timer? _timer;
+  int timeToAnswer = 3;
 
   @override
   void initState() {
@@ -319,6 +240,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
           currentQuestionIndex = 0;
           this.getListAnswer();
         });
+        startCount();
         // Future.delayed(Duration(milliseconds: 400), getListAnswer);
       } else {
         KSnackBarHelper.error("Can not get game data");
@@ -328,6 +250,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
 
   @override
   void dispose() {
+    _timer?.cancel();
     _heroScaleAnimationController.dispose();
     _bouncingAnimationController.dispose();
     _moveUpAnimationController.dispose();
@@ -344,6 +267,64 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
 
     // TODO: implement dispose
     super.dispose();
+  }
+
+  void startCount() {
+    if (_timer != null && _timer!.isActive) {
+      _timer!.cancel();
+    }
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (timeToAnswer > 0) {
+        setState(() {
+          timeToAnswer = timeToAnswer - 1;
+        });
+      } else if (timeToAnswer == 0 && !isAnimating) {
+        _timer?.cancel();
+        setState(() {
+          isAnimating = true;
+          timeToAnswer = 3;
+        });
+
+        this._bouncingAnimationController.forward();
+
+        Future.delayed(Duration(milliseconds: 700), () {
+          this.setState(() {
+            this.tamagoJumpTimes = 0;
+          });
+          if (!isMuted && !isPlaySound) {
+            this.setState(() {
+              this.isPlaySound = true;
+            });
+            playSound(false);
+          }
+
+          Future.delayed(Duration(milliseconds: 500), () {
+            this.setState(() {
+              questionCount++;
+              this.isShowSadTamago = true;
+            });
+
+            if (currentQuestionIndex == 9) {
+              loadGame();
+            } else {
+              Future.delayed(Duration(milliseconds: 500), () {
+                if (mounted) {
+                  this.setState(() {
+                    isShowSadTamago = false;
+                    currentShowStarIndex = null;
+                    spinningHeroIndex = null;
+                    currentQuestionIndex++;
+                    getListAnswer();
+                    isAnimating = false;
+                  });
+                  startCount();
+                }
+              });
+            }
+          });
+        });
+      }
+    });
   }
 
   void startAnswer() {
@@ -411,6 +392,13 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   }
 
   void handlePickAnswer(int answer, int answerIndex) {
+    if (_timer != null && _timer!.isActive) {
+      _timer!.cancel();
+      this.setState(() {
+        timeToAnswer = 3;
+      });
+    }
+
     if (isAnimating) {
       return;
     }
@@ -475,6 +463,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
               getListAnswer();
               isAnimating = false;
             });
+            startCount();
           }
         });
       }
@@ -541,6 +530,20 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                             fontSize: 35,
                             fontWeight: FontWeight.w600,
                           ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      child: Text(
+                        "${timeToAnswer}",
+                        textScaleFactor: 1.0,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 25,
                         ),
                       ),
                     ),
@@ -632,7 +635,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                             padding: EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 15),
                             child: Text(
-                              "${questionCount}",
+                              "${correctCount}/${questionCount}",
                               textScaleFactor: 1.0,
                               textAlign: TextAlign.center,
                               style: TextStyle(
