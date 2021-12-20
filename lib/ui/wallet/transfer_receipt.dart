@@ -120,7 +120,9 @@ class _TransferReceiptState extends State<TransferReceipt> {
                           KCreditTransaction.LINE_TYPE_CREDIT
                       ? "TRANSFER FROM"
                       : "TRANSFER TO",
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                        color: Theme.of(context).primaryColorLight,
+                      ),
                 ),
                 SizedBox(height: 8),
                 Text(
@@ -179,7 +181,9 @@ class _TransferReceiptState extends State<TransferReceipt> {
                 children: [
                   Text(
                     "MEMO",
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          color: Theme.of(context).primaryColorLight,
+                        ),
                   ),
                 ],
               ),
