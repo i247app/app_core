@@ -6,7 +6,6 @@ import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/kquestion.dart';
 import 'package:app_core/model/kscore.dart';
-import 'package:app_core/ui/hero/khero_jump_multirow_game.dart';
 import 'package:app_core/ui/hero/khero_jump_over_game.dart';
 import 'package:app_core/ui/hero/khero_moving_tap_game.dart';
 import 'package:app_core/ui/hero/khero_tap_game.dart';
@@ -26,9 +25,16 @@ class KHeroMultiGame extends StatefulWidget {
   _KHeroMultiGameState createState() => _KHeroMultiGameState();
 }
 
-class _KHeroMultiGameState extends State<KHeroMultiGame> {
+class _KHeroMultiGameState extends State<KHeroMultiGame>
+    with WidgetsBindingObserver {
   static const GAME_NAME = "multi_game";
   static const GAME_ID = "805";
+
+  GlobalKey<KJumpGameScreenState> _keyJumpOverGame = GlobalKey();
+  GlobalKey<KJumpGameScreenState> _keyJumpGame = GlobalKey();
+  GlobalKey<KMovingTapGameScreenState> _keyMovingTapGame = GlobalKey();
+  GlobalKey<KShootingGameScreenState> _keyShootingGame = GlobalKey();
+  GlobalKey<KTapGameScreenState> _keyTapGame = GlobalKey();
 
   static const List<String> BG_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
@@ -59,12 +65,26 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance?.addObserver(this);
+
     loadScore();
     loadGame();
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _keyJumpGame.currentState?.showPauseDialog();
+      _keyJumpOverGame.currentState?.showPauseDialog();
+      _keyTapGame.currentState?.showPauseDialog();
+      _keyMovingTapGame.currentState?.showPauseDialog();
+      _keyShootingGame.currentState?.showPauseDialog();
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
     saveScore();
     super.dispose();
     if (this.overlayID != null) {
@@ -165,6 +185,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
   @override
   Widget build(BuildContext context) {
     final jumpOverGame = KJumpGameScreen(
+      key: _keyJumpOverGame,
       hero: widget.hero,
       totalLevel: totalLevel,
       isShowEndLevel: isShowEndLevel,
@@ -243,6 +264,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
     );
 
     final shootingGame = KShootingGameScreen(
+      key: _keyShootingGame,
       hero: widget.hero,
       totalLevel: totalLevel,
       isShowEndLevel: isShowEndLevel,
@@ -320,6 +342,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
     );
 
     final jumpGame = KJumpGameScreen(
+      key: _keyJumpGame,
       hero: widget.hero,
       totalLevel: totalLevel,
       isShowEndLevel: isShowEndLevel,
@@ -397,6 +420,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
     );
 
     final tapGame = KTapGameScreen(
+      key: _keyTapGame,
       hero: widget.hero,
       totalLevel: totalLevel,
       isShowEndLevel: isShowEndLevel,
@@ -474,6 +498,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame> {
     );
 
     final tapMovingGame = KMovingTapGameScreen(
+      key: _keyMovingTapGame,
       hero: widget.hero,
       totalLevel: totalLevel,
       isShowEndLevel: isShowEndLevel,

@@ -301,6 +301,7 @@ class KJumpGameScreen extends StatefulWidget {
   final int? grade;
 
   const KJumpGameScreen({
+    Key? key,
     this.hero,
     this.onChangeLevel,
     this.onFinishLevel,
@@ -310,7 +311,7 @@ class KJumpGameScreen extends StatefulWidget {
     this.totalLevel,
     this.level,
     this.grade,
-  });
+  }) : super(key: key);
 
   @override
   KJumpGameScreenState createState() => KJumpGameScreenState();
@@ -680,6 +681,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
   }
 
   void showPauseDialog() {
+    if (this.isPause) return;
     if (this.isBackgroundSoundPlaying) {
       toggleBackgroundSound();
     }

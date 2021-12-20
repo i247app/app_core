@@ -316,6 +316,7 @@ class KShootingGameScreen extends StatefulWidget {
   final int? grade;
 
   const KShootingGameScreen({
+    Key? key,
     this.hero,
     this.onChangeLevel,
     this.onFinishLevel,
@@ -325,7 +326,7 @@ class KShootingGameScreen extends StatefulWidget {
     this.totalLevel,
     this.level,
     this.grade,
-  });
+  }) : super(key: key);
 
   @override
   KShootingGameScreenState createState() => KShootingGameScreenState();
@@ -679,6 +680,7 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
   }
 
   void showPauseDialog() {
+    if (this.isPause) return;
     if (this.isBackgroundSoundPlaying) {
       toggleBackgroundSound();
     }

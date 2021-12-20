@@ -320,6 +320,7 @@ class KTapGameScreen extends StatefulWidget {
   final int? grade;
 
   const KTapGameScreen({
+    Key? key,
     this.hero,
     this.onChangeLevel,
     this.onFinishLevel,
@@ -329,13 +330,13 @@ class KTapGameScreen extends StatefulWidget {
     required this.questions,
     this.level,
     this.grade,
-  });
+  }) : super(key: key);
 
   @override
-  _KTapGameScreenState createState() => _KTapGameScreenState();
+  KTapGameScreenState createState() => KTapGameScreenState();
 }
 
-class _KTapGameScreenState extends State<KTapGameScreen>
+class KTapGameScreenState extends State<KTapGameScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   static const GAME_NAME = "shooting_game";
   AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
@@ -586,6 +587,7 @@ class _KTapGameScreenState extends State<KTapGameScreen>
   }
 
   void showPauseDialog() {
+    if (this.isPause) return;
     if (this.isBackgroundSoundPlaying) {
       toggleBackgroundSound();
     }

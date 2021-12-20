@@ -628,6 +628,7 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
   }
 
   void showPauseDialog() {
+    if (this.isPause) return;
     if (this.isBackgroundSoundPlaying) {
       toggleBackgroundSound();
     }

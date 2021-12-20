@@ -319,6 +319,7 @@ class KMovingTapGameScreen extends StatefulWidget {
   final int? grade;
 
   const KMovingTapGameScreen({
+    Key? key,
     this.hero,
     this.onChangeLevel,
     this.onFinishLevel,
@@ -328,13 +329,13 @@ class KMovingTapGameScreen extends StatefulWidget {
     required this.isLoaded,
     this.level,
     this.grade,
-  });
+  }) : super(key: key);
 
   @override
-  _KMovingTapGameScreenState createState() => _KMovingTapGameScreenState();
+  KMovingTapGameScreenState createState() => KMovingTapGameScreenState();
 }
 
-class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
+class KMovingTapGameScreenState extends State<KMovingTapGameScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
@@ -609,6 +610,7 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
   }
 
   void showPauseDialog() {
+    if (this.isPause) return;
     if (this.isBackgroundSoundPlaying) {
       toggleBackgroundSound();
     }
