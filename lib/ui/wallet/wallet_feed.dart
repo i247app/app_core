@@ -9,8 +9,9 @@ import 'package:app_core/model/response/get_balances_response.dart';
 import 'package:app_core/model/response/get_credit_transactions_response.dart';
 import 'package:app_core/model/xfr_proxy.dart';
 import 'package:app_core/ui/wallet/credit_bank_transfer.dart';
-import 'package:app_core/ui/wallet/credit_receipt.dart';
+import 'package:app_core/ui/wallet/transfer_receipt.dart';
 import 'package:app_core/ui/wallet/wallet_transfer.dart';
+import 'package:app_core/ui/wallet/wallet_transfer_v1.dart';
 import 'package:app_core/ui/wallet/widget/credit_token_picker.dart';
 import 'package:app_core/ui/wallet/widget/kcredit_banner.dart';
 import 'package:app_core/ui/wallet/widget/krole_picker.dart';
@@ -168,7 +169,7 @@ class _WalletFeedState extends State<WalletFeed> {
   void onTransactionClick(KCreditTransaction transaction) async =>
       await Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (ctx) => CreditReceipt(
+          builder: (ctx) => TransferReceipt(
             transactionID: transaction.txID ?? "",
             lineID: transaction.lineID ?? "",
             tokenName: widget.defaultTokenName,
@@ -197,7 +198,7 @@ class _WalletFeedState extends State<WalletFeed> {
 
       await Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (ctx) => CreditReceipt(
+          builder: (ctx) => TransferReceipt(
             transactionID: transaction.txID ?? "",
             lineID: transaction.lineID ?? "",
             tokenName: currentBalance?.tokenName ?? "",
@@ -267,7 +268,7 @@ class _WalletFeedState extends State<WalletFeed> {
     );
 
     final transactionList = transactions.isEmpty
-        ? Center(child: Text("No transaction found"))
+        ? Center(child: Text(KPhrases.noData))
         : ListView.builder(
             primary: false,
             itemCount: transactions.length,

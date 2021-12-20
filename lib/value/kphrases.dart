@@ -46,6 +46,13 @@ abstract class KPhrases {
 
   static String get confirm => _klingo.yak("confirm");
 
+  static String get amountMustLowerThanBalance =>
+      _klingo.yak("amount_must_lower_than_balance");
+
+  static String get transferTo => _klingo.yak("transfer_to");
+
+  static String get memoHintText => _klingo.yak("memo_hint_text");
+
   static String get accountName => _klingo.yak("account_name");
 
   static String get accountNumber => _klingo.yak("account_number");
@@ -75,7 +82,7 @@ abstract class KPhrases {
   static String get gigListReadyAndWaiting =>
       _klingo.yak("gig_list_ready_waiting");
 
-  static String get noTransactionsFound => _klingo.yak("no_transactions_found");
+  static String get noData => _klingo.yak("no_data");
 
   static String get waitingForOtherUser =>
       _klingo.yak("waiting_for_other_user");
@@ -97,9 +104,4 @@ abstract class KPhrases {
   static String get appFailed => _klingo.yak("app_failed");
 
   static String get success => _klingo.yak("success");
-
-  static String get amountMustLowerThanBalance =>
-      _klingo.yak("amount_must_lower_than_balance");
-
-  static String get transferTo => _klingo.yak("transfer_to");
 }
