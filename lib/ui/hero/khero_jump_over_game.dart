@@ -317,7 +317,7 @@ class KJumpGameScreen extends StatefulWidget {
 }
 
 class KJumpGameScreenState extends State<KJumpGameScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
@@ -429,7 +429,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
   @override
   void initState() {
     super.initState();
-
+    WidgetsBinding.instance?.addObserver(this);
     this.currentLevel = widget.level ?? 0;
     this.totalLevel = widget.totalLevel ?? 1;
     this.levelHardness = List.generate(
@@ -649,7 +649,13 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused && !this.isPause) showPauseDialog();
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
     _timer?.cancel();
     _heroScaleAnimationController.dispose();
     _playerScaleAnimationController.dispose();

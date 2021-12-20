@@ -336,7 +336,7 @@ class KTapGameScreen extends StatefulWidget {
 }
 
 class _KTapGameScreenState extends State<KTapGameScreen>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   static const GAME_NAME = "shooting_game";
   AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
@@ -429,6 +429,7 @@ class _KTapGameScreenState extends State<KTapGameScreen>
   void initState() {
     super.initState();
 
+    WidgetsBinding.instance?.addObserver(this);
     this.currentLevel = widget.level ?? 0;
     this.totalLevel = widget.totalLevel ?? 1;
     this.levelHardness = List.generate(
@@ -559,7 +560,13 @@ class _KTapGameScreenState extends State<KTapGameScreen>
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused && !this.isPause) showPauseDialog();
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
     _timer?.cancel();
     _heroScaleAnimationController.dispose();
     _bouncingAnimationController.dispose();
