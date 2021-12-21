@@ -241,6 +241,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
           spinningHeroIndex = null;
           isAnimating = false;
           currentQuestionIndex = 0;
+          timeToAnswer = 3;
           this.getListAnswer();
         });
         startCount();
@@ -286,7 +287,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
           _timer?.cancel();
           setState(() {
             isAnimating = true;
-            timeToAnswer = 3;
           });
 
           this._bouncingAnimationController.forward();
@@ -320,6 +320,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                       currentQuestionIndex++;
                       getListAnswer();
                       isAnimating = false;
+                      timeToAnswer = 3;
                     });
                     startCount();
                   }
@@ -399,9 +400,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   void handlePickAnswer(int answer, int answerIndex) {
     if (_timer != null && _timer!.isActive) {
       _timer!.cancel();
-      this.setState(() {
-        timeToAnswer = 3;
-      });
     }
 
     if (isAnimating) {
@@ -467,6 +465,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
               currentQuestionIndex++;
               getListAnswer();
               isAnimating = false;
+              timeToAnswer = 3;
             });
             startCount();
           }
