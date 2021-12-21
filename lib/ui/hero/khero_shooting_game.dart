@@ -568,15 +568,6 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
         if (mounted && status == AnimationStatus.completed) {
           Future.delayed(Duration(milliseconds: 1000), () {
             if (mounted) {
-              this.setState(() {
-                currentShowStarIndex = null;
-              });
-              Future.delayed(Duration(milliseconds: 500), () {
-                if (mounted) {
-                  this._scaleAnimationController.reset();
-                  this._moveUpAnimationController.reset();
-                }
-              });
             }
           });
         } else if (mounted && status == AnimationStatus.dismissed) {}
@@ -952,59 +943,71 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
               isWrongAnswer = false;
             });
 
-            Future.delayed(Duration(milliseconds: 1500), () {
-              if (mounted && currentQuestionIndex + 1 < questions.length) {
+            Future.delayed(Duration(milliseconds: 1000), () {
+              if (mounted) {
                 this.setState(() {
-                  currentQuestionIndex = currentQuestionIndex + 1;
-                  barrierX = [2, 2 + 1.5];
-                  barrierImageUrls = [
-                    KImageAnimationHelper.randomImage,
-                    KImageAnimationHelper.randomImage
-                  ];
-                  barrierValues = [
-                    this.getRandomAnswer,
-                    this.getRandomAnswer,
-                  ];
+                  currentShowStarIndex = null;
                 });
-                Future.delayed(Duration(milliseconds: 50), () {
+                Future.delayed(Duration(milliseconds: 500), () {
+                  if (mounted) {
+                    this._scaleAnimationController.reset();
+                    this._moveUpAnimationController.reset();
+                  }
+                });
+
+                if (currentQuestionIndex + 1 < questions.length) {
                   this.setState(() {
-                    currentQuestionAnswers = questionAnswers;
-                  });
-                  this.setState(() {
+                    currentQuestionIndex = currentQuestionIndex + 1;
+                    barrierX = [2, 2 + 1.5];
+                    barrierImageUrls = [
+                      KImageAnimationHelper.randomImage,
+                      KImageAnimationHelper.randomImage
+                    ];
                     barrierValues = [
                       this.getRandomAnswer,
                       this.getRandomAnswer,
                     ];
-                    isScroll = true;
                   });
-                });
-              } else {
-                if (widget.onFinishLevel != null) {
-                  widget.onFinishLevel!(
-                      currentLevel + 1,
-                      levelPoints[currentLevel],
-                      rightAnswerCount / questions.length >=
-                          levelHardness[currentLevel]);
-                }
-                this.setState(() {
-                  if (rightAnswerCount / questions.length >=
-                      levelHardness[currentLevel]) {
-                    eggReceive = eggReceive + 1;
-                    if (currentLevel + 1 < totalLevel) {
-                      canAdvance = true;
-                    }
+                  Future.delayed(Duration(milliseconds: 50), () {
+                    this.setState(() {
+                      currentQuestionAnswers = questionAnswers;
+                    });
+                    this.setState(() {
+                      barrierValues = [
+                        this.getRandomAnswer,
+                        this.getRandomAnswer,
+                      ];
+                      isScroll = true;
+                    });
+                  });
+                } else {
+                  if (widget.onFinishLevel != null) {
+                    widget.onFinishLevel!(
+                        currentLevel + 1,
+                        levelPoints[currentLevel],
+                        rightAnswerCount / questions.length >=
+                            levelHardness[currentLevel]);
                   }
-                  isStart = false;
-                  barrierX = [2, 2 + 1.5];
-                  barrierImageUrls = [
-                    KImageAnimationHelper.randomImage,
-                    KImageAnimationHelper.randomImage
-                  ];
-                  barrierValues = [
-                    this.getRandomAnswer,
-                    this.getRandomAnswer,
-                  ];
-                });
+                  this.setState(() {
+                    if (rightAnswerCount / questions.length >=
+                        levelHardness[currentLevel]) {
+                      eggReceive = eggReceive + 1;
+                      if (currentLevel + 1 < totalLevel) {
+                        canAdvance = true;
+                      }
+                    }
+                    isStart = false;
+                    barrierX = [2, 2 + 1.5];
+                    barrierImageUrls = [
+                      KImageAnimationHelper.randomImage,
+                      KImageAnimationHelper.randomImage
+                    ];
+                    barrierValues = [
+                      this.getRandomAnswer,
+                      this.getRandomAnswer,
+                    ];
+                  });
+                }
               }
             });
           } else {

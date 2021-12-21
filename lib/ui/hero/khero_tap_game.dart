@@ -529,12 +529,12 @@ class KTapGameScreenState extends State<KTapGameScreen>
       ..addListener(() => setState(() {}))
       ..addStatusListener((status) {
         if (mounted && status == AnimationStatus.completed) {
-          this.setState(() {
-            isShowPlusPoint = false;
-          });
-          Future.delayed(Duration(milliseconds: 50), () {
-            this._moveUpAnimationController.reset();
-          });
+          // this.setState(() {
+          //   isShowPlusPoint = false;
+          // });
+          // Future.delayed(Duration(milliseconds: 50), () {
+          //   this._moveUpAnimationController.reset();
+          // });
         }
       });
     _moveUpAnimation = new Tween(
@@ -809,36 +809,47 @@ class KTapGameScreenState extends State<KTapGameScreen>
       });
 
       Future.delayed(Duration(milliseconds: 500), () {
-        if (mounted && currentQuestionIndex + 1 < questions.length) {
+        if (mounted) {
           this.setState(() {
-            currentQuestionIndex = currentQuestionIndex + 1;
-            randomBoxPosition();
-            getListAnswer();
+            currentShowStarIndex = null;
           });
-          Future.delayed(Duration(milliseconds: 50), () {
-            this.setState(() {
-              isScroll = true;
-            });
-          });
-        } else {
-          if (widget.onFinishLevel != null) {
-            widget.onFinishLevel!(
-                currentLevel + 1,
-                levelPlayTimes[currentLevel],
-                rightAnswerCount / questions.length >=
-                    levelHardness[currentLevel]);
-          }
-          this.setState(() {
-            if (rightAnswerCount / questions.length >=
-                levelHardness[currentLevel]) {
-              eggReceive = eggReceive + 1;
-              if (currentLevel + 1 < totalLevel) {
-                canAdvance = true;
+          Future.delayed(Duration(milliseconds: 500), () {
+            if (mounted) {
+              this._moveUpAnimationController.reset();
+
+              if (currentQuestionIndex + 1 < questions.length) {
+                this.setState(() {
+                  currentQuestionIndex = currentQuestionIndex + 1;
+                  randomBoxPosition();
+                  getListAnswer();
+                });
+                Future.delayed(Duration(milliseconds: 50), () {
+                  this.setState(() {
+                    isScroll = true;
+                  });
+                });
+              } else {
+                if (widget.onFinishLevel != null) {
+                  widget.onFinishLevel!(
+                      currentLevel + 1,
+                      levelPlayTimes[currentLevel],
+                      rightAnswerCount / questions.length >=
+                          levelHardness[currentLevel]);
+                }
+                this.setState(() {
+                  if (rightAnswerCount / questions.length >=
+                      levelHardness[currentLevel]) {
+                    eggReceive = eggReceive + 1;
+                    if (currentLevel + 1 < totalLevel) {
+                      canAdvance = true;
+                    }
+                  }
+                  isStart = false;
+                  randomBoxPosition();
+                  getListAnswer();
+                });
               }
             }
-            isStart = false;
-            randomBoxPosition();
-            getListAnswer();
           });
         }
       });
