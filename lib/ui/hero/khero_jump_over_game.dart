@@ -19,6 +19,7 @@ import 'package:flutter/services.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:collection/collection.dart';
 
 class KHeroJumpOverGame extends StatefulWidget {
   final KHero? hero;
@@ -406,9 +407,6 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
     KImageAnimationHelper.randomImage,
   ];
 
-  KAnswer get getRandomAnswer => currentQuestionAnswers[
-      Math.Random().nextInt(currentQuestionAnswers.length)];
-
   bool get canRestartGame =>
       currentLevel + 1 < totalLevel ||
       (currentLevel < totalLevel &&
@@ -477,10 +475,9 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
 
     loadAudioAsset();
 
-    barrierValues = [
-      this.getRandomAnswer,
-      this.getRandomAnswer,
-    ];
+    barrierValues = [];
+    barrierValues.add(this.getRandomAnswer());
+    barrierValues.add(this.getRandomAnswer());
 
     _playerScaleAnimationController = AnimationController(
       duration: const Duration(milliseconds: 200),
@@ -680,6 +677,20 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
     super.dispose();
   }
 
+  KAnswer getRandomAnswer() {
+    if (currentQuestionAnswers.length <= 0) {
+      return KAnswer();
+    }
+
+    final List<KAnswer> answerNotInCurrent = currentQuestionAnswers.where((answer) => barrierValues.map((barrierValue) => barrierValue.text).toList().indexOf(answer.text) == -1).toList();
+
+    if (answerNotInCurrent.length > 0) {
+      return answerNotInCurrent[Math.Random().nextInt(answerNotInCurrent.length)];
+    } else {
+      return currentQuestionAnswers[Math.Random().nextInt(currentQuestionAnswers.length)];
+    }
+  }
+
   void showPauseDialog() {
     if (this.isPause) return;
     if (this.isBackgroundSoundPlaying) {
@@ -818,7 +829,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
           setState(() {
             barrierX[i] += 3;
             // points += 1;
-            barrierValues[i] = this.getRandomAnswer;
+            barrierValues[i] = this.getRandomAnswer();
           });
         }
       }
@@ -939,10 +950,9 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
                       KImageAnimationHelper.randomImage,
                       KImageAnimationHelper.randomImage
                     ];
-                    barrierValues = [
-                      this.getRandomAnswer,
-                      this.getRandomAnswer,
-                    ];
+                    barrierValues = [];
+                    barrierValues.add(this.getRandomAnswer());
+                    barrierValues.add(this.getRandomAnswer());
                     this.currentCollisionIndex = null;
                     this.isPlaySound = false;
                   });
@@ -951,10 +961,9 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
                       currentQuestionAnswers = questionAnswers;
                     });
                     this.setState(() {
-                      barrierValues = [
-                        this.getRandomAnswer,
-                        this.getRandomAnswer,
-                      ];
+                      barrierValues = [];
+                      barrierValues.add(this.getRandomAnswer());
+                      barrierValues.add(this.getRandomAnswer());
                       isScroll = true;
                     });
                   });
@@ -983,10 +992,9 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
                       KImageAnimationHelper.randomImage,
                       KImageAnimationHelper.randomImage
                     ];
-                    barrierValues = [
-                      this.getRandomAnswer,
-                      this.getRandomAnswer,
-                    ];
+                    barrierValues = [];
+                    barrierValues.add(this.getRandomAnswer());
+                    barrierValues.add(this.getRandomAnswer());
                     this.currentCollisionIndex = null;
                     this.isPlaySound = false;
                   });
@@ -1075,10 +1083,9 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
         currentQuestionAnswers = questionAnswers;
       });
       this.setState(() {
-        barrierValues = [
-          this.getRandomAnswer,
-          this.getRandomAnswer,
-        ];
+        barrierValues = [];
+        barrierValues.add(this.getRandomAnswer());
+        barrierValues.add(this.getRandomAnswer());
       });
     });
   }

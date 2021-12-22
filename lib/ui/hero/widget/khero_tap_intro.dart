@@ -87,7 +87,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   int get correctPercent =>
       questionCount > 0 ? ((correctCount * 100) / questionCount).floor() : 0;
 
-  bool get isPause => widget.isPause ?? false;
+  bool? isLocalPause;
+  bool get isPause => isLocalPause ?? widget.isPause ?? false;
 
   Timer? _timer;
   int timeToAnswer = 3;
@@ -506,6 +507,18 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     // });
   }
 
+  void togglePauseLocal() {
+    if (this.isLocalPause != null) {
+      setState(() {
+        this.isLocalPause = null;
+      });
+    } else {
+      setState(() {
+        this.isLocalPause = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final body = Stack(
@@ -533,24 +546,53 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                         ),
                       ),
                     ),
-                    Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.75,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                        child: Text(
-                          questionContents[currentQuestionIndex],
-                          textScaleFactor: 1.0,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 35,
-                            fontWeight: FontWeight.w600,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 50,
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 0),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 5),
+                              child: Text(
+                                questionContents[currentQuestionIndex],
+                                textScaleFactor: 1.0,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        InkWell(
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            padding: EdgeInsets.only(
+                                top: 5, bottom: 5, left: 5, right: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(40),
+                            ),
+                            child: Icon(
+                              (this.isLocalPause ?? false) ? Icons.play_arrow : Icons.pause,
+                              color: Color(0xff2c1c44),
+                              size: 30,
+                            ),
+                          ),
+                          onTap: () => this.togglePauseLocal(),
+                        ),
+                      ],
                     ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -634,7 +676,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          width: 80,
+                          width: 50,
                           height: 50,
                           child: FittedBox(
                             fit: BoxFit.contain,
