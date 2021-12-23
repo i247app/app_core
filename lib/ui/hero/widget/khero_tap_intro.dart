@@ -4,6 +4,7 @@ import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kserver_handler.dart';
+import 'package:app_core/style/ktheme.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -87,11 +88,12 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   int get correctPercent =>
       questionCount > 0 ? ((correctCount * 100) / questionCount).floor() : 0;
 
-  bool? isLocalPause;
+  bool? isLocalPause = true;
   bool get isPause => isLocalPause ?? widget.isPause ?? false;
 
   Timer? _timer;
-  int timeToAnswer = 3;
+  int BASE_TIME_TO_ANSWER = 3000;
+  int timeToAnswer = 3000;
 
   @override
   void initState() {
@@ -242,7 +244,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
           spinningHeroIndex = null;
           isAnimating = false;
           currentQuestionIndex = 0;
-          timeToAnswer = 3;
+          timeToAnswer = BASE_TIME_TO_ANSWER;
           this.getListAnswer();
         });
         startCount();
@@ -278,7 +280,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     if (_timer != null && _timer!.isActive) {
       _timer!.cancel();
     }
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
       if (!isPause) {
         if (timeToAnswer > 0) {
           setState(() {
@@ -321,7 +323,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                       currentQuestionIndex++;
                       getListAnswer();
                       isAnimating = false;
-                      timeToAnswer = 3;
+                      timeToAnswer = BASE_TIME_TO_ANSWER;
                     });
                     startCount();
                   }
@@ -466,7 +468,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
               currentQuestionIndex++;
               getListAnswer();
               isAnimating = false;
-              timeToAnswer = 3;
+              timeToAnswer = BASE_TIME_TO_ANSWER;
             });
             startCount();
           }
@@ -532,19 +534,24 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.75,
+                      width: MediaQuery.of(context).size.width * 0.5,
                       padding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      child: Text(
-                        "${timeToAnswer}",
-                        textScaleFactor: 1.0,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 70,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      child: LinearProgressIndicator(
+                        value: (BASE_TIME_TO_ANSWER - timeToAnswer)/BASE_TIME_TO_ANSWER,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        color: KTheme.of(context).lightGrey,
                       ),
+                      // child: Text(
+                      //   "${timeToAnswer}",
+                      //   textScaleFactor: 1.0,
+                      //   textAlign: TextAlign.center,
+                      //   style: TextStyle(
+                      //     color: Colors.black,
+                      //     fontSize: 70,
+                      //     fontWeight: FontWeight.bold,
+                      //   ),
+                      // ),
                     ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,

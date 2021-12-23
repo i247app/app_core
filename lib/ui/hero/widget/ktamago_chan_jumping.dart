@@ -149,14 +149,17 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
         this.setState(() {
           this.eggBreakStep = 10;
         });
+        Future.delayed(Duration(milliseconds: 1250), () {
+          if (this.widget.onFinish != null) this.widget.onFinish!();
+        });
       } else {
         this.setState(() {
           this.eggBreakStep = this.eggBreakStep + 1;
         });
+        Future.delayed(Duration(milliseconds: 100), () {
+          _bouncingAnimationController.forward();
+        });
       }
-      Future.delayed(Duration(milliseconds: 100), () {
-        _bouncingAnimationController.forward();
-      });
     });
   }
 
