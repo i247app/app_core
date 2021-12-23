@@ -11,8 +11,9 @@ import 'package:path_provider/path_provider.dart';
 
 class KTamagoChanJumping extends StatefulWidget {
   final Function? onFinish;
+  final bool? canAdvance;
 
-  const KTamagoChanJumping({this.onFinish});
+  const KTamagoChanJumping({this.onFinish, this.canAdvance});
 
   @override
   _KTamagoChanJumpingState createState() => _KTamagoChanJumpingState();
@@ -70,7 +71,7 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
                 }
               }
             } else if (status == AnimationStatus.dismissed) {
-              if (eggBreakStep >= 4) {
+              if ((!(widget.canAdvance ?? false) && eggBreakStep == 10) || eggBreakStep >= 4) {
                 Future.delayed(Duration(milliseconds: 1000), () {
                   if (this.widget.onFinish != null) this.widget.onFinish!();
                 });
@@ -142,10 +143,17 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
         cAudioPlayer.complete(ap);
       } catch (e) {}
     });
+
     Future.delayed(Duration(milliseconds: 1000), () {
-      this.setState(() {
-        this.eggBreakStep = this.eggBreakStep + 1;
-      });
+      if (!(widget.canAdvance ?? false)) {
+        this.setState(() {
+          this.eggBreakStep = 10;
+        });
+      } else {
+        this.setState(() {
+          this.eggBreakStep = this.eggBreakStep + 1;
+        });
+      }
       Future.delayed(Duration(milliseconds: 100), () {
         _bouncingAnimationController.forward();
       });
@@ -244,6 +252,26 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
           : Container(),
     );
 
+    final eggSad = AnimatedOpacity(
+      duration: Duration(milliseconds: 700),
+      opacity: this.eggBreakStep == 10 ? 1.0 : 0.0,
+      child: this.eggBreakStep == 10
+          ? Container(
+        transform:
+        Matrix4.rotationZ(_shakeTheTopRightAnimation.value * Math.pi),
+        transformAlignment: Alignment.bottomCenter,
+        child: Transform.translate(
+          offset: _bouncingAnimation.value,
+          child: Image.asset(
+            KAssets.IMG_TAMAGO_CHAN_SAD,
+            package: 'app_core',
+            width: 120,
+          ),
+        ),
+      )
+          : Container(),
+    );
+
     final content = Stack(
       children: [
         Align(
@@ -261,6 +289,10 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
         Align(
           alignment: Alignment.center,
           child: eggStep4,
+        ),
+        Align(
+          alignment: Alignment.center,
+          child: eggSad,
         ),
       ],
     );

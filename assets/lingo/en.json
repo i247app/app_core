@@ -1,7 +1,8 @@
 {
+  "success": "Success",
+  "no_data": "No Data",
   "required": "Required",
   "optional": "Optional",
-  "no_data_found": "No Data Found",
   "signup": "Sign Up",
   "next": "Next",
   "login": "Login",
@@ -108,6 +109,10 @@
   "withdrawal": "Withdrawal",
   "transfer": "Transfer",
   "confirm": "Confirm",
+  "bxfr": "BXFR",
+  "amount_must_lower_than_balance": "Amount must be lower than balance ",
+  "transfer_to": "Recipient name",
+  "memo_hint_text": "eg Coffee money",
   "account_name": "Account Name",
   "account_number": "Account Number",
   "bank": "Bank",
@@ -135,7 +140,6 @@
   "bank_account": "Bank account",
   "gig_list_ready_waiting": "Ready and Waiting",
   "gig_list_for_gigs": "For Gigs",
-  "no_transactions_found": "No transactions found",
   "waiting_for_other_user": "Waiting for other user...",
   "session_ended": "Session Ended",
   "save": "SAVE",
@@ -160,8 +164,5 @@
   "insufficient_credits": "Insufficient credits",
   "say_hi_to_x": "Say hi to",
   "hi": "Hi",
-  "app_failed": "App Failed",
-  "success": "Success",
-  "bxfr": "BXFR",
-  "amount_must_lower_than_balance": "Amount must be lower than balance "
+  "app_failed": "App Failed"
 }

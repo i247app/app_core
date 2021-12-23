@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/helper/kserver_handler.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,12 +14,14 @@ class KHeroTapIntro extends StatefulWidget {
   final Function(int, int, bool)? onFinishLevel;
   final bool isShowEndLevel;
   final bool isMuted;
+  final bool? isPause;
 
   const KHeroTapIntro({
     this.onChangeLevel,
     this.onFinishLevel,
     required this.isShowEndLevel,
     required this.isMuted,
+    this.isPause,
   });
 
   @override
@@ -45,96 +48,15 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
 
   bool isShowPlusPoint = false;
 
-  List<String> questionContents = [
-    "1 + 1",
-    "2 + 2",
-    "2 + 6",
-    "3 + 2",
-    "6 + 1",
-    "4 - 1",
-    "4 + 5",
-    "5 + 2",
-    "9 - 2",
-    "7 - 4",
-    "2 x 1",
-    "2 x 3",
-    "3 x 3",
-    "4 x 2",
-    "5 x 1",
-    "9 x 0",
-    "0 x 3",
-    "1 x 7",
-    "2 x 4",
-    "1 x 6",
-    "5 + 3 + 1",
-    "1 + 2 - 1",
-    "6 + 8 - 5",
-    "3 + 4 - 1",
-    "4 - 7 + 6",
-    "5 - 2 - 1",
-    "9 + 1 - 5",
-    "1 + 2 + 3",
-    "4 + 2 - 3",
-    "7 + 2 - 1",
-    "2 x 2 + 3",
-    "7 - 3 x 1",
-    "4 x 2 - 6",
-    "5 - 2 x 2",
-    "2 x 2 + 3",
-    "4 + 2 x 2",
-    "3 x 3 - 3",
-    "5 x 2 - 5",
-    "8 - 3 x 2",
-    "7 x 2 - 7"
-  ];
-  List<int> rightAnswers = [
-    2,
-    4,
-    8,
-    5,
-    7,
-    3,
-    9,
-    7,
-    7,
-    3,
-    2,
-    6,
-    9,
-    8,
-    5,
-    0,
-    0,
-    7,
-    8,
-    6,
-    9,
-    2,
-    9,
-    6,
-    3,
-    2,
-    5,
-    6,
-    3,
-    8,
-    7,
-    4,
-    2,
-    1,
-    7,
-    8,
-    6,
-    5,
-    2,
-    7
-  ];
+  List<String> questionContents = [];
+  List<int> rightAnswers = [];
 
   int currentQuestionIndex = 0;
   int? spinningHeroIndex;
   int? currentShowStarIndex;
   int correctCount = 0;
   int questionCount = 0;
+  int level = 0;
   bool isPlaySound = false;
 
   List<double> barrierX = [0, 0, 0, 0];
@@ -152,7 +74,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   double topBoundary = -2.1;
 
   int? overlayID;
-  bool isPause = false;
   bool isBackgroundSoundPlaying = false;
   bool isMuted = true;
   bool isShowSadTamago = false;
@@ -165,6 +86,12 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
 
   int get correctPercent =>
       questionCount > 0 ? ((correctCount * 100) / questionCount).floor() : 0;
+
+  bool? isLocalPause;
+  bool get isPause => isLocalPause ?? widget.isPause ?? false;
+
+  Timer? _timer;
+  int timeToAnswer = 3;
 
   @override
   void initState() {
@@ -282,8 +209,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       end: -0.1,
     ).animate(_shakeTheTopLeftAnimationController);
 
-    getListAnswer();
-
+    loadGame();
     // Future.delayed(Duration(milliseconds: 200), () {
     //   if (mounted) {
     //     startAnswer();
@@ -291,8 +217,45 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     // });
   }
 
+  loadGame() async {
+    try {
+      final response =
+          await KServerHandler.getGames(gameID: "200", level: "$level");
+
+      if (response.isSuccess &&
+          response.games != null &&
+          response.games!.length > 0) {
+        final game = response.games![0];
+        setState(() {
+          if (level == 3) {
+            level = 0;
+          } else {
+            level++;
+          }
+          this.questionContents =
+              (game.qnas?[0].questions ?? []).map((e) => e.text ?? "").toList();
+          this.rightAnswers = (game.qnas?[0].questions ?? [])
+              .map((e) => int.tryParse(e.correctAnswer?.text ?? "0") ?? 0)
+              .toList();
+          isShowSadTamago = false;
+          currentShowStarIndex = null;
+          spinningHeroIndex = null;
+          isAnimating = false;
+          currentQuestionIndex = 0;
+          timeToAnswer = 3;
+          this.getListAnswer();
+        });
+        startCount();
+        // Future.delayed(Duration(milliseconds: 400), getListAnswer);
+      } else {
+        KSnackBarHelper.error("Can not get game data");
+      }
+    } catch (e) {}
+  }
+
   @override
   void dispose() {
+    _timer?.cancel();
     _heroScaleAnimationController.dispose();
     _bouncingAnimationController.dispose();
     _moveUpAnimationController.dispose();
@@ -309,6 +272,66 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
 
     // TODO: implement dispose
     super.dispose();
+  }
+
+  void startCount() {
+    if (_timer != null && _timer!.isActive) {
+      _timer!.cancel();
+    }
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (!isPause) {
+        if (timeToAnswer > 0) {
+          setState(() {
+            timeToAnswer = timeToAnswer - 1;
+          });
+        } else if (timeToAnswer == 0 && !isAnimating) {
+          _timer?.cancel();
+          setState(() {
+            isAnimating = true;
+          });
+
+          this._bouncingAnimationController.forward();
+
+          Future.delayed(Duration(milliseconds: 700), () {
+            this.setState(() {
+              this.tamagoJumpTimes = 0;
+            });
+            if (!isMuted && !isPlaySound) {
+              this.setState(() {
+                this.isPlaySound = true;
+              });
+              playSound(false);
+            }
+
+            Future.delayed(Duration(milliseconds: 500), () {
+              this.setState(() {
+                questionCount++;
+                this.isShowSadTamago = true;
+              });
+
+              if (currentQuestionIndex == 9) {
+                loadGame();
+              } else {
+                Future.delayed(Duration(milliseconds: 500), () {
+                  if (mounted) {
+                    this.setState(() {
+                      isShowSadTamago = false;
+                      currentShowStarIndex = null;
+                      spinningHeroIndex = null;
+                      currentQuestionIndex++;
+                      getListAnswer();
+                      isAnimating = false;
+                      timeToAnswer = 3;
+                    });
+                    startCount();
+                  }
+                });
+              }
+            });
+          });
+        }
+      }
+    });
   }
 
   void startAnswer() {
@@ -376,6 +399,10 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   }
 
   void handlePickAnswer(int answer, int answerIndex) {
+    if (_timer != null && _timer!.isActive) {
+      _timer!.cancel();
+    }
+
     if (isAnimating) {
       return;
     }
@@ -427,19 +454,24 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
           this.isShowSadTamago = true;
         });
       }
-
-      Future.delayed(Duration(milliseconds: 500), () {
-        if (mounted) {
-          this.setState(() {
-            isShowSadTamago = false;
-            currentShowStarIndex = null;
-            spinningHeroIndex = null;
-            currentQuestionIndex = rand.nextInt(rightAnswers.length - 1);
-            getListAnswer();
-            isAnimating = false;
-          });
-        }
-      });
+      if (currentQuestionIndex == 9) {
+        loadGame();
+      } else {
+        Future.delayed(Duration(milliseconds: 500), () {
+          if (mounted) {
+            this.setState(() {
+              isShowSadTamago = false;
+              currentShowStarIndex = null;
+              spinningHeroIndex = null;
+              currentQuestionIndex++;
+              getListAnswer();
+              isAnimating = false;
+              timeToAnswer = 3;
+            });
+            startCount();
+          }
+        });
+      }
     });
     // });
   }
@@ -475,167 +507,246 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     // });
   }
 
+  void togglePauseLocal() {
+    if (this.isLocalPause != null) {
+      setState(() {
+        this.isLocalPause = null;
+      });
+    } else {
+      setState(() {
+        this.isLocalPause = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final body = Stack(
       fit: StackFit.expand,
       children: [
-        Align(
-          alignment: Alignment.center,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.75,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  child: Text(
-                    questionContents[currentQuestionIndex],
-                    textScaleFactor: 1.0,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 35,
-                      fontWeight: FontWeight.w600,
+        barrierValues.length > 1
+            ? Align(
+                alignment: Alignment.center,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      child: Text(
+                        "${timeToAnswer}",
+                        textScaleFactor: 1.0,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 70,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _Barrier(
-                    value: barrierValues[0],
-                    barrierY: 0,
-                    rotateAngle: spinningHeroIndex == 0
-                        ? -this._spinAnimationController.value * 4 * Math.pi
-                        : 0,
-                    bouncingAnimation: spinningHeroIndex == 0
-                        ? _bouncingAnimation.value
-                        : Offset(0, 0),
-                    scaleAnimation:
-                        spinningHeroIndex == 0 ? _heroScaleAnimation : null,
-                    starY: _moveUpAnimation.value,
-                    isShowStar: currentShowStarIndex == 0,
-                    onTap: () => this.handlePickAnswer(barrierValues[0], 0),
-                  ),
-                  SizedBox(
-                    width: 16,
-                  ),
-                  Container(
-                    transform: Matrix4.rotationZ(
-                        _shakeTheTopRightAnimation.value * Math.pi),
-                    transformAlignment: Alignment.bottomCenter,
-                    width: eggWidth,
-                    height: eggHeight,
-                    child: Container(
-                      transform: Matrix4.rotationZ(
-                          _shakeTheTopLeftAnimation.value * Math.pi),
-                      transformAlignment: Alignment.bottomCenter,
-                      width: eggWidth,
-                      height: eggHeight,
-                      child: Transform.translate(
-                        offset: currentShowStarIndex == null
-                            ? _bouncingAnimation.value
-                            : Offset(0, 0),
-                        child: Image.asset(
-                          isShowSadTamago
-                              ? KAssets.IMG_TAMAGO_CHAN_SAD
-                              : KAssets.IMG_TAMAGO_CHAN,
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 50,
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 0),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 5),
+                              child: Text(
+                                questionContents[currentQuestionIndex],
+                                textScaleFactor: 1.0,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            padding: EdgeInsets.only(
+                                top: 5, bottom: 5, left: 5, right: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(40),
+                            ),
+                            child: Icon(
+                              (this.isLocalPause ?? false) ? Icons.play_arrow : Icons.pause,
+                              color: Color(0xff2c1c44),
+                              size: 30,
+                            ),
+                          ),
+                          onTap: () => this.togglePauseLocal(),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _Barrier(
+                          value: barrierValues[0],
+                          barrierY: 0,
+                          rotateAngle: spinningHeroIndex == 0
+                              ? -this._spinAnimationController.value *
+                                  4 *
+                                  Math.pi
+                              : 0,
+                          bouncingAnimation: spinningHeroIndex == 0
+                              ? _bouncingAnimation.value
+                              : Offset(0, 0),
+                          scaleAnimation: spinningHeroIndex == 0
+                              ? _heroScaleAnimation
+                              : null,
+                          starY: _moveUpAnimation.value,
+                          isShowStar: currentShowStarIndex == 0,
+                          onTap: () =>
+                              this.handlePickAnswer(barrierValues[0], 0),
+                        ),
+                        SizedBox(
+                          width: 16,
+                        ),
+                        Container(
+                          transform: Matrix4.rotationZ(
+                              _shakeTheTopRightAnimation.value * Math.pi),
+                          transformAlignment: Alignment.bottomCenter,
                           width: eggWidth,
                           height: eggHeight,
-                          package: 'app_core',
+                          child: Container(
+                            transform: Matrix4.rotationZ(
+                                _shakeTheTopLeftAnimation.value * Math.pi),
+                            transformAlignment: Alignment.bottomCenter,
+                            width: eggWidth,
+                            height: eggHeight,
+                            child: Transform.translate(
+                              offset: currentShowStarIndex == null
+                                  ? _bouncingAnimation.value
+                                  : Offset(0, 0),
+                              child: Image.asset(
+                                isShowSadTamago
+                                    ? KAssets.IMG_TAMAGO_CHAN_SAD
+                                    : KAssets.IMG_TAMAGO_CHAN,
+                                width: eggWidth,
+                                height: eggHeight,
+                                package: 'app_core',
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 16,
-                  ),
-                  _Barrier(
-                    value: barrierValues[1],
-                    barrierY: 0,
-                    rotateAngle: spinningHeroIndex == 1
-                        ? -this._spinAnimationController.value * 4 * Math.pi
-                        : 0,
-                    bouncingAnimation: spinningHeroIndex == 1
-                        ? _bouncingAnimation.value
-                        : Offset(0, 0),
-                    scaleAnimation:
-                        spinningHeroIndex == 1 ? _heroScaleAnimation : null,
-                    starY: _moveUpAnimation.value,
-                    isShowStar: currentShowStarIndex == 1,
-                    onTap: () => this.handlePickAnswer(barrierValues[1], 1),
-                  ),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      child: Text(
-                        "${questionCount}",
-                        textScaleFactor: 1.0,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
+                        SizedBox(
+                          width: 16,
                         ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      child: Text(
-                        "${correctPercent}%",
-                        textScaleFactor: 1.0,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 25,
-                          fontWeight: FontWeight.w600,
+                        _Barrier(
+                          value: barrierValues[1],
+                          barrierY: 0,
+                          rotateAngle: spinningHeroIndex == 1
+                              ? -this._spinAnimationController.value *
+                                  4 *
+                                  Math.pi
+                              : 0,
+                          bouncingAnimation: spinningHeroIndex == 1
+                              ? _bouncingAnimation.value
+                              : Offset(0, 0),
+                          scaleAnimation: spinningHeroIndex == 1
+                              ? _heroScaleAnimation
+                              : null,
+                          starY: _moveUpAnimation.value,
+                          isShowStar: currentShowStarIndex == 1,
+                          onTap: () =>
+                              this.handlePickAnswer(barrierValues[1], 1),
                         ),
-                      ),
+                      ],
                     ),
-                  ),
-                  InkWell(
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      padding:
-                          EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                      child: Icon(
-                        this.isMuted ? Icons.volume_off : Icons.volume_up,
-                        color: Color(0xff2c1c44),
-                        size: 30,
-                      ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 50,
+                          height: 50,
+                          child: FittedBox(
+                            fit: BoxFit.contain,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 0),
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 15),
+                                child: Text(
+                                  "${correctCount}/${questionCount}",
+                                  textScaleFactor: 1.0,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 0),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 15),
+                              child: Text(
+                                "${correctPercent}%",
+                                textScaleFactor: 1.0,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          child: Container(
+                            width: 80,
+                            height: 50,
+                            padding: EdgeInsets.only(
+                                top: 5, bottom: 5, left: 5, right: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(40),
+                            ),
+                            child: Icon(
+                              this.isMuted ? Icons.volume_off : Icons.volume_up,
+                              color: Color(0xff2c1c44),
+                              size: 30,
+                            ),
+                          ),
+                          onTap: () => this.toggleBackgroundSound(),
+                        ),
+                      ],
                     ),
-                    onTap: () => this.toggleBackgroundSound(),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 60,
-              ),
-            ],
-          ),
-        ),
+                    SizedBox(
+                      height: 60,
+                    ),
+                  ],
+                ),
+              )
+            : Container(),
       ],
     );
 

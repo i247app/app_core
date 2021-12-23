@@ -6,6 +6,7 @@ import 'package:app_core/model/kuser.dart';
 import 'package:app_core/ui/chat/widget/kuser_profile_view.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
+import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
 
 class KChooseContact extends StatefulWidget {
@@ -80,8 +81,6 @@ class _KChooseContactState extends State<KChooseContact> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     final searchInput = _SearchField(
       searchFieldCtrl: searchFieldCtrl,
       onChanged: onSearchChanged,
@@ -99,9 +98,9 @@ class _KChooseContactState extends State<KChooseContact> {
     } else if (userLists!.isEmpty) {
       userListing = Center(
         child: Text(
-          "No results",
+          KPhrases.noData,
           textAlign: TextAlign.center,
-          style: theme.textTheme.bodyText1,
+          style: Theme.of(context).textTheme.bodyText1,
         ),
       );
     } else {
@@ -114,7 +113,7 @@ class _KChooseContactState extends State<KChooseContact> {
             user: user,
             onClick: onSearchResultClick,
             icon: Container(
-              width: 36,
+              width: 48,
               child: KUserAvatar.fromUser(user),
             ),
           );
@@ -174,8 +173,6 @@ class _SearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     final searchField = Theme(
       data: ThemeData(
         inputDecorationTheme: InputDecorationTheme(border: InputBorder.none),
@@ -191,11 +188,10 @@ class _SearchField extends StatelessWidget {
         showCursor: true,
         onTap: onTap,
         readOnly: readOnly,
-        style: theme.textTheme.bodyText1,
+        style: Theme.of(context).textTheme.headline6,
         decoration: InputDecoration(
-          hintText: "Type a name or phone number",
-          hintStyle:
-              TextStyle(color: Theme.of(context).primaryColor.withOpacity(0.8)),
+          hintText: "name or phone",
+          hintStyle: TextStyle(color: Theme.of(context).primaryColorLight),
           counterText: "",
           // contentPadding: EdgeInsets.symmetric(vertical: 2),
           border: InputBorder.none,
@@ -211,15 +207,14 @@ class _SearchField extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: theme.primaryColor.withOpacity(0.1),
+                  color: Theme.of(context).primaryColor.withOpacity(0.1),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       su.fullName ?? su.contactName,
-                      style: theme.textTheme.bodyText1!
-                          .copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.subtitle1,
                     ),
                     SizedBox(width: 6),
                     Icon(Icons.close, size: 20),
@@ -233,8 +228,7 @@ class _SearchField extends StatelessWidget {
       children: [
         Text(
           "Search",
-          style:
-              theme.textTheme.bodyText1?.copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.headline6,
         ),
         SizedBox(width: 16),
         Expanded(child: searchField),
@@ -291,8 +285,8 @@ class _ResultItem extends StatelessWidget {
 
     final contactHandle = Text(
       user.kunm == null ? user.prettyFone : "@${user.kunm}",
-      style: Theme.of(context).textTheme.bodyText1?.copyWith(
-            color: Theme.of(context).primaryColor.withOpacity(0.8),
+      style: Theme.of(context).textTheme.subtitle1?.copyWith(
+            color: Theme.of(context).primaryColorLight,
           ),
     );
 
@@ -302,10 +296,7 @@ class _ResultItem extends StatelessWidget {
       children: <Widget>[
         Text(
           user.fullName ?? "",
-          style: Theme.of(context)
-              .textTheme
-              .bodyText1
-              ?.copyWith(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.subtitle1,
         ),
         SizedBox(height: 6),
         contactHandle,
@@ -314,17 +305,17 @@ class _ResultItem extends StatelessWidget {
 
     final moreInfoButton = IconButton(
       onPressed: () => onMoreInfoClick(context),
-      iconSize: 20,
+      iconSize: 24,
       icon: Icon(
         Icons.info,
-        color: Theme.of(context).primaryColor.withOpacity(0.2),
+        color: Theme.of(context).primaryColorLight,
       ),
     );
 
     return InkWell(
       onTap: () => onClick.call(user),
       child: Container(
-        padding: EdgeInsets.all(6),
+        padding: EdgeInsets.fromLTRB(8, 16, 8, 16),
         color: Colors.transparent,
         child: Row(
           children: <Widget>[

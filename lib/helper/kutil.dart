@@ -10,7 +10,6 @@ import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/helper/ktablet_detector.dart';
 import 'package:app_core/model/krole.dart';
 import 'package:app_core/ui/wallet/wallet_transfer.dart';
-import 'package:app_core/ui/wallet/wallet_transfer_2.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -246,6 +245,7 @@ abstract class KUtil {
     bool useCurrencySymbol = true,
     bool useCurrencyName = false,
     bool acceptZero = true,
+    bool tokenToRight = false,
   }) {
     if (amount == null) return "";
     double dAmount = double.tryParse(amount) ?? 0;
@@ -254,8 +254,15 @@ abstract class KUtil {
     try {
       switch (uppercaseToken) {
         case "USD":
-          if (useCurrencyName) // USD1,234.56 or USD1,234.00
-            pretty = NumberFormat.currency(locale: "en").format(dAmount);
+          if (useCurrencyName) {
+            if (tokenToRight) {
+              pretty = NumberFormat.currency(locale: "en").format(dAmount);
+              pretty = pretty.replaceAll("USD", "");
+              pretty = "$pretty USD";
+            } else {
+              pretty = NumberFormat.currency(locale: "en").format(dAmount);
+            }
+          } // USD1,234.56 or USD1,234.00
           else if (useCurrencySymbol) // $1,234.56 or $1,234.00
             pretty = NumberFormat.simpleCurrency(locale: "en").format(dAmount);
           else // 1,234.56 or 1,234.00
@@ -271,7 +278,12 @@ abstract class KUtil {
           break;
         default: // default locale most likely en or vi
           // 1.234,56 or 1.234
-          pretty = NumberFormat("#,###.##").format(dAmount);
+          if (useCurrencyName) {
+            pretty = NumberFormat("#,###.## ${uppercaseToken}").format(dAmount);
+          } else {
+            pretty = NumberFormat("#,###.##").format(dAmount);
+          }
+
           break;
       }
     } catch (e) {
@@ -633,23 +645,36 @@ abstract class KUtil {
           .join();
 
   // TODO move somewhere else later
+  // static Widget getPaymentScreen({
+  //   required String? rcvPUID,
+  //   required KRole? sndRole,
+  //   required KTransferType transferType,
+  //   required String tokenName,
+  // }) =>
+  //     KHostConfig.isReleaseMode
+  //         ? WalletTransfer(
+  //             transferType: transferType,
+  //             tokenName: tokenName,
+  //             rcvPUID: rcvPUID,
+  //             sndRole: sndRole,
+  //           )
+  //         : WalletTransfer2(
+  //             transferType: transferType,
+  //             tokenName: tokenName,
+  //             rcvPUID: rcvPUID,
+  //             sndRole: sndRole,
+  //           );
+
   static Widget getPaymentScreen({
     required String? rcvPUID,
     required KRole? sndRole,
     required KTransferType transferType,
     required String tokenName,
   }) =>
-      KHostConfig.isReleaseMode
-          ? WalletTransfer(
-              transferType: transferType,
-              tokenName: tokenName,
-              rcvPUID: rcvPUID,
-              sndRole: sndRole,
-            )
-          : WalletTransfer2(
-              transferType: transferType,
-              tokenName: tokenName,
-              rcvPUID: rcvPUID,
-              sndRole: sndRole,
-            );
+      WalletTransfer(
+        transferType: transferType,
+        tokenName: tokenName,
+        rcvPUID: rcvPUID,
+        sndRole: sndRole,
+      );
 }

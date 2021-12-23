@@ -9,7 +9,7 @@ import 'package:app_core/model/response/get_balances_response.dart';
 import 'package:app_core/model/response/get_credit_transactions_response.dart';
 import 'package:app_core/model/xfr_proxy.dart';
 import 'package:app_core/ui/wallet/credit_bank_transfer.dart';
-import 'package:app_core/ui/wallet/credit_receipt.dart';
+import 'package:app_core/ui/wallet/transfer_receipt.dart';
 import 'package:app_core/ui/wallet/wallet_transfer.dart';
 import 'package:app_core/ui/wallet/widget/credit_token_picker.dart';
 import 'package:app_core/ui/wallet/widget/kcredit_banner.dart';
@@ -18,13 +18,13 @@ import 'package:app_core/ui/widget/kqr_viewer.dart';
 import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
 
-class WalletFeed extends StatefulWidget {
+class WalletHome extends StatefulWidget {
   final String? defaultTokenName;
   final bool showBankButtons;
   final bool isDirectTransferEnabled;
   final bool isPartOfBubba; // Hacky but also only affects UI
 
-  WalletFeed({
+  WalletHome({
     this.defaultTokenName,
     required this.showBankButtons,
     required this.isDirectTransferEnabled,
@@ -32,10 +32,10 @@ class WalletFeed extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _WalletFeedState();
+  State<StatefulWidget> createState() => _WalletHomeState();
 }
 
-class _WalletFeedState extends State<WalletFeed> {
+class _WalletHomeState extends State<WalletHome> {
   late final String initialToken = widget.defaultTokenName ?? localeToken;
 
   final xfrRoleCtrl = ValueNotifier<KRole?>(null);
@@ -168,7 +168,7 @@ class _WalletFeedState extends State<WalletFeed> {
   void onTransactionClick(KCreditTransaction transaction) async =>
       await Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (ctx) => CreditReceipt(
+          builder: (ctx) => TransferReceipt(
             transactionID: transaction.txID ?? "",
             lineID: transaction.lineID ?? "",
             tokenName: widget.defaultTokenName,
@@ -197,7 +197,7 @@ class _WalletFeedState extends State<WalletFeed> {
 
       await Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (ctx) => CreditReceipt(
+          builder: (ctx) => TransferReceipt(
             transactionID: transaction.txID ?? "",
             lineID: transaction.lineID ?? "",
             tokenName: currentBalance?.tokenName ?? "",
@@ -267,13 +267,13 @@ class _WalletFeedState extends State<WalletFeed> {
     );
 
     final transactionList = transactions.isEmpty
-        ? Center(child: Text("No transaction found"))
+        ? Center(child: Text(KPhrases.noData))
         : ListView.builder(
             primary: false,
             itemCount: transactions.length,
             shrinkWrap: true,
             padding: EdgeInsets.only(bottom: 100),
-            itemBuilder: (_, i) => _CreditFeedItem(
+            itemBuilder: (_, i) => _WalletItem(
               transactions[i],
               transactions[i].tokenName ?? currentBalance?.tokenName ?? "",
               onClick: onTransactionClick,
@@ -349,13 +349,13 @@ class _WalletFeedState extends State<WalletFeed> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.list, color: Colors.black, size: 18),
+          Icon(Icons.list, size: 18),
           SizedBox(width: 6),
           Text(
             currentBalance?.tokenName ?? "    ",
             style: Theme.of(context)
                 .textTheme
-                .subtitle1!
+                .headline6!
                 .copyWith(color: Colors.blue),
           ),
         ],
@@ -480,12 +480,12 @@ class _WalletFeedState extends State<WalletFeed> {
   }
 }
 
-class _CreditFeedItem extends StatelessWidget {
+class _WalletItem extends StatelessWidget {
   final KCreditTransaction transaction;
   final String tokenName;
   final Function(KCreditTransaction)? onClick;
 
-  const _CreditFeedItem(this.transaction, this.tokenName, {this.onClick});
+  const _WalletItem(this.transaction, this.tokenName, {this.onClick});
 
   Widget transactorPrettyName(ctx, String name) => Text(
         name,
