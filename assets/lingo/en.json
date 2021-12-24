@@ -111,7 +111,7 @@
   "confirm": "Confirm",
   "bxfr": "BXFR",
   "amount_must_lower_than_balance": "Amount must be lower than balance ",
-  "transfer_recipient": "Choose ecipient",
+  "transfer_recipient": "Choose Recipient",
   "memo_hint_text": "eg Coffee money",
   "account_name": "Account Name",
   "account_number": "Account Number",
