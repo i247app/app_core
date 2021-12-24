@@ -49,7 +49,7 @@ abstract class KPhrases {
   static String get amountMustLowerThanBalance =>
       _klingo.yak("amount_must_lower_than_balance");
 
-  static String get transferTo => _klingo.yak("transfer_to");
+  static String get transferRecipient => _klingo.yak("transfer_recipient");
 
   static String get memoHintText => _klingo.yak("memo_hint_text");
 

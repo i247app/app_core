@@ -367,7 +367,7 @@ class _WalletTransferState extends State<WalletTransfer> {
         child: selectedUser == null
             ? Row(
                 children: [
-                  Text(KPhrases.transferTo,
+                  Text(KPhrases.transferRecipient,
                       style: Theme.of(context)
                           .textTheme
                           .headline6!
