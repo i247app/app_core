@@ -89,11 +89,12 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       questionCount > 0 ? ((correctCount * 100) / questionCount).floor() : 0;
 
   bool? isLocalPause = true;
+
   bool get isPause => isLocalPause ?? widget.isPause ?? false;
 
   Timer? _timer;
-  int BASE_TIME_TO_ANSWER = 3000;
-  int timeToAnswer = 3000;
+  int BASE_TIME_TO_ANSWER = 2000;
+  int timeToAnswer = 2000;
 
   @override
   void initState() {
@@ -538,21 +539,21 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                       padding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       child: LinearProgressIndicator(
-                        value: (BASE_TIME_TO_ANSWER - timeToAnswer)/BASE_TIME_TO_ANSWER,
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        color: KTheme.of(context).lightGrey,
+                        value: timeToAnswer / BASE_TIME_TO_ANSWER,
+                        backgroundColor: KTheme.of(context).lightGrey,
+                        minHeight: 8,
                       ),
-                      // child: Text(
-                      //   "${timeToAnswer}",
-                      //   textScaleFactor: 1.0,
-                      //   textAlign: TextAlign.center,
-                      //   style: TextStyle(
-                      //     color: Colors.black,
-                      //     fontSize: 70,
-                      //     fontWeight: FontWeight.bold,
-                      //   ),
-                      // ),
                     ),
+                    // Text(
+                    //   "${timeToAnswer}",
+                    //   textScaleFactor: 1.0,
+                    //   textAlign: TextAlign.center,
+                    //   style: TextStyle(
+                    //     color: Colors.black,
+                    //     fontSize: 70,
+                    //     fontWeight: FontWeight.bold,
+                    //   ),
+                    // ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -592,7 +593,9 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                               borderRadius: BorderRadius.circular(40),
                             ),
                             child: Icon(
-                              (this.isLocalPause ?? false) ? Icons.play_arrow : Icons.pause,
+                              (this.isLocalPause ?? false)
+                                  ? Icons.play_arrow
+                                  : Icons.pause,
                               color: Color(0xff2c1c44),
                               size: 30,
                             ),
