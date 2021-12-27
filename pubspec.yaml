@@ -89,6 +89,8 @@ dependencies:
 
   audioplayers: 0.20.1
 
+  flutter_tts: ^3.3.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

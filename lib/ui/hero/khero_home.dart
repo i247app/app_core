@@ -22,6 +22,8 @@ import 'package:app_core/ui/hero/widget/khero_combine_view.dart';
 import 'package:app_core/ui/hero/widget/khero_grid_item.dart';
 import 'package:app_core/ui/widget/kstopwatch_label.dart';
 
+import 'khero_speech_tap_game.dart';
+
 final GlobalKey _draggableKey = GlobalKey();
 
 class KHeroHome extends StatefulWidget {
@@ -88,6 +90,15 @@ class _KHeroHomeState extends State<KHeroHome> {
     }
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (ctx) => KHeroTraining(hero: hero)));
+  }
+
+  void onPlaySpeechTapGame(KHero? hero) {
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (ctx) => KHeroSpeechTapGame(hero: hero)));
   }
 
   void onPlayTapGame(KHero? hero) {
@@ -367,6 +378,24 @@ class _KHeroHomeState extends State<KHeroHome> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text("👾️"),
+                        // SizedBox(width: 10),
+                        // Text("Game"),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 18),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => onPlaySpeechTapGame(null),
+                    style: KStyles.squaredButton(
+                      KStyles.colorPrimary,
+                      textColor: Colors.white,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("🔈"),
                         // SizedBox(width: 10),
                         // Text("Game"),
                       ],
