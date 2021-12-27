@@ -539,7 +539,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                       padding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       child: LinearProgressIndicator(
-                        value: timeToAnswer / BASE_TIME_TO_ANSWER,
+                        value: (BASE_TIME_TO_ANSWER-timeToAnswer) / BASE_TIME_TO_ANSWER,
                         backgroundColor: KTheme.of(context).lightGrey,
                         minHeight: 8,
                       ),
