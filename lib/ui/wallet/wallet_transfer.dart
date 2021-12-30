@@ -3,17 +3,12 @@ import 'dart:convert';
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kmoney_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/model/kcredit_transaction.dart';
 import 'package:app_core/model/krole.dart';
-import 'package:app_core/model/response/credit_transfer_response.dart';
-import 'package:app_core/model/xfr_ticket.dart';
-import 'package:app_core/ui/wallet/transfer_receipt.dart';
 import 'package:app_core/ui/wallet/transfer_confirm.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 enum KTransferType { direct, proxy }
 
@@ -92,6 +87,8 @@ class _WalletTransferState extends State<WalletTransfer> {
   }
 
   void attemptTransferCredit() async {
+    FocusScope.of(context).unfocus(); // dismiss keyboard
+
     final rcvPUID = selectedUser?.puid ?? "";
     final amount = amountCtrl.text.endsWith(".")
         ? amountCtrl.text.replaceAll(".", "")
@@ -99,89 +96,11 @@ class _WalletTransferState extends State<WalletTransfer> {
 
     if (rcvPUID.isNotEmpty && amount.isNotEmpty) {
       // Open TransferConfirm screen
-      final memo = await openConfirmScreen(
+      final result = await openConfirmScreen(
           amount, widget.tokenName, selectedUser!, balanceAmount ?? "");
-      if (memo == null) return;
-      transferCredit(
-          rcvPUID: rcvPUID,
-          amount: amount,
-          tokenName: widget.tokenName,
-          memo: memo);
-    }
-
-    FocusScope.of(context).unfocus(); // dismiss keyboard
-  }
-
-  void transferCredit(
-      {required String rcvPUID,
-      required String amount,
-      String? tokenName,
-      String? memo}) async {
-    try {
-      setState(() => isNetworking = true);
-
-      final ticket = XFRTicket(
-        sndPUID: widget.sndRole?.buid,
-        rcvPUID: rcvPUID,
-        amount: amount,
-        tokenName: tokenName,
-        memo: memo,
-      );
-      final Future<CreditTransferResponse> Function(XFRTicket) fn =
-          widget.transferType == KTransferType.direct
-              ? KServerHandler.xfrDirect
-              : KServerHandler.xfrProxy;
-      final response = await fn.call(ticket);
-
-      setState(() => isNetworking = false);
-
-      switch (response.kstatus) {
-        case 100:
-          final assPUIDToLookFor = widget.transferType == KTransferType.proxy
-              ? widget.sndRole?.buid
-              : KSessionData.me?.puid;
-          KCreditTransaction? theTx;
-          try {
-            theTx = response.transactions?.firstWhere((t) {
-              print("t.assPUID == ${t.assPUID}");
-              print("assPUIDToLookFor == $assPUIDToLookFor");
-              return t.assPUID == assPUIDToLookFor;
-            });
-          } catch (e) {
-            print(e.toString());
-          }
-          if (theTx != null) {
-            await Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (ctx) => TransferReceipt(
-                transactionID: theTx!.txID ?? "",
-                lineID: theTx.lineID ?? "",
-                tokenName: widget.tokenName,
-              ),
-            ));
-          } else {
-            KToastHelper.fromResponse(response);
-          }
-          loadBalance();
-          break;
-        case 2104:
-          // multiple toast until a better solution
-          KToastHelper.show("Insufficient funds",
-              backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
-          // do noting
-          break;
-        case 400:
-          KToastHelper.show("Transfer failed",
-              backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
-          break;
-        default:
-          KToastHelper.show(response.kmessage ?? "Transfer failed",
-              backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
-          break;
+      if (result != null) {
+        Navigator.of(context).pop();
       }
-    } catch (e) {
-      print(e);
-      print("release isNetworking = false");
-      setState(() => isNetworking = false);
     }
   }
 
@@ -191,11 +110,13 @@ class _WalletTransferState extends State<WalletTransfer> {
     if (user?.puid != null) loadUserInfo(puid: user!.puid!);
   }
 
-  Future<String?> openConfirmScreen(
+  Future<dynamic> openConfirmScreen(
       String amout, String tokenName, KUser user, String balanceAmount) async {
-    final String? memo = await Navigator.of(context).push(
+    final result = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => TransferConfirm(
+          sndRole: widget.sndRole,
+          transferType: widget.transferType,
           amount: amout,
           tokenName: tokenName,
           user: user,
@@ -203,7 +124,7 @@ class _WalletTransferState extends State<WalletTransfer> {
         ),
       ),
     );
-    return Future.value(memo);
+    return Future.value(result);
   }
 
   void loadUserInfo({required String puid}) async {

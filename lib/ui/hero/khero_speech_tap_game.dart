@@ -673,7 +673,7 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
       setState(() {
         this.isSpeech = true;
       });
-      while(isSpeech) {
+      while (isSpeech) {
         await flutterTts.speak(text);
       }
     }
@@ -1304,7 +1304,9 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
               child: InkWell(
-                onTap: () => isSpeech ? stopSpeak(false) : startSpeak(currentQuestion.text ?? ""),
+                onTap: () => isSpeech
+                    ? stopSpeak(false)
+                    : startSpeak(currentQuestion.text ?? ""),
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.75,
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -1319,25 +1321,27 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
                       ),
                     ],
                   ),
-                  child: isSpeech ? Text(
-                    "Pause",
-                    textScaleFactor: 1.0,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ) : Text(
-                    "Play",
-                    textScaleFactor: 1.0,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: isSpeech
+                      ? Text(
+                          "Pause",
+                          textScaleFactor: 1.0,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      : Text(
+                          "Play",
+                          textScaleFactor: 1.0,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ),
             ),
