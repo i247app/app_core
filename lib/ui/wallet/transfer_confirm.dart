@@ -108,7 +108,9 @@ class _TransferConfirmState extends State<TransferConfirm> {
         textAlign: TextAlign.left);
 
     final memoTextField = TextField(
-      keyboardType: TextInputType.multiline,
+      autocorrect: true,
+      textCapitalization: TextCapitalization.sentences,
+      keyboardType: TextInputType.text,
       minLines: 1,
       //Normal textInputField will be displayed
       maxLines: 5,
