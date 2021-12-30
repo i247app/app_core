@@ -402,12 +402,12 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   }
 
   void handlePickAnswer(int answer, int answerIndex) {
-    if (_timer != null && _timer!.isActive) {
-      _timer!.cancel();
+    if (isAnimating || isPause) {
+      return;
     }
 
-    if (isAnimating) {
-      return;
+    if (_timer != null && _timer!.isActive) {
+      _timer!.cancel();
     }
 
     this.setState(() {

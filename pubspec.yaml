@@ -2,7 +2,7 @@ name: app_core
 
 description: App core package
 
-version: 1.0.92
+version: 1.0.93
 
 homepage: none
 
@@ -88,6 +88,8 @@ dependencies:
   get_storage: ^2.0.3
 
   audioplayers: 0.20.1
+
+  flutter_tts: ^3.3.3
 
 dev_dependencies:
   flutter_test:
