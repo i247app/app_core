@@ -14,6 +14,9 @@ class KLocale {
 }
 
 abstract class KLocaleHelper {
+  static const String TTS_LANGUAGE_EN = "en-US";
+  static const String TTS_LANGUAGE_VI = "vi-VN";
+
   static const String LANGUAGE_EN = "en";
   static const String LANGUAGE_VI = "vi";
 

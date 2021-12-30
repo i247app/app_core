@@ -434,9 +434,24 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
   TtsState ttsState = TtsState.stopped;
 
   get isPlaying => ttsState == TtsState.playing;
+
   get isStopped => ttsState == TtsState.stopped;
+
   get isPaused => ttsState == TtsState.paused;
+
   get isContinued => ttsState == TtsState.continued;
+
+  double speechRate = 0.4;
+  double speechPitch = 1;
+  int speechDelay = 2000;
+
+  String get defaultLanguage => KLocaleHelper.isVietnam
+      ? KLocaleHelper.TTS_LANGUAGE_VI
+      : KLocaleHelper.TTS_LANGUAGE_EN;
+  String? currentLanguage;
+
+  bool get canShowLanguageToggle =>
+      Platform.isAndroid && currentLanguage != null;
 
   @override
   void initState() {
@@ -601,6 +616,7 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
   }
 
   Future _setAwaitOptions() async {
+    print(await flutterTts.getLanguages);
     await flutterTts.awaitSpeakCompletion(true);
   }
 
@@ -611,6 +627,18 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
     }
   }
 
+  setTtsLanguage(String language) async {
+    if (Platform.isAndroid) {
+      bool isInstalled = await flutterTts.isLanguageInstalled(language);
+      if (!isInstalled) {
+        return;
+      }
+    }
+    setState(() {
+      currentLanguage = language;
+    });
+  }
+
   initTts() {
     flutterTts = FlutterTts();
 
@@ -618,6 +646,23 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
 
     if (Platform.isAndroid) {
       _getDefaultEngine();
+      setTtsLanguage(defaultLanguage);
+    } else if (Platform.isIOS) {
+      setTtsLanguage(KLocaleHelper.TTS_LANGUAGE_EN);
+
+      flutterTts.setPauseHandler(() {
+        setState(() {
+          print("Paused");
+          ttsState = TtsState.paused;
+        });
+      });
+
+      flutterTts.setContinueHandler(() {
+        setState(() {
+          print("Continued");
+          ttsState = TtsState.continued;
+        });
+      });
     }
 
     flutterTts.setStartHandler(() {
@@ -641,22 +686,6 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
       });
     });
 
-    if (Platform.isIOS) {
-      flutterTts.setPauseHandler(() {
-        setState(() {
-          print("Paused");
-          ttsState = TtsState.paused;
-        });
-      });
-
-      flutterTts.setContinueHandler(() {
-        setState(() {
-          print("Continued");
-          ttsState = TtsState.continued;
-        });
-      });
-    }
-
     flutterTts.setErrorHandler((msg) {
       setState(() {
         print("error: $msg");
@@ -673,8 +702,13 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
       setState(() {
         this.isSpeech = true;
       });
-      while(isSpeech) {
+      while (isSpeech) {
+        if (currentLanguage != null)
+          await flutterTts.setLanguage(currentLanguage!);
+        await flutterTts.setSpeechRate(speechRate);
+        await flutterTts.setPitch(speechPitch);
         await flutterTts.speak(text);
+        await Future.delayed(Duration(milliseconds: speechDelay));
       }
     }
   }
@@ -1304,7 +1338,9 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
               child: InkWell(
-                onTap: () => isSpeech ? stopSpeak(false) : startSpeak(currentQuestion.text ?? ""),
+                onTap: () => isSpeech
+                    ? stopSpeak(false)
+                    : startSpeak(currentQuestion.text ?? ""),
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.75,
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -1319,25 +1355,27 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
                       ),
                     ],
                   ),
-                  child: isSpeech ? Text(
-                    "Pause",
-                    textScaleFactor: 1.0,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ) : Text(
-                    "Play",
-                    textScaleFactor: 1.0,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 35,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  child: isSpeech
+                      ? Text(
+                          "Pause",
+                          textScaleFactor: 1.0,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        )
+                      : Text(
+                          "Play",
+                          textScaleFactor: 1.0,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ),
             ),
@@ -1348,51 +1386,83 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
             alignment: Alignment.topRight,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+              child: Column(
                 children: [
-                  if (isStart || result != null)
-                    InkWell(
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        padding: EdgeInsets.only(
-                            top: 5, bottom: 5, left: 5, right: 5),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(40),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      if (isStart || result != null)
+                        InkWell(
+                          child: Container(
+                            width: 50,
+                            height: 50,
+                            padding: EdgeInsets.only(
+                                top: 5, bottom: 5, left: 5, right: 5),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(40),
+                            ),
+                            child: Icon(
+                              this.isBackgroundSoundPlaying
+                                  ? Icons.volume_up
+                                  : Icons.volume_off,
+                              color: Color(0xff2c1c44),
+                              size: 30,
+                            ),
+                          ),
+                          onTap: () => this.toggleBackgroundSound(),
                         ),
-                        child: Icon(
-                          this.isBackgroundSoundPlaying
-                              ? Icons.volume_up
-                              : Icons.volume_off,
-                          color: Color(0xff2c1c44),
-                          size: 30,
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        child: Container(
+                          width: 50,
+                          height: 50,
+                          padding: EdgeInsets.only(
+                              top: 5, bottom: 5, left: 5, right: 5),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(40),
+                          ),
+                          child: Icon(
+                            Icons.pause,
+                            color: Colors.red,
+                            size: 30,
+                          ),
                         ),
+                        onTap: () => showPauseDialog(),
                       ),
-                      onTap: () => this.toggleBackgroundSound(),
-                    ),
-                  SizedBox(
-                    width: 10,
+                    ],
                   ),
-                  InkWell(
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      padding:
-                          EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(40),
-                      ),
-                      child: Icon(
-                        Icons.pause,
-                        color: Colors.red,
-                        size: 30,
-                      ),
+                  if (isStart && canShowLanguageToggle)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text("${KLocaleHelper.LANGUAGE_EN.toUpperCase()}"),
+                        Switch(
+                          onChanged: currentLanguage != null
+                              ? (currentLanguage! ==
+                              KLocaleHelper.TTS_LANGUAGE_VI
+                              ? (_) => setTtsLanguage(
+                              KLocaleHelper.TTS_LANGUAGE_EN)
+                              : (_) => setTtsLanguage(
+                              KLocaleHelper.TTS_LANGUAGE_VI))
+                              : (_) {},
+                          value: () {
+                            // print("IS TUTOR ONLINE? - ${OnlineService.isTutorOnlineCache}");
+                            return currentLanguage ==
+                                KLocaleHelper.TTS_LANGUAGE_VI;
+                          }.call(),
+                          activeColor: Colors.grey.shade50,
+                          activeTrackColor: Colors.grey.shade50.withAlpha(0x80),
+                          inactiveThumbColor: Colors.grey.shade50,
+                          inactiveTrackColor:
+                          Colors.grey.shade50.withAlpha(0x80),
+                        ),
+                        Text("${KLocaleHelper.LANGUAGE_VI.toUpperCase()}"),
+                      ],
                     ),
-                    onTap: () => showPauseDialog(),
-                  ),
                 ],
               ),
             ),
