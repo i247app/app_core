@@ -699,12 +699,16 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
       if (this.isBackgroundSoundPlaying) {
         toggleBackgroundSound();
       }
+
       setState(() {
         this.isSpeech = true;
       });
+
       while (isSpeech) {
-        if (currentLanguage != null)
+        if (currentLanguage != null) {
           await flutterTts.setLanguage(currentLanguage!);
+        }
+
         await flutterTts.setSpeechRate(speechRate);
         await flutterTts.setPitch(speechPitch);
         await flutterTts.speak(text);
@@ -1443,11 +1447,11 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
                         Switch(
                           onChanged: currentLanguage != null
                               ? (currentLanguage! ==
-                              KLocaleHelper.TTS_LANGUAGE_VI
-                              ? (_) => setTtsLanguage(
-                              KLocaleHelper.TTS_LANGUAGE_EN)
-                              : (_) => setTtsLanguage(
-                              KLocaleHelper.TTS_LANGUAGE_VI))
+                                      KLocaleHelper.TTS_LANGUAGE_VI
+                                  ? (_) => setTtsLanguage(
+                                      KLocaleHelper.TTS_LANGUAGE_EN)
+                                  : (_) => setTtsLanguage(
+                                      KLocaleHelper.TTS_LANGUAGE_VI))
                               : (_) {},
                           value: () {
                             // print("IS TUTOR ONLINE? - ${OnlineService.isTutorOnlineCache}");
@@ -1458,7 +1462,7 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
                           activeTrackColor: Colors.grey.shade50.withAlpha(0x80),
                           inactiveThumbColor: Colors.grey.shade50,
                           inactiveTrackColor:
-                          Colors.grey.shade50.withAlpha(0x80),
+                              Colors.grey.shade50.withAlpha(0x80),
                         ),
                         Text("${KLocaleHelper.LANGUAGE_VI.toUpperCase()}"),
                       ],
