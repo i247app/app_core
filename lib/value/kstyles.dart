@@ -93,6 +93,23 @@ abstract class KStyles {
   static final String fontComfortaa = "Comfortaa";
   static final String fontQuicksand = "Quicksand";
 
+  static InputDecoration get roundedInputStyle => InputDecoration(
+        fillColor: KThemeService.isDarkMode() ? Colors.white30 : Colors.black12,
+        filled: true,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20.0),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20.0),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20.0),
+          borderSide: BorderSide.none,
+        ),
+      );
+
   /// SystemUiOverlayStyle
   static SystemUiOverlayStyle get systemStyle =>
       SystemUiOverlayStyle.light.copyWith(

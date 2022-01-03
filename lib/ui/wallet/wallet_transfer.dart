@@ -7,7 +7,6 @@ import 'package:app_core/model/krole.dart';
 import 'package:app_core/ui/wallet/transfer_confirm.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
-import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
 
 enum KTransferType { direct, proxy }
@@ -17,10 +16,12 @@ class WalletTransfer extends StatefulWidget {
   final KRole? sndRole;
   final KTransferType transferType;
   final String tokenName;
+  final KUser? user;
 
   WalletTransfer({
     this.rcvPUID,
     this.sndRole,
+    this.user,
     required this.transferType,
     required this.tokenName,
   });
@@ -40,10 +41,9 @@ class _WalletTransferState extends State<WalletTransfer> {
 
   void Function()? get actionButtonHandler {
     final amount = double.tryParse(amountCtrl.text) ?? 0;
+    selectedUser = widget.user;
 
-    if (amount > (double.tryParse(balanceAmount ?? "0") ?? 0) ||
-        amount == 0 ||
-        selectedUser == null) {
+    if (amount > (double.tryParse(balanceAmount ?? "0") ?? 0) || amount == 0) {
       return null;
     } else {
       return attemptTransferCredit;
@@ -94,7 +94,7 @@ class _WalletTransferState extends State<WalletTransfer> {
         ? amountCtrl.text.replaceAll(".", "")
         : amountCtrl.text;
 
-    if (rcvPUID.isNotEmpty && amount.isNotEmpty) {
+    if (rcvPUID.isNotEmpty && amount.isNotEmpty && selectedUser != null) {
       // Open TransferConfirm screen
       final result = await openConfirmScreen(
           amount, widget.tokenName, selectedUser!, balanceAmount ?? "");
@@ -105,8 +105,8 @@ class _WalletTransferState extends State<WalletTransfer> {
   }
 
   void toChooseContact() async {
-    final KUser? user = await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (ctx) => KChooseContact()));
+    final KUser? user = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (ctx) => KChooseContact(contactType: KContactType.transfer)));
     if (user?.puid != null) loadUserInfo(puid: user!.puid!);
   }
 
@@ -285,28 +285,14 @@ class _WalletTransferState extends State<WalletTransfer> {
     final actions = [
       InkWell(
         onTap: onRecipientClick,
-        child: selectedUser == null
-            ? Row(
-                children: [
-                  Text(KPhrases.transferRecipient,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline6!
-                          .copyWith(color: Colors.green)),
-                  SizedBox(width: 4),
-                  Icon(Icons.search),
-                  SizedBox(width: 12),
-                  Icon(Icons.account_circle, size: 32)
-                ],
-              )
-            : Row(
-                children: [
-                  Text(selectedUser!.fullName ?? "",
-                      style: Theme.of(context).textTheme.headline6),
-                  SizedBox(width: 12),
-                  KUserAvatar.fromUser(selectedUser!, size: 32)
-                ],
-              ),
+        child: Row(
+          children: [
+            Text(selectedUser?.fullName ?? "",
+                style: Theme.of(context).textTheme.headline6),
+            SizedBox(width: 12),
+            KUserAvatar.fromUser(selectedUser, size: 32)
+          ],
+        ),
       ),
       IconButton(
         onPressed: onScanQR,

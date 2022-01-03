@@ -9,10 +9,13 @@ import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
 
+enum KContactType { reward, transfer, other }
+
 class KChooseContact extends StatefulWidget {
   final bool multiselect;
-
-  const KChooseContact({this.multiselect = false});
+  final KContactType contactType;
+  const KChooseContact(
+      {this.multiselect = false, this.contactType = KContactType.other});
 
   @override
   _KChooseContactState createState() => _KChooseContactState();
@@ -31,8 +34,29 @@ class _KChooseContactState extends State<KChooseContact> {
   bool isSearching = false;
   int searchReqID = -1;
   List<KUser> selectedUsers = [];
+  List<KUser>? recentUsers;
+
+  @override
+  void initState() {
+    super.initState();
+    // If contactType is transfer, then we need list recent users from kserver
+    if (widget.contactType == KContactType.transfer) {
+      KServerHandler.recentsUsers().then((response) {
+        if (response.isSuccess) {
+          setState(() {
+            recentUsers = response.users;
+          });
+        }
+      });
+    }
+  }
 
   void onSearchChanged(String searchText) {
+    if (searchText.isEmpty) {
+      setState(() {
+        userLists = null;
+      });
+    }
     setState(() => currentSearchText = searchText);
 
     timer?.cancel();
@@ -93,9 +117,9 @@ class _KChooseContactState extends State<KChooseContact> {
     );
 
     final userListing;
-    if (userLists == null) {
+    if (userLists == null && recentUsers == null) {
       userListing = Container();
-    } else if (userLists!.isEmpty) {
+    } else if (userLists != null && userLists!.isEmpty) {
       userListing = Center(
         child: Text(
           KPhrases.noData,
@@ -106,9 +130,9 @@ class _KChooseContactState extends State<KChooseContact> {
     } else {
       userListing = ListView.builder(
         padding: EdgeInsets.all(4),
-        itemCount: (userLists ?? []).length,
+        itemCount: (userLists ?? recentUsers ?? []).length,
         itemBuilder: (_, i) {
-          final user = (userLists ?? [])[i];
+          final user = (userLists ?? recentUsers ?? [])[i];
           return _ResultItem(
             user: user,
             onClick: onSearchResultClick,

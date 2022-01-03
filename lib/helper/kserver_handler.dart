@@ -19,6 +19,7 @@ import 'package:app_core/model/response/get_users_response.dart';
 import 'package:app_core/model/response/list_heroes_response.dart';
 import 'package:app_core/model/response/list_xfr_proxy_response.dart';
 import 'package:app_core/model/response/list_xfr_role_response.dart';
+import 'package:app_core/model/response/recent_users_response.dart';
 import 'package:app_core/model/response/resume_session_response.dart';
 import 'package:app_core/model/response/search_users_response.dart';
 import 'package:app_core/model/response/send_2fa_response.dart';
@@ -159,6 +160,15 @@ abstract class KServerHandler {
     };
     return TLSHelper.send(params)
         .then((data) => SearchUsersResponse.fromJson(data));
+  }
+
+  static Future<RecentUsersResponse> recentsUsers() async {
+    final params = {
+      "svc": "auth",
+      "req": "xfr.recent.users",
+    };
+    return TLSHelper.send(params)
+        .then((data) => RecentUsersResponse.fromJson(data));
   }
 
   static Future<SimpleResponse> notifyWebRTCCall({
@@ -453,7 +463,8 @@ abstract class KServerHandler {
         .then((data) => ListXFRProxyResponse.fromJson(data));
   }
 
-  static Future<KGetGamesResponse> getGames({ required String gameID, required String level, String? cat }) async {
+  static Future<KGetGamesResponse> getGames(
+      {required String gameID, required String level, String? cat}) async {
     final params = {
       "svc": "game",
       "req": "game.get",

@@ -218,15 +218,24 @@ class _WalletHomeState extends State<WalletHome> {
     showReceipt(result);
   }
 
-  void onTransferClick() => Navigator.of(context)
-      .push(MaterialPageRoute(
-          builder: (ctx) => KUtil.getPaymentScreen(
-                sndRole: xfrRoleCtrl.value,
-                transferType: transferType,
-                tokenName: currentBalance?.tokenName ?? "",
-                rcvPUID: null,
-              )))
-      .whenComplete(loadAllData);
+  void toChooseContact() async {}
+
+  void onTransferClick() async {
+    final KUser? user = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (ctx) => KChooseContact(contactType: KContactType.transfer)));
+    if (user != null) {
+      Navigator.of(context)
+          .push(MaterialPageRoute(
+              builder: (ctx) => KUtil.getPaymentScreen(
+                    user: user,
+                    sndRole: xfrRoleCtrl.value,
+                    transferType: transferType,
+                    tokenName: currentBalance?.tokenName ?? "",
+                    rcvPUID: null,
+                  )))
+          .whenComplete(loadAllData);
+    }
+  }
 
   void onTokenNameClick(String token) => balanceTokenCtrl.value = token;
 
