@@ -50,11 +50,14 @@ class _TransferConfirmState extends State<TransferConfirm> {
   Widget build(BuildContext context) {
     final transferAmount = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 32),
-      child: FittedBox(
-        fit: BoxFit.contain,
-        child: Text(
-          prettyPartialDecimal(widget.amount),
-          style: TextStyle(fontWeight: FontWeight.bold),
+      child: Container(
+        height: 290,
+        child: FittedBox(
+          fit: BoxFit.contain,
+          child: Text(
+            prettyPartialDecimal(widget.amount),
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
       ),
     );
