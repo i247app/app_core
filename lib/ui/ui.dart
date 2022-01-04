@@ -5,7 +5,7 @@ export 'chat/service/kchatroom_controller.dart';
 export 'chat/service/kchatroom_data.dart';
 export 'chat/service/kchat_listing_controller.dart';
 export 'chat/service/kchat_listing_data.dart';
-export 'chat/kchoose_contact.dart';
+export 'widget/kchoose_contact.dart';
 export 'chat/kchat_list_screen.dart';
 export 'chat/kchat_manager.dart';
 export 'chat/kchat_screen.dart';

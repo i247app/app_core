@@ -1,16 +1,21 @@
 import 'dart:async';
 
-import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/ui/widget/kcontact_name_view.dart';
+import 'package:app_core/helper/kstring_helper.dart';
+import 'package:app_core/model/kuser.dart';
+import 'package:app_core/ui/chat/widget/kuser_profile_view.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
+import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
+
+enum KContactType { reward, transfer, other }
 
 class KChooseContact extends StatefulWidget {
   final bool multiselect;
-
-  const KChooseContact({this.multiselect = false});
+  final KContactType contactType;
+  const KChooseContact(
+      {this.multiselect = false, this.contactType = KContactType.other});
 
   @override
   _KChooseContactState createState() => _KChooseContactState();
@@ -19,9 +24,8 @@ class KChooseContact extends StatefulWidget {
 class _KChooseContactState extends State<KChooseContact> {
   static const Duration SEARCH_DELAY = Duration(milliseconds: 250);
 
+  final focusNode = FocusNode();
   final searchFieldCtrl = TextEditingController();
-  final FocusNode focusNode = FocusNode();
-  final List<KUser> selectedUsers = [];
 
   List<KUser>? userLists;
   String? currentSearchText;
@@ -29,41 +33,67 @@ class _KChooseContactState extends State<KChooseContact> {
 
   bool isSearching = false;
   int searchReqID = -1;
+  List<KUser> selectedUsers = [];
+  List<KUser>? recentUsers;
+
+  @override
+  void initState() {
+    super.initState();
+    // If contactType is transfer, then we need list recent users from kserver
+    if (widget.contactType == KContactType.transfer) {
+      KServerHandler.recentsUsers().then((response) {
+        if (response.isSuccess) {
+          setState(() {
+            recentUsers = response.users;
+          });
+        }
+      });
+    }
+  }
+
+  void onSearchChanged(String searchText) {
+    if (searchText.isEmpty) {
+      setState(() {
+        userLists = null;
+      });
+    }
+    setState(() => currentSearchText = searchText);
+
+    timer?.cancel();
+    timer = Timer(SEARCH_DELAY, () => searchUsers(searchText));
+  }
 
   void searchUsers(String searchText) async {
-    final myReqID = ++this.searchReqID;
+    final myReqID = ++searchReqID;
 
     List<KUser>? searchedUsers = [];
     if (searchText.isEmpty) {
       searchedUsers = null;
     } else {
-      setState(() => this.isSearching = true);
+      setState(() => isSearching = true);
       final response = await KServerHandler.searchUsers(searchText);
-      setState(() => this.isSearching = false);
+      setState(() => isSearching = false);
 
-      if (response.kstatus == 100)
+      if (response.kstatus == 100) {
         searchedUsers = response.users;
-      else if (response.kstatus == 202) searchedUsers = [];
+      } else if (response.kstatus == 202) {
+        searchedUsers = [];
+      }
     }
 
-    if (myReqID == searchReqID) setState(() => this.userLists = searchedUsers);
-  }
-
-  void onSearchChanged(String searchText) {
-    setState(() => this.currentSearchText = searchText);
-
-    this.timer?.cancel();
-    this.timer = Timer(SEARCH_DELAY, () => searchUsers(searchText));
+    if (myReqID == searchReqID) {
+      setState(() => userLists = searchedUsers);
+    }
   }
 
   void onSearchResultClick(KUser user) {
-    if (null == user.puid) return;
+    if (KStringHelper.isEmpty(user.puid)) return;
 
     if (widget.multiselect) {
-      if (this.selectedUsers.where((su) => su.puid == user.puid).isEmpty) {
+      if (selectedUsers.where((su) => su.puid == user.puid).isEmpty) {
         setState(() {
-          this.selectedUsers.add(user);
-          this.searchFieldCtrl.clear();
+          selectedUsers.add(user);
+          searchFieldCtrl.clear();
         });
       }
     } else {
@@ -71,74 +101,72 @@ class _KChooseContactState extends State<KChooseContact> {
     }
   }
 
-  void onComplete() => Navigator.of(context).pop(this.selectedUsers);
+  void onComplete() => Navigator.of(context).pop(selectedUsers);
 
   @override
   Widget build(BuildContext context) {
     final searchInput = _SearchField(
-      searchFieldController: this.searchFieldCtrl,
+      searchFieldCtrl: searchFieldCtrl,
       onChanged: onSearchChanged,
       readOnly: false,
-      focusNode: this.focusNode,
+      focusNode: focusNode,
       onTap: () {},
-      onSelectedUserTap: (u) => setState(
-          () => this.selectedUsers.removeWhere((su) => su.puid == u.puid)),
-      selectedUsers: this.selectedUsers,
+      onSelectedUserTap: (u) =>
+          setState(() => selectedUsers.removeWhere((su) => su.puid == u.puid)),
+      selectedUsers: selectedUsers,
     );
 
     final userListing;
-    if (this.userLists == null)
+    if (userLists == null && recentUsers == null) {
       userListing = Container();
-    else if (this.userLists!.isEmpty)
+    } else if (userLists != null && userLists!.isEmpty) {
       userListing = Center(
         child: Text(
-          "Nothing found!",
+          KPhrases.noData,
           textAlign: TextAlign.center,
-          style: KStyles.normalText,
+          style: Theme.of(context).textTheme.bodyText1,
         ),
       );
-    else
-      userListing = ListView.separated(
+    } else {
+      userListing = ListView.builder(
         padding: EdgeInsets.all(4),
-        itemCount: (this.userLists ?? []).length,
+        itemCount: (userLists ?? recentUsers ?? []).length,
         itemBuilder: (_, i) {
-          KUser user = (this.userLists ?? [])[i];
+          final user = (userLists ?? recentUsers ?? [])[i];
           return _ResultItem(
             user: user,
             onClick: onSearchResultClick,
             icon: Container(
-              width: 50,
+              width: 48,
               child: KUserAvatar.fromUser(user),
             ),
           );
         },
-        separatorBuilder: (_, __) => Container(
-          width: double.infinity,
-          height: 1,
-          color: KStyles.colorDivider,
-        ),
       );
+    }
 
     final doneButton = TextButton(
       onPressed: onComplete,
       child: Text("OK"),
     );
 
+    final topBar = Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        CloseButton(),
+        Spacer(),
+        doneButton,
+      ],
+    );
+
     final body = SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              BackButton(),
-              Text("Choose Users", style: KStyles.largeText),
-              Spacer(),
-              doneButton,
-            ],
-          ),
+          topBar,
           SizedBox(height: 8),
           searchInput,
-          Divider(height: 1, color: KStyles.colorDivider),
+          SizedBox(height: 10),
           Expanded(child: userListing),
         ],
       ),
@@ -152,7 +180,7 @@ class _SearchField extends StatelessWidget {
   final Function(String) onChanged;
   final bool readOnly;
   final FocusNode focusNode;
-  final TextEditingController searchFieldController;
+  final TextEditingController searchFieldCtrl;
   final VoidCallback onTap;
   final Function(KUser) onSelectedUserTap;
   final List<KUser> selectedUsers;
@@ -161,7 +189,7 @@ class _SearchField extends StatelessWidget {
     required this.onChanged,
     required this.readOnly,
     required this.focusNode,
-    required this.searchFieldController,
+    required this.searchFieldCtrl,
     required this.onTap,
     required this.onSelectedUserTap,
     required this.selectedUsers,
@@ -169,64 +197,82 @@ class _SearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final searchField = TextField(
-      maxLength: 12,
-      maxLines: null,
-      focusNode: this.focusNode,
-      textAlign: TextAlign.left,
-      controller: this.searchFieldController,
-      onChanged: this.onChanged,
-      autofocus: true,
-      showCursor: true,
-      onTap: this.onTap,
-      readOnly: this.readOnly,
-      style: KStyles.normalText,
-      decoration: InputDecoration(
-        hintText: "Type a name or phone number",
-        counterText: "",
-        // contentPadding: EdgeInsets.symmetric(vertical: 2),
-        border: InputBorder.none,
+    final searchField = Theme(
+      data: ThemeData(
+        inputDecorationTheme: InputDecorationTheme(border: InputBorder.none),
+      ),
+      child: TextField(
+        maxLength: 12,
+        maxLines: null,
+        focusNode: focusNode,
+        textAlign: TextAlign.left,
+        controller: searchFieldCtrl,
+        onChanged: onChanged,
+        autofocus: true,
+        showCursor: true,
+        onTap: onTap,
+        readOnly: readOnly,
+        style: Theme.of(context).textTheme.headline6,
+        decoration: InputDecoration(
+          hintText: "name or phone",
+          hintStyle: TextStyle(color: Theme.of(context).primaryColorLight),
+          counterText: "",
+          // contentPadding: EdgeInsets.symmetric(vertical: 2),
+          border: InputBorder.none,
+        ),
       ),
     );
 
     final selectedUserChips = this
         .selectedUsers
         .map((su) => GestureDetector(
-              onTap: () => this.onSelectedUserTap.call(su),
+              onTap: () => onSelectedUserTap.call(su),
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  color: Theme.of(context).primaryColor.withOpacity(0.1),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       su.fullName ?? su.contactName,
-                      style: KStyles.normalText
-                          .copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.subtitle1,
                     ),
                     SizedBox(width: 6),
-                    Icon(Icons.close, size: 20, color: KStyles.grey),
+                    Icon(Icons.close, size: 20),
                   ],
                 ),
               ),
             ))
         .toList();
 
+    final searchRow = Row(
+      children: [
+        Text(
+          "Search",
+          style: Theme.of(context).textTheme.headline6,
+        ),
+        SizedBox(width: 16),
+        Expanded(child: searchField),
+      ],
+    );
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          searchField,
-          Wrap(
-            spacing: 4,
-            runSpacing: 4,
-            children: selectedUserChips,
+          Divider(color: Colors.black12),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: searchRow,
           ),
-          SizedBox(height: 6),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Wrap(spacing: 4, runSpacing: 4, children: selectedUserChips),
+          ),
+          Divider(color: Colors.black12),
         ],
       ),
     );
@@ -246,41 +292,63 @@ class _ResultItem extends StatelessWidget {
     this.backgroundColor,
   });
 
+  void onMoreInfoClick(ctx) => Navigator.of(ctx)
+      .push(MaterialPageRoute(builder: (_) => KUserProfileView.fromUser(user)));
+
   @override
   Widget build(BuildContext context) {
-    final centerInfo = Column(
+    // final phoneView = KIconLabel(
+    //   asset: KAssets.IMG_PHONE,
+    //   text: KUtil.maskedFone(
+    //     KUtil.prettyFone(
+    //       foneCode: user.phoneCode ?? "",
+    //       number: user.phone ?? "",
+    //     ),
+    //   ),
+    // );
+
+    final contactHandle = Text(
+      user.kunm == null ? user.prettyFone : "@${user.kunm}",
+      style: Theme.of(context).textTheme.subtitle1?.copyWith(
+            color: Theme.of(context).primaryColorLight,
+          ),
+    );
+
+    final info = Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        KContactNameView.fromUser(this.user),
-        SizedBox(height: 4),
-        Row(
-          children: [
-            FadeInImage(
-              placeholder: AssetImage(KAssets.IMG_TRANSPARENCY),
-              image: AssetImage(KAssets.IMG_PHONE),
-            ),
-            Text(
-              KUtil.maskedFone(KUtil.prettyFone(
-                foneCode: this.user.phoneCode ?? "",
-                number: this.user.phone ?? "",
-              )),
-            ),
-          ],
+        Text(
+          user.fullName ?? "",
+          style: Theme.of(context).textTheme.subtitle1,
         ),
+        SizedBox(height: 6),
+        contactHandle,
       ],
     );
 
+    final moreInfoButton = IconButton(
+      onPressed: () => onMoreInfoClick(context),
+      iconSize: 24,
+      icon: Icon(
+        Icons.info,
+        color: Theme.of(context).primaryColorLight,
+      ),
+    );
+
     return InkWell(
-      onTap: () => this.onClick.call(this.user),
+      onTap: () => onClick.call(user),
       child: Container(
-        padding: EdgeInsets.all(6),
+        padding: EdgeInsets.fromLTRB(8, 16, 8, 16),
         color: Colors.transparent,
-        child: Row(children: <Widget>[
-          this.icon,
-          SizedBox(width: 16),
-          Expanded(child: centerInfo),
-        ]),
+        child: Row(
+          children: <Widget>[
+            icon,
+            SizedBox(width: 16),
+            Expanded(child: info),
+            moreInfoButton,
+          ],
+        ),
       ),
     );
   }
