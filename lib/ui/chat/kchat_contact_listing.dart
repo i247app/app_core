@@ -178,7 +178,7 @@ class _SearchField extends StatelessWidget {
               InputDecorationTheme(border: OutlineInputBorder())),
       child: TextField(
         maxLength: 12,
-        maxLines: null,
+        keyboardType: TextInputType.text,
         focusNode: this.focusNode,
         textAlign: TextAlign.left,
         controller: this.searchFieldController,
