@@ -83,6 +83,7 @@ abstract class KPhrases {
       _klingo.yak("gig_list_ready_waiting");
 
   static String get noData => _klingo.yak("no_data");
+  static String get noContactFound => _klingo.yak("no_contact_found");
 
   static String get waitingForOtherUser =>
       _klingo.yak("waiting_for_other_user");

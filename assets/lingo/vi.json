@@ -1,6 +1,7 @@
 {
   "success": "Thành công",
-  "no_data": "No Data",
+  "no_data": "Không có dữ liệu",
+  "no_contact_found": "Không tìm thấy liên hệ",
   "required": "Cần thiết",
   "optional": "Không bắt buộc",
   "signup": "Sign Up",

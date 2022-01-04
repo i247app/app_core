@@ -122,7 +122,7 @@ class _KChooseContactState extends State<KChooseContact> {
     } else if (userLists != null && userLists!.isEmpty) {
       userListing = Center(
         child: Text(
-          KPhrases.noData,
+          KPhrases.noContactFound,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyText1,
         ),
@@ -203,7 +203,7 @@ class _SearchField extends StatelessWidget {
       ),
       child: TextField(
         maxLength: 12,
-        maxLines: null,
+        keyboardType: TextInputType.text,
         focusNode: focusNode,
         textAlign: TextAlign.left,
         controller: searchFieldCtrl,
@@ -250,9 +250,9 @@ class _SearchField extends StatelessWidget {
 
     final searchRow = Row(
       children: [
-        Text(
-          "Search",
-          style: Theme.of(context).textTheme.headline6,
+        Icon(
+          Icons.search,
+          size: 24,
         ),
         SizedBox(width: 16),
         Expanded(child: searchField),

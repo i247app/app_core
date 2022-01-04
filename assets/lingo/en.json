@@ -1,5 +1,6 @@
 {
   "success": "Success",
+  "no_contact_found": "No Contact Found",
   "no_data": "No Data",
   "required": "Required",
   "optional": "Optional",
