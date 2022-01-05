@@ -695,7 +695,8 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
   }
 
   Future startSpeak(String text) async {
-    if (text.isNotEmpty && !isSpeech) {
+    print(currentQuestion.text);
+    if ((currentQuestion.text ?? "").isNotEmpty && !isSpeech) {
       if (this.isBackgroundSoundPlaying) {
         toggleBackgroundSound();
       }
@@ -711,7 +712,7 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
 
         await flutterTts.setSpeechRate(speechRate);
         await flutterTts.setPitch(speechPitch);
-        await flutterTts.speak(text);
+        await flutterTts.speak(currentQuestion.text ?? "");
         await Future.delayed(Duration(milliseconds: speechDelay));
       }
     }
@@ -759,6 +760,7 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
         this.setState(() {
           this.isPause = false;
         });
+        startSpeak(currentQuestion.text ?? "");
       },
     );
     final overlay = Stack(
@@ -792,6 +794,7 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
           isStart = true;
           time = 0;
         });
+        startSpeak(currentQuestion.text ?? "");
       },
     );
     final overlay = Stack(
@@ -807,17 +810,17 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
   }
 
   void toggleBackgroundSound() {
-    if (this.isBackgroundSoundPlaying) {
-      this.setState(() {
-        this.isBackgroundSoundPlaying = false;
-      });
-      this.backgroundAudioPlayer.pause();
-    } else {
-      this.setState(() {
-        this.isBackgroundSoundPlaying = true;
-      });
-      this.backgroundAudioPlayer.resume();
-    }
+    // if (this.isBackgroundSoundPlaying) {
+    //   this.setState(() {
+    //     this.isBackgroundSoundPlaying = false;
+    //   });
+    //   this.backgroundAudioPlayer.pause();
+    // } else {
+    //   this.setState(() {
+    //     this.isBackgroundSoundPlaying = true;
+    //   });
+    //   this.backgroundAudioPlayer.resume();
+    // }
   }
 
   void getListAnswer() {
@@ -860,14 +863,17 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
           isStart = true;
           time = 0;
         });
+        Future.delayed(Duration(milliseconds: 100), () {
+          startSpeak(currentQuestion.text ?? "");
+        });
       }
 
-      if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
-        this.setState(() {
-          this.isBackgroundSoundPlaying = true;
-        });
-        backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
-      }
+      // if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+      //   this.setState(() {
+      //     this.isBackgroundSoundPlaying = true;
+      //   });
+      //   backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
+      // }
     }
   }
 
@@ -976,6 +982,7 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
                   this.setState(() {
                     isScroll = true;
                   });
+                  startSpeak(currentQuestion.text ?? "");
                 });
               } else {
                 if (widget.onFinishLevel != null) {
@@ -1042,6 +1049,9 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
       rightAnswerCount = 0;
       wrongAnswerCount = 0;
       canAdvance = false;
+    });
+    Future.delayed(Duration(milliseconds: 100), () {
+      startSpeak(currentQuestion.text ?? "");
     });
   }
 
