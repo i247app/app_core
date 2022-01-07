@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/helper/kcall_control_stream_helper.dart';
+import 'package:app_core/helper/kcall_stream_helper.dart';
 import 'package:app_core/helper/service/ktheme_service.dart';
 import 'package:app_core/style/kpalette_group.dart';
 import 'package:app_core/style/ktheme.dart';
@@ -48,6 +50,9 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
 
   ThemeMode get themeMode => KThemeService.getThemeMode();
 
+  KVOIPCall? voipCall;
+  KCallType callType = KCallType.kill;
+
   @override
   void initState() {
     super.initState();
@@ -55,6 +60,14 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
 
     globalListenerSub = widget.initGlobalListener?.call();
     KRebuildHelper.notifier.addListener(rebuildListener);
+    KCallStreamHelper.stream.listen(notifListener);
+  }
+
+  void notifListener(KVOIPCall call) {
+    setState(() {
+      voipCall = call;
+      callType = KCallType.foreground;
+    });
   }
 
   @override
@@ -120,7 +133,12 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
 
     final rawInnerAppWithOverlay = Stack(
       fit: StackFit.expand,
-      children: [innerApp, KOverlayHelper.build()],
+      children: [
+        if (voipCall != null && callType == KCallType.background) voipCall!,
+        innerApp,
+        if (voipCall != null && callType == KCallType.foreground) voipCall!,
+        KOverlayHelper.build(),
+      ],
     );
 
     final innerAppWithOverlay = widget.initializer == null

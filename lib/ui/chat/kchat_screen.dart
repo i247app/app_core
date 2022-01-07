@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_core/helper/kcall_stream_helper.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:app_core/helper/khost_config.dart';
 import 'package:app_core/helper/klocation_helper.dart';
@@ -166,8 +167,8 @@ class _KChatScreenState extends State<KChatScreen> {
         invitePUIDs: invitePUIDs,
         chatroomCtrl: this.chatroomCtrl,
         videoLogo: KAssets.IMG_TRANSPARENCY);
-
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
+    KCallStreamHelper.broadcast(screen);
+    // Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
   }
 
   Future<List<KUser>> searchUsers(String? searchText) async {
@@ -243,7 +244,7 @@ class _KChatScreenState extends State<KChatScreen> {
       return Scaffold(
         appBar: AppBar(
           title: InkWell(
-            onTap:  onManagerMember,
+            onTap: onManagerMember,
             child: Text(chatroomCtrl.value.chatTitle ??
                 (widget.isSupport ? "Support" : "Chat")),
           ),
