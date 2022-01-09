@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:app_core/helper/kcall_control_stream_helper.dart';
+import 'package:app_core/helper/kcall_stream_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:app_core/ui/voip/widget/kp2p_button_view.dart';
@@ -247,6 +249,11 @@ class _KVOIPCallState extends State<KVOIPCall>
         // If this call has already ended, respond to incoming call
         if (notification.data?.id != null &&
             this.callState == _CallState.ended) {
+          final screen = KVOIPCall.asReceiver(
+              notification.data!.id!, notification.data!.uuid!,
+              autoPickup: true, videoLogo: widget.videoLogo);
+          KCallStreamHelper.broadcast(screen);
+          KCallControlStreamHelper.broadcast(KCallType.foreground);
           Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (ctx) => KVOIPCall.asReceiver(
                   notification.data!.id!, notification.data!.uuid!,
@@ -261,10 +268,13 @@ class _KVOIPCallState extends State<KVOIPCall>
 
   void setup() async => setupCommManager(this.myPUID!, this.myName!);
 
-  void safePop([final result]) =>
-      (mounted && (ModalRoute.of(context)?.isActive ?? false))
-          ? Navigator.of(context).pop(result)
-          : null;
+  void safePop([final result]) {
+    KCallStreamHelper.broadcast(null);
+    KCallControlStreamHelper.broadcast(KCallType.kill);
+    // (mounted && (ModalRoute.of(context)?.isActive ?? false))
+    //     ? Navigator.of(context).pop(result)
+    //     : null;
+  }
 
   Future initRenderers() async {
     final permissionsGranted = await KWebRTCHelper.askForPermissions();
@@ -526,9 +536,7 @@ class _KVOIPCallState extends State<KVOIPCall>
   // }
 
   void endCallTimeout() async {
-    this.endCallTimer = Timer.periodic(Duration(seconds: 3), (timer) {
-      safePop(true);
-    });
+    this.endCallTimer = Timer(Duration(seconds: 3), () => safePop(true));
   }
 
   void startRingtone([double volume = 0.9]) {
@@ -562,7 +570,10 @@ class _KVOIPCallState extends State<KVOIPCall>
       // stopCallerTune();
       this.commManager?.sayGoodbye();
     } catch (e) {}
-    safePop(true);
+    Future.delayed(
+      Duration(milliseconds: 1000),
+      () => safePop(true),
+    );
   }
 
   void videoTap() {

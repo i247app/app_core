@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_core/helper/kcall_control_stream_helper.dart';
 import 'package:app_core/helper/kcall_stream_helper.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:app_core/helper/khost_config.dart';
@@ -168,6 +169,7 @@ class _KChatScreenState extends State<KChatScreen> {
         chatroomCtrl: this.chatroomCtrl,
         videoLogo: KAssets.IMG_TRANSPARENCY);
     KCallStreamHelper.broadcast(screen);
+    KCallControlStreamHelper.broadcast(KCallType.foreground);
     // Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
   }
 

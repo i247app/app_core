@@ -60,13 +60,19 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
 
     globalListenerSub = widget.initGlobalListener?.call();
     KRebuildHelper.notifier.addListener(rebuildListener);
-    KCallStreamHelper.stream.listen(notifListener);
+    KCallStreamHelper.stream.listen(callNotifListener);
+    KCallControlStreamHelper.stream.listen(callControlNotifListener);
   }
 
-  void notifListener(KVOIPCall call) {
+  void callNotifListener(KVOIPCall? call) {
     setState(() {
       voipCall = call;
-      callType = KCallType.foreground;
+    });
+  }
+
+  void callControlNotifListener(KCallType type) {
+    setState(() {
+      callType = type;
     });
   }
 

@@ -1,12 +1,13 @@
 import 'dart:io';
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/helper/kcall_control_stream_helper.dart';
+import 'package:app_core/helper/kcall_stream_helper.dart';
 import 'package:connectycube_flutter_call_kit/connectycube_flutter_call_kit.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ios_voip_kit/call_state_type.dart';
 import 'package:flutter_ios_voip_kit/flutter_ios_voip_kit.dart';
-
 
 class KCallKitHelper {
   static const String VOIP_PREF_KEY = "_voip_call_info";
@@ -86,15 +87,25 @@ class KCallKitHelper {
     KVoipCallInfo? callInfo = await consumeCallInfo();
     if (callInfo != null) {
       await KPrefHelper.remove("callID");
-      return Navigator.of(context).push(MaterialPageRoute(
-        builder: (ctx) => KVOIPCall.asReceiver(
-          callInfo.callID!,
-          callInfo.uuid!,
-          autoPickup: true,
-          videoLogo: this.videoLogo,
-          chatroomCtrl: KChatroomController(),
-        ),
-      ));
+
+      final screen = KVOIPCall.asReceiver(
+        callInfo.callID!,
+        callInfo.uuid!,
+        autoPickup: true,
+        videoLogo: this.videoLogo,
+        chatroomCtrl: KChatroomController(),
+      );
+      KCallControlStreamHelper.broadcast(KCallType.foreground);
+      KCallStreamHelper.broadcast(screen);
+      // return Navigator.of(context).push(MaterialPageRoute(
+      //   builder: (ctx) => KVOIPCall.asReceiver(
+      //     callInfo.callID!,
+      //     callInfo.uuid!,
+      //     autoPickup: true,
+      //     videoLogo: this.videoLogo,
+      //     chatroomCtrl: KChatroomController(),
+      //   ),
+      // ));
     }
     return Future.value(null);
   }
