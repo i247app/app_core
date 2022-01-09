@@ -680,4 +680,10 @@ abstract class KUtil {
         rcvPUID: rcvPUID,
         sndRole: sndRole,
       );
+
+  static String generateRandomString(int len) {
+    var r = Random();
+    const _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    return List.generate(len, (index) => _chars[r.nextInt(_chars.length)]).join();
+  }
 }

@@ -464,14 +464,18 @@ abstract class KServerHandler {
   }
 
   static Future<KGetGamesResponse> getGames(
-      {required String gameID, required String level, String? cat}) async {
+      {required String gameID,
+      required String level,
+      String? cat,
+      String? mimeType}) async {
     final params = {
       "svc": "game",
       "req": "game.get",
       "game": KGame()
         ..gameID = gameID
         ..level = level
-        ..cat = cat ?? "edu",
+        ..cat = cat ?? "MATH"
+        ..mimeType = mimeType ?? "TEXT",
     };
     return TLSHelper.send(params)
         .then((data) => KGetGamesResponse.fromJson(data));
