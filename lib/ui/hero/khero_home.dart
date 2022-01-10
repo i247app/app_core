@@ -1,6 +1,8 @@
 import 'package:app_core/header/kassets.dart';
 import 'package:app_core/ui/hero/khero_jump_game.dart';
+import 'package:app_core/ui/hero/khero_letter_tap_game.dart';
 import 'package:app_core/ui/hero/khero_moving_tap_game.dart';
+import 'package:app_core/ui/hero/khero_speech_letter_tap_game.dart';
 import 'package:app_core/ui/hero/khero_tap_game.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
@@ -117,6 +119,24 @@ class _KHeroHomeState extends State<KHeroHome> {
     }
     Navigator.of(context).push(
         MaterialPageRoute(builder: (ctx) => KHeroMovingTapGame(hero: hero)));
+  }
+
+  void onPlaySpeechLetterTapGame(KHero? hero) {
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (ctx) => KHeroSpeechLetterTapGame(hero: hero)));
+  }
+
+  void onPlayLetterTapGame(KHero? hero) {
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: (ctx) => KHeroLetterTapGame(hero: hero)));
   }
 
   void onPlayJumpOverGame(KHero? hero) {
@@ -452,6 +472,42 @@ class _KHeroHomeState extends State<KHeroHome> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => onPlayLetterTapGame(null),
+                    style: KStyles.squaredButton(
+                      KStyles.colorPrimary,
+                      textColor: Colors.white,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("👾️"),
+                        // SizedBox(width: 10),
+                        // Text("Game"),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 18),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () => onPlaySpeechLetterTapGame(null),
+                    style: KStyles.squaredButton(
+                      KStyles.colorPrimary,
+                      textColor: Colors.white,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("👾️"),
+                        // SizedBox(width: 10),
+                        // Text("Game"),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(width: 18),
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () => onPlayJumpGame(null),

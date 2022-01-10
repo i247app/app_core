@@ -19,22 +19,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 
-enum TtsState { playing, stopped, paused, continued }
-
-class KHeroSpeechTapGame extends StatefulWidget {
+class KHeroLetterTapGame extends StatefulWidget {
   final KHero? hero;
 
-  const KHeroSpeechTapGame({this.hero});
+  const KHeroLetterTapGame({this.hero});
 
   @override
-  _KHeroSpeechTapGameState createState() => _KHeroSpeechTapGameState();
+  _KHeroLetterTapGameState createState() => _KHeroLetterTapGameState();
 }
 
-class _KHeroSpeechTapGameState extends State<KHeroSpeechTapGame> {
-  static const GAME_NAME = "speech_tap_game";
-  static const GAME_ID = "806";
+class _KHeroLetterTapGameState extends State<KHeroLetterTapGame> {
+  static const GAME_NAME = "letter_tap_game";
+  static const GAME_ID = "900";
 
   static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
@@ -73,7 +70,10 @@ class _KHeroSpeechTapGameState extends State<KHeroSpeechTapGame> {
       });
 
       final response = await KServerHandler.getGames(
-          gameID: GAME_ID, level: currentLevel.toString());
+          gameID: GAME_ID,
+          level: currentLevel.toString(),
+          cat: "ENGLISH",
+      );
 
       if (response.isSuccess &&
           response.games != null &&
@@ -208,7 +208,7 @@ class _KHeroSpeechTapGameState extends State<KHeroSpeechTapGame> {
                         //   ),
                         // ),
                         Expanded(
-                          child: KSpeechTapGameScreen(
+                          child: KLetterTapGameScreen(
                             hero: widget.hero,
                             totalLevel: totalLevel,
                             isShowEndLevel: isShowEndLevel,
@@ -311,7 +311,7 @@ class _KHeroSpeechTapGameState extends State<KHeroSpeechTapGame> {
   }
 }
 
-class KSpeechTapGameScreen extends StatefulWidget {
+class KLetterTapGameScreen extends StatefulWidget {
   final KHero? hero;
   final Function(int)? onChangeLevel;
   final Function(int, int, bool)? onFinishLevel;
@@ -322,7 +322,7 @@ class KSpeechTapGameScreen extends StatefulWidget {
   final int? level;
   final int? grade;
 
-  const KSpeechTapGameScreen({
+  const KLetterTapGameScreen({
     Key? key,
     this.hero,
     this.onChangeLevel,
@@ -336,10 +336,10 @@ class KSpeechTapGameScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  KSpeechTapGameScreenState createState() => KSpeechTapGameScreenState();
+  KLetterTapGameScreenState createState() => KLetterTapGameScreenState();
 }
 
-class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
+class KLetterTapGameScreenState extends State<KLetterTapGameScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   static const GAME_NAME = "shooting_game";
   AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
@@ -348,7 +348,6 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
   String? wrongAudioFileUri;
   String? backgroundAudioFileUri;
 
-  late FlutterTts flutterTts;
   late Animation<Offset> _bouncingAnimation;
   late Animation<double> _moveUpAnimation, _heroScaleAnimation;
 
@@ -407,7 +406,7 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
 
   KQuestion get currentQuestion => questions[currentQuestionIndex];
 
-  List<KAnswer> get currentQuestionAnswers => currentQuestion.generateAnswers();
+  List<KAnswer> get currentQuestionAnswers => currentQuestion.generateAnswers(4, 'ENGLISH');
 
   int? spinningHeroIndex;
   int? currentShowStarIndex;
@@ -428,37 +427,13 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
 
   int? overlayID;
   bool isPause = false;
-  bool isSpeech = false;
   bool isBackgroundSoundPlaying = false;
-
-  TtsState ttsState = TtsState.stopped;
-
-  get isPlaying => ttsState == TtsState.playing;
-
-  get isStopped => ttsState == TtsState.stopped;
-
-  get isPaused => ttsState == TtsState.paused;
-
-  get isContinued => ttsState == TtsState.continued;
-
-  double speechRate = 0.4;
-  double speechPitch = 1;
-  int speechDelay = 2000;
-
-  String get defaultLanguage => KLocaleHelper.isVietnam
-      ? KLocaleHelper.TTS_LANGUAGE_VI
-      : KLocaleHelper.TTS_LANGUAGE_EN;
-  String? currentLanguage;
-
-  bool get canShowLanguageToggle =>
-      Platform.isAndroid && currentLanguage != null;
 
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance?.addObserver(this);
-    initTts();
     this.currentLevel = widget.level ?? 0;
     this.totalLevel = widget.totalLevel ?? 1;
     this.levelHardness = List.generate(
@@ -609,132 +584,13 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
 
     audioPlayer.dispose();
     backgroundAudioPlayer.dispose();
-    flutterTts.stop();
 
     // TODO: implement dispose
     super.dispose();
   }
 
-  Future _setAwaitOptions() async {
-    print(await flutterTts.getLanguages);
-    await flutterTts.awaitSpeakCompletion(true);
-  }
-
-  Future _getDefaultEngine() async {
-    var engine = await flutterTts.getDefaultEngine;
-    if (engine != null) {
-      print(engine);
-    }
-  }
-
-  setTtsLanguage(String language) async {
-    if (Platform.isAndroid) {
-      bool isInstalled = await flutterTts.isLanguageInstalled(language);
-      if (!isInstalled) {
-        return;
-      }
-    }
-    setState(() {
-      currentLanguage = language;
-    });
-  }
-
-  initTts() {
-    flutterTts = FlutterTts();
-
-    _setAwaitOptions();
-
-    if (Platform.isAndroid) {
-      _getDefaultEngine();
-      setTtsLanguage(defaultLanguage);
-    } else if (Platform.isIOS) {
-      setTtsLanguage(KLocaleHelper.TTS_LANGUAGE_EN);
-
-      flutterTts.setPauseHandler(() {
-        setState(() {
-          print("Paused");
-          ttsState = TtsState.paused;
-        });
-      });
-
-      flutterTts.setContinueHandler(() {
-        setState(() {
-          print("Continued");
-          ttsState = TtsState.continued;
-        });
-      });
-    }
-
-    flutterTts.setStartHandler(() {
-      setState(() {
-        print("Playing");
-        ttsState = TtsState.playing;
-      });
-    });
-
-    flutterTts.setCompletionHandler(() {
-      setState(() {
-        print("Complete");
-        ttsState = TtsState.stopped;
-      });
-    });
-
-    flutterTts.setCancelHandler(() {
-      setState(() {
-        print("Cancel");
-        ttsState = TtsState.stopped;
-      });
-    });
-
-    flutterTts.setErrorHandler((msg) {
-      setState(() {
-        print("error: $msg");
-        ttsState = TtsState.stopped;
-      });
-    });
-  }
-
-  Future startSpeak(String text) async {
-    print(currentQuestion.text);
-    if ((currentQuestion.text ?? "").isNotEmpty && !isSpeech) {
-      if (this.isBackgroundSoundPlaying) {
-        toggleBackgroundSound();
-      }
-
-      setState(() {
-        this.isSpeech = true;
-      });
-
-      while (isSpeech) {
-        if (currentLanguage != null) {
-          await flutterTts.setLanguage(currentLanguage!);
-        }
-
-        await flutterTts.setSpeechRate(speechRate);
-        await flutterTts.setPitch(speechPitch);
-        await flutterTts.speak(currentQuestion.text ?? "");
-        await Future.delayed(Duration(milliseconds: speechDelay));
-      }
-    }
-  }
-
-  Future stopSpeak(bool? isShowPause) async {
-    if (isSpeech) {
-      setState(() {
-        this.isSpeech = false;
-      });
-      await flutterTts.stop();
-      if (!(isShowPause ?? false) && !this.isBackgroundSoundPlaying) {
-        toggleBackgroundSound();
-      }
-    }
-  }
-
   void showPauseDialog() {
     if (this.isPause) return;
-    if (this.isSpeech) {
-      stopSpeak(true);
-    }
     if (this.isBackgroundSoundPlaying) {
       toggleBackgroundSound();
     }
@@ -760,7 +616,6 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
         this.setState(() {
           this.isPause = false;
         });
-        startSpeak(currentQuestion.text ?? "");
       },
     );
     final overlay = Stack(
@@ -794,7 +649,6 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
           isStart = true;
           time = 0;
         });
-        startSpeak(currentQuestion.text ?? "");
       },
     );
     final overlay = Stack(
@@ -810,17 +664,17 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
   }
 
   void toggleBackgroundSound() {
-    // if (this.isBackgroundSoundPlaying) {
-    //   this.setState(() {
-    //     this.isBackgroundSoundPlaying = false;
-    //   });
-    //   this.backgroundAudioPlayer.pause();
-    // } else {
-    //   this.setState(() {
-    //     this.isBackgroundSoundPlaying = true;
-    //   });
-    //   this.backgroundAudioPlayer.resume();
-    // }
+    if (this.isBackgroundSoundPlaying) {
+      this.setState(() {
+        this.isBackgroundSoundPlaying = false;
+      });
+      this.backgroundAudioPlayer.pause();
+    } else {
+      this.setState(() {
+        this.isBackgroundSoundPlaying = true;
+      });
+      this.backgroundAudioPlayer.resume();
+    }
   }
 
   void getListAnswer() {
@@ -863,17 +717,14 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
           isStart = true;
           time = 0;
         });
-        Future.delayed(Duration(milliseconds: 100), () {
-          startSpeak(currentQuestion.text ?? "");
-        });
       }
 
-      // if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
-      //   this.setState(() {
-      //     this.isBackgroundSoundPlaying = true;
-      //   });
-      //   backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
-      // }
+      if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+        this.setState(() {
+          this.isBackgroundSoundPlaying = true;
+        });
+        backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
+      }
     }
   }
 
@@ -945,9 +796,6 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
     this._spinAnimationController.forward();
 
     if (isTrueAnswer) {
-      if (isSpeech) {
-        stopSpeak(false);
-      }
       this.setState(() {
         result = true;
         points = points + 5;
@@ -982,7 +830,6 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
                   this.setState(() {
                     isScroll = true;
                   });
-                  startSpeak(currentQuestion.text ?? "");
                 });
               } else {
                 if (widget.onFinishLevel != null) {
@@ -1049,9 +896,6 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
       rightAnswerCount = 0;
       wrongAnswerCount = 0;
       canAdvance = false;
-    });
-    Future.delayed(Duration(milliseconds: 100), () {
-      startSpeak(currentQuestion.text ?? "");
     });
   }
 
@@ -1351,45 +1195,29 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
             alignment: Alignment.center,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-              child: InkWell(
-                onTap: () => isSpeech
-                    ? stopSpeak(false)
-                    : startSpeak(currentQuestion.text ?? ""),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.75,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(40),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        blurRadius: 8,
-                        offset: Offset(2, 6),
-                      ),
-                    ],
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.75,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(40),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      blurRadius: 8,
+                      offset: Offset(2, 6),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  currentQuestion.text ?? "",
+                  textScaleFactor: 1.0,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
                   ),
-                  child: isSpeech
-                      ? Text(
-                          "Pause",
-                          textScaleFactor: 1.0,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 35,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                      : Text(
-                          "Play",
-                          textScaleFactor: 1.0,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 35,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
                 ),
               ),
             ),
@@ -1400,83 +1228,51 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
             alignment: Alignment.topRight,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      if (isStart || result != null)
-                        InkWell(
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            padding: EdgeInsets.only(
-                                top: 5, bottom: 5, left: 5, right: 5),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(40),
-                            ),
-                            child: Icon(
-                              this.isBackgroundSoundPlaying
-                                  ? Icons.volume_up
-                                  : Icons.volume_off,
-                              color: Color(0xff2c1c44),
-                              size: 30,
-                            ),
-                          ),
-                          onTap: () => this.toggleBackgroundSound(),
+                  if (isStart || result != null)
+                    InkWell(
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        padding: EdgeInsets.only(
+                            top: 5, bottom: 5, left: 5, right: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(40),
                         ),
-                      SizedBox(
-                        width: 10,
+                        child: Icon(
+                          this.isBackgroundSoundPlaying
+                              ? Icons.volume_up
+                              : Icons.volume_off,
+                          color: Color(0xff2c1c44),
+                          size: 30,
+                        ),
                       ),
-                      InkWell(
-                        child: Container(
-                          width: 50,
-                          height: 50,
-                          padding: EdgeInsets.only(
-                              top: 5, bottom: 5, left: 5, right: 5),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(40),
-                          ),
-                          child: Icon(
-                            Icons.pause,
-                            color: Colors.red,
-                            size: 30,
-                          ),
-                        ),
-                        onTap: () => showPauseDialog(),
-                      ),
-                    ],
-                  ),
-                  if (isStart && canShowLanguageToggle)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text("${KLocaleHelper.LANGUAGE_EN.toUpperCase()}"),
-                        Switch(
-                          onChanged: currentLanguage != null
-                              ? (currentLanguage! ==
-                                      KLocaleHelper.TTS_LANGUAGE_VI
-                                  ? (_) => setTtsLanguage(
-                                      KLocaleHelper.TTS_LANGUAGE_EN)
-                                  : (_) => setTtsLanguage(
-                                      KLocaleHelper.TTS_LANGUAGE_VI))
-                              : (_) {},
-                          value: () {
-                            // print("IS TUTOR ONLINE? - ${OnlineService.isTutorOnlineCache}");
-                            return currentLanguage ==
-                                KLocaleHelper.TTS_LANGUAGE_VI;
-                          }.call(),
-                          activeColor: Colors.grey.shade50,
-                          activeTrackColor: Colors.grey.shade50.withAlpha(0x80),
-                          inactiveThumbColor: Colors.grey.shade50,
-                          inactiveTrackColor:
-                              Colors.grey.shade50.withAlpha(0x80),
-                        ),
-                        Text("${KLocaleHelper.LANGUAGE_VI.toUpperCase()}"),
-                      ],
+                      onTap: () => this.toggleBackgroundSound(),
                     ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  InkWell(
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      padding:
+                          EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      child: Icon(
+                        Icons.pause,
+                        color: Colors.red,
+                        size: 30,
+                      ),
+                    ),
+                    onTap: () => showPauseDialog(),
+                  ),
                 ],
               ),
             ),

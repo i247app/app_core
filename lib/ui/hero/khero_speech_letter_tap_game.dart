@@ -23,18 +23,19 @@ import 'package:flutter_tts/flutter_tts.dart';
 
 enum TtsState { playing, stopped, paused, continued }
 
-class KHeroSpeechTapGame extends StatefulWidget {
+class KHeroSpeechLetterTapGame extends StatefulWidget {
   final KHero? hero;
 
-  const KHeroSpeechTapGame({this.hero});
+  const KHeroSpeechLetterTapGame({this.hero});
 
   @override
-  _KHeroSpeechTapGameState createState() => _KHeroSpeechTapGameState();
+  _KHeroSpeechLetterTapGameState createState() =>
+      _KHeroSpeechLetterTapGameState();
 }
 
-class _KHeroSpeechTapGameState extends State<KHeroSpeechTapGame> {
-  static const GAME_NAME = "speech_tap_game";
-  static const GAME_ID = "806";
+class _KHeroSpeechLetterTapGameState extends State<KHeroSpeechLetterTapGame> {
+  static const GAME_NAME = "speech_letter_tap_game";
+  static const GAME_ID = "901";
 
   static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
@@ -73,7 +74,11 @@ class _KHeroSpeechTapGameState extends State<KHeroSpeechTapGame> {
       });
 
       final response = await KServerHandler.getGames(
-          gameID: GAME_ID, level: currentLevel.toString());
+        gameID: GAME_ID,
+        level: currentLevel.toString(),
+        cat: "ENGLISH",
+        mimeType: "AUDIO",
+      );
 
       if (response.isSuccess &&
           response.games != null &&
@@ -208,7 +213,7 @@ class _KHeroSpeechTapGameState extends State<KHeroSpeechTapGame> {
                         //   ),
                         // ),
                         Expanded(
-                          child: KSpeechTapGameScreen(
+                          child: KSpeechLetterTapGameScreen(
                             hero: widget.hero,
                             totalLevel: totalLevel,
                             isShowEndLevel: isShowEndLevel,
@@ -311,7 +316,7 @@ class _KHeroSpeechTapGameState extends State<KHeroSpeechTapGame> {
   }
 }
 
-class KSpeechTapGameScreen extends StatefulWidget {
+class KSpeechLetterTapGameScreen extends StatefulWidget {
   final KHero? hero;
   final Function(int)? onChangeLevel;
   final Function(int, int, bool)? onFinishLevel;
@@ -322,7 +327,7 @@ class KSpeechTapGameScreen extends StatefulWidget {
   final int? level;
   final int? grade;
 
-  const KSpeechTapGameScreen({
+  const KSpeechLetterTapGameScreen({
     Key? key,
     this.hero,
     this.onChangeLevel,
@@ -336,10 +341,11 @@ class KSpeechTapGameScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  KSpeechTapGameScreenState createState() => KSpeechTapGameScreenState();
+  KSpeechLetterTapGameScreenState createState() =>
+      KSpeechLetterTapGameScreenState();
 }
 
-class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
+class KSpeechLetterTapGameScreenState extends State<KSpeechLetterTapGameScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   static const GAME_NAME = "shooting_game";
   AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
@@ -407,7 +413,7 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
 
   KQuestion get currentQuestion => questions[currentQuestionIndex];
 
-  List<KAnswer> get currentQuestionAnswers => currentQuestion.generateAnswers();
+  List<KAnswer> get currentQuestionAnswers => currentQuestion.generateAnswers(4, 'ENGLISH');
 
   int? spinningHeroIndex;
   int? currentShowStarIndex;
@@ -445,13 +451,11 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
   double speechPitch = 1;
   int speechDelay = 2000;
 
-  String get defaultLanguage => KLocaleHelper.isVietnam
-      ? KLocaleHelper.TTS_LANGUAGE_VI
-      : KLocaleHelper.TTS_LANGUAGE_EN;
+  String get defaultLanguage => KLocaleHelper.TTS_LANGUAGE_EN;
   String? currentLanguage;
 
-  bool get canShowLanguageToggle =>
-      Platform.isAndroid && currentLanguage != null;
+  bool get canShowLanguageToggle => false;
+      // Platform.isAndroid && currentLanguage != null;
 
   @override
   void initState() {
