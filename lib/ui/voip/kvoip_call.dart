@@ -673,7 +673,11 @@ class _KVOIPCallState extends State<KVOIPCall>
           ),
           Positioned(
             child: IconButton(
-              icon: Icon(Icons.close_fullscreen, color: Colors.white),
+              icon: Icon(
+                Icons.close_fullscreen,
+                color: Colors.white,
+                size: 48,
+              ),
               onPressed: () {
                 KCallControlStreamHelper.broadcast(KCallType.background);
               },

@@ -233,6 +233,7 @@ class _KChatScreenState extends State<KChatScreen> {
       onPressed: onManagerMember,
       icon: Icon(
         Icons.group_add,
+        size: 28,
         color: Theme.of(context).colorScheme.primaryVariant,
       ),
     );
@@ -241,6 +242,7 @@ class _KChatScreenState extends State<KChatScreen> {
       onPressed: isVideoCallEnabled ? onCallUser : null,
       icon: Icon(
         Icons.video_call,
+        size: 28,
         color: Theme.of(context).colorScheme.primaryVariant,
       ),
     );
