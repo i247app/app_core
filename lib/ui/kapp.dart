@@ -137,12 +137,33 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
       ),
     );
 
+    final buttonOpenCall = Positioned(
+      bottom: 20,
+      right: 20,
+      child: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            callType = KCallType.foreground;
+          });
+        },
+        backgroundColor: Colors.red,
+        child: const Icon(
+          Icons.phone_in_talk,
+          color: Colors.white,
+        ),
+      ),
+    );
+
     final rawInnerAppWithOverlay = Stack(
       fit: StackFit.expand,
       children: [
-        if (voipCall != null && callType == KCallType.background) voipCall!,
         innerApp,
-        if (voipCall != null && callType == KCallType.foreground) voipCall!,
+        if (voipCall != null)
+          Visibility(
+            child: voipCall!,
+            visible: callType == KCallType.foreground,
+          ),
+        if (callType == KCallType.background) buttonOpenCall,
         KOverlayHelper.build(),
       ],
     );

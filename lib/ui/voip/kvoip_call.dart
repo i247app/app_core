@@ -671,6 +671,16 @@ class _KVOIPCallState extends State<KVOIPCall>
             onLocalVideoTap: this.switchCamera,
             onRemoteVideoTap: this.videoTap,
           ),
+          Positioned(
+            child: IconButton(
+              icon: Icon(Icons.close_fullscreen, color: Colors.white),
+              onPressed: () {
+                KCallControlStreamHelper.broadcast(KCallType.background);
+              },
+            ),
+            top: 24,
+            left: 24,
+          ),
         ],
         if (!this.isChatEnabled) ...[
           Positioned(
