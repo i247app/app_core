@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kcall_control_stream_helper.dart';
 import 'package:app_core/helper/kcall_stream_helper.dart';
 import 'package:app_core/value/kstyles.dart';
@@ -67,6 +68,10 @@ class _KChatScreenState extends State<KChatScreen> {
     this.chatroomCtrl.addListener(chatroomListener);
 
     requestPermissions(); // need perms before any api call
+
+    KCallStreamHelper.stream.listen((event) {
+      setState(() {});
+    });
   }
 
   @override
@@ -251,7 +256,8 @@ class _KChatScreenState extends State<KChatScreen> {
                 (widget.isSupport ? "Support" : "Chat")),
           ),
           actions: <Widget>[
-            if (this.isVideoCallEnabled) videoCallAction,
+            if (this.isVideoCallEnabled && !KCallKitHelper.instance.isCalling)
+              videoCallAction,
             addMemberAction
           ],
           elevation: 1,

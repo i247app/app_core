@@ -138,8 +138,8 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
     );
 
     final buttonOpenCall = Positioned(
-      bottom: 20,
-      right: 20,
+      bottom: 64,
+      right: 24,
       child: FloatingActionButton(
         onPressed: () {
           setState(() {
@@ -158,22 +158,25 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
       fit: StackFit.expand,
       children: [
         innerApp,
-        if (voipCall != null)
-          Visibility(
-            child: voipCall!,
-            visible: callType == KCallType.foreground,
-          ),
         if (callType == KCallType.background) buttonOpenCall,
         KOverlayHelper.build(),
       ],
     );
 
+    final voipWithApp = IndexedStack(
+      index: callType == KCallType.foreground ? 1 : 0,
+      children: [
+        rawInnerAppWithOverlay,
+        if (voipCall != null) voipCall!,
+      ],
+    );
+
     final innerAppWithOverlay = widget.initializer == null
-        ? rawInnerAppWithOverlay
+        ? voipWithApp
         : FutureBuilder(
             future: widget.initializer!.future,
             builder: (_, snapshot) =>
-                !snapshot.hasData ? Container() : rawInnerAppWithOverlay,
+                !snapshot.hasData ? Container() : voipWithApp,
           );
 
     final masterApp = MaterialApp(
