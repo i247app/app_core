@@ -28,22 +28,20 @@ abstract class KWebRTCHelper {
         KThrottleHelper.throttle(
           () {
             if (KCallKitHelper.instance.isCalling) {
-              final screen = KVOIPCall.asReceiver(
-                callID,
-                uuid,
-                autoPickup: autoPickup,
-                videoLogo: videoLogo,
-              );
+              KCallStreamHelper.broadcast(null);
+              KCallKitHelper.instance.isCalling = false;
+              KCallControlStreamHelper.broadcast(KCallType.kill);
+              Timer(Duration(seconds: 2), () {
+                final screen = KVOIPCall.asReceiver(
+                  callID,
+                  uuid,
+                  autoPickup: autoPickup,
+                  videoLogo: videoLogo,
+                );
 
-              KCallStreamHelper.broadcast(screen);
-              KCallControlStreamHelper.broadcast(KCallType.foreground);
-              // kNavigatorKey.currentState?.pushReplacement(MaterialPageRoute(
-              //     builder: (ctx) => KVOIPCall.asReceiver(
-              //           callID,
-              //           uuid,
-              //           autoPickup: autoPickup,
-              //           videoLogo: videoLogo,
-              //         )));
+                KCallStreamHelper.broadcast(screen);
+                KCallControlStreamHelper.broadcast(KCallType.foreground);
+              });
             } else {
               final screen = KVOIPCall.asReceiver(
                 callID,
@@ -53,13 +51,6 @@ abstract class KWebRTCHelper {
               );
               KCallStreamHelper.broadcast(screen);
               KCallControlStreamHelper.broadcast(KCallType.foreground);
-              // kNavigatorKey.currentState?.push(MaterialPageRoute(
-              //     builder: (ctx) => KVOIPCall.asReceiver(
-              //           callID,
-              //           uuid,
-              //           autoPickup: autoPickup,
-              //           videoLogo: videoLogo,
-              //         )));
             }
           },
           throttleID: "tutoring_chat_answer_p2p_call",

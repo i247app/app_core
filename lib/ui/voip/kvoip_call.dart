@@ -270,6 +270,7 @@ class _KVOIPCallState extends State<KVOIPCall>
 
   void safePop([final result]) {
     KCallStreamHelper.broadcast(null);
+    KCallKitHelper.instance.isCalling = false;
     KCallControlStreamHelper.broadcast(KCallType.kill);
     // (mounted && (ModalRoute.of(context)?.isActive ?? false))
     //     ? Navigator.of(context).pop(result)
