@@ -539,7 +539,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                       padding:
                           EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                       child: LinearProgressIndicator(
-                        value: (BASE_TIME_TO_ANSWER-timeToAnswer) / BASE_TIME_TO_ANSWER,
+                        value: (BASE_TIME_TO_ANSWER - timeToAnswer) /
+                            BASE_TIME_TO_ANSWER,
                         backgroundColor: KTheme.of(context).lightGrey,
                         minHeight: 8,
                       ),
@@ -686,23 +687,23 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          width: 50,
-                          height: 50,
+                          width: 60,
+                          height: 60,
                           child: FittedBox(
                             fit: BoxFit.contain,
                             child: Padding(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 0),
+                                  horizontal: 0, vertical: 0),
                               child: Container(
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: 20, vertical: 15),
+                                    horizontal: 0, vertical: 15),
                                 child: Text(
                                   "${correctCount}/${questionCount}",
                                   textScaleFactor: 1.0,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.black,
-                                    fontSize: 20,
+                                    fontSize: 30,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -730,23 +731,29 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                             ),
                           ),
                         ),
-                        InkWell(
-                          child: Container(
-                            width: 80,
-                            height: 50,
-                            padding: EdgeInsets.only(
-                                top: 5, bottom: 5, left: 5, right: 5),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(40),
+                        Container(
+                          width: 60,
+                          height: 60,
+                          child: InkWell(
+                            child: Container(
+                              width: 50,
+                              height: 50,
+                              padding: EdgeInsets.only(
+                                  top: 5, bottom: 5, left: 5, right: 5),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                              child: Icon(
+                                this.isMuted
+                                    ? Icons.volume_off
+                                    : Icons.volume_up,
+                                color: Color(0xff2c1c44),
+                                size: 30,
+                              ),
                             ),
-                            child: Icon(
-                              this.isMuted ? Icons.volume_off : Icons.volume_up,
-                              color: Color(0xff2c1c44),
-                              size: 30,
-                            ),
+                            onTap: () => this.toggleBackgroundSound(),
                           ),
-                          onTap: () => this.toggleBackgroundSound(),
                         ),
                       ],
                     ),
