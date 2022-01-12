@@ -8,6 +8,7 @@ import 'package:app_core/style/kpalette_group.dart';
 import 'package:app_core/style/ktheme.dart';
 import 'package:app_core/ui/kicon/kicon_manager.dart';
 import 'package:app_core/ui/widget/kerror_view.dart';
+import 'package:draggable_widget/draggable_widget.dart';
 import 'package:flutter/material.dart';
 
 class KApp extends StatefulWidget {
@@ -136,22 +137,27 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
         ),
       ),
     );
-
-    final buttonOpenCall = Positioned(
-      bottom: 64,
-      right: 24,
-      child: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            callType = KCallType.foreground;
-          });
-        },
-        backgroundColor: Colors.red,
-        child: const Icon(
-          Icons.phone_in_talk,
-          color: Colors.white,
-        ),
+    final button = FloatingActionButton(
+      onPressed: () {
+        setState(() {
+          callType = KCallType.foreground;
+        });
+      },
+      backgroundColor: Colors.red,
+      child: const Icon(
+        Icons.phone_in_talk,
+        color: Colors.white,
       ),
+    );
+
+    final buttonOpenCall = DraggableWidget(
+      bottomMargin: 80,
+      topMargin: 80,
+      intialVisibility: true,
+      horizontalSpace: 20,
+      shadowBorderRadius: 50,
+      child: button,
+      initialPosition: AnchoringPosition.bottomRight,
     );
 
     final rawInnerAppWithOverlay = Stack(

@@ -233,17 +233,17 @@ class _KChatScreenState extends State<KChatScreen> {
       onPressed: onManagerMember,
       icon: Icon(
         Icons.group_add,
-        size: 28,
-        color: Theme.of(context).colorScheme.primaryVariant,
+        size: 36,
+        color: Theme.of(context).colorScheme.primary,
       ),
     );
 
     final videoCallAction = IconButton(
       onPressed: isVideoCallEnabled ? onCallUser : null,
       icon: Icon(
-        Icons.video_call,
-        size: 28,
-        color: Theme.of(context).colorScheme.primaryVariant,
+        Icons.videocam_outlined,
+        size: 36,
+        color: Theme.of(context).colorScheme.primary,
       ),
     );
 
