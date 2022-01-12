@@ -1,4 +1,5 @@
 import 'package:app_core/header/kassets.dart';
+import 'package:app_core/ui/hero/khero_game_home.dart';
 import 'package:app_core/ui/hero/khero_jump_game.dart';
 import 'package:app_core/ui/hero/khero_letter_tap_game.dart';
 import 'package:app_core/ui/hero/khero_moving_tap_game.dart';
@@ -85,6 +86,15 @@ class _KHeroHomeState extends State<KHeroHome> {
     }
   }
 
+  void onOpenGameHome(KHero? hero) {
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (ctx) => KHeroGameHome(hero: hero)));
+  }
+
   void onTraining(KHero? hero) {
     if (this.overlayID != null) {
       KOverlayHelper.removeOverlay(this.overlayID!);
@@ -94,58 +104,13 @@ class _KHeroHomeState extends State<KHeroHome> {
         .push(MaterialPageRoute(builder: (ctx) => KHeroTraining(hero: hero)));
   }
 
-  void onPlaySpeechTapGame(KHero? hero) {
+  void onPlayMultiGame(KHero? hero) {
     if (this.overlayID != null) {
       KOverlayHelper.removeOverlay(this.overlayID!);
       this.overlayID = null;
     }
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (ctx) => KHeroSpeechTapGame(hero: hero)));
-  }
-
-  void onPlayTapGame(KHero? hero) {
-    if (this.overlayID != null) {
-      KOverlayHelper.removeOverlay(this.overlayID!);
-      this.overlayID = null;
-    }
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (ctx) => KHeroTapGame(hero: hero)));
-  }
-
-  void onPlayMovingTapGame(KHero? hero) {
-    if (this.overlayID != null) {
-      KOverlayHelper.removeOverlay(this.overlayID!);
-      this.overlayID = null;
-    }
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (ctx) => KHeroMovingTapGame(hero: hero)));
-  }
-
-  void onPlaySpeechLetterTapGame(KHero? hero) {
-    if (this.overlayID != null) {
-      KOverlayHelper.removeOverlay(this.overlayID!);
-      this.overlayID = null;
-    }
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (ctx) => KHeroSpeechLetterTapGame(hero: hero)));
-  }
-
-  void onPlayLetterTapGame(KHero? hero) {
-    if (this.overlayID != null) {
-      KOverlayHelper.removeOverlay(this.overlayID!);
-      this.overlayID = null;
-    }
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (ctx) => KHeroLetterTapGame(hero: hero)));
-  }
-
-  void onPlayJumpOverGame(KHero? hero) {
-    if (this.overlayID != null) {
-      KOverlayHelper.removeOverlay(this.overlayID!);
-      this.overlayID = null;
-    }
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (ctx) => KHeroJumpOverGame(hero: hero)));
+        .push(MaterialPageRoute(builder: (ctx) => KHeroMultiGame(hero: hero)));
   }
 
   void onPlayJumpGame(KHero? hero) {
@@ -155,35 +120,6 @@ class _KHeroHomeState extends State<KHeroHome> {
     }
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (ctx) => KHeroJumpGame(hero: hero)));
-  }
-
-  void onPlayJumpMultiRowGame(KHero? hero) {
-    if (this.overlayID != null) {
-      KOverlayHelper.removeOverlay(this.overlayID!);
-      this.overlayID = null;
-    }
-    // Navigator.of(context)
-    //     .push(MaterialPageRoute(builder: (ctx) => KHeroJumpGame(hero: hero)));
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (ctx) => KHeroJumpMultiRowGame(hero: hero)));
-  }
-
-  void onPlayShootingGame(KHero? hero) {
-    if (this.overlayID != null) {
-      KOverlayHelper.removeOverlay(this.overlayID!);
-      this.overlayID = null;
-    }
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (ctx) => KHeroShootingGame(hero: hero)));
-  }
-
-  void onPlayMultiGame(KHero? hero) {
-    if (this.overlayID != null) {
-      KOverlayHelper.removeOverlay(this.overlayID!);
-      this.overlayID = null;
-    }
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (ctx) => KHeroMultiGame(hero: hero)));
   }
 
   void onHeroClick(KHero hero) {
@@ -359,226 +295,18 @@ class _KHeroHomeState extends State<KHeroHome> {
       children: [
         Container(
           padding: EdgeInsets.all(8),
-          child: DefaultTextStyle(
-            style: Theme.of(context)
-                .textTheme
-                .bodyText1!
-                .copyWith(color: Colors.white),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: heroes != null && heroes!.length > 0
-                        ? () => onTraining(heroes![0])
-                        : () => onTraining(null),
-                    style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
-                      textColor: Colors.white,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text("💪"),
-                        // SizedBox(width: 10),
-                        // Text("Training"),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: 18),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => onPlayJumpOverGame(null),
-                    style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
-                      textColor: Colors.white,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text("👾️"),
-                        // SizedBox(width: 10),
-                        // Text("Game"),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: 18),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => onPlaySpeechTapGame(null),
-                    style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
-                      textColor: Colors.white,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text("🔈"),
-                        // SizedBox(width: 10),
-                        // Text("Game"),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: 18),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => onPlayTapGame(null),
-                    style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
-                      textColor: Colors.white,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text("👾️"),
-                        // SizedBox(width: 10),
-                        // Text("Game"),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: 18),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => onPlayMovingTapGame(null),
-                    style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
-                      textColor: Colors.white,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text("👾️"),
-                        // SizedBox(width: 10),
-                        // Text("Game"),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+          child: ElevatedButton(
+            onPressed: () => onOpenGameHome(heroes != null && heroes!.length > 0 ? heroes![0] : null),
+            style: KStyles.squaredButton(
+              KStyles.colorPrimary,
+              textColor: Colors.white,
             ),
-          ),
-        ),
-        Container(
-          padding: EdgeInsets.all(8),
-          child: DefaultTextStyle(
-            style: Theme.of(context)
-                .textTheme
-                .bodyText1!
-                .copyWith(color: Colors.white),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => onPlayLetterTapGame(null),
-                    style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
-                      textColor: Colors.white,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text("👾️"),
-                        // SizedBox(width: 10),
-                        // Text("Game"),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: 18),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => onPlaySpeechLetterTapGame(null),
-                    style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
-                      textColor: Colors.white,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text("👾️"),
-                        // SizedBox(width: 10),
-                        // Text("Game"),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: 18),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => onPlayJumpGame(null),
-                    style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
-                      textColor: Colors.white,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text("🕹"),
-                        // SizedBox(width: 10),
-                        // Text("Game"),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: 18),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => onPlayJumpMultiRowGame(null),
-                    style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
-                      textColor: Colors.white,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text("🏆"),
-                        // SizedBox(width: 10),
-                        // Text("Game"),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: 18),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => onPlayShootingGame(null),
-                    style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
-                      textColor: Colors.white,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text("🔫"),
-                        // SizedBox(width: 10),
-                        // Text("Game"),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(width: 18),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () => onPlayMultiGame(null),
-                    style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
-                      textColor: Colors.white,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text("🎮"),
-                        // SizedBox(width: 10),
-                        // Text("Game"),
-                      ],
-                    ),
-                  ),
-                ),
+                Text("🕹"),
+                // SizedBox(width: 10),
+                // Text("Training"),
               ],
             ),
           ),
