@@ -701,13 +701,13 @@ class _KVOIPCallState extends State<KVOIPCall>
               icon: Icon(
                 Icons.close_fullscreen,
                 color: Colors.white,
-                size: 48,
+                size: 36,
               ),
               onPressed: () {
                 KCallControlStreamHelper.broadcast(KCallType.background);
               },
             ),
-            top: 24,
+            top: 32,
             left: 24,
           ),
         ],
