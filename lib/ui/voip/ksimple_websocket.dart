@@ -50,8 +50,17 @@ class KSimpleWebSocket {
   }
 
   void close() {
-    this._socket?.close();
-    this._socket = null;
+    try {
+      this._socket?.close();
+    } catch (e) {
+      print(e.toString());
+    }
+
+    try {
+      this._socket = null;
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Future<WebSocket> _createWebsocket(String url) async {

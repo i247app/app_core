@@ -187,22 +187,76 @@ class _KVOIPCallState extends State<KVOIPCall>
 
   @override
   void dispose() {
-    if (!KHostConfig.isReleaseMode) print("P2PCall.dispose fired...");
-    this._slidingAnimationController.dispose();
+    if (!KHostConfig.isReleaseMode) print("KVOIPCall.dispose fired...");
 
-    Wakelock.disable();
-    WidgetsBinding.instance?.removeObserver(this);
+    try {
+      this._slidingAnimationController.dispose();
+    } catch (e) {
+      print(e.toString());
+    }
 
-    stopRingtone();
+    try {
+      Wakelock.disable();
+    } catch (e) {
+      print(e.toString());
+    }
+
+    try {
+      WidgetsBinding.instance?.removeObserver(this);
+    } catch (e) {
+      print(e.toString());
+    }
+
+    try {
+      stopRingtone();
+    } catch (e) {
+      print(e.toString());
+    }
 
     SystemChrome.setSystemUIOverlayStyle(KStyles.systemStyle);
-    this.ringtoneTimer?.cancel();
-    this.endCallTimer?.cancel();
-    this.panelTimer?.cancel();
-    this.streamSub.cancel();
-    this.streamCallControl.cancel();
-    releaseResourceIfNeed();
-    KCallKitHelper.instance.isCalling = false;
+
+    try {
+      this.ringtoneTimer?.cancel();
+    } catch (e) {
+      print(e.toString());
+    }
+
+    try {
+      this.endCallTimer?.cancel();
+    } catch (e) {
+      print(e.toString());
+    }
+
+    try {
+      this.panelTimer?.cancel();
+    } catch (e) {
+      print(e.toString());
+    }
+
+    try {
+      this.streamSub.cancel();
+    } catch (e) {
+      print(e.toString());
+    }
+
+    try {
+      this.streamCallControl.cancel();
+    } catch (e) {
+      print(e.toString());
+    }
+
+    try {
+      releaseResourceIfNeed();
+    } catch (e) {
+      print(e.toString());
+    }
+
+    try {
+      KCallKitHelper.instance.isCalling = false;
+    } catch (e) {
+      print(e.toString());
+    }
+
     super.dispose();
   }
 
