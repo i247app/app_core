@@ -1,4 +1,5 @@
 import 'package:app_core/app_core.dart';
+import 'package:app_core/model/kchat_message.dart';
 import 'package:app_core/ui/widget/kimage_viewer.dart';
 import 'package:app_core/ui/widget/ksmart_image.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
@@ -118,6 +119,11 @@ class KChatBubble extends StatelessWidget {
       Navigator.of(ctx).push(MaterialPageRoute(
           builder: (c) => Scaffold(body: KImageViewer.network(msg.message))));
     }
+  }
+
+  void onTextbookClick(ctx, String textbookID) async {
+    KToastHelper.success("Textbook $textbookID");
+    // Navigator.of(ctx).push(MaterialPageRoute(builder: (_)=>ScheduleSessionViewer()));
   }
 
   Widget wrapWithChatBubble(Widget child, Color chatBGColor) => Container(
@@ -241,6 +247,40 @@ class KChatBubble extends StatelessWidget {
             ],
           ),
           chatBGColor,
+        );
+        break;
+      case KChatMessage.CONTENT_TYPE_TEXTBOOK:
+        content = GestureDetector(
+          onTap: () => onTextbookClick(context, msg.message ?? "?"),
+          child: wrapWithChatBubble(
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.book, color: chatForegroundColor),
+                    SizedBox(width: 10),
+                    Flexible(
+                      child: Text(
+                        "Tap to view textbook",
+                        style: theme.textTheme.subtitle1!
+                            .copyWith(color: chatForegroundColor),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 4),
+                Text(
+                  "${KUtil.prettyDate(msg.messageDate, showTime: true)}",
+                  style: theme.textTheme.caption!
+                      .copyWith(color: chatForegroundColor),
+                ),
+              ],
+            ),
+            chatBGColor,
+          ),
         );
         break;
       default:

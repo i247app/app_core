@@ -47,6 +47,11 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
         text: "Video call ${KUtil.prettyDate(DateTime.now())}",
       );
 
+  Future<String?> sendTextbook(String textbookID) async => sendMessage(
+        messageType: KChatMessage.CONTENT_TYPE_TEXTBOOK,
+        text: textbookID,
+      );
+
   Future<String?> sendText(String message) async {
     final String sanitized = message.trim();
     if (sanitized.isEmpty) return null;
