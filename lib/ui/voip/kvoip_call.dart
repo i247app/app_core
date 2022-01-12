@@ -96,6 +96,7 @@ class _KVOIPCallState extends State<KVOIPCall>
   bool isOtherSoundEnabled = true;
   bool isOtherCameraEnabled = true;
   bool isVideoInitialized = false;
+  bool isBringMyCamBack = false;
   bool isPanelOpen = false;
 
   bool get isAccepted => widget.autoPickup;
@@ -246,9 +247,19 @@ class _KVOIPCallState extends State<KVOIPCall>
 
   void callControlListener(KCallType type) {
     if (type == KCallType.foreground) {
-      this.onCameraToggled(true);
+      if (this.isBringMyCamBack) {
+        this.onCameraToggled(true);
+        setState(() {
+          this.isBringMyCamBack = false;
+        });
+      }
     }
     if (type == KCallType.background) {
+      if (this.isMyCameraEnabled) {
+        setState(() {
+          this.isBringMyCamBack = true;
+        });
+      }
       this.onCameraToggled(false);
     }
   }
