@@ -20,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:collection/collection.dart';
 
 class KHeroShootingGame extends StatefulWidget {
   final KHero? hero;
