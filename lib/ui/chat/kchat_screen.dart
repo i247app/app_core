@@ -3,23 +3,8 @@ import 'dart:async';
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kcall_control_stream_helper.dart';
 import 'package:app_core/helper/kcall_stream_helper.dart';
-import 'package:app_core/value/kstyles.dart';
-import 'package:app_core/helper/khost_config.dart';
-import 'package:app_core/helper/klocation_helper.dart';
-import 'package:app_core/helper/ksession_data.dart';
-import 'package:app_core/helper/kwebrtc_helper.dart';
-import 'package:app_core/model/kchat.dart';
-import 'package:app_core/model/kchat_member.dart';
-import 'package:app_core/model/kchat_message.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
-import 'package:app_core/model/kuser.dart';
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/ui/chat/kchat_contact_listing.dart';
-import 'package:app_core/ui/chat/kchat_manager.dart';
-import 'package:app_core/header/kassets.dart';
-import 'package:app_core/ui/chat/kchatroom.dart';
-import 'package:app_core/ui/chat/service/kchatroom_controller.dart';
-import 'package:app_core/ui/voip/kvoip_call.dart';
 import 'package:flutter/material.dart';
 
 class KChatScreen extends StatefulWidget {
@@ -48,6 +33,7 @@ class KChatScreen extends StatefulWidget {
 
 class _KChatScreenState extends State<KChatScreen> {
   late KChatroomController chatroomCtrl;
+  late final StreamSubscription streamCallControl;
 
   List<KChatMember> get members =>
       this.chatroomCtrl.value.members ?? widget.members ?? [];
@@ -69,7 +55,7 @@ class _KChatScreenState extends State<KChatScreen> {
 
     requestPermissions(); // need perms before any api call
 
-    KCallStreamHelper.stream.listen((event) {
+    this.streamCallControl = KCallStreamHelper.stream.listen((event) {
       setState(() {});
     });
   }
@@ -77,6 +63,7 @@ class _KChatScreenState extends State<KChatScreen> {
   @override
   void dispose() {
     this.chatroomCtrl.removeListener(chatroomListener);
+    this.streamCallControl.cancel();
     super.dispose();
   }
 

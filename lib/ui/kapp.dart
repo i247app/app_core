@@ -46,6 +46,8 @@ class KApp extends StatefulWidget {
 
 class _KAppState extends State<KApp> with WidgetsBindingObserver {
   late final StreamSubscription? globalListenerSub;
+  late final StreamSubscription streamCallControl;
+  late final StreamSubscription streamCall;
 
   bool forceRebuild = false;
 
@@ -61,8 +63,9 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
 
     globalListenerSub = widget.initGlobalListener?.call();
     KRebuildHelper.notifier.addListener(rebuildListener);
-    KCallStreamHelper.stream.listen(callNotifListener);
-    KCallControlStreamHelper.stream.listen(callControlNotifListener);
+    this.streamCall = KCallStreamHelper.stream.listen(callNotifListener);
+    this.streamCallControl =
+        KCallControlStreamHelper.stream.listen(callControlNotifListener);
   }
 
   void callNotifListener(KVOIPCall? call) {
@@ -82,6 +85,8 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
     globalListenerSub?.cancel();
     KRebuildHelper.notifier.removeListener(rebuildListener);
     WidgetsBinding.instance?.removeObserver(this);
+    this.streamCall.cancel();
+    this.streamCallControl.cancel();
     super.dispose();
   }
 
@@ -139,9 +144,7 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
     );
     final button = FloatingActionButton(
       onPressed: () {
-        setState(() {
-          callType = KCallType.foreground;
-        });
+        KCallControlStreamHelper.broadcast(KCallType.foreground);
       },
       backgroundColor: Colors.red,
       child: const Icon(

@@ -68,6 +68,7 @@ class KVOIPCall extends StatefulWidget {
 class _KVOIPCallState extends State<KVOIPCall>
     with WidgetsBindingObserver, TickerProviderStateMixin {
   late final StreamSubscription streamSub;
+  late final StreamSubscription streamCallControl;
   late AnimationController _slidingAnimationController;
   late Animation<Offset> _slidingAnimation;
 
@@ -166,6 +167,8 @@ class _KVOIPCallState extends State<KVOIPCall>
     ));
 
     this.streamSub = KNotifStreamHelper.stream.listen(notifListener);
+    this.streamCallControl =
+        KCallControlStreamHelper.stream.listen(callControlListener);
 
     // White status bar icons & black software buttons
     SystemChrome.setSystemUIOverlayStyle(KStyles.systemStyle.copyWith(
@@ -196,6 +199,7 @@ class _KVOIPCallState extends State<KVOIPCall>
     this.endCallTimer?.cancel();
     this.panelTimer?.cancel();
     this.streamSub.cancel();
+    this.streamCallControl.cancel();
     releaseResourceIfNeed();
     KCallKitHelper.instance.isCalling = false;
     super.dispose();
@@ -238,6 +242,15 @@ class _KVOIPCallState extends State<KVOIPCall>
     try {
       await KWebRTCHelper.askForPermissions();
     } catch (e) {}
+  }
+
+  void callControlListener(KCallType type) {
+    if (type == KCallType.foreground) {
+      this.onCameraToggled(true);
+    }
+    if (type == KCallType.background) {
+      this.onCameraToggled(false);
+    }
   }
 
   void notifListener(KFullNotification notification) {
