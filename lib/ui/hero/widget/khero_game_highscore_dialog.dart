@@ -88,17 +88,17 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(left: 20, right: 20, top: 7, bottom: 25),
+            padding: EdgeInsets.only(left: 20, right: 20, top: 5, bottom: 25),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Transform.translate(
                   offset: Offset(5, 0),
                   child: Container(
-                    width: MediaQuery.of(context).size.width * 0.45,
+                    width: MediaQuery.of(context).size.width * 0.3,
                     child: FittedBox(
                       child: Text(
-                        "HIGH SCORES",
+                        "LEVEL ${widget.currentLevel}",
                         textScaleFactor: 1.0,
                         textAlign: TextAlign.center,
                         style: TextStyle(
