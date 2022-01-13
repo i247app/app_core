@@ -263,8 +263,6 @@ class _KVOIPCallState extends State<KVOIPCall>
   void releaseResourceIfNeed() {
     if (this.commManager != null && !this.commManager!.isDisposed) {
       this.commManager?.close();
-      this.localRenderer?.dispose();
-      this.remoteRenderers.forEach((_, rr) => rr.dispose());
       KCallKitHelper.instance.endCall(this._uuid, "", "", "");
     }
   }
