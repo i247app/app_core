@@ -607,9 +607,16 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
       this.overlayID = null;
     }
 
-    audioPlayer.dispose();
-    backgroundAudioPlayer.dispose();
-    flutterTts.stop();
+    try {
+      audioPlayer.dispose();
+    } catch (e) {}
+    try {
+      ;
+      backgroundAudioPlayer.dispose();
+    } catch (e) {}
+    try {
+      flutterTts.stop();
+    } catch (e) {}
 
     // TODO: implement dispose
     super.dispose();
@@ -705,7 +712,7 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
         this.isSpeech = true;
       });
 
-      while (isSpeech) {
+      while (isSpeech && mounted) {
         if (currentLanguage != null) {
           await flutterTts.setLanguage(currentLanguage!);
         }
