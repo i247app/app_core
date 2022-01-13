@@ -1,7 +1,8 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/lop.dart';
 import 'package:json_annotation/json_annotation.dart';
-
+import 'package:app_core/model/textbook.dart';
+import 'package:app_core/model/student.dart';
 part 'lop_schedule.g.dart';
 
 @JsonSerializable()
@@ -27,7 +28,10 @@ class LopSchedule extends Lop {
   @JsonKey(ignore: true)
   bool get isJoined {
     try {
-      return this.students?.map((s) => s.puid).contains(KSessionData.me!.puid) ??
+      return this
+              .students
+              ?.map((s) => s.puid)
+              .contains(KSessionData.me!.puid) ??
           false;
     } catch (_) {
       return false;

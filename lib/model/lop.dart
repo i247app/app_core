@@ -3,6 +3,7 @@ import 'package:app_core/helper/kmath_helper.dart';
 import 'package:app_core/model/course.dart';
 import 'package:app_core/model/student.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:app_core/model/textbook.dart';
 
 part 'lop.g.dart';
 
