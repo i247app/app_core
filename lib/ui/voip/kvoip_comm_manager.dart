@@ -379,8 +379,9 @@ class KVOIPCommManager {
 
           try {
             this.onStateChange?.call(SignalingState.CallStateBye);
+          } catch (e) {
+            print(e);
           }
-          catch(e) { print(e); }
 
           final to = data['to'];
 
@@ -389,8 +390,9 @@ class KVOIPCommManager {
               this._localStream!.dispose();
               this._localStreams.clear();
             }
+          } catch (e) {
+            print(e);
           }
-          catch(e) { print(e); }
 
           try {
             final pc = this._peerConnections[to];
@@ -398,8 +400,9 @@ class KVOIPCommManager {
               pc.close();
               this._peerConnections.remove(to);
             }
+          } catch (e) {
+            print(e);
           }
-          catch(e) { print(e); }
 
           try {
             final dc = this._dataChannels[to];
@@ -407,8 +410,9 @@ class KVOIPCommManager {
               dc.close();
               this._dataChannels.remove(to);
             }
+          } catch (e) {
+            print(e);
           }
-          catch(e) { print(e); }
         }
         break;
       case 'keepalive':

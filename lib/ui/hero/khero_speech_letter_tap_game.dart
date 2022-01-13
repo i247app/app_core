@@ -611,9 +611,16 @@ class KSpeechLetterTapGameScreenState extends State<KSpeechLetterTapGameScreen>
       this.overlayID = null;
     }
 
-    audioPlayer.dispose();
-    backgroundAudioPlayer.dispose();
-    flutterTts.stop();
+    try {
+      audioPlayer.dispose();
+    } catch (e) {}
+    try {
+      ;
+      backgroundAudioPlayer.dispose();
+    } catch (e) {}
+    try {
+      flutterTts.stop();
+    } catch (e) {}
 
     // TODO: implement dispose
     super.dispose();
