@@ -1,5 +1,7 @@
 import 'package:app_core/app_core.dart';
-import 'package:app_core/model/kchat_message.dart';
+import 'package:app_core/model/chapter.dart';
+import 'package:app_core/model/tbpage.dart';
+import 'package:app_core/ui/school/widget/ktextbook_view.dart';
 import 'package:app_core/ui/widget/kimage_viewer.dart';
 import 'package:app_core/ui/widget/ksmart_image.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
@@ -123,7 +125,25 @@ class KChatBubble extends StatelessWidget {
 
   void onTextbookClick(ctx, String textbookID) async {
     KToastHelper.success("Textbook $textbookID");
-    // Navigator.of(ctx).push(MaterialPageRoute(builder: (_)=>ScheduleSessionViewer()));
+    final textbook = await Future.value(Chapter()
+      ..pages = [
+        TBPage()
+          ..mediaURL =
+              "https://ae01.alicdn.com/kf/H4b39f2a8b82f4a049de1305fa95595296/Full-diamond-embroidery-Cute-koala-on-the-tree-diamond-painting-cross-stitch-diy-diamond-painting-hobi.jpg"
+      ]);
+    final screen = Scaffold(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          KTextbookView(chapter: textbook),
+          Align(
+            alignment: Alignment.topLeft,
+            child: SafeArea(child: BackButton()),
+          ),
+        ],
+      ),
+    );
+    Navigator.of(ctx).push(MaterialPageRoute(builder: (_) => screen));
   }
 
   Widget wrapWithChatBubble(Widget child, Color chatBGColor) => Container(

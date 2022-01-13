@@ -10,7 +10,7 @@ import 'package:app_core/model/kanswer.dart';
 import 'package:app_core/model/kflash.dart';
 import 'package:app_core/model/lop_schedule.dart';
 import 'package:app_core/model/tbpage.dart';
-import 'package:app_core/ui/widget/kimage_viewer.dart';
+import 'package:app_core/ui/school/widget/ktextbook_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -76,6 +76,7 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
     // ["📄", KFlash.VALUE_PAPER],
     // ["🍜", KFlash.VALUE_PHO],
   ];
+  final textbookViewCtrl = ValueNotifier<int>(0);
   final panelCtrl = PanelController();
   late final chatroomCtrl = KChatroomController(
     refApp: "LOP_SCHEDULE",
@@ -84,14 +85,13 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
 
   late StreamSubscription streamSub;
 
-  int index = 0;
   late _PanelMode panelMode = this.data.mode == ScheduleSessionMode.master
       ? _PanelMode.dashboard
       : _PanelMode.quiz; // _PanelMode.chat;
 
   _ScheduleKSessionData get data => _ScheduleKSessionData(
         schedule: widget.schedule,
-        index: this.index,
+        index: textbookViewCtrl.value,
         mode: widget.mode,
       );
 
@@ -133,10 +133,10 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
   void setPage(int newIndex) async {
     if (newIndex < 0 || newIndex >= (this.data.chapter.pages ?? []).length)
       return;
-    setState(() => this.index = newIndex);
+    setState(() => textbookViewCtrl.value = newIndex);
   }
 
-  void movePage(int offset) async => setPage(this.index + offset);
+  void movePage(int offset) async => setPage(textbookViewCtrl.value + offset);
 
   void onLessonChoiceClick(TBPage page, KAnswer choice) {
     final theCorrectAnswer = page.theQuestion!.correctAnswer!;
@@ -169,10 +169,9 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
 
   @override
   Widget build(BuildContext context) {
-    final lessonView = GestureDetector(
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(
-          builder: (_) => KImageViewer.network(this.data.page.mediaURL))),
-      child: _LessonItemView(this.data),
+    final lessonView = KTextbookView(
+      controller: textbookViewCtrl,
+      chapter: data.chapter,
     );
 
     final chat = KChatroom(this.chatroomCtrl);
@@ -336,31 +335,6 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
     );
 
     return Scaffold(body: body);
-  }
-}
-
-class _LessonItemView extends StatelessWidget {
-  final _ScheduleKSessionData data;
-
-  const _LessonItemView(this.data);
-
-  @override
-  Widget build(BuildContext context) {
-    final body = InteractiveViewer(
-      panEnabled: false,
-      minScale: 0.5,
-      maxScale: 4,
-      // boundaryMargin: EdgeInsets.all(40),
-      child: Container(
-        color: KStyles.darkGrey,
-        child: FadeInImage.assetNetwork(
-          placeholder: KAssets.IMG_TRANSPARENCY,
-          image: data.page.mediaURL!,
-        ),
-      ),
-    );
-
-    return body;
   }
 }
 
