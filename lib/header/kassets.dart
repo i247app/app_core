@@ -65,4 +65,6 @@ abstract class KAssets {
 
   /* JSON */
   static const String JSON_VIETNAM_BANKS = "$JSON_BASE/vietnam_banks.json";
+  static const String JSON_SELF_STUDY_BEGINNER =
+      "$JSON_BASE/self_study_beginner.json";
 }

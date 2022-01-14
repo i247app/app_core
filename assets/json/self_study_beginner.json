@@ -1,0 +1,1301 @@
+[
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "BEGINNER",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 1,
+    "DIFFICULTY": 1,
+    "PROMPT_TEXT": "Hello, what ______ your name?",
+    "CHOICE1": "is",
+    "CHOICE2": "are",
+    "CHOICE3": "am",
+    "CHOICE4": "be"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 1,
+    "DIFFICULTY": 2,
+    
+    "PROMPT_TEXT": "______ name is John.",
+    "CHOICE1": "My name is John.",
+    "CHOICE2": "Me name is John.",
+    "CHOICE3": "He name is John.",
+    "CHOICE4": "I name is John."
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 1,
+    "DIFFICULTY": 3,
+    
+    "PROMPT_TEXT": "My name is Lisa. ______ Lisa Peterson",
+    "CHOICE1": "I am",
+    "CHOICE2": "I is",
+    "CHOICE3": "I are",
+    "CHOICE4": "I"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 1,
+    "DIFFICULTY": 4,
+    
+    "PROMPT_TEXT": "______ is an apple.",
+    "CHOICE1": "This is an apple.",
+    "CHOICE2": "The is an apple.",
+    "CHOICE3": "He is an apple.",
+    "CHOICE4": "She is an apple."
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 1,
+    "DIFFICULTY": 5,
+    
+    "PROMPT_TEXT": "“John ______ from the US.”",
+    "CHOICE1": "is",
+    "CHOICE2": "are",
+    "CHOICE3": "do",
+    "CHOICE4": "go"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 1,
+    "DIFFICULTY": 6,
+    
+    "PROMPT_TEXT": "______ are you from?",
+    "CHOICE1": "Where",
+    "CHOICE2": "When",
+    "CHOICE3": "Who",
+    "CHOICE4": "What"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 1,
+    "DIFFICULTY": 7,
+    
+    "PROMPT_TEXT": "Where ______ you ______ ?",
+    "CHOICE1": "are / from",
+    "CHOICE2": "are / in",
+    "CHOICE3": "are / is",
+    "CHOICE4": "are / on"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 1,
+    "DIFFICULTY": 8,
+    
+    "PROMPT_TEXT": "______ from Spain. I’m Rodriguez .",
+    "CHOICE1": "I’m",
+    "CHOICE2": "You’re",
+    "CHOICE3": "He’s",
+    "CHOICE4": "In"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 1,
+    "DIFFICULTY": 9,
+    
+    "PROMPT_TEXT": "Pierre is a French boy. ______ is from ______ .",
+    "CHOICE1": "He / France",
+    "CHOICE2": "His / French",
+    "CHOICE3": "Him / France",
+    "CHOICE4": "It / french"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 1,
+    "DIFFICULTY": 10,
+    
+    "PROMPT_TEXT": "Is Catherine ______ sister?",
+    "CHOICE1": "your",
+    "CHOICE2": "you",
+    "CHOICE3": "do",
+    "CHOICE4": "yours"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 2,
+    "DIFFICULTY": 1,
+    
+    "PROMPT_TEXT": "We ______ students.",
+    "CHOICE1": "are",
+    "CHOICE2": "am",
+    "CHOICE3": "is",
+    "CHOICE4": "are a"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 2,
+    "DIFFICULTY": 2,
+    
+    "PROMPT_TEXT": "I ______ student.",
+    "CHOICE1": "am / a",
+    "CHOICE2": "am",
+    "CHOICE3": "am / *",
+    "CHOICE4": "is / an"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 2,
+    "DIFFICULTY": 3,
+    
+    "PROMPT_TEXT": "She ______ Italy.",
+    "CHOICE1": "is from",
+    "CHOICE2": "is at",
+    "CHOICE3": "is/are",
+    "CHOICE4": "am from"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 2,
+    "DIFFICULTY": 4,
+    
+    "PROMPT_TEXT": "He is ______ teacher.",
+    "CHOICE1": "a",
+    "CHOICE2": "an",
+    "CHOICE3": "*",
+    "CHOICE4": "the"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 2,
+    "DIFFICULTY": 5,
+    
+    "PROMPT_TEXT": "I live ______ a house ______ Los Angeles.",
+    "CHOICE1": "at / in",
+    "CHOICE2": "in / in",
+    "CHOICE3": "in / *",
+    "CHOICE4": "at / on"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 2,
+    "DIFFICULTY": 6,
+    
+    "PROMPT_TEXT": "“______ are you?”",
+    "CHOICE1": "How",
+    "CHOICE2": "we",
+    "CHOICE3": "What",
+    "CHOICE4": "Who"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 2,
+    "DIFFICULTY": 7,
+    
+    "PROMPT_TEXT": "What’s this ______ English?",
+    "CHOICE1": "on",
+    "CHOICE2": "in",
+    "CHOICE3": "at",
+    "CHOICE4": "out"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 2,
+    "DIFFICULTY": 8,
+    
+    "PROMPT_TEXT": "I have two ______ .",
+    "CHOICE1": "sisters",
+    "CHOICE2": "a sister",
+    "CHOICE3": "the sister",
+    "CHOICE4": "sister"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 2,
+    "DIFFICULTY": 9,
+    
+    "PROMPT_TEXT": "It’s ______ Spanish orange.",
+    "CHOICE1": "an",
+    "CHOICE2": "and",
+    "CHOICE3": "the",
+    "CHOICE4": "those"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PLURAL NOUNS",
+    "SKILL": 2,
+    "DIFFICULTY": 10,
+    
+    "PROMPT_TEXT": "It’s ______ green apple.",
+    "CHOICE1": "an",
+    "CHOICE2": "the",
+    "CHOICE3": "and",
+    "CHOICE4": "a"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PREPOSITIONS",
+    "SKILL": 3,
+    "DIFFICULTY": 1,
+    
+    "PROMPT_TEXT": "I come ______ Italy.",
+    "CHOICE1": "from",
+    "CHOICE2": "for",
+    "CHOICE3": "at",
+    "CHOICE4": "in"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PREPOSITIONS",
+    "SKILL": 3,
+    "DIFFICULTY": 2,
+    
+    "PROMPT_TEXT": "Ann, how are you?",
+    "CHOICE1": "I'm fine, thanks. And you?",
+    "CHOICE2": "I working.",
+    "CHOICE3": "I'm fine, thanks. And yours.",
+    "CHOICE4": "I ok."
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PREPOSITIONS",
+    "SKILL": 3,
+    "DIFFICULTY": 3,
+    
+    "PROMPT_TEXT": "Whose key is that?",
+    "CHOICE1": "It's of Cate.",
+    "CHOICE2": "It's Cate's",
+    "CHOICE3": "It's Cate.",
+    "CHOICE4": "It's to Cate."
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PREPOSITIONS",
+    "SKILL": 3,
+    "DIFFICULTY": 4,
+    
+    "PROMPT_TEXT": "His office is on the first ______",
+    "CHOICE1": "ground",
+    "CHOICE2": "ground",
+    "CHOICE3": "stage",
+    "CHOICE4": "floor"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PREPOSITIONS",
+    "SKILL": 3,
+    "DIFFICULTY": 5,
+    
+    "PROMPT_TEXT": "I speak Hebrew and French but Ann ______",
+    "CHOICE1": "doesn't speaks",
+    "CHOICE2": "speaks",
+    "CHOICE3": "doesn't",
+    "CHOICE4": "don't"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PREPOSITIONS",
+    "SKILL": 3,
+    "DIFFICULTY": 6,
+    
+    "PROMPT_TEXT": "I can't find my glasses. Can you look for ______, please?",
+    "CHOICE1": "them",
+    "CHOICE2": "them",
+    "CHOICE3": "it",
+    "CHOICE4": "their"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PREPOSITIONS",
+    "SKILL": 3,
+    "DIFFICULTY": 7,
+    
+    "PROMPT_TEXT": "______ there any cars on the street?",
+    "CHOICE1": "isnt",
+    "CHOICE2": "is at",
+    "CHOICE3": "am",
+    "CHOICE4": "doesn't"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PREPOSITIONS",
+    "SKILL": 3,
+    "DIFFICULTY": 8,
+    
+    "PROMPT_TEXT": "(On the phone) Hello. Juliet ______",
+    "CHOICE1": "speaking",
+    "CHOICE2": "speaks",
+    "CHOICE3": "talking",
+    "CHOICE4": "talk"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PREPOSITIONS",
+    "SKILL": 3,
+    "DIFFICULTY": 9,
+    
+    "PROMPT_TEXT": "I like ______ in my spare time.",
+    "CHOICE1": "read",
+    "CHOICE2": "get read",
+    "CHOICE3": "to read",
+    "CHOICE4": "to reading"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "PREPOSITIONS",
+    "SKILL": 3,
+    "DIFFICULTY": 10,
+    
+    "PROMPT_TEXT": "I ______ born in 1992.",
+    "CHOICE1": "was",
+    "CHOICE2": "a",
+    "CHOICE3": "an",
+    "CHOICE4": "the"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 4,
+    "DIFFICULTY": 1,
+    
+    "PROMPT_TEXT": "I ______ good at climbing trees.",
+    "CHOICE1": "AM",
+    "CHOICE2": "is",
+    "CHOICE3": "are",
+    "CHOICE4": "not"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 4,
+    "DIFFICULTY": 2,
+    
+    "PROMPT_TEXT": "I have to ______ my homework.",
+    "CHOICE1": "do",
+    "CHOICE2": "a",
+    "CHOICE3": "an",
+    "CHOICE4": "the"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 4,
+    "DIFFICULTY": 3,
+    
+    "PROMPT_TEXT": "They ______ at the zoo.",
+    "CHOICE1": "out",
+    "CHOICE2": "does",
+    "CHOICE3": "in",
+    "CHOICE4": "in/of"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 4,
+    "DIFFICULTY": 4,
+    
+    "PROMPT_TEXT": "Jo and Mark ______ not want to go.",
+    "CHOICE1": "at",
+    "CHOICE2": "is",
+    "CHOICE3": "to",
+    "CHOICE4": "top"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 4,
+    "DIFFICULTY": 5,
+    
+    "PROMPT_TEXT": "Sonny and Baek  ______  eating ice cream.",
+    "CHOICE1": "do",
+    "CHOICE2": "did",
+    "CHOICE3": "in",
+    "CHOICE4": "at"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 4,
+    "DIFFICULTY": 6,
+    
+    "PROMPT_TEXT": "She ______ well at sports.",
+    "CHOICE1": "do",
+    "CHOICE2": "a",
+    "CHOICE3": "at",
+    "CHOICE4": "on"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 4,
+    "DIFFICULTY": 7,
+    
+    "PROMPT_TEXT": "The balls ______ new.",
+    "CHOICE1": "are",
+    "CHOICE2": "has",
+    "CHOICE3": "all",
+    "CHOICE4": "there"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 4,
+    "DIFFICULTY": 8,
+    
+    "PROMPT_TEXT": "Do you ______ two pencils?",
+    "CHOICE1": "have",
+    "CHOICE2": "has",
+    "CHOICE3": "all",
+    "CHOICE4": "extra"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 4,
+    "DIFFICULTY": 9,
+    
+    "PROMPT_TEXT": "We ______ not have class today.",
+    "CHOICE1": "does",
+    "CHOICE2": "do",
+    "CHOICE3": "all",
+    "CHOICE4": "at"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 4,
+    "DIFFICULTY": 10,
+    
+    "PROMPT_TEXT": "I ______ a new pen.",
+    "CHOICE1": "have",
+    "CHOICE2": "has",
+    "CHOICE3": "in",
+    "CHOICE4": "at"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 5,
+    "DIFFICULTY": 1,
+    
+    "PROMPT_TEXT": "Those ______ beautiful shoes",
+    "CHOICE1": "are",
+    "CHOICE2": "is",
+    "CHOICE3": "at",
+    "CHOICE4": "out"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 5,
+    "DIFFICULTY": 2,
+    
+    "PROMPT_TEXT": "My favorite fruit ______ apple.",
+    "CHOICE1": "is",
+    "CHOICE2": "are",
+    "CHOICE3": "am",
+    "CHOICE4": "not"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 5,
+    "DIFFICULTY": 3,
+    
+    "PROMPT_TEXT": "She ______ a new bag",
+    "CHOICE1": "has",
+    "CHOICE2": "have",
+    "CHOICE3": "a",
+    "CHOICE4": "the"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 5,
+    "DIFFICULTY": 4,
+    
+    "PROMPT_TEXT": "She ______ my friend.",
+    "CHOICE1": "is",
+    "CHOICE2": "am",
+    "CHOICE3": "at",
+    "CHOICE4": "the"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 5,
+    "DIFFICULTY": 5,
+    
+    "PROMPT_TEXT": "Birds ______  wings.",
+    "CHOICE1": "have",
+    "CHOICE2": "her",
+    "CHOICE3": "to",
+    "CHOICE4": "do"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 5,
+    "DIFFICULTY": 6,
+    
+    "PROMPT_TEXT": "My name is Sam. ______ am 7 years old",
+    "CHOICE1": "i",
+    "CHOICE2": "am",
+    "CHOICE3": "all",
+    "CHOICE4": "the"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 5,
+    "DIFFICULTY": 7,
+    
+    "PROMPT_TEXT": "Jam and I are friends. ______ like to play together.",
+    "CHOICE1": "we",
+    "CHOICE2": "they",
+    "CHOICE3": "did",
+    "CHOICE4": "us"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 5,
+    "DIFFICULTY": 8,
+    
+    "PROMPT_TEXT": "I have a sister. ______ is 10 years old.",
+    "CHOICE1": "she",
+    "CHOICE2": "has",
+    "CHOICE3": "have",
+    "CHOICE4": "do"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 5,
+    "DIFFICULTY": 9,
+    
+    "PROMPT_TEXT": "My father is 37 years old. ______ is so kind and loving.",
+    "CHOICE1": "he",
+    "CHOICE2": "she",
+    "CHOICE3": "they",
+    "CHOICE4": "that"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "MIXED",
+    "SKILL": 5,
+    "DIFFICULTY": 10,
+    
+    "PROMPT_TEXT": "Shar and Lene are grade 1 pupils. ______ are my good friends.",
+    "CHOICE1": "they",
+    "CHOICE2": "that",
+    "CHOICE3": "she",
+    "CHOICE4": "has"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 6,
+    "DIFFICULTY": 1,
+    
+    "PROMPT_TEXT": "“______ her name Eliza? “No, ______ .”",
+    "CHOICE1": "Is / it is not",
+    "CHOICE2": "Is / she isn’t",
+    "CHOICE3": "Is / it isn’t",
+    "CHOICE4": "Is / it not"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 6,
+    "DIFFICULTY": 2,
+    
+    "PROMPT_TEXT": "Is your surname Anderson?",
+    "CHOICE1": "Yes, it is.",
+    "CHOICE2": "Yes, you are.",
+    "CHOICE3": "Yes, it not",
+    "CHOICE4": "Yes, my is."
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 6,
+    "DIFFICULTY": 3,
+    
+    "PROMPT_TEXT": "Is she American?” “No, ______ .”",
+    "CHOICE1": "she isn’t",
+    "CHOICE2": "she wasn't",
+    "CHOICE3": "she is not",
+    "CHOICE4": "she her isn’t"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 6,
+    "DIFFICULTY": 4,
+    
+    "PROMPT_TEXT": "“______ their names Jack & Benny?Yes, ______ .”",
+    "CHOICE1": "Is / they’re",
+    "CHOICE2": "Aren’t / there are",
+    "CHOICE3": "Is / that",
+    "CHOICE4": "Am / their"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 6,
+    "DIFFICULTY": 5,
+    
+    "PROMPT_TEXT": "This is the photo _____ my family.",
+    "CHOICE1": "of",
+    "CHOICE2": "at",
+    "CHOICE3": "out",
+    "CHOICE4": "on"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 6,
+    "DIFFICULTY": 6,
+    
+    "PROMPT_TEXT": "It’s good practice _____ you.",
+    "CHOICE1": "for",
+    "CHOICE2": "at",
+    "CHOICE3": "of",
+    "CHOICE4": "in"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 6,
+    "DIFFICULTY": 7,
+    
+    "PROMPT_TEXT": "I’m _____ home.",
+    "CHOICE1": "at",
+    "CHOICE2": "on",
+    "CHOICE3": "it",
+    "CHOICE4": "from"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 6,
+    "DIFFICULTY": 8,
+    
+    "PROMPT_TEXT": "I’m _____ La Guardia Community College.",
+    "CHOICE1": "in",
+    "CHOICE2": "on",
+    "CHOICE3": "at",
+    "CHOICE4": "of"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 6,
+    "DIFFICULTY": 9,
+    
+    "PROMPT_TEXT": "I’m _____ New York.",
+    "CHOICE1": "at",
+    "CHOICE2": "out",
+    "CHOICE3": "for",
+    "CHOICE4": "in"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 6,
+    "DIFFICULTY": 10,
+    
+    "PROMPT_TEXT": "I’m _____ a class _____ eight other students.",
+    "CHOICE1": "in / with",
+    "CHOICE2": "at / of",
+    "CHOICE3": "in / out",
+    "CHOICE4": "at / off"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 7,
+    "DIFFICULTY": 1,
+    
+    "PROMPT_TEXT": "I live _____ an apartment _____ two American boys.",
+    "CHOICE1": "in / with",
+    "CHOICE2": "in / out",
+    "CHOICE3": "at / with",
+    "CHOICE4": "in / of"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 7,
+    "DIFFICULTY": 2,
+    
+    "PROMPT_TEXT": "Central Park is lovely _____ the snow.",
+    "CHOICE1": "with",
+    "CHOICE2": "in",
+    "CHOICE3": "of",
+    "CHOICE4": "the"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 7,
+    "DIFFICULTY": 3,
+    
+    "PROMPT_TEXT": "She _____ a uniform.",
+    "CHOICE1": "wear",
+    "CHOICE2": "to wear",
+    "CHOICE3": "wearing",
+    "CHOICE4": "wears"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 7,
+    "DIFFICULTY": 4,
+    
+    "PROMPT_TEXT": "He _____ his car every weekend.",
+    "CHOICE1": "washes",
+    "CHOICE2": "washing",
+    "CHOICE3": "washed",
+    "CHOICE4": "wash"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 7,
+    "DIFFICULTY": 5,
+    
+    "PROMPT_TEXT": "Rosemary _____ three languages.",
+    "CHOICE1": "speaks",
+    "CHOICE2": "talks",
+    "CHOICE3": "tells",
+    "CHOICE4": "know"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 7,
+    "DIFFICULTY": 6,
+    
+    "PROMPT_TEXT": "My dad _____ at 7 o’clock everyday.",
+    "CHOICE1": "gets up",
+    "CHOICE2": "looks up",
+    "CHOICE3": "getting up",
+    "CHOICE4": "jumps up"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 7,
+    "DIFFICULTY": 7,
+    
+    "PROMPT_TEXT": "sabel is a flight attendant. She _____ passengers.",
+    "CHOICE1": "serves",
+    "CHOICE2": "to serve",
+    "CHOICE3": "served",
+    "CHOICE4": "serving"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 7,
+    "DIFFICULTY": 8,
+    
+    "PROMPT_TEXT": "Their son _____ in this hospital.",
+    "CHOICE1": "works",
+    "CHOICE2": "begins",
+    "CHOICE3": "starts",
+    "CHOICE4": "likes"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 7,
+    "DIFFICULTY": 9,
+    
+    "PROMPT_TEXT": "Jim’s a postman. He _____ letters to people.",
+    "CHOICE1": "delivers",
+    "CHOICE2": "works",
+    "CHOICE3": "delivered",
+    "CHOICE4": "serves"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 7,
+    "DIFFICULTY": 10,
+    
+    "PROMPT_TEXT": "Jane’s a doctor. She _____ ill people.",
+    "CHOICE1": "helps",
+    "CHOICE2": "speaks to",
+    "CHOICE3": "helps",
+    "CHOICE4": "serves drinks"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 8,
+    "DIFFICULTY": 1,
+    
+    "PROMPT_TEXT": "Bern _____ in a flat in Birmingham",
+    "CHOICE1": "lives",
+    "CHOICE2": "stands",
+    "CHOICE3": "has",
+    "CHOICE4": "wants"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 8,
+    "DIFFICULTY": 2,
+    
+    "PROMPT_TEXT": "Nancy’s uncle is a pilot. He _____ all over the world.",
+    "CHOICE1": "travels",
+    "CHOICE2": "seess",
+    "CHOICE3": "travels",
+    "CHOICE4": "delivers"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 8,
+    "DIFFICULTY": 3,
+    
+    "PROMPT_TEXT": "_____ he like his job?",
+    "CHOICE1": "does",
+    "CHOICE2": "do",
+    "CHOICE3": "is",
+    "CHOICE4": "are"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 8,
+    "DIFFICULTY": 4,
+    
+    "PROMPT_TEXT": "I _____ an accountant.",
+    "CHOICE1": "does",
+    "CHOICE2": "doesn't",
+    "CHOICE3": "am",
+    "CHOICE4": "is"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 8,
+    "DIFFICULTY": 5,
+    
+    "PROMPT_TEXT": "_____ New York exciting?",
+    "CHOICE1": "is",
+    "CHOICE2": "did",
+    "CHOICE3": "does",
+    "CHOICE4": "is"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 8,
+    "DIFFICULTY": 6,
+    
+    "PROMPT_TEXT": "Where _____ they live?",
+    "CHOICE1": "do",
+    "CHOICE2": "do",
+    "CHOICE3": "does",
+    "CHOICE4": "is"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 8,
+    "DIFFICULTY": 7,
+    
+    "PROMPT_TEXT": "Why _____ you want to learn English?",
+    "CHOICE1": "do",
+    "CHOICE2": "are",
+    "CHOICE3": "*",
+    "CHOICE4": "is"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 8,
+    "DIFFICULTY": 8,
+    
+    "PROMPT_TEXT": "We _____ Algerians.",
+    "CHOICE1": "are",
+    "CHOICE2": "do",
+    "CHOICE3": "are",
+    "CHOICE4": "does"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 8,
+    "DIFFICULTY": 9,
+    
+    "PROMPT_TEXT": "What _____ he do at weekends?",
+    "CHOICE1": "does",
+    "CHOICE2": "do",
+    "CHOICE3": "is",
+    "CHOICE4": "did"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 8,
+    "DIFFICULTY": 10,
+    
+    "PROMPT_TEXT": "He plays football _____ Friday mornings.",
+    "CHOICE1": "at",
+    "CHOICE2": "out",
+    "CHOICE3": "on",
+    "CHOICE4": "in"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 9,
+    "DIFFICULTY": 1,
+    
+    "PROMPT_TEXT": "Do you relax _____ weekends?",
+    "CHOICE1": "in",
+    "CHOICE2": "of",
+    "CHOICE3": "on",
+    "CHOICE4": "at"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 9,
+    "DIFFICULTY": 2,
+    
+    "PROMPT_TEXT": "Where do you go _____ holiday?",
+    "CHOICE1": "on",
+    "CHOICE2": "of",
+    "CHOICE3": "in",
+    "CHOICE4": "at"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 9,
+    "DIFFICULTY": 3,
+    
+    "PROMPT_TEXT": "I like _____ .",
+    "CHOICE1": "cooking",
+    "CHOICE2": "cook",
+    "CHOICE3": "cooked",
+    "CHOICE4": "cooks"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 9,
+    "DIFFICULTY": 4,
+    
+    "PROMPT_TEXT": "She gets up early _____ the morning.",
+    "CHOICE1": "in",
+    "CHOICE2": "at",
+    "CHOICE3": "of",
+    "CHOICE4": "on"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 9,
+    "DIFFICULTY": 5,
+    
+    "PROMPT_TEXT": "She gets up early _____ the weekdays.",
+    "CHOICE1": "on",
+    "CHOICE2": "of",
+    "CHOICE3": "for",
+    "CHOICE4": "at"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 9,
+    "DIFFICULTY": 6,
+    
+    "PROMPT_TEXT": "He takes photos only _____ spring.",
+    "CHOICE1": "in",
+    "CHOICE2": "on",
+    "CHOICE3": "at",
+    "CHOICE4": "out"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 9,
+    "DIFFICULTY": 7,
+    
+    "PROMPT_TEXT": "They like _____ very much.",
+    "CHOICE1": "sailing",
+    "CHOICE2": "sailed",
+    "CHOICE3": "sail",
+    "CHOICE4": "saileded"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 9,
+    "DIFFICULTY": 8,
+    
+    "PROMPT_TEXT": "My brother’s birthday is _____ March.",
+    "CHOICE1": "in",
+    "CHOICE2": "on",
+    "CHOICE3": "at",
+    "CHOICE4": "to"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 9,
+    "DIFFICULTY": 9,
+    
+    "PROMPT_TEXT": "The train leaves Paris _____ 4 p.m.",
+    "CHOICE1": "in",
+    "CHOICE2": "at",
+    "CHOICE3": "on",
+    "CHOICE4": "by"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 9,
+    "DIFFICULTY": 10,
+    
+    "PROMPT_TEXT": "Vancouver is very cold _____ winter.",
+    "CHOICE1": "at",
+    "CHOICE2": "out",
+    "CHOICE3": "in",
+    "CHOICE4": "to"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 10,
+    "DIFFICULTY": 1,
+    
+    "PROMPT_TEXT": "Sometimes we _____ cards.",
+    "CHOICE1": "play",
+    "CHOICE2": "playing",
+    "CHOICE3": "played",
+    "CHOICE4": "to play"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 10,
+    "DIFFICULTY": 2,
+    
+    "PROMPT_TEXT": "She never _____ meat.",
+    "CHOICE1": "eat",
+    "CHOICE2": "eating",
+    "CHOICE3": "eats",
+    "CHOICE4": "to eat"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 10,
+    "DIFFICULTY": 3,
+    
+    "PROMPT_TEXT": "I don’t like _____ music.",
+    "CHOICE1": "this",
+    "CHOICE2": "these",
+    "CHOICE3": "them",
+    "CHOICE4": "it"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 10,
+    "DIFFICULTY": 4,
+    
+    "PROMPT_TEXT": "Bob, _____ is my mother.",
+    "CHOICE1": "this",
+    "CHOICE2": "these",
+    "CHOICE3": "those",
+    "CHOICE4": "that"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 10,
+    "DIFFICULTY": 5,
+    
+    "PROMPT_TEXT": "“Is _____ exercise very easy?” “No, _____ isn’t.”",
+    "CHOICE1": "these / this",
+    "CHOICE2": "this / its",
+    "CHOICE3": "these / those",
+    "CHOICE4": "that / it"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 10,
+    "DIFFICULTY": 6,
+    
+    "PROMPT_TEXT": "____ they come by train?’",
+    "CHOICE1": "do",
+    "CHOICE2": "does",
+    "CHOICE3": "were",
+    "CHOICE4": "did"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 10,
+    "DIFFICULTY": 7,
+    
+    "PROMPT_TEXT": "I came to live here three years _____ .",
+    "CHOICE1": "ago",
+    "CHOICE2": "before",
+    "CHOICE3": "last",
+    "CHOICE4": "always"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 10,
+    "DIFFICULTY": 8,
+    
+    "PROMPT_TEXT": "_____ month I went to Paris.",
+    "CHOICE1": "this",
+    "CHOICE2": "that",
+    "CHOICE3": "last",
+    "CHOICE4": "next"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 10,
+    "DIFFICULTY": 9,
+    
+    "PROMPT_TEXT": "In my family we _____ dinner at seven o’clock.",
+    "CHOICE1": "take",
+    "CHOICE2": "do",
+    "CHOICE3": "go",
+    "CHOICE4": "have"
+  },
+  {
+    "GRADE": "BEGINNER",
+    "SUBJECT": "ENGLISH",
+    "TOPIC": "GRAMMAR",
+    "SKILL": 10,
+    "DIFFICULTY": 10,
+    
+    "PROMPT_TEXT": "There’s a bank _____ the bookshop.",
+    "CHOICE1": "opposite",
+    "CHOICE2": "on",
+    "CHOICE3": "opposites",
+    "CHOICE4": "straight"
+  }
+]

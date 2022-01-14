@@ -2,10 +2,12 @@ import 'dart:math';
 
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/bank_withdrawal.dart';
+import 'package:app_core/model/course.dart';
 import 'package:app_core/model/kanswer.dart';
 import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/kquestion.dart';
+import 'package:app_core/model/lop_schedule.dart';
 import 'package:app_core/model/response/chat_add_members_response.dart';
 import 'package:app_core/model/response/chat_remove_members_response.dart';
 import 'package:app_core/model/response/credit_transfer_response.dart';
@@ -15,10 +17,12 @@ import 'package:app_core/model/response/get_chat_response.dart';
 import 'package:app_core/model/response/get_chats_response.dart';
 import 'package:app_core/model/response/get_credit_transactions_response.dart';
 import 'package:app_core/model/response/get_games_response.dart';
+import 'package:app_core/model/response/get_lop_schedules_response.dart';
 import 'package:app_core/model/response/get_users_response.dart';
 import 'package:app_core/model/response/list_heroes_response.dart';
 import 'package:app_core/model/response/list_xfr_proxy_response.dart';
 import 'package:app_core/model/response/list_xfr_role_response.dart';
+import 'package:app_core/model/response/old_schedules_response.dart';
 import 'package:app_core/model/response/recent_users_response.dart';
 import 'package:app_core/model/response/resume_session_response.dart';
 import 'package:app_core/model/response/search_users_response.dart';
@@ -525,5 +529,87 @@ abstract class KServerHandler {
             ..isCorrect = index == correctIndex;
         });
     });
+  }
+
+  static Future<GetLopSchedulesResponse> getLopSchedules() async {
+    final params = {
+      "svc": "bird",
+      "req": "lop.schedule.list",
+    };
+    return TLSHelper.send(params)
+        .then((data) => GetLopSchedulesResponse.fromJson(data));
+  }
+
+  static Future<GetLopSchedulesResponse> getSchedule({
+    required String lopID,
+    required String scheduleID,
+  }) async {
+    final params = {
+      "svc": "bird",
+      "req": "lop.schedule.get",
+      "lopSchedule": LopSchedule()
+        ..lopID = lopID
+        ..lopScheduleID = scheduleID,
+    };
+    return TLSHelper.send(params)
+        .then((data) => GetLopSchedulesResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> pushCurrentPage(
+      int pageIndex,
+      String scheduleID,
+      ) async {
+    final params = {
+      "svc": "bird",
+      "req": "lop.page.push",
+      "pageIndex": "$pageIndex",
+      "scheduleID": scheduleID,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> startLopQuiz(String scheduleID) async {
+    final params = {
+      "svc": "bird",
+      "req": "lop.answer.prompt.notify",
+      "scheduleID": scheduleID,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> pushFlashToLopSchedule({
+    required String scheduleID,
+    required String flashType,
+    required String mediaType,
+    required String flashValue,
+  }) async {
+    final params = {
+      "svc": "bird",
+      "req": "lop.flash.notify",
+      "scheduleID": scheduleID,
+      "flashType": flashType,
+      "mediaType": mediaType,
+      "flashValue": flashValue,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<OldSchedulesResponse> getCourses() async {
+    final params = {
+      "svc": "bird",
+      "req": "course.list",
+    };
+    return TLSHelper.send(params)
+        .then((data) => OldSchedulesResponse.fromJson(data));
+  }
+
+  static Future<OldSchedulesResponse> getCourse(String courseID) async {
+    final params = {
+      "svc": "bird",
+      "req": "course.get",
+      "course": Course()..courseID = courseID,
+    };
+    return TLSHelper.send(params)
+        .then((data) => OldSchedulesResponse.fromJson(data));
   }
 }
