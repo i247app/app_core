@@ -3,6 +3,7 @@ import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 
 class KGameHighscoreDialog extends StatefulWidget {
   final Function onClose;
@@ -44,12 +45,14 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
   }
 
   void saveScore() async {
-    final result = await KServerHandler.saveGameScore(
-      gameID: widget.game,
-      level: widget.currentLevel.toString(),
-      score: widget.score!.score!,
-    );
-    print(result);
+    try {
+      final result = await KServerHandler.saveGameScore(
+        gameID: widget.game,
+        level: widget.currentLevel.toString(),
+        score: widget.score!.score!,
+      );
+      print(result);
+    } catch(e) {}
   }
 
   @override
@@ -66,10 +69,17 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
       level: widget.currentLevel.toString(),
     );
     if (result.isSuccess && result.scores != null) {
-      setState(() {
-        scores.addAll(
-            result.scores!.where((s) => s.puid != KSessionData.me!.puid));
-      });
+      if (widget.score != null) {
+        setState(() {
+          scores.addAll(
+              result.scores!.where((s) => s.puid != KSessionData.me!.puid));
+        });
+      } else {
+        setState(() {
+          scores.addAll(
+              result.scores!.where((s) => s.puid != KSessionData.me!.puid));
+        });
+      }
     }
   }
 

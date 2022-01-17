@@ -33,7 +33,7 @@ class KHeroJumpOverGame extends StatefulWidget {
 
 class _KHeroJumpOverGameState extends State<KHeroJumpOverGame> {
   static const GAME_NAME = "jump_over";
-  static const GAME_ID = "804";
+  static const GAME_ID = "532";
 
   int? overlayID;
   List<String> levelBackground = [

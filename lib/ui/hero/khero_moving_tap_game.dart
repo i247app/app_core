@@ -31,7 +31,7 @@ class KHeroMovingTapGame extends StatefulWidget {
 
 class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
   static const GAME_NAME = "tap_moving";
-  static const GAME_ID = "801";
+  static const GAME_ID = "512";
 
   static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,

@@ -31,7 +31,7 @@ class KHeroTapGame extends StatefulWidget {
 
 class _KHeroTapGameState extends State<KHeroTapGame> {
   static const GAME_NAME = "tap_game";
-  static const GAME_ID = "800";
+  static const GAME_ID = "510";
 
   static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
@@ -194,7 +194,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                             questions: questions,
                             level: currentLevel,
                             isLoaded: isLoaded,
-                            onFinishLevel: (level, score, canAdvance) {
+                            onFinishLevel: (level, score, canAdvance, canSaveHighScore) {
                               if (!canAdvance) {
                                 this.showHeroGameLevelOverlay(() {
                                   this.setState(() {
@@ -209,14 +209,18 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                                 return;
                               }
 
-                              this.setState(() {
-                                this.score = KGameScore()
-                                  ..game = GAME_ID
-                                  ..avatarURL = KSessionData.me!.avatarURL
-                                  ..kunm = KSessionData.me!.kunm
-                                  ..level = "$level"
-                                  ..score = "$score";
-                              });
+                              if (canSaveHighScore) {
+                                this.setState(() {
+                                  this.score = KGameScore()
+                                    ..game = GAME_ID
+                                    ..avatarURL = KSessionData.me!.avatarURL
+                                    ..kunm = KSessionData.me!.kunm
+                                    ..level = "$level"
+                                    ..score = "$score";
+                                });
+                              } else {
+                                this.score = null;
+                              }
                               if (level < totalLevel) {
                                 // if (!isHaveWrongAnswer) {
                                 //   this.setState(() {
@@ -266,6 +270,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                               this.setState(
                                 () {
                                   this.currentLevel = level;
+                                  this.score = null;
                                 },
                               );
                               this.loadGame();
@@ -290,7 +295,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
 class KTapGameScreen extends StatefulWidget {
   final KHero? hero;
   final Function(int)? onChangeLevel;
-  final Function(int, int, bool)? onFinishLevel;
+  final Function(int, int, bool, bool)? onFinishLevel;
   final bool isShowEndLevel;
   final bool isLoaded;
   final List<KQuestion> questions;
@@ -813,7 +818,9 @@ class KTapGameScreenState extends State<KTapGameScreen>
                       currentLevel + 1,
                       levelPlayTimes[currentLevel],
                       rightAnswerCount / questions.length >=
-                          levelHardness[currentLevel]);
+                          levelHardness[currentLevel],
+                      rightAnswerCount == questions.length,
+                  );
                 }
                 this.setState(() {
                   if (rightAnswerCount / questions.length >=

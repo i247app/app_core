@@ -34,7 +34,7 @@ class KHeroShootingGame extends StatefulWidget {
 
 class _KHeroShootingGameState extends State<KHeroShootingGame> {
   static const GAME_NAME = "shooting_game";
-  static const GAME_ID = "802";
+  static const GAME_ID = "520";
 
   static const List<String> BG_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,

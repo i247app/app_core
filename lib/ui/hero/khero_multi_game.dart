@@ -28,7 +28,7 @@ class KHeroMultiGame extends StatefulWidget {
 class _KHeroMultiGameState extends State<KHeroMultiGame>
     with WidgetsBindingObserver {
   static const GAME_NAME = "multi_game";
-  static const GAME_ID = "805";
+  static const GAME_ID = "590";
 
   GlobalKey<KJumpGameScreenState> _keyJumpOverGame = GlobalKey();
   GlobalKey<KJumpGameScreenState> _keyJumpGame = GlobalKey();
@@ -133,7 +133,8 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
     showCustomOverlay(heroGameLevel);
   }
 
-  void showHeroGameHighscoreOverlay(Function() onClose) async {
+  void showHeroGameHighscoreOverlay(
+      Function() onClose, bool? canSaveHighScore) async {
     this.setState(() {
       this.isShowEndLevel = true;
     });
@@ -144,7 +145,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
           child: KGameHighscoreDialog(
             onClose: onClose,
             game: GAME_ID,
-            score: this.score,
+            score: (canSaveHighScore ?? false) ? this.score : null,
             ascendingSort: false,
             currentLevel: currentLevel + 1,
           ),
@@ -203,15 +204,18 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
               KOverlayHelper.removeOverlay(this.overlayID!);
               this.overlayID = null;
             }
-            this.showHeroGameHighscoreOverlay(() {
-              this.setState(() {
-                this.isShowEndLevel = false;
-              });
-              if (this.overlayID != null) {
-                KOverlayHelper.removeOverlay(this.overlayID!);
-                this.overlayID = null;
-              }
-            });
+            this.showHeroGameHighscoreOverlay(
+              () {
+                this.setState(() {
+                  this.isShowEndLevel = false;
+                });
+                if (this.overlayID != null) {
+                  KOverlayHelper.removeOverlay(this.overlayID!);
+                  this.overlayID = null;
+                }
+              },
+              true,
+            );
           }, canAdvance: canAdvance);
         } else {
           this.showHeroGameEndOverlay(
@@ -220,15 +224,18 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
                 KOverlayHelper.removeOverlay(this.overlayID!);
                 this.overlayID = null;
               }
-              this.showHeroGameHighscoreOverlay(() {
-                this.setState(() {
-                  this.isShowEndLevel = false;
-                });
-                if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(this.overlayID!);
-                  this.overlayID = null;
-                }
-              });
+              this.showHeroGameHighscoreOverlay(
+                () {
+                  this.setState(() {
+                    this.isShowEndLevel = false;
+                  });
+                  if (this.overlayID != null) {
+                    KOverlayHelper.removeOverlay(this.overlayID!);
+                    this.overlayID = null;
+                  }
+                },
+                true,
+              );
             },
           );
         }
@@ -278,15 +285,18 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
               KOverlayHelper.removeOverlay(this.overlayID!);
               this.overlayID = null;
             }
-            this.showHeroGameHighscoreOverlay(() {
-              this.setState(() {
-                this.isShowEndLevel = false;
-              });
-              if (this.overlayID != null) {
-                KOverlayHelper.removeOverlay(this.overlayID!);
-                this.overlayID = null;
-              }
-            });
+            this.showHeroGameHighscoreOverlay(
+              () {
+                this.setState(() {
+                  this.isShowEndLevel = false;
+                });
+                if (this.overlayID != null) {
+                  KOverlayHelper.removeOverlay(this.overlayID!);
+                  this.overlayID = null;
+                }
+              },
+              true,
+            );
           }, canAdvance: canAdvance);
         } else {
           this.showHeroGameEndOverlay(
@@ -295,15 +305,18 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
                 KOverlayHelper.removeOverlay(this.overlayID!);
                 this.overlayID = null;
               }
-              this.showHeroGameHighscoreOverlay(() {
-                this.setState(() {
-                  this.isShowEndLevel = false;
-                });
-                if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(this.overlayID!);
-                  this.overlayID = null;
-                }
-              });
+              this.showHeroGameHighscoreOverlay(
+                () {
+                  this.setState(() {
+                    this.isShowEndLevel = false;
+                  });
+                  if (this.overlayID != null) {
+                    KOverlayHelper.removeOverlay(this.overlayID!);
+                    this.overlayID = null;
+                  }
+                },
+                true,
+              );
             },
           );
         }
@@ -352,15 +365,18 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
               KOverlayHelper.removeOverlay(this.overlayID!);
               this.overlayID = null;
             }
-            this.showHeroGameHighscoreOverlay(() {
-              this.setState(() {
-                this.isShowEndLevel = false;
-              });
-              if (this.overlayID != null) {
-                KOverlayHelper.removeOverlay(this.overlayID!);
-                this.overlayID = null;
-              }
-            });
+            this.showHeroGameHighscoreOverlay(
+              () {
+                this.setState(() {
+                  this.isShowEndLevel = false;
+                });
+                if (this.overlayID != null) {
+                  KOverlayHelper.removeOverlay(this.overlayID!);
+                  this.overlayID = null;
+                }
+              },
+              true,
+            );
           }, canAdvance: canAdvance);
         } else {
           this.showHeroGameEndOverlay(
@@ -369,15 +385,18 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
                 KOverlayHelper.removeOverlay(this.overlayID!);
                 this.overlayID = null;
               }
-              this.showHeroGameHighscoreOverlay(() {
-                this.setState(() {
-                  this.isShowEndLevel = false;
-                });
-                if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(this.overlayID!);
-                  this.overlayID = null;
-                }
-              });
+              this.showHeroGameHighscoreOverlay(
+                () {
+                  this.setState(() {
+                    this.isShowEndLevel = false;
+                  });
+                  if (this.overlayID != null) {
+                    KOverlayHelper.removeOverlay(this.overlayID!);
+                    this.overlayID = null;
+                  }
+                },
+                true,
+              );
             },
           );
         }
@@ -398,7 +417,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
       questions: questions,
       level: currentLevel,
       isLoaded: isLoaded,
-      onFinishLevel: (level, score, canAdvance) {
+      onFinishLevel: (level, score, canAdvance, canSaveHighScore) {
         if (!canAdvance) {
           this.showHeroGameLevelOverlay(() {
             this.setState(() {
@@ -426,15 +445,18 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
               KOverlayHelper.removeOverlay(this.overlayID!);
               this.overlayID = null;
             }
-            this.showHeroGameHighscoreOverlay(() {
-              this.setState(() {
-                this.isShowEndLevel = false;
-              });
-              if (this.overlayID != null) {
-                KOverlayHelper.removeOverlay(this.overlayID!);
-                this.overlayID = null;
-              }
-            });
+            this.showHeroGameHighscoreOverlay(
+              () {
+                this.setState(() {
+                  this.isShowEndLevel = false;
+                });
+                if (this.overlayID != null) {
+                  KOverlayHelper.removeOverlay(this.overlayID!);
+                  this.overlayID = null;
+                }
+              },
+              canSaveHighScore,
+            );
           }, canAdvance: canAdvance);
         } else {
           this.showHeroGameEndOverlay(
@@ -443,15 +465,18 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
                 KOverlayHelper.removeOverlay(this.overlayID!);
                 this.overlayID = null;
               }
-              this.showHeroGameHighscoreOverlay(() {
-                this.setState(() {
-                  this.isShowEndLevel = false;
-                });
-                if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(this.overlayID!);
-                  this.overlayID = null;
-                }
-              });
+              this.showHeroGameHighscoreOverlay(
+                () {
+                  this.setState(() {
+                    this.isShowEndLevel = false;
+                  });
+                  if (this.overlayID != null) {
+                    KOverlayHelper.removeOverlay(this.overlayID!);
+                    this.overlayID = null;
+                  }
+                },
+                canSaveHighScore,
+              );
             },
           );
         }
@@ -500,15 +525,18 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
               KOverlayHelper.removeOverlay(this.overlayID!);
               this.overlayID = null;
             }
-            this.showHeroGameHighscoreOverlay(() {
-              this.setState(() {
-                this.isShowEndLevel = false;
-              });
-              if (this.overlayID != null) {
-                KOverlayHelper.removeOverlay(this.overlayID!);
-                this.overlayID = null;
-              }
-            });
+            this.showHeroGameHighscoreOverlay(
+              () {
+                this.setState(() {
+                  this.isShowEndLevel = false;
+                });
+                if (this.overlayID != null) {
+                  KOverlayHelper.removeOverlay(this.overlayID!);
+                  this.overlayID = null;
+                }
+              },
+              true,
+            );
           }, canAdvance: canAdvance);
         } else {
           this.showHeroGameEndOverlay(
@@ -517,15 +545,18 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
                 KOverlayHelper.removeOverlay(this.overlayID!);
                 this.overlayID = null;
               }
-              this.showHeroGameHighscoreOverlay(() {
-                this.setState(() {
-                  this.isShowEndLevel = false;
-                });
-                if (this.overlayID != null) {
-                  KOverlayHelper.removeOverlay(this.overlayID!);
-                  this.overlayID = null;
-                }
-              });
+              this.showHeroGameHighscoreOverlay(
+                () {
+                  this.setState(() {
+                    this.isShowEndLevel = false;
+                  });
+                  if (this.overlayID != null) {
+                    KOverlayHelper.removeOverlay(this.overlayID!);
+                    this.overlayID = null;
+                  }
+                },
+                true,
+              );
             },
           );
         }

@@ -34,7 +34,7 @@ class KHeroSpeechTapGame extends StatefulWidget {
 
 class _KHeroSpeechTapGameState extends State<KHeroSpeechTapGame> {
   static const GAME_NAME = "speech_tap_game";
-  static const GAME_ID = "806";
+  static const GAME_ID = "600";
 
   static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,

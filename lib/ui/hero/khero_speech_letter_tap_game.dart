@@ -35,7 +35,7 @@ class KHeroSpeechLetterTapGame extends StatefulWidget {
 
 class _KHeroSpeechLetterTapGameState extends State<KHeroSpeechLetterTapGame> {
   static const GAME_NAME = "speech_letter_tap_game";
-  static const GAME_ID = "901";
+  static const GAME_ID = "602";
 
   static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
@@ -596,7 +596,6 @@ class KSpeechLetterTapGameScreenState extends State<KSpeechLetterTapGameScreen>
       audioPlayer.dispose();
     } catch (e) {}
     try {
-      ;
       backgroundAudioPlayer.dispose();
     } catch (e) {}
     try {
@@ -608,7 +607,6 @@ class KSpeechLetterTapGameScreenState extends State<KSpeechLetterTapGameScreen>
   }
 
   Future _setAwaitOptions() async {
-    print(await flutterTts.getLanguages);
     await flutterTts.awaitSpeakCompletion(true);
   }
 
