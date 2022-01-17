@@ -38,9 +38,9 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
   @override
   void initState() {
     super.initState();
-    if (widget.score != null) {
-      scores.add(widget.score!);
-    }
+    // if (widget.score != null) {
+    //   scores.add(widget.score!);
+    // }
     loadScore();
   }
 
@@ -69,16 +69,23 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
       level: widget.currentLevel.toString(),
     );
     if (result.isSuccess && result.scores != null) {
-      if (widget.score != null) {
-        setState(() {
-          scores.addAll(
-              result.scores!.where((s) => s.puid != KSessionData.me!.puid));
-        });
-      } else {
-        setState(() {
-          scores.addAll(
-              result.scores!.where((s) => s.puid != KSessionData.me!.puid));
-        });
+      try {
+        final userLastestHighScore = result.scores!.firstWhereOrNull((s) => s.puid == KSessionData.me!.puid);
+        final isScoreStore = widget.score != null && (userLastestHighScore == null || (widget.ascendingSort ? (double.parse(userLastestHighScore.score ?? "0") > double.parse(widget.score?.score ?? "0")) : (double.parse(userLastestHighScore.score ?? "0") < double.parse(widget.score?.score ?? "0"))));
+        print(isScoreStore);
+        if (widget.score != null && isScoreStore) {
+          setState(() {
+            scores.addAll(
+                result.scores!.where((s) => s.puid != KSessionData.me!.puid));
+            scores.add(widget.score!);
+          });
+        } else {
+          setState(() {
+            scores.addAll(result.scores!);
+          });
+        }
+      } catch(e) {
+        print(e);
       }
     }
   }
