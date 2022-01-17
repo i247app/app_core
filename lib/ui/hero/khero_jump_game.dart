@@ -15,8 +15,10 @@ import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
 import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
 import 'package:app_core/ui/hero/widget/ktamago_chan_jumping.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -55,12 +57,31 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
 
   List<KQuestion> get questions => game?.qnas?[0].questions ?? [];
   bool isLoaded = false;
+  bool isCached = false;
 
   @override
   void initState() {
     super.initState();
     loadScore();
+    cacheHeroImages();
     loadGame();
+  }
+
+  void cacheHeroImages() async {
+    setState(() {
+      this.isCached = false;
+    });
+    try {
+      for (int i = 0; i < KImageAnimationHelper.animationImages.length; i++) {
+        await Future.wait(KImageAnimationHelper.animationImages
+            .map((image) => DefaultCacheManager().getSingleFile(image)));
+      }
+    } catch (e) {
+      print(e);
+    }
+    setState(() {
+      this.isCached = true;
+    });
   }
 
   loadGame() async {
@@ -181,7 +202,7 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
               ),
             ),
             padding: EdgeInsets.symmetric(vertical: 20),
-            child: !isLoaded || game == null
+            child: !isLoaded || !isCached || game == null
                 ? Container()
                 : SafeArea(
                     child: Column(
@@ -674,12 +695,21 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
       return KAnswer();
     }
 
-    final List<KAnswer> answerNotInCurrent = currentQuestionAnswers.where((answer) => barrierValues.map((barrierValue) => barrierValue.text).toList().indexOf(answer.text) == -1).toList();
+    final List<KAnswer> answerNotInCurrent = currentQuestionAnswers
+        .where((answer) =>
+            barrierValues
+                .map((barrierValue) => barrierValue.text)
+                .toList()
+                .indexOf(answer.text) ==
+            -1)
+        .toList();
 
     if (answerNotInCurrent.length > 0) {
-      return answerNotInCurrent[Math.Random().nextInt(answerNotInCurrent.length)];
+      return answerNotInCurrent[
+          Math.Random().nextInt(answerNotInCurrent.length)];
     } else {
-      return currentQuestionAnswers[Math.Random().nextInt(currentQuestionAnswers.length)];
+      return currentQuestionAnswers[
+          Math.Random().nextInt(currentQuestionAnswers.length)];
     }
   }
 
@@ -835,6 +865,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
             barrierX[i] += 3;
             // points += 1;
             barrierValues[i] = this.getRandomAnswer();
+            barrierImageUrls[i] = KImageAnimationHelper.randomImage;
           });
         }
       }
@@ -1239,8 +1270,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
             child: ScaleTransition(
               scale: _playerScaleAnimation,
               child: widget.hero?.imageURL != null
-                  ? Image.network(
-                      widget.hero!.imageURL!,
+                  ? Image(
+                      image: CachedNetworkImageProvider(widget.hero!.imageURL!),
                       width: heroWidth,
                       height: heroHeight,
                       errorBuilder: (context, error, stack) => Image.asset(
@@ -1588,8 +1619,8 @@ class _Barrier extends StatelessWidget {
                     child: scaleAnimation != null
                         ? (ScaleTransition(
                             scale: scaleAnimation!,
-                            child: Image.network(
-                              imageUrl,
+                            child: Image(
+                              image: CachedNetworkImageProvider(imageUrl),
                               width: (MediaQuery.of(context).size.width / 2) *
                                   barrierWidth,
                               height: (MediaQuery.of(context).size.height / 2) *
@@ -1609,8 +1640,8 @@ class _Barrier extends StatelessWidget {
                               ),
                             ),
                           ))
-                        : (Image.network(
-                            imageUrl,
+                        : (Image(
+                            image: CachedNetworkImageProvider(imageUrl),
                             width: (MediaQuery.of(context).size.width / 2) *
                                 barrierWidth,
                             height: (MediaQuery.of(context).size.height / 2) *
