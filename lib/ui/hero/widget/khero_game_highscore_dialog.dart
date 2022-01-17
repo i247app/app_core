@@ -177,6 +177,7 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
                               height: 25,
                               child: KUserAvatar.fromUser(KUser()
                                 ..puid = score.puid
+                                ..avatarURL = score.avatarURL
                                 ..kunm = score.kunm),
                             ),
                             SizedBox(
