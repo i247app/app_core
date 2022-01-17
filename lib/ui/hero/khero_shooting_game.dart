@@ -7,7 +7,7 @@ import 'package:app_core/model/kanswer.dart';
 import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/kquestion.dart';
-import 'package:app_core/model/kscore.dart';
+import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
@@ -53,7 +53,7 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
   bool isShowEndLevel = false;
 
   String? scoreID;
-  List<KScore> scores = [];
+  List<KGameScore> scores = [];
   KGame? game = null;
 
   List<KQuestion> get questions => game?.qnas?[0].questions ?? [];
@@ -74,7 +74,8 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
     });
     try {
       for (int i = 0; i < KImageAnimationHelper.animationImages.length; i++) {
-        await Future.wait(KImageAnimationHelper.animationImages.map((image) => DefaultCacheManager().getSingleFile(image)));
+        await Future.wait(KImageAnimationHelper.animationImages
+            .map((image) => DefaultCacheManager().getSingleFile(image)));
       }
     } catch (e) {
       print(e);
@@ -107,17 +108,17 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
   }
 
   loadScore() async {
-    KPrefHelper.get(GAME_NAME).then((value) {
+    KPrefHelper.get(GAME_NAME + "_new").then((value) {
       if (value != null) {
         setState(() {
-          scores = KScore.decode(value);
+          scores = KGameScore.decode(value);
         });
       }
     });
   }
 
   saveScore() async {
-    KPrefHelper.put(GAME_NAME, KScore.encode(scores));
+    KPrefHelper.put(GAME_NAME + "_new", KGameScore.encode(scores));
   }
 
   @override
@@ -249,9 +250,11 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
                                     this.setState(() {
                                       this.scoreID = scoreID;
                                       this.scores.add(
-                                            KScore()
+                                            KGameScore()
                                               ..game = GAME_NAME
-                                              ..user = KSessionData.me
+                                              ..puid = KSessionData.me!.puid
+                                              ..avatarURL =
+                                                  KSessionData.me!.avatarURL
                                               ..level = level
                                               ..scoreID = scoreID
                                               ..score = score.toDouble(),
@@ -583,8 +586,7 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
       ..addStatusListener((status) {
         if (mounted && status == AnimationStatus.completed) {
           Future.delayed(Duration(milliseconds: 1000), () {
-            if (mounted) {
-            }
+            if (mounted) {}
           });
         } else if (mounted && status == AnimationStatus.dismissed) {}
       });
@@ -691,12 +693,21 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
       return KAnswer();
     }
 
-    final List<KAnswer> answerNotInCurrent = currentQuestionAnswers.where((answer) => barrierValues.map((barrierValue) => barrierValue.text).toList().indexOf(answer.text) == -1).toList();
+    final List<KAnswer> answerNotInCurrent = currentQuestionAnswers
+        .where((answer) =>
+            barrierValues
+                .map((barrierValue) => barrierValue.text)
+                .toList()
+                .indexOf(answer.text) ==
+            -1)
+        .toList();
 
     if (answerNotInCurrent.length > 0) {
-      return answerNotInCurrent[Math.Random().nextInt(answerNotInCurrent.length)];
+      return answerNotInCurrent[
+          Math.Random().nextInt(answerNotInCurrent.length)];
     } else {
-      return currentQuestionAnswers[Math.Random().nextInt(currentQuestionAnswers.length)];
+      return currentQuestionAnswers[
+          Math.Random().nextInt(currentQuestionAnswers.length)];
     }
   }
 

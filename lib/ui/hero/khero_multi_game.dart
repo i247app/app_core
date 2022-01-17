@@ -5,7 +5,7 @@ import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/kquestion.dart';
-import 'package:app_core/model/kscore.dart';
+import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/ui/hero/khero_jump_over_game.dart';
 import 'package:app_core/ui/hero/khero_moving_tap_game.dart';
 import 'package:app_core/ui/hero/khero_tap_game.dart';
@@ -53,7 +53,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
   bool isShowShootingIntro = false;
 
   String? scoreID;
-  List<KScore> scores = [];
+  List<KGameScore> scores = [];
   KGame? game = null;
 
   List<KQuestion> get questions => game?.qnas?[0].questions ?? [];
@@ -116,17 +116,17 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
   }
 
   loadScore() async {
-    KPrefHelper.get(GAME_NAME).then((value) {
+    KPrefHelper.get(GAME_NAME + "_new").then((value) {
       if (value != null) {
         setState(() {
-          scores = KScore.decode(value);
+          scores = KGameScore.decode(value);
         });
       }
     });
   }
 
   saveScore() async {
-    KPrefHelper.put(GAME_NAME, KScore.encode(scores));
+    KPrefHelper.put(GAME_NAME + "_new", KGameScore.encode(scores));
   }
 
   void showHeroGameEndOverlay(Function() onFinish) async {
@@ -210,9 +210,10 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
         this.setState(() {
           this.scoreID = scoreID;
           this.scores.add(
-                KScore()
+                KGameScore()
                   ..game = GAME_NAME
-                  ..user = KSessionData.me
+                  ..puid = KSessionData.me!.puid
+                  ..avatarURL = KSessionData.me!.avatarURL
                   ..level = level
                   ..scoreID = scoreID
                   ..score = score.toDouble(),
@@ -289,9 +290,10 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
         this.setState(() {
           this.scoreID = scoreID;
           this.scores.add(
-                KScore()
+                KGameScore()
                   ..game = GAME_NAME
-                  ..user = KSessionData.me
+                  ..puid = KSessionData.me!.puid
+                  ..avatarURL = KSessionData.me!.avatarURL
                   ..level = level
                   ..scoreID = scoreID
                   ..score = score.toDouble(),
@@ -367,9 +369,10 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
         this.setState(() {
           this.scoreID = scoreID;
           this.scores.add(
-                KScore()
+                KGameScore()
                   ..game = GAME_NAME
-                  ..user = KSessionData.me
+                  ..puid = KSessionData.me!.puid
+                  ..avatarURL = KSessionData.me!.avatarURL
                   ..level = level
                   ..scoreID = scoreID
                   ..score = score.toDouble(),
@@ -445,9 +448,10 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
         this.setState(() {
           this.scoreID = scoreID;
           this.scores.add(
-                KScore()
+                KGameScore()
                   ..game = GAME_NAME
-                  ..user = KSessionData.me
+                  ..puid = KSessionData.me!.puid
+                  ..avatarURL = KSessionData.me!.avatarURL
                   ..level = level
                   ..scoreID = scoreID
                   ..score = score.toDouble(),
@@ -523,9 +527,10 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
         this.setState(() {
           this.scoreID = scoreID;
           this.scores.add(
-                KScore()
+                KGameScore()
                   ..game = GAME_NAME
-                  ..user = KSessionData.me
+                  ..puid = KSessionData.me!.puid
+                  ..avatarURL = KSessionData.me!.avatarURL
                   ..level = level
                   ..scoreID = scoreID
                   ..score = score.toDouble(),

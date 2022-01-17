@@ -1,5 +1,5 @@
 import 'package:app_core/app_core.dart';
-import 'package:app_core/model/kscore.dart';
+import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +7,7 @@ class KGameHighscoreDialog extends StatefulWidget {
   final Function onClose;
   final String game;
   final String? scoreID;
-  final List<KScore> scores;
+  final List<KGameScore> scores;
   final int currentLevel;
   final bool ascendingSort;
 
@@ -25,13 +25,13 @@ class KGameHighscoreDialog extends StatefulWidget {
 }
 
 class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
-  List<KScore> get filteredScores => widget.scores
-      .where((s) => (s.user?.puid == KSessionData.me?.puid &&
+  List<KGameScore> get filteredScores => widget.scores
+      .where((s) => (s.puid == KSessionData.me?.puid &&
           s.level == widget.currentLevel &&
           s.game == widget.game))
       .toList();
 
-  List<KScore> get sortedScores {
+  List<KGameScore> get sortedScores {
     var scores = this.filteredScores;
     scores.sort((a, b) => widget.ascendingSort
         ? a.score!.compareTo(b.score!)
@@ -150,14 +150,16 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
                             ),
                             Container(
                               height: 25,
-                              child: KUserAvatar.fromUser(score.user),
+                              child: KUserAvatar.fromUser(KUser()
+                                ..puid = score.puid
+                                ..kunm = score.kunm),
                             ),
                             SizedBox(
                               width: 5,
                             ),
                             Expanded(
                               child: Text(
-                                score.user?.kunm ?? "",
+                                score.kunm ?? "",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,

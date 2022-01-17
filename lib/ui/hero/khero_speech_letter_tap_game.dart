@@ -8,7 +8,7 @@ import 'package:app_core/model/kanswer.dart';
 import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/kquestion.dart';
-import 'package:app_core/model/kscore.dart';
+import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
@@ -54,7 +54,7 @@ class _KHeroSpeechLetterTapGameState extends State<KHeroSpeechLetterTapGame> {
   bool isShowEndLevel = false;
 
   String? scoreID;
-  List<KScore> scores = [];
+  List<KGameScore> scores = [];
   KGame? game = null;
 
   List<KQuestion> get questions => game?.qnas?[0].questions ?? [];
@@ -94,17 +94,17 @@ class _KHeroSpeechLetterTapGameState extends State<KHeroSpeechLetterTapGame> {
   }
 
   loadScore() async {
-    KPrefHelper.get(GAME_NAME).then((value) {
+    KPrefHelper.get(GAME_NAME + "_new").then((value) {
       if (value != null) {
         setState(() {
-          scores = KScore.decode(value);
+          scores = KGameScore.decode(value);
         });
       }
     });
   }
 
   saveScore() async {
-    KPrefHelper.put(GAME_NAME, KScore.encode(scores));
+    KPrefHelper.put(GAME_NAME + "_new", KGameScore.encode(scores));
   }
 
   @override
@@ -238,9 +238,10 @@ class _KHeroSpeechLetterTapGameState extends State<KHeroSpeechLetterTapGame> {
                               this.setState(() {
                                 this.scoreID = scoreID;
                                 this.scores.add(
-                                      KScore()
+                                      KGameScore()
                                         ..game = GAME_NAME
-                                        ..user = KSessionData.me
+                                        ..puid = KSessionData.me!.puid
+                                        ..avatarURL = KSessionData.me!.avatarURL
                                         ..level = level
                                         ..scoreID = scoreID
                                         ..score = score.toDouble(),
@@ -413,7 +414,8 @@ class KSpeechLetterTapGameScreenState extends State<KSpeechLetterTapGameScreen>
 
   KQuestion get currentQuestion => questions[currentQuestionIndex];
 
-  List<KAnswer> get currentQuestionAnswers => currentQuestion.generateAnswers(4, 'ENGLISH');
+  List<KAnswer> get currentQuestionAnswers =>
+      currentQuestion.generateAnswers(4, 'ENGLISH');
 
   int? spinningHeroIndex;
   int? currentShowStarIndex;
@@ -455,7 +457,7 @@ class KSpeechLetterTapGameScreenState extends State<KSpeechLetterTapGameScreen>
   String? currentLanguage;
 
   bool get canShowLanguageToggle => false;
-      // Platform.isAndroid && currentLanguage != null;
+  // Platform.isAndroid && currentLanguage != null;
 
   @override
   void initState() {

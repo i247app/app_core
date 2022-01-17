@@ -4,7 +4,7 @@ import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/khero.dart';
-import 'package:app_core/model/kscore.dart';
+import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
 import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
@@ -46,7 +46,7 @@ class _KHeroJumpMultiRowGameState extends State<KHeroJumpMultiRowGame> {
   bool isShowEndLevel = false;
 
   String? scoreID;
-  List<KScore> scores = [];
+  List<KGameScore> scores = [];
   bool isCached = false;
 
   @override
@@ -74,17 +74,17 @@ class _KHeroJumpMultiRowGameState extends State<KHeroJumpMultiRowGame> {
   }
 
   loadScore() async {
-    KPrefHelper.get(GAME_NAME).then((value) {
+    KPrefHelper.get(GAME_NAME + "_new").then((value) {
       if (value != null) {
         setState(() {
-          scores = KScore.decode(value);
+          scores = KGameScore.decode(value);
         });
       }
     });
   }
 
   saveScore() async {
-    KPrefHelper.put(GAME_NAME, KScore.encode(scores));
+    KPrefHelper.put(GAME_NAME + "_new", KGameScore.encode(scores));
   }
 
   @override
@@ -182,9 +182,10 @@ class _KHeroJumpMultiRowGameState extends State<KHeroJumpMultiRowGame> {
                               this.setState(() {
                                 this.scoreID = scoreID;
                                 this.scores.add(
-                                      KScore()
+                                      KGameScore()
                                         ..game = GAME_NAME
-                                        ..user = KSessionData.me
+                                        ..puid = KSessionData.me!.puid
+                                        ..avatarURL = KSessionData.me!.avatarURL
                                         ..level = level
                                         ..scoreID = scoreID
                                         ..score = score.toDouble(),
