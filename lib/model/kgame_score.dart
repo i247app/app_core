@@ -6,9 +6,6 @@ part 'kgame_score.g.dart';
 
 @JsonSerializable()
 class KGameScore {
-  @JsonKey(name: "scoreID")
-  String? scoreID;
-
   @JsonKey(name: "puid")
   String? puid;
 
@@ -22,10 +19,16 @@ class KGameScore {
   String? game;
 
   @JsonKey(name: "level")
-  int? level;
+  String? level;
+
+  @JsonKey(name: "ranking")
+  String? ranking;
+
+  @JsonKey(name: "rankDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
+  DateTime? rankDate;
 
   @JsonKey(name: "score")
-  double? score;
+  String? score;
 
   @JsonKey(name: "scoreDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
   DateTime? scoreDate;

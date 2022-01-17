@@ -52,8 +52,7 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
   bool isShowIntro = true;
   bool isShowEndLevel = false;
 
-  String? scoreID;
-  List<KGameScore> scores = [];
+  KGameScore? score;
   KGame? game = null;
 
   List<KQuestion> get questions => game?.qnas?[0].questions ?? [];
@@ -63,7 +62,7 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
   @override
   void initState() {
     super.initState();
-    loadScore();
+
     cacheHeroImages();
     loadGame();
   }
@@ -107,23 +106,8 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
     } catch (e) {}
   }
 
-  loadScore() async {
-    KPrefHelper.get(GAME_NAME + "_new").then((value) {
-      if (value != null) {
-        setState(() {
-          scores = KGameScore.decode(value);
-        });
-      }
-    });
-  }
-
-  saveScore() async {
-    KPrefHelper.put(GAME_NAME + "_new", KGameScore.encode(scores));
-  }
-
   @override
   void dispose() {
-    saveScore();
     super.dispose();
     if (this.overlayID != null) {
       KOverlayHelper.removeOverlay(this.overlayID!);
@@ -163,10 +147,9 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
           alignment: Alignment.center,
           child: KGameHighscoreDialog(
             onClose: onClose,
-            game: GAME_NAME,
-            scores: this.scores,
+            game: GAME_ID,
+            score: this.score,
             ascendingSort: false,
-            scoreID: this.scoreID,
             currentLevel: currentLevel + 1,
           ),
         ),
@@ -246,19 +229,14 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
                                       }, canAdvance: canAdvance);
                                       return;
                                     }
-                                    final scoreID = Uuid().v4();
+
                                     this.setState(() {
-                                      this.scoreID = scoreID;
-                                      this.scores.add(
-                                            KGameScore()
-                                              ..game = GAME_NAME
-                                              ..puid = KSessionData.me!.puid
-                                              ..avatarURL =
-                                                  KSessionData.me!.avatarURL
-                                              ..level = level
-                                              ..scoreID = scoreID
-                                              ..score = score.toDouble(),
-                                          );
+                                      this.score = KGameScore()
+                                        ..game = GAME_ID
+                                        ..avatarURL = KSessionData.me!.avatarURL
+                                        ..kunm = KSessionData.me!.kunm
+                                        ..level = "$level"
+                                        ..score = "$score";
                                     });
                                     if (level < totalLevel) {
                                       // if (!isHaveWrongAnswer) {

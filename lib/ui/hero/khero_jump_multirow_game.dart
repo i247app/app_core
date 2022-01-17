@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
@@ -28,6 +29,7 @@ class KHeroJumpMultiRowGame extends StatefulWidget {
 
 class _KHeroJumpMultiRowGameState extends State<KHeroJumpMultiRowGame> {
   static const GAME_NAME = "jump_multi_row";
+  static const GAME_ID = "jump_multi_row";
 
   static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
@@ -45,14 +47,13 @@ class _KHeroJumpMultiRowGameState extends State<KHeroJumpMultiRowGame> {
   int currentLevel = 0;
   bool isShowEndLevel = false;
 
-  String? scoreID;
-  List<KGameScore> scores = [];
+  KGameScore? score;
   bool isCached = false;
 
   @override
   void initState() {
     super.initState();
-    loadScore();
+
     cacheHeroImages();
   }
 
@@ -73,23 +74,8 @@ class _KHeroJumpMultiRowGameState extends State<KHeroJumpMultiRowGame> {
     });
   }
 
-  loadScore() async {
-    KPrefHelper.get(GAME_NAME + "_new").then((value) {
-      if (value != null) {
-        setState(() {
-          scores = KGameScore.decode(value);
-        });
-      }
-    });
-  }
-
-  saveScore() async {
-    KPrefHelper.put(GAME_NAME + "_new", KGameScore.encode(scores));
-  }
-
   @override
   void dispose() {
-    saveScore();
     super.dispose();
     if (this.overlayID != null) {
       KOverlayHelper.removeOverlay(this.overlayID!);
@@ -123,10 +109,9 @@ class _KHeroJumpMultiRowGameState extends State<KHeroJumpMultiRowGame> {
           alignment: Alignment.center,
           child: KGameHighscoreDialog(
             onClose: onClose,
-            game: GAME_NAME,
-            scores: this.scores,
+            game: GAME_ID,
+            score: this.score,
             ascendingSort: false,
-            scoreID: this.scoreID,
             currentLevel: currentLevel + 1,
           ),
         ),
@@ -177,19 +162,13 @@ class _KHeroJumpMultiRowGameState extends State<KHeroJumpMultiRowGame> {
                             isShowEndLevel: isShowEndLevel,
                             totalLevel: totalLevel,
                             onFinishLevel: (level, score, isHaveWrongAnswer) {
-                              final scoreID = Uuid().v4();
-
                               this.setState(() {
-                                this.scoreID = scoreID;
-                                this.scores.add(
-                                      KGameScore()
-                                        ..game = GAME_NAME
-                                        ..puid = KSessionData.me!.puid
-                                        ..avatarURL = KSessionData.me!.avatarURL
-                                        ..level = level
-                                        ..scoreID = scoreID
-                                        ..score = score.toDouble(),
-                                    );
+                                this.score = KGameScore()
+                                  ..game = GAME_ID
+                                  ..avatarURL = KSessionData.me!.avatarURL
+                                  ..kunm = KSessionData.me!.kunm
+                                  ..level = "$level"
+                                  ..score = "$score";
                               });
                               if (level < totalLevel) {
                                 print(isHaveWrongAnswer);

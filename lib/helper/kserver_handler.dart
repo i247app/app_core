@@ -5,6 +5,7 @@ import 'package:app_core/model/bank_withdrawal.dart';
 import 'package:app_core/model/course.dart';
 import 'package:app_core/model/kanswer.dart';
 import 'package:app_core/model/kgame.dart';
+import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/kquestion.dart';
 import 'package:app_core/model/lop_schedule.dart';
@@ -18,6 +19,7 @@ import 'package:app_core/model/response/get_chats_response.dart';
 import 'package:app_core/model/response/get_credit_transactions_response.dart';
 import 'package:app_core/model/response/get_games_response.dart';
 import 'package:app_core/model/response/get_lop_schedules_response.dart';
+import 'package:app_core/model/response/get_scores_response.dart';
 import 'package:app_core/model/response/get_users_response.dart';
 import 'package:app_core/model/response/list_heroes_response.dart';
 import 'package:app_core/model/response/list_xfr_proxy_response.dart';
@@ -230,6 +232,21 @@ abstract class KServerHandler {
         .then((data) => KListHeroesResponse.fromJson(data));
   }
 
+  static Future<KGetGameScoresResponse> getGameHighscore({
+    required String gameID,
+    required String level,
+  }) async {
+    final params = {
+      "svc": "game",
+      "req": "game.score.get",
+      "gameScore": KGameScore()
+        ..game = gameID
+        ..level = level,
+    };
+    return TLSHelper.send(params)
+        .then((data) => KGetGameScoresResponse.fromJson(data));
+  }
+
   static Future<KListHeroesResponse> getHeroes() async {
     final params = {
       "svc": "bird",
@@ -290,6 +307,21 @@ abstract class KServerHandler {
         ..bankName = bankName
         ..bankAccName = bankAccount
         ..bankAccNumber = bankAccNumber,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> saveGameScore(
+      {required String gameID,
+      required String level,
+      required String score}) async {
+    final params = {
+      "svc": "game",
+      "req": "game.score.save",
+      "gameScore": KGameScore()
+        ..game = gameID
+        ..level = level
+        ..score = score
     };
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }
@@ -477,7 +509,7 @@ abstract class KServerHandler {
       "req": "game.get",
       "game": KGame()
         ..gameID = gameID
-        ..level = level
+        ..level = "$level"
         ..cat = cat ?? "MATH"
         ..mimeType = mimeType ?? "TEXT",
     };
@@ -556,9 +588,9 @@ abstract class KServerHandler {
   }
 
   static Future<SimpleResponse> pushCurrentPage(
-      int pageIndex,
-      String scheduleID,
-      ) async {
+    int pageIndex,
+    String scheduleID,
+  ) async {
     final params = {
       "svc": "bird",
       "req": "lop.page.push",

@@ -1,4 +1,5 @@
 import 'package:app_core/app_core.dart';
+import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
@@ -6,17 +7,15 @@ import 'package:flutter/material.dart';
 class KGameHighscoreDialog extends StatefulWidget {
   final Function onClose;
   final String game;
-  final String? scoreID;
-  final List<KGameScore> scores;
+  final KGameScore? score;
   final int currentLevel;
   final bool ascendingSort;
 
   const KGameHighscoreDialog({
     required this.onClose,
     required this.game,
-    required this.scores,
+    this.score,
     required this.currentLevel,
-    this.scoreID,
     this.ascendingSort = true,
   });
 
@@ -25,36 +24,61 @@ class KGameHighscoreDialog extends StatefulWidget {
 }
 
 class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
-  List<KGameScore> get filteredScores => widget.scores
-      .where((s) => (s.puid == KSessionData.me?.puid &&
-          s.level == widget.currentLevel &&
-          s.game == widget.game))
-      .toList();
-
   List<KGameScore> get sortedScores {
-    var scores = this.filteredScores;
+    var scores = this.scores;
     scores.sort((a, b) => widget.ascendingSort
         ? a.score!.compareTo(b.score!)
         : b.score!.compareTo(a.score!));
     return scores;
   }
 
+  List<KGameScore> scores = [];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.score != null) {
+      scores.add(widget.score!);
+    }
+    loadScore();
+  }
+
+  void saveScore() async {
+    final result = await KServerHandler.saveGameScore(
+      gameID: widget.game,
+      level: widget.currentLevel.toString(),
+      score: widget.score!.score!,
+    );
+    print(result);
+  }
+
+  @override
+  void dispose() {
+    if (widget.score != null) {
+      saveScore();
+    }
+    super.dispose();
+  }
+
+  void loadScore() async {
+    final result = await KServerHandler.getGameHighscore(
+      gameID: widget.game,
+      level: widget.currentLevel.toString(),
+    );
+    if (result.isSuccess && result.scores != null) {
+      setState(() {
+        scores.addAll(result.scores!);
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final scores = this.sortedScores;
+    final scores = sortedScores;
     final body = Container(
       width: MediaQuery.of(context).size.width * 0.85,
       height: MediaQuery.of(context).size.height * 0.6,
       decoration: BoxDecoration(
-        // color: Colors.white,
-        // borderRadius: BorderRadius.circular(15),
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: Colors.black.withOpacity(0.5),
-        //     blurRadius: 8,
-        //     offset: Offset(2, 6),
-        //   ),
-        // ],
         image: DecorationImage(
           image: AssetImage(
             KAssets.IMG_RANKING_BLUE,
@@ -115,7 +139,7 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
                     itemCount: scores.length,
                     itemBuilder: (context, index) {
                       final score = scores[index];
-                      bool isCurrentLevel = widget.scoreID == score.scoreID;
+                      bool isCurrentLevel = score.puid == null;
 
                       return Container(
                         padding: EdgeInsets.symmetric(
@@ -171,7 +195,7 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
                               width: 10,
                             ),
                             Text(
-                              '${((score.score ?? 0) / 1000).toStringAsFixed(3)} s',
+                              '${(double.parse(score.score ?? '0') / 1000).toStringAsFixed(3)} s',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 22,
