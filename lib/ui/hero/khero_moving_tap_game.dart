@@ -194,7 +194,8 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
                             questions: questions,
                             level: currentLevel,
                             isLoaded: isLoaded,
-                            onFinishLevel: (level, score, canAdvance) {
+                            onFinishLevel:
+                                (level, score, canAdvance, canSaveHighScore) {
                               if (!canAdvance) {
                                 this.showHeroGameLevelOverlay(() {
                                   this.setState(() {
@@ -209,14 +210,19 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
                                 return;
                               }
 
-                              this.setState(() {
-                                this.score = KGameScore()
-                                  ..game = GAME_ID
-                                  ..avatarURL = KSessionData.me!.avatarURL
-                                  ..kunm = KSessionData.me!.kunm
-                                  ..level = "$level"
-                                  ..score = "$score";
-                              });
+                              if (canSaveHighScore) {
+                                this.setState(() {
+                                  this.score = KGameScore()
+                                    ..game = GAME_ID
+                                    ..avatarURL = KSessionData.me!.avatarURL
+                                    ..kunm = KSessionData.me!.kunm
+                                    ..level = "$level"
+                                    ..score = "$score";
+                                });
+                              } else {
+                                this.score = null;
+                              }
+
                               if (level < totalLevel) {
                                 // if (!isHaveWrongAnswer) {
                                 //   this.setState(() {
@@ -266,6 +272,7 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
                               this.setState(
                                 () {
                                   this.currentLevel = level;
+                                  this.score = null;
                                 },
                               );
                               this.loadGame();
@@ -290,7 +297,7 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
 class KMovingTapGameScreen extends StatefulWidget {
   final KHero? hero;
   final Function(int)? onChangeLevel;
-  final Function(int, int, bool)? onFinishLevel;
+  final Function(int, int, bool, bool)? onFinishLevel;
   final bool isShowEndLevel;
   final bool isLoaded;
   final List<KQuestion> questions;
@@ -848,10 +855,12 @@ class KMovingTapGameScreenState extends State<KMovingTapGameScreen>
               } else {
                 if (widget.onFinishLevel != null) {
                   widget.onFinishLevel!(
-                      currentLevel + 1,
-                      levelPlayTimes[currentLevel],
-                      rightAnswerCount / questions.length >=
-                          levelHardness[currentLevel]);
+                    currentLevel + 1,
+                    levelPlayTimes[currentLevel],
+                    rightAnswerCount / questions.length >=
+                        levelHardness[currentLevel],
+                    rightAnswerCount == questions.length,
+                  );
                 }
                 this.setState(() {
                   if (rightAnswerCount / questions.length >=

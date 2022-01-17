@@ -497,7 +497,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
       questions: questions,
       level: currentLevel,
       isLoaded: isLoaded,
-      onFinishLevel: (level, score, canAdvance) {
+      onFinishLevel: (level, score, canAdvance, canSaveHighScore) {
         if (!canAdvance) {
           this.showHeroGameLevelOverlay(() {
             this.setState(() {
@@ -535,7 +535,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
                   this.overlayID = null;
                 }
               },
-              true,
+              canSaveHighScore,
             );
           }, canAdvance: canAdvance);
         } else {
@@ -555,7 +555,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
                     this.overlayID = null;
                   }
                 },
-                true,
+                canSaveHighScore,
               );
             },
           );
