@@ -9,7 +9,7 @@ part of 'kgame_score.dart';
 KGameScore _$KGameScoreFromJson(Map<String, dynamic> json) => KGameScore()
   ..puid = json['puid'] as String?
   ..kunm = json['kunm'] as String?
-  ..avatarURL = json['avatarURL'] as String?
+  ..avatarURL = json['avatar'] as String?
   ..game = json['gameID'] as String?
   ..level = json['level'] as String?
   ..ranking = json['ranking'] as String?
@@ -28,7 +28,7 @@ Map<String, dynamic> _$KGameScoreToJson(KGameScore instance) {
 
   writeNotNull('puid', instance.puid);
   writeNotNull('kunm', instance.kunm);
-  writeNotNull('avatarURL', instance.avatarURL);
+  writeNotNull('avatar', instance.avatarURL);
   writeNotNull('gameID', instance.game);
   writeNotNull('level', instance.level);
   writeNotNull('ranking', instance.ranking);

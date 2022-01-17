@@ -12,7 +12,7 @@ class KGameScore {
   @JsonKey(name: "kunm")
   String? kunm;
 
-  @JsonKey(name: "avatarURL")
+  @JsonKey(name: "avatar")
   String? avatarURL;
 
   @JsonKey(name: "gameID")

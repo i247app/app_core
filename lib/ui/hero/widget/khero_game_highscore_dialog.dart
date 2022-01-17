@@ -27,8 +27,8 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
   List<KGameScore> get sortedScores {
     var scores = this.scores;
     scores.sort((a, b) => widget.ascendingSort
-        ? a.score!.compareTo(b.score!)
-        : b.score!.compareTo(a.score!));
+        ? double.parse(a.score ?? "0").compareTo(double.parse(b.score ?? "0"))
+        : double.parse(b.score ?? "0").compareTo(double.parse(a.score ?? "0")));
     return scores;
   }
 
@@ -67,7 +67,8 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
     );
     if (result.isSuccess && result.scores != null) {
       setState(() {
-        scores.addAll(result.scores!);
+        scores.addAll(
+            result.scores!.where((s) => s.puid != KSessionData.me!.puid));
       });
     }
   }
