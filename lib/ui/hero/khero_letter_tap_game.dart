@@ -129,7 +129,7 @@ class _KHeroLetterTapGameState extends State<KHeroLetterTapGame> {
             onClose: onClose,
             game: GAME_ID,
             score: this.score,
-            currentLevel: currentLevel + 1,
+            currentLevel: currentLevel,
           ),
         ),
       ],

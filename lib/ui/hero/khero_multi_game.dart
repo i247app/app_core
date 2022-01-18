@@ -145,9 +145,10 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
           child: KGameHighscoreDialog(
             onClose: onClose,
             game: GAME_ID,
-            score: (canSaveHighScore ?? false) ? this.score : null,
+            score: this.score,
+            canSaveHighScore: canSaveHighScore,
             ascendingSort: false,
-            currentLevel: currentLevel + 1,
+            currentLevel: currentLevel,
           ),
         ),
       ],

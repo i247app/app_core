@@ -113,7 +113,8 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
     showCustomOverlay(heroGameLevel);
   }
 
-  void showHeroGameHighscoreOverlay(Function() onClose) async {
+  void showHeroGameHighscoreOverlay(
+      Function() onClose, bool canSaveHighScore) async {
     this.setState(() {
       this.isShowEndLevel = true;
     });
@@ -125,7 +126,8 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
             onClose: onClose,
             game: GAME_ID,
             score: this.score,
-            currentLevel: currentLevel + 1,
+            canSaveHighScore: canSaveHighScore,
+            currentLevel: currentLevel,
           ),
         ),
       ],
@@ -210,18 +212,14 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
                                 return;
                               }
 
-                              if (canSaveHighScore) {
-                                this.setState(() {
-                                  this.score = KGameScore()
-                                    ..game = GAME_ID
-                                    ..avatarURL = KSessionData.me!.avatarURL
-                                    ..kunm = KSessionData.me!.kunm
-                                    ..level = "$level"
-                                    ..score = "$score";
-                                });
-                              } else {
-                                this.score = null;
-                              }
+                              this.setState(() {
+                                this.score = KGameScore()
+                                  ..game = GAME_ID
+                                  ..avatarURL = KSessionData.me!.avatarURL
+                                  ..kunm = KSessionData.me!.kunm
+                                  ..level = "$level"
+                                  ..score = "$score";
+                              });
 
                               if (level < totalLevel) {
                                 // if (!isHaveWrongAnswer) {
@@ -235,16 +233,19 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
                                         this.overlayID!);
                                     this.overlayID = null;
                                   }
-                                  this.showHeroGameHighscoreOverlay(() {
-                                    this.setState(() {
-                                      this.isShowEndLevel = false;
-                                    });
-                                    if (this.overlayID != null) {
-                                      KOverlayHelper.removeOverlay(
-                                          this.overlayID!);
-                                      this.overlayID = null;
-                                    }
-                                  });
+                                  this.showHeroGameHighscoreOverlay(
+                                    () {
+                                      this.setState(() {
+                                        this.isShowEndLevel = false;
+                                      });
+                                      if (this.overlayID != null) {
+                                        KOverlayHelper.removeOverlay(
+                                            this.overlayID!);
+                                        this.overlayID = null;
+                                      }
+                                    },
+                                    canSaveHighScore,
+                                  );
                                 }, canAdvance: canAdvance);
                               } else {
                                 this.showHeroGameEndOverlay(
@@ -254,16 +255,19 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
                                           this.overlayID!);
                                       this.overlayID = null;
                                     }
-                                    this.showHeroGameHighscoreOverlay(() {
-                                      this.setState(() {
-                                        this.isShowEndLevel = false;
-                                      });
-                                      if (this.overlayID != null) {
-                                        KOverlayHelper.removeOverlay(
-                                            this.overlayID!);
-                                        this.overlayID = null;
-                                      }
-                                    });
+                                    this.showHeroGameHighscoreOverlay(
+                                      () {
+                                        this.setState(() {
+                                          this.isShowEndLevel = false;
+                                        });
+                                        if (this.overlayID != null) {
+                                          KOverlayHelper.removeOverlay(
+                                              this.overlayID!);
+                                          this.overlayID = null;
+                                        }
+                                      },
+                                      canSaveHighScore,
+                                    );
                                   },
                                 );
                               }

@@ -150,7 +150,7 @@ class _KHeroShootingGameState extends State<KHeroShootingGame> {
             game: GAME_ID,
             score: this.score,
             ascendingSort: false,
-            currentLevel: currentLevel + 1,
+            currentLevel: currentLevel,
           ),
         ),
       ],

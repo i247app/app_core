@@ -134,7 +134,7 @@ class _KHeroSpeechLetterTapGameState extends State<KHeroSpeechLetterTapGame> {
             onClose: onClose,
             game: GAME_ID,
             score: this.score,
-            currentLevel: currentLevel + 1,
+            currentLevel: currentLevel,
           ),
         ),
       ],
