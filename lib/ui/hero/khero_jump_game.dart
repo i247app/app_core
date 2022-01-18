@@ -733,7 +733,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
       KOverlayHelper.removeOverlay(this.overlayID!);
       this.overlayID = null;
     }
-    if (!this.isBackgroundSoundPlaying) {
+    if (isStart && !this.isBackgroundSoundPlaying) {
       toggleBackgroundSound();
     }
     this.setState(() {

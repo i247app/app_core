@@ -726,7 +726,7 @@ class KSpeechLetterTapGameScreenState extends State<KSpeechLetterTapGameScreen>
       KOverlayHelper.removeOverlay(this.overlayID!);
       this.overlayID = null;
     }
-    if (!this.isBackgroundSoundPlaying) {
+    if (isStart && !this.isBackgroundSoundPlaying) {
       toggleBackgroundSound();
     }
     this.setState(() {
