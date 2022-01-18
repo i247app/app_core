@@ -113,7 +113,8 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
     showCustomOverlay(heroGameLevel);
   }
 
-  void showHeroGameHighscoreOverlay(Function() onClose) async {
+  void showHeroGameHighscoreOverlay(
+      Function() onClose, bool canSaveHighScore) async {
     this.setState(() {
       this.isShowEndLevel = true;
     });
@@ -125,6 +126,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
             onClose: onClose,
             game: GAME_ID,
             score: this.score,
+            canSaveHighScore: canSaveHighScore,
             currentLevel: currentLevel + 1,
           ),
         ),
@@ -194,7 +196,8 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                             questions: questions,
                             level: currentLevel,
                             isLoaded: isLoaded,
-                            onFinishLevel: (level, score, canAdvance, canSaveHighScore) {
+                            onFinishLevel:
+                                (level, score, canAdvance, canSaveHighScore) {
                               if (!canAdvance) {
                                 this.showHeroGameLevelOverlay(() {
                                   this.setState(() {
@@ -209,18 +212,15 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                                 return;
                               }
 
-                              if (canSaveHighScore) {
-                                this.setState(() {
-                                  this.score = KGameScore()
-                                    ..game = GAME_ID
-                                    ..avatarURL = KSessionData.me!.avatarURL
-                                    ..kunm = KSessionData.me!.kunm
-                                    ..level = "$level"
-                                    ..score = "$score";
-                                });
-                              } else {
-                                this.score = null;
-                              }
+                              this.setState(() {
+                                this.score = KGameScore()
+                                  ..game = GAME_ID
+                                  ..avatarURL = KSessionData.me!.avatarURL
+                                  ..kunm = KSessionData.me!.kunm
+                                  ..level = "$level"
+                                  ..score = "$score";
+                              });
+
                               if (level < totalLevel) {
                                 // if (!isHaveWrongAnswer) {
                                 //   this.setState(() {
@@ -233,16 +233,19 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                                         this.overlayID!);
                                     this.overlayID = null;
                                   }
-                                  this.showHeroGameHighscoreOverlay(() {
-                                    this.setState(() {
-                                      this.isShowEndLevel = false;
-                                    });
-                                    if (this.overlayID != null) {
-                                      KOverlayHelper.removeOverlay(
-                                          this.overlayID!);
-                                      this.overlayID = null;
-                                    }
-                                  });
+                                  this.showHeroGameHighscoreOverlay(
+                                    () {
+                                      this.setState(() {
+                                        this.isShowEndLevel = false;
+                                      });
+                                      if (this.overlayID != null) {
+                                        KOverlayHelper.removeOverlay(
+                                            this.overlayID!);
+                                        this.overlayID = null;
+                                      }
+                                    },
+                                    canSaveHighScore,
+                                  );
                                 }, canAdvance: canAdvance);
                               } else {
                                 this.showHeroGameEndOverlay(
@@ -252,16 +255,19 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                                           this.overlayID!);
                                       this.overlayID = null;
                                     }
-                                    this.showHeroGameHighscoreOverlay(() {
-                                      this.setState(() {
-                                        this.isShowEndLevel = false;
-                                      });
-                                      if (this.overlayID != null) {
-                                        KOverlayHelper.removeOverlay(
-                                            this.overlayID!);
-                                        this.overlayID = null;
-                                      }
-                                    });
+                                    this.showHeroGameHighscoreOverlay(
+                                      () {
+                                        this.setState(() {
+                                          this.isShowEndLevel = false;
+                                        });
+                                        if (this.overlayID != null) {
+                                          KOverlayHelper.removeOverlay(
+                                              this.overlayID!);
+                                          this.overlayID = null;
+                                        }
+                                      },
+                                      canSaveHighScore,
+                                    );
                                   },
                                 );
                               }
@@ -815,11 +821,11 @@ class KTapGameScreenState extends State<KTapGameScreen>
               } else {
                 if (widget.onFinishLevel != null) {
                   widget.onFinishLevel!(
-                      currentLevel + 1,
-                      levelPlayTimes[currentLevel],
-                      rightAnswerCount / questions.length >=
-                          levelHardness[currentLevel],
-                      rightAnswerCount == questions.length,
+                    currentLevel + 1,
+                    levelPlayTimes[currentLevel],
+                    rightAnswerCount / questions.length >=
+                        levelHardness[currentLevel],
+                    rightAnswerCount == questions.length,
                   );
                 }
                 this.setState(() {
