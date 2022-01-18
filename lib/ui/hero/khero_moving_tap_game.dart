@@ -575,6 +575,7 @@ class KMovingTapGameScreenState extends State<KMovingTapGameScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused && !this.isPause) showPauseDialog();
+    else if (state == AppLifecycleState.resumed && this.isPause) resumeGame();
   }
 
   @override
@@ -600,6 +601,19 @@ class KMovingTapGameScreenState extends State<KMovingTapGameScreen>
     super.dispose();
   }
 
+  void resumeGame() {
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+    if (!this.isBackgroundSoundPlaying) {
+      toggleBackgroundSound();
+    }
+    this.setState(() {
+      this.isPause = false;
+    });
+  }
+
   void showPauseDialog() {
     if (this.isPause) return;
     if (this.isBackgroundSoundPlaying) {
@@ -616,18 +630,7 @@ class KMovingTapGameScreenState extends State<KMovingTapGameScreen>
         }
         Navigator.of(context).pop();
       },
-      onResume: () {
-        if (this.overlayID != null) {
-          KOverlayHelper.removeOverlay(this.overlayID!);
-          this.overlayID = null;
-        }
-        if (!this.isBackgroundSoundPlaying) {
-          toggleBackgroundSound();
-        }
-        this.setState(() {
-          this.isPause = false;
-        });
-      },
+      onResume: resumeGame,
     );
     final overlay = Stack(
       fit: StackFit.expand,

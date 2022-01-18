@@ -594,6 +594,7 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused && !this.isPause) showPauseDialog();
+    else if (state == AppLifecycleState.resumed && this.isPause) resumeGame();
   }
 
   @override
@@ -633,6 +634,19 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
     });
   }
 
+  void resumeGame() {
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+    if (!this.isBackgroundSoundPlaying) {
+      toggleBackgroundSound();
+    }
+    this.setState(() {
+      this.isPause = false;
+    });
+  }
+
   void showPauseDialog() {
     if (this.isPause) return;
     if (this.isBackgroundSoundPlaying) {
@@ -649,18 +663,7 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
         }
         Navigator.of(context).pop();
       },
-      onResume: () {
-        if (this.overlayID != null) {
-          KOverlayHelper.removeOverlay(this.overlayID!);
-          this.overlayID = null;
-        }
-        if (!this.isBackgroundSoundPlaying) {
-          toggleBackgroundSound();
-        }
-        this.setState(() {
-          this.isPause = false;
-        });
-      },
+      onResume: resumeGame,
     );
     final overlay = Stack(
       fit: StackFit.expand,

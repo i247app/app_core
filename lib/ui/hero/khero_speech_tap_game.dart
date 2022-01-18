@@ -571,6 +571,7 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused && !this.isPause) showPauseDialog();
+    else if (state == AppLifecycleState.resumed && this.isPause) resumeGame();
   }
 
   @override
@@ -717,6 +718,20 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
     }
   }
 
+  void resumeGame() {
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+    if (!this.isBackgroundSoundPlaying) {
+      toggleBackgroundSound();
+    }
+    this.setState(() {
+      this.isPause = false;
+    });
+    startSpeak(currentQuestion.text ?? "");
+  }
+
   void showPauseDialog() {
     if (this.isPause) return;
     if (this.isSpeech) {
@@ -736,19 +751,7 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
         }
         Navigator.of(context).pop();
       },
-      onResume: () {
-        if (this.overlayID != null) {
-          KOverlayHelper.removeOverlay(this.overlayID!);
-          this.overlayID = null;
-        }
-        if (!this.isBackgroundSoundPlaying) {
-          toggleBackgroundSound();
-        }
-        this.setState(() {
-          this.isPause = false;
-        });
-        startSpeak(currentQuestion.text ?? "");
-      },
+      onResume: resumeGame,
     );
     final overlay = Stack(
       fit: StackFit.expand,

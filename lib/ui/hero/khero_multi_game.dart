@@ -78,6 +78,13 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
       _keyMovingTapGame.currentState?.showPauseDialog();
       _keyShootingGame.currentState?.showPauseDialog();
     }
+    else if (state == AppLifecycleState.resumed) {
+      _keyJumpGame.currentState?.resumeGame();
+      _keyJumpOverGame.currentState?.resumeGame();
+      _keyTapGame.currentState?.resumeGame();
+      _keyMovingTapGame.currentState?.resumeGame();
+      _keyShootingGame.currentState?.resumeGame();
+    }
   }
 
   @override
