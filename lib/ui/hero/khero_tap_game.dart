@@ -127,7 +127,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
             game: GAME_ID,
             score: this.score,
             canSaveHighScore: canSaveHighScore,
-            currentLevel: currentLevel + 1,
+            currentLevel: currentLevel,
           ),
         ),
       ],

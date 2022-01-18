@@ -112,7 +112,7 @@ class _KHeroJumpMultiRowGameState extends State<KHeroJumpMultiRowGame> {
             game: GAME_ID,
             score: this.score,
             ascendingSort: false,
-            currentLevel: currentLevel + 1,
+            currentLevel: currentLevel,
           ),
         ),
       ],

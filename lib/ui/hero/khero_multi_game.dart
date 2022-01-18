@@ -148,7 +148,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
             score: this.score,
             canSaveHighScore: canSaveHighScore,
             ascendingSort: false,
-            currentLevel: currentLevel + 1,
+            currentLevel: currentLevel,
           ),
         ),
       ],

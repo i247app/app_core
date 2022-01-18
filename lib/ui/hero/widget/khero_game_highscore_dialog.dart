@@ -145,7 +145,7 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
                     width: MediaQuery.of(context).size.width * 0.3,
                     child: FittedBox(
                       child: Text(
-                        "LEVEL ${widget.currentLevel}",
+                        "LEVEL ${widget.currentLevel + 1}",
                         textScaleFactor: 1.0,
                         textAlign: TextAlign.center,
                         style: TextStyle(
