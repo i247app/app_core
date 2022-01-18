@@ -42,9 +42,9 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
   @override
   void initState() {
     super.initState();
-    // if (widget.score != null) {
-    //   scores.add(widget.score!);
-    // }
+    if (widget.score != null) {
+      scores.add(widget.score!);
+    }
     loadScore();
   }
 
@@ -158,98 +158,83 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
                   ),
                 ),
                 Expanded(
-                  child: !isLoaded
-                      ? Container(
-                          padding: EdgeInsets.only(top: 10),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Loading...",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ],
-                          ),
-                        )
-                      : ListView.builder(
-                          itemCount: scores.length,
-                          itemBuilder: (context, index) {
-                            final score = scores[index];
-                            bool isCurrentUserHighScore =
-                                score.puid == KSessionData.me!.puid &&
-                                    isCurrentHighest;
+                  child: ListView.builder(
+                    itemCount: scores.length,
+                    itemBuilder: (context, index) {
+                      final score = scores[index];
+                      bool isCurrentUserHighScore =
+                          score.puid == KSessionData.me!.puid &&
+                              isCurrentHighest;
 
-                            return Container(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 5,
-                                horizontal: 5,
-                              ),
-                              decoration: isCurrentUserHighScore
-                                  ? BoxDecoration(
-                                      color: Colors.orange,
-                                      borderRadius: BorderRadius.circular(10),
-                                    )
-                                  : BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(
-                                          width: 0.5,
-                                          color: Colors.black54.withAlpha(50),
-                                        ),
-                                      ),
-                                    ),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "${index < 9 ? '0' : ''}${index + 1}",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 15,
-                                  ),
-                                  Container(
-                                    height: 25,
-                                    child: KUserAvatar.fromUser(KUser()
-                                      ..puid = score.puid
-                                      ..avatarURL = score.avatarURL
-                                      ..kunm = score.kunm),
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      score.kunm ?? "",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    '${(double.parse(score.score ?? '0') / 1000).toStringAsFixed(3)} s',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 22,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 4,
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
+                      return Container(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 5,
+                          horizontal: 5,
                         ),
+                        decoration: isCurrentUserHighScore
+                            ? BoxDecoration(
+                                color: Colors.orange,
+                                borderRadius: BorderRadius.circular(10),
+                              )
+                            : BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    width: 0.5,
+                                    color: Colors.black54.withAlpha(50),
+                                  ),
+                                ),
+                              ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "${index < 9 ? '0' : ''}${index + 1}",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 15,
+                            ),
+                            Container(
+                              height: 25,
+                              child: KUserAvatar.fromUser(KUser()
+                                ..puid = score.puid
+                                ..avatarURL = score.avatarURL
+                                ..kunm = score.kunm),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Expanded(
+                              child: Text(
+                                score.kunm ?? "",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              '${(double.parse(score.score ?? '0') / 1000).toStringAsFixed(3)} s',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 4,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
