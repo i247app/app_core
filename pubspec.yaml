@@ -95,6 +95,7 @@ dependencies:
   # Cache image
   flutter_cache_manager: ^3.3.0
   cached_network_image: ^3.2.0
+  flutter_picker: ^2.0.2
 
 dev_dependencies:
   flutter_test:

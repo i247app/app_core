@@ -24,12 +24,14 @@ class KChatroom extends StatefulWidget {
   final bool isReadOnly;
   final bool isSupport;
   final bool isEnableTakePhoto;
+  final Function()? onSelectDoc;
 
   const KChatroom(
     this.controller, {
     this.isReadOnly = false,
     this.isSupport = false,
     this.isEnableTakePhoto = true,
+    this.onSelectDoc,
   });
 
   @override
@@ -230,6 +232,14 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
       ),
     );
 
+    final addTextBookButton = IconButton(
+      onPressed: widget.onSelectDoc,
+      icon: Icon(
+        Icons.file_copy_outlined,
+        color: Theme.of(context).colorScheme.primary,
+      ),
+    );
+
     final sendMessageButton = IconButton(
       onPressed: onSendTextClick,
       icon: Icon(
@@ -256,6 +266,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
         children: [
           if (widget.isEnableTakePhoto) addCameraButton,
           addImageButton,
+          if (widget.onSelectDoc != null) addTextBookButton,
           SizedBox(width: 2),
           Expanded(
             child: ScrollConfiguration(
