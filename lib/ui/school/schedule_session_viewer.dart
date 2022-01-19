@@ -146,7 +146,9 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
   }
 
   void onPushSlideClick() => KServerHandler.pushCurrentPage(
-      this.data.index, this.data.schedule.lopScheduleID ?? "");
+        pageIndex: this.data.index,
+        scheduleID: this.data.schedule.lopScheduleID ?? "",
+      );
 
   void onStartQuizClick() =>
       KServerHandler.startLopQuiz(this.data.schedule.lopScheduleID ?? "");

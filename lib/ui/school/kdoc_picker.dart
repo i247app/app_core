@@ -107,22 +107,6 @@ class _KDocPickerState extends State<KDocPicker> {
       final fullChapter = response.textbooks!.first.chapters!
           .firstWhere((c) => selectedChapter.chapterID == c.chapterID);
       Navigator.of(context).pop(fullChapter);
-      return;
-
-      final screen = Scaffold(
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            KChapterView(chapter: fullChapter),
-            Align(
-              alignment: Alignment.topLeft,
-              child: SafeArea(child: BackButton()),
-            ),
-          ],
-        ),
-      );
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (_) => screen));
     }
   }
 

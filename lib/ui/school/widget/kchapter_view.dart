@@ -7,6 +7,8 @@ import 'package:app_core/ui/widget/kimage_viewer.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
 
+enum KChapterViewMode { movable, fixed }
+
 class KChapterView extends StatefulWidget {
   final ValueNotifier<int>? controller;
   final Chapter chapter;

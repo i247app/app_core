@@ -591,15 +591,17 @@ abstract class KServerHandler {
         .then((data) => GetLopSchedulesResponse.fromJson(data));
   }
 
-  static Future<SimpleResponse> pushCurrentPage(
-    int pageIndex,
-    String scheduleID,
-  ) async {
+  static Future<SimpleResponse> pushCurrentPage({
+    required int pageIndex,
+    String? scheduleID,
+    // String? gigID,
+  }) async {
     final params = {
       "svc": "bird",
       "req": "lop.page.push",
       "pageIndex": "$pageIndex",
       "scheduleID": scheduleID,
+      // "gigID": gigID,
     };
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }
