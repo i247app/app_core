@@ -18,7 +18,6 @@ import 'package:app_core/ui/hero/widget/khero_combine_view.dart';
 import 'package:app_core/ui/hero/widget/khero_grid_item.dart';
 import 'package:app_core/ui/widget/kstopwatch_label.dart';
 
-
 final GlobalKey _draggableKey = GlobalKey();
 
 class KHeroHome extends StatefulWidget {
@@ -286,24 +285,33 @@ class _KHeroHomeState extends State<KHeroHome> {
       shrinkWrap: true,
       children: [
         Container(
-          padding: EdgeInsets.all(8),
-          child: ElevatedButton(
-            onPressed: () => onOpenGameHome(heroes != null && heroes!.length > 0 ? heroes![0] : null),
-            style: KStyles.squaredButton(
-              KStyles.colorPrimary,
-              textColor: Colors.white,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text("🕹"),
-                // SizedBox(width: 10),
-                // Text("Training"),
-              ],
+          height: MediaQuery.of(context).size.width * 0.25,
+          padding: EdgeInsets.symmetric(vertical: 3, horizontal: 10),
+          child: InkWell(
+            onTap: () => onOpenGameHome(
+                heroes != null && heroes!.length > 0 ? heroes![0] : null),
+            borderRadius: BorderRadius.circular(6),
+            child: Container(
+              padding: EdgeInsets.all(0),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                color: KStyles.colorPrimary,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "🕹",
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width * 0.15,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-        SizedBox(height: 32),
         (this.heroes != null && this.heroes!.isEmpty
             ? Center(child: nothingHere)
             : GridView.count(
