@@ -164,5 +164,9 @@
   "insufficient_credits": "Không đủ điểm",
   "say_hi_to_x": "Gửi lời chào tới",
   "hi": "Chào",
-  "app_faild": "App lỗi"
+  "app_failed": "App lỗi",
+  "grade": "Lớp",
+  "headstart_grade": "Học trước lớp",
+  "headstart_documents": "Tài liệu học trước",
+  "class_documents": "Tài liệu học"
 }

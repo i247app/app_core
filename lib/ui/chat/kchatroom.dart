@@ -168,6 +168,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
               SizedBox(height: 40),
             ],
           );
+
     final chatListing = ListView.builder(
       padding: EdgeInsets.all(4),
       reverse: true,
@@ -232,7 +233,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
       ),
     );
 
-    final addTextBookButton = IconButton(
+    final addTextbookButton = IconButton(
       onPressed: widget.onSelectDoc,
       icon: Icon(
         Icons.file_copy_outlined,
@@ -266,7 +267,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
         children: [
           if (widget.isEnableTakePhoto) addCameraButton,
           addImageButton,
-          if (widget.onSelectDoc != null) addTextBookButton,
+          if (widget.onSelectDoc != null) addTextbookButton,
           SizedBox(width: 2),
           Expanded(
             child: ScrollConfiguration(

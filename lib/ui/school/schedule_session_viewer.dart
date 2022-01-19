@@ -10,7 +10,7 @@ import 'package:app_core/model/kanswer.dart';
 import 'package:app_core/model/kflash.dart';
 import 'package:app_core/model/lop_schedule.dart';
 import 'package:app_core/model/tbpage.dart';
-import 'package:app_core/ui/school/widget/ktextbook_view.dart';
+import 'package:app_core/ui/school/widget/kchapter_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -169,7 +169,7 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
 
   @override
   Widget build(BuildContext context) {
-    final lessonView = KTextbookView(
+    final lessonView = KChapterView(
       controller: textbookViewCtrl,
       chapter: data.chapter,
     );
