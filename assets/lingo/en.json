@@ -165,5 +165,9 @@
   "insufficient_credits": "Insufficient credits",
   "say_hi_to_x": "Say hi to",
   "hi": "Hi",
-  "app_failed": "App Failed"
+  "app_failed": "App Failed",
+  "grade": "Grade",
+  "headstart_grade": "Headstart grade",
+  "headstart_documents": "Headstart documents",
+  "class_documents": "Class documents"
 }

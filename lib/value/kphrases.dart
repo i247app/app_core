@@ -83,6 +83,7 @@ abstract class KPhrases {
       _klingo.yak("gig_list_ready_waiting");
 
   static String get noData => _klingo.yak("no_data");
+
   static String get noContactFound => _klingo.yak("no_contact_found");
 
   static String get waitingForOtherUser =>
@@ -105,4 +106,12 @@ abstract class KPhrases {
   static String get appFailed => _klingo.yak("app_failed");
 
   static String get success => _klingo.yak("success");
+
+  static String get grade => _klingo.yak("grade");
+
+  static String get headstartGrade => _klingo.yak("headstart_grade");
+
+  static String get headstartDoc => _klingo.yak("headstart_documents");
+
+  static String get classDoc => _klingo.yak("class_documents");
 }
