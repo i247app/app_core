@@ -8,6 +8,8 @@ class Textbook {
   static const String TEXTBOOK_ID = "textbookID";
   static const String COURSE_ID = "courseID";
   static const String TITLE = "title";
+  static const String CATEGORY = "category";
+  static const String CHAPTER_NUMBER = "chapterNumber";
   static const String SUBTITLE = "subtitle";
   static const String TEXT = "text";
   static const String MEDIA_URL = "mediaURL"; // cover
@@ -26,6 +28,12 @@ class Textbook {
 
   @JsonKey(name: TITLE)
   String? title;
+
+  @JsonKey(name: CATEGORY)
+  String? category;
+
+  @JsonKey(name: CHAPTER_NUMBER)
+  String? chapterNumber;
 
   @JsonKey(name: SUBTITLE)
   String? subtitle;

@@ -47,7 +47,7 @@ class _KTextbookViewState extends State<KTextbookView> {
                     KImageViewer.network(currentPage?.mediaURL ?? ""))),
             child: _TextbookPageView(currentPage!),
           );
-
+    // return Image.network(currentPage?.mediaURL ?? "");
     final body = Stack(
       fit: StackFit.expand,
       children: [
@@ -98,9 +98,8 @@ class _TextbookPageView extends StatelessWidget {
       // boundaryMargin: EdgeInsets.all(40),
       child: Container(
         color: KStyles.darkGrey,
-        child: FadeInImage.assetNetwork(
-          placeholder: KAssets.IMG_TRANSPARENCY,
-          image: page.mediaURL ?? "",
+        child: Image.network(
+          page.mediaURL ?? "",
         ),
       ),
     );
