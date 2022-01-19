@@ -222,6 +222,7 @@ class _KEggHeroIntroState extends State<KEggHeroIntro>
       opacity: this.eggBreakStep == 0 ? 1.0 : 0.0,
       child: this.eggBreakStep == 0
           ? Transform.scale(
+              alignment: Alignment.bottomCenter,
               scale: 0.5,
               child: Image.asset(
                 KAssets.IMG_TAMAGO_1,
@@ -235,7 +236,7 @@ class _KEggHeroIntroState extends State<KEggHeroIntro>
       fit: StackFit.expand,
       children: [
         Align(
-          alignment: Alignment(_barrelHeroMovingAnimation.value, 0),
+          alignment: Alignment(_barrelHeroMovingAnimation.value, 1),
           child: Transform.translate(
             offset: Offset(-heroWidth + 15, 0),
             child: Transform.translate(
@@ -262,7 +263,7 @@ class _KEggHeroIntroState extends State<KEggHeroIntro>
           ),
         ),
         Align(
-          alignment: Alignment(_barrelMovingAnimation.value, 0),
+          alignment: Alignment(_barrelMovingAnimation.value, 1),
           child: Container(
             width: heroWidth * 2,
             height: heroHeight * 2,
