@@ -6,6 +6,7 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/kgame_score.dart';
+import 'package:app_core/ui/hero/widget/kegg_hero_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
 import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
@@ -46,6 +47,7 @@ class _KHeroJumpMultiRowGameState extends State<KHeroJumpMultiRowGame> {
   int totalLevel = 4;
   int currentLevel = 0;
   bool isShowEndLevel = false;
+  bool isShowIntro = true;
 
   KGameScore? score;
   bool isCached = false;
@@ -152,39 +154,67 @@ class _KHeroJumpMultiRowGameState extends State<KHeroJumpMultiRowGame> {
             padding: EdgeInsets.symmetric(vertical: 20),
             child: !isCached
                 ? Container()
-                : SafeArea(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: KJumpMultiRowGameScreen(
-                            hero: widget.hero,
-                            isShowEndLevel: isShowEndLevel,
-                            totalLevel: totalLevel,
-                            onFinishLevel: (level, score, isHaveWrongAnswer) {
-                              this.setState(() {
-                                this.score = KGameScore()
-                                  ..game = GAME_ID
-                                  ..avatarURL = KSessionData.me!.avatarURL
-                                  ..kunm = KSessionData.me!.kunm
-                                  ..level = "$level"
-                                  ..score = "$score";
-                              });
-                              if (level < totalLevel) {
-                                print(isHaveWrongAnswer);
+                : (this.isShowIntro
+                    ? Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          if (this.isShowIntro) ...[
+                            KEggHeroIntro(
+                                onFinish: () =>
+                                    setState(() => this.isShowIntro = false)),
+                            GestureDetector(
+                                onTap: () =>
+                                    setState(() => this.isShowIntro = false)),
+                          ],
+                        ],
+                      )
+                    : SafeArea(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: KJumpMultiRowGameScreen(
+                                hero: widget.hero,
+                                isShowEndLevel: isShowEndLevel,
+                                totalLevel: totalLevel,
+                                onFinishLevel:
+                                    (level, score, isHaveWrongAnswer) {
+                                  this.setState(() {
+                                    this.score = KGameScore()
+                                      ..game = GAME_ID
+                                      ..avatarURL = KSessionData.me!.avatarURL
+                                      ..kunm = KSessionData.me!.kunm
+                                      ..level = "$level"
+                                      ..score = "$score";
+                                  });
+                                  if (level < totalLevel) {
+                                    print(isHaveWrongAnswer);
 
-                                // if (!isHaveWrongAnswer) {
-                                //   this.setState(() {
-                                //     this.levelHighscores.add(score);
-                                //   });
-                                // }
-                                this.showHeroGameLevelOverlay(
-                                  () {
-                                    if (this.overlayID != null) {
-                                      KOverlayHelper.removeOverlay(
-                                          this.overlayID!);
-                                      this.overlayID = null;
-                                    }
+                                    // if (!isHaveWrongAnswer) {
+                                    //   this.setState(() {
+                                    //     this.levelHighscores.add(score);
+                                    //   });
+                                    // }
+                                    this.showHeroGameLevelOverlay(
+                                      () {
+                                        if (this.overlayID != null) {
+                                          KOverlayHelper.removeOverlay(
+                                              this.overlayID!);
+                                          this.overlayID = null;
+                                        }
+                                        this.showHeroGameHighscoreOverlay(() {
+                                          this.setState(() {
+                                            this.isShowEndLevel = false;
+                                          });
+                                          if (this.overlayID != null) {
+                                            KOverlayHelper.removeOverlay(
+                                                this.overlayID!);
+                                            this.overlayID = null;
+                                          }
+                                        });
+                                      },
+                                    );
+                                  } else {
                                     this.showHeroGameHighscoreOverlay(() {
                                       this.setState(() {
                                         this.isShowEndLevel = false;
@@ -195,31 +225,18 @@ class _KHeroJumpMultiRowGameState extends State<KHeroJumpMultiRowGame> {
                                         this.overlayID = null;
                                       }
                                     });
-                                  },
-                                );
-                              } else {
-                                this.showHeroGameHighscoreOverlay(() {
-                                  this.setState(() {
-                                    this.isShowEndLevel = false;
-                                  });
-                                  if (this.overlayID != null) {
-                                    KOverlayHelper.removeOverlay(
-                                        this.overlayID!);
-                                    this.overlayID = null;
                                   }
-                                });
-                              }
-                            },
-                            onChangeLevel: (level) => this.setState(
-                              () {
-                                this.currentLevel = level;
-                              },
+                                },
+                                onChangeLevel: (level) => this.setState(
+                                  () {
+                                    this.currentLevel = level;
+                                  },
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
+                      )),
           ),
         ),
       ],
@@ -593,7 +610,8 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused && !this.isPause) showPauseDialog();
+    if (state == AppLifecycleState.paused && !this.isPause)
+      showPauseDialog();
     else if (state == AppLifecycleState.resumed && this.isPause) resumeGame();
   }
 
