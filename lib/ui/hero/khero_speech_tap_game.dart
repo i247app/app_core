@@ -729,7 +729,9 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
     this.setState(() {
       this.isPause = false;
     });
-    startSpeak(currentQuestion.text ?? "");
+    if (isStart) {
+      startSpeak(currentQuestion.text ?? "");
+    }
   }
 
   void showPauseDialog() {
