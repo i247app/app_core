@@ -9,6 +9,7 @@ import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/kquestion.dart';
 import 'package:app_core/model/kgame_score.dart';
+import 'package:app_core/ui/hero/widget/kegg_hero_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
@@ -50,6 +51,7 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
   int totalLevel = 4;
   int currentLevel = 0;
   bool isShowEndLevel = false;
+  bool isShowIntro = true;
 
   KGameScore? score;
   KGame? game = null;
@@ -187,68 +189,35 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
             padding: EdgeInsets.symmetric(vertical: 20),
             child: !isLoaded || !isCached || game == null
                 ? Container()
-                : SafeArea(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: _KJumpGameScreen(
-                            hero: widget.hero,
-                            totalLevel: totalLevel,
-                            isShowEndLevel: isShowEndLevel,
-                            questions: questions,
-                            level: currentLevel,
-                            isLoaded: isLoaded,
-                            onFinishLevel: (level, score, canAdvance) {
-                              if (!canAdvance) {
-                                this.showHeroGameLevelOverlay(() {
-                                  this.setState(() {
-                                    this.isShowEndLevel = false;
-                                  });
-                                  if (this.overlayID != null) {
-                                    KOverlayHelper.removeOverlay(
-                                        this.overlayID!);
-                                    this.overlayID = null;
-                                  }
-                                }, canAdvance: canAdvance);
-                                return;
-                              }
-
-                              this.setState(() {
-                                this.score = KGameScore()
-                                  ..game = GAME_ID
-                                  ..avatarURL = KSessionData.me!.avatarURL
-                                  ..kunm = KSessionData.me!.kunm
-                                  ..level = "$level"
-                                  ..score = "$score";
-                              });
-                              if (level < totalLevel) {
-                                this.showHeroGameLevelOverlay(() {
-                                  if (this.overlayID != null) {
-                                    KOverlayHelper.removeOverlay(
-                                        this.overlayID!);
-                                    this.overlayID = null;
-                                  }
-                                  this.showHeroGameHighscoreOverlay(() {
-                                    this.setState(() {
-                                      this.isShowEndLevel = false;
-                                    });
-                                    if (this.overlayID != null) {
-                                      KOverlayHelper.removeOverlay(
-                                          this.overlayID!);
-                                      this.overlayID = null;
-                                    }
-                                  });
-                                }, canAdvance: canAdvance);
-                              } else {
-                                this.showHeroGameEndOverlay(
-                                  () {
-                                    if (this.overlayID != null) {
-                                      KOverlayHelper.removeOverlay(
-                                          this.overlayID!);
-                                      this.overlayID = null;
-                                    }
-                                    this.showHeroGameHighscoreOverlay(() {
+                : (this.isShowIntro
+                    ? Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          if (this.isShowIntro) ...[
+                            KEggHeroIntro(
+                                onFinish: () =>
+                                    setState(() => this.isShowIntro = false)),
+                            GestureDetector(
+                                onTap: () =>
+                                    setState(() => this.isShowIntro = false)),
+                          ],
+                        ],
+                      )
+                    : SafeArea(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: _KJumpGameScreen(
+                                hero: widget.hero,
+                                totalLevel: totalLevel,
+                                isShowEndLevel: isShowEndLevel,
+                                questions: questions,
+                                level: currentLevel,
+                                isLoaded: isLoaded,
+                                onFinishLevel: (level, score, canAdvance) {
+                                  if (!canAdvance) {
+                                    this.showHeroGameLevelOverlay(() {
                                       this.setState(() {
                                         this.isShowEndLevel = false;
                                       });
@@ -257,24 +226,71 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
                                             this.overlayID!);
                                         this.overlayID = null;
                                       }
-                                    });
-                                  },
-                                );
-                              }
-                            },
-                            onChangeLevel: (level) {
-                              this.setState(
-                                () {
-                                  this.currentLevel = level;
+                                    }, canAdvance: canAdvance);
+                                    return;
+                                  }
+
+                                  this.setState(() {
+                                    this.score = KGameScore()
+                                      ..game = GAME_ID
+                                      ..avatarURL = KSessionData.me!.avatarURL
+                                      ..kunm = KSessionData.me!.kunm
+                                      ..level = "$level"
+                                      ..score = "$score";
+                                  });
+                                  if (level < totalLevel) {
+                                    this.showHeroGameLevelOverlay(() {
+                                      if (this.overlayID != null) {
+                                        KOverlayHelper.removeOverlay(
+                                            this.overlayID!);
+                                        this.overlayID = null;
+                                      }
+                                      this.showHeroGameHighscoreOverlay(() {
+                                        this.setState(() {
+                                          this.isShowEndLevel = false;
+                                        });
+                                        if (this.overlayID != null) {
+                                          KOverlayHelper.removeOverlay(
+                                              this.overlayID!);
+                                          this.overlayID = null;
+                                        }
+                                      });
+                                    }, canAdvance: canAdvance);
+                                  } else {
+                                    this.showHeroGameEndOverlay(
+                                      () {
+                                        if (this.overlayID != null) {
+                                          KOverlayHelper.removeOverlay(
+                                              this.overlayID!);
+                                          this.overlayID = null;
+                                        }
+                                        this.showHeroGameHighscoreOverlay(() {
+                                          this.setState(() {
+                                            this.isShowEndLevel = false;
+                                          });
+                                          if (this.overlayID != null) {
+                                            KOverlayHelper.removeOverlay(
+                                                this.overlayID!);
+                                            this.overlayID = null;
+                                          }
+                                        });
+                                      },
+                                    );
+                                  }
                                 },
-                              );
-                              this.loadGame();
-                            },
-                          ),
+                                onChangeLevel: (level) {
+                                  this.setState(
+                                    () {
+                                      this.currentLevel = level;
+                                    },
+                                  );
+                                  this.loadGame();
+                                },
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
+                      )),
           ),
         ),
       ],
@@ -642,7 +658,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused && !this.isPause) showPauseDialog();
+    if (state == AppLifecycleState.paused && !this.isPause)
+      showPauseDialog();
     else if (state == AppLifecycleState.resumed && this.isPause) resumeGame();
   }
 
