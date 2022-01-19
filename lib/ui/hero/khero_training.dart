@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:app_core/model/khero.dart';
+import 'package:app_core/ui/hero/widget/kegg_hero_intro.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,6 +35,7 @@ class _KHeroTrainingState extends State<KHeroTraining>
   Timer? _timer;
   bool isStart = false;
   bool isPlaySound = false;
+  bool isShowIntro = true;
 
   int points = 0;
   bool resetPos = false;
@@ -180,166 +182,183 @@ class _KHeroTrainingState extends State<KHeroTraining>
 
   @override
   Widget build(BuildContext context) {
-    final body = Column(
-      children: [
-        Expanded(
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: Center(
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: InkWell(
-                        child: Container(
-                          width: 50,
-                          height: 50,
-                          padding: EdgeInsets.only(
-                              top: 5, bottom: 5, left: 5, right: 5),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(40),
-                          ),
-                          child: Icon(
-                            Icons.close,
-                            color: Colors.red,
-                            size: 30,
-                          ),
-                        ),
-                        onTap: () => Navigator.of(context).pop(),
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Container(
-                      width: 80,
-                      height: 80,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 0, vertical: 15),
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(
-                            KAssets.IMG_TARGET_ORANGE,
-                            package: 'app_core',
-                          ),
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      child: Text(
-                        "${this.points}",
-                        textScaleFactor: 1.0,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                              fontSize: 35,
-                              fontWeight: FontWeight.bold,
+    final body = this.isShowIntro
+        ? Stack(
+            fit: StackFit.expand,
+            children: [
+              if (this.isShowIntro) ...[
+                KEggHeroIntro(
+                    onFinish: () => setState(() => this.isShowIntro = false)),
+                GestureDetector(
+                    onTap: () => setState(() => this.isShowIntro = false)),
+              ],
+            ],
+          )
+        : Column(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Center(
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: InkWell(
+                              child: Container(
+                                width: 50,
+                                height: 50,
+                                padding: EdgeInsets.only(
+                                    top: 5, bottom: 5, left: 5, right: 5),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(40),
+                                ),
+                                child: Icon(
+                                  Icons.close,
+                                  color: Colors.red,
+                                  size: 30,
+                                ),
+                              ),
+                              onTap: () => Navigator.of(context).pop(),
                             ),
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment(0, 1 + topTarget),
-                    child: Container(
-                      width: ((bottomTarget - topTarget) / 2) *
-                          MediaQuery.of(context).size.height,
-                      height: ((bottomTarget - topTarget) / 2) *
-                          MediaQuery.of(context).size.height,
-                      color: Theme.of(context).backgroundColor,
-                      child: Transform.scale(
-                        scale: 1.0,
-                        child: Image.asset(
-                          isReachTarget()
-                              ? KAssets.IMG_TARGET_GOLD
-                              : KAssets.IMG_TARGET_GREEN,
-                          width: ((bottomTarget - topTarget) / 2) *
-                              MediaQuery.of(context).size.height,
-                          height: ((bottomTarget - topTarget) / 2) *
-                              MediaQuery.of(context).size.height,
-                          package: 'app_core',
-                        ),
-                      ),
-                    ),
-                    // child: SizedBox(
-                    //   width: ((bottomTarget - topTarget) / 2) *
-                    //       MediaQuery.of(context).size.height,
-                    //   height: ((bottomTarget - topTarget) / 2) *
-                    //       MediaQuery.of(context).size.height,
-                    //   child: DecoratedBox(
-                    //     decoration: BoxDecoration(
-                    //       shape: BoxShape.rectangle,
-                    //       color: Theme.of(context).backgroundColor,
-                    //       borderRadius: BorderRadius.only(
-                    //         topLeft: Radius.circular((((bottomTarget - topTarget)/2)*MediaQuery.of(context).size.height)/2),
-                    //         topRight: Radius.circular((((bottomTarget - topTarget)/2)*MediaQuery.of(context).size.height)/2),
-                    //         bottomLeft: Radius.circular((((bottomTarget - topTarget)/2)*MediaQuery.of(context).size.height)/2),
-                    //         bottomRight: Radius.circular((((bottomTarget - topTarget)/2)*MediaQuery.of(context).size.height)/2),
-                    //       ),
-                    //       border: Border.all(
-                    //         color: Colors.green,
-                    //         width: 20,
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
-                  ),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Transform.translate(
-                      offset: Offset(0, 80),
-                      child: Transform.translate(
-                        offset: Offset(0, -80 * (_scaleAnimation.value - 1)),
-                        child: AnimatedOpacity(
-                          duration: Duration(milliseconds: 500),
-                          opacity: isShowPlusPoint ? 1 : 0,
-                          child: Icon(
-                            Icons.star,
-                            color: Colors.amberAccent,
-                            size: 50,
                           ),
                         ),
-                      ),
+                        Align(
+                          alignment: Alignment.topLeft,
+                          child: Container(
+                            width: 80,
+                            height: 80,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 0, vertical: 15),
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(
+                                  KAssets.IMG_TARGET_ORANGE,
+                                  package: 'app_core',
+                                ),
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            child: Text(
+                              "${this.points}",
+                              textScaleFactor: 1.0,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .copyWith(
+                                    fontSize: 35,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment(0, 1 + topTarget),
+                          child: Container(
+                            width: ((bottomTarget - topTarget) / 2) *
+                                MediaQuery.of(context).size.height,
+                            height: ((bottomTarget - topTarget) / 2) *
+                                MediaQuery.of(context).size.height,
+                            color: Theme.of(context).backgroundColor,
+                            child: Transform.scale(
+                              scale: 1.0,
+                              child: Image.asset(
+                                isReachTarget()
+                                    ? KAssets.IMG_TARGET_GOLD
+                                    : KAssets.IMG_TARGET_GREEN,
+                                width: ((bottomTarget - topTarget) / 2) *
+                                    MediaQuery.of(context).size.height,
+                                height: ((bottomTarget - topTarget) / 2) *
+                                    MediaQuery.of(context).size.height,
+                                package: 'app_core',
+                              ),
+                            ),
+                          ),
+                          // child: SizedBox(
+                          //   width: ((bottomTarget - topTarget) / 2) *
+                          //       MediaQuery.of(context).size.height,
+                          //   height: ((bottomTarget - topTarget) / 2) *
+                          //       MediaQuery.of(context).size.height,
+                          //   child: DecoratedBox(
+                          //     decoration: BoxDecoration(
+                          //       shape: BoxShape.rectangle,
+                          //       color: Theme.of(context).backgroundColor,
+                          //       borderRadius: BorderRadius.only(
+                          //         topLeft: Radius.circular((((bottomTarget - topTarget)/2)*MediaQuery.of(context).size.height)/2),
+                          //         topRight: Radius.circular((((bottomTarget - topTarget)/2)*MediaQuery.of(context).size.height)/2),
+                          //         bottomLeft: Radius.circular((((bottomTarget - topTarget)/2)*MediaQuery.of(context).size.height)/2),
+                          //         bottomRight: Radius.circular((((bottomTarget - topTarget)/2)*MediaQuery.of(context).size.height)/2),
+                          //       ),
+                          //       border: Border.all(
+                          //         color: Colors.green,
+                          //         width: 20,
+                          //       ),
+                          //     ),
+                          //   ),
+                          // ),
+                        ),
+                        Align(
+                          alignment: Alignment.topCenter,
+                          child: Transform.translate(
+                            offset: Offset(0, 80),
+                            child: Transform.translate(
+                              offset:
+                                  Offset(0, -80 * (_scaleAnimation.value - 1)),
+                              child: AnimatedOpacity(
+                                duration: Duration(milliseconds: 500),
+                                opacity: isShowPlusPoint ? 1 : 0,
+                                child: Icon(
+                                  Icons.star,
+                                  color: Colors.amberAccent,
+                                  size: 50,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                            width: heroWidth,
+                            height: heroHeight,
+                            alignment: Alignment(0, 1 + heroY),
+                            child: Image.network(
+                              widget.hero?.imageURL ?? "",
+                              width: heroWidth,
+                              height: heroHeight,
+                              errorBuilder: (context, error, stack) =>
+                                  Image.asset(
+                                KAssets.IMG_TAMAGO_CHAN,
+                                width: heroWidth,
+                                height: heroHeight,
+                                package: 'app_core',
+                              ),
+                            )),
+                      ],
                     ),
                   ),
-                  Container(
-                      width: heroWidth,
-                      height: heroHeight,
-                      alignment: Alignment(0, 1 + heroY),
-                      child: Image.network(
-                        widget.hero?.imageURL ?? "",
-                        width: heroWidth,
-                        height: heroHeight,
-                        errorBuilder: (context, error, stack) => Image.asset(
-                          KAssets.IMG_TAMAGO_CHAN,
-                          width: heroWidth,
-                          height: heroHeight,
-                          package: 'app_core',
-                        ),
-                      )),
-                ],
+                ),
               ),
-            ),
-          ),
-        ),
-        InkWell(
-          onTap: jump,
-          child: Container(
-            width: 80.0,
-            height: 80.0,
-            child: Image.asset(
-              KAssets.IMG_BUTTON_GREEN,
-              width: 80.0,
-              height: 80.0,
-              package: 'app_core',
-            ),
-          ),
-          borderRadius: BorderRadius.circular(50),
-        ),
-        SizedBox(height: 36),
-      ],
-    );
+              InkWell(
+                onTap: jump,
+                child: Container(
+                  width: 80.0,
+                  height: 80.0,
+                  child: Image.asset(
+                    KAssets.IMG_BUTTON_GREEN,
+                    width: 80.0,
+                    height: 80.0,
+                    package: 'app_core',
+                  ),
+                ),
+                borderRadius: BorderRadius.circular(50),
+              ),
+              SizedBox(height: 36),
+            ],
+          );
 
     return Scaffold(
       // appBar: AppBar(title: Text("Hero Training")),

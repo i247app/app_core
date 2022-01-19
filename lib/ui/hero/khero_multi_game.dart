@@ -9,6 +9,7 @@ import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/ui/hero/khero_jump_over_game.dart';
 import 'package:app_core/ui/hero/khero_moving_tap_game.dart';
 import 'package:app_core/ui/hero/khero_tap_game.dart';
+import 'package:app_core/ui/hero/widget/kegg_hero_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
 import 'package:app_core/ui/hero/widget/khero_game_intro.dart';
@@ -51,6 +52,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
   int currentLevel = 0;
   bool isShowEndLevel = false;
   bool isShowShootingIntro = false;
+  bool isShowIntro = true;
 
   KGameScore? score;
   KGame? game = null;
@@ -77,8 +79,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
       _keyTapGame.currentState?.showPauseDialog();
       _keyMovingTapGame.currentState?.showPauseDialog();
       _keyShootingGame.currentState?.showPauseDialog();
-    }
-    else if (state == AppLifecycleState.resumed) {
+    } else if (state == AppLifecycleState.resumed) {
       _keyJumpGame.currentState?.resumeGame();
       _keyJumpOverGame.currentState?.resumeGame();
       _keyTapGame.currentState?.resumeGame();
@@ -590,38 +591,52 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
             padding: EdgeInsets.symmetric(vertical: 20),
             child: !isLoaded || game == null
                 ? Container()
-                : SafeArea(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: this.isShowShootingIntro
-                              ? GestureDetector(
-                                  onTap: () => this.setState(
-                                      () => this.isShowShootingIntro = false),
-                                  child: Container(
-                                    child: KGameIntro(
-                                      hero: widget.hero,
-                                      onFinish: () => this.setState(() =>
+                : (this.isShowIntro
+                    ? Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          if (this.isShowIntro) ...[
+                            KEggHeroIntro(
+                                onFinish: () =>
+                                    setState(() => this.isShowIntro = false)),
+                            GestureDetector(
+                                onTap: () =>
+                                    setState(() => this.isShowIntro = false)),
+                          ],
+                        ],
+                      )
+                    : SafeArea(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: this.isShowShootingIntro
+                                  ? GestureDetector(
+                                      onTap: () => this.setState(() =>
                                           this.isShowShootingIntro = false),
-                                    ),
-                                  ),
-                                )
-                              : (currentLevel == 0
-                                  ? jumpOverGame
-                                  : (currentLevel == 1
-                                      ? tapGame
-                                      : (currentLevel == 2
-                                          ? shootingGame
-                                          : (currentLevel == 3
-                                              ? tapMovingGame
-                                              : (currentLevel == 4
-                                                  ? jumpGame
-                                                  : Container()))))),
+                                      child: Container(
+                                        child: KGameIntro(
+                                          hero: widget.hero,
+                                          onFinish: () => this.setState(() =>
+                                              this.isShowShootingIntro = false),
+                                        ),
+                                      ),
+                                    )
+                                  : (currentLevel == 0
+                                      ? jumpOverGame
+                                      : (currentLevel == 1
+                                          ? tapGame
+                                          : (currentLevel == 2
+                                              ? shootingGame
+                                              : (currentLevel == 3
+                                                  ? tapMovingGame
+                                                  : (currentLevel == 4
+                                                      ? jumpGame
+                                                      : Container()))))),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
+                      )),
           ),
         ),
       ],
