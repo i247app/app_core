@@ -182,7 +182,7 @@ class _ChapterItem extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: Icon(
-                    Icons.file_copy_outlined,
+                    Icons.menu_book,
                     size: 60,
                     color: Theme.of(context).colorScheme.primary,
                   ),
