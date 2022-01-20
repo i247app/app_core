@@ -114,4 +114,8 @@ abstract class KPhrases {
   static String get headstartDoc => _klingo.yak("headstart_documents");
 
   static String get classDoc => _klingo.yak("class_documents");
+
+  static String get math => _klingo.yak("math");
+
+  static String get english => _klingo.yak("english");
 }
