@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:app_core/helper/kserver_handler.dart';
+import 'package:app_core/helper/service/ktheme_service.dart';
 import 'package:app_core/model/chapter.dart';
+import 'package:app_core/model/textbook.dart';
 import 'package:app_core/ui/school/widget/kchapter_view.dart';
 import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
@@ -24,71 +26,60 @@ class KDocPicker extends StatefulWidget {
 class _KDocPickerState extends State<KDocPicker> {
   Timer? searchOnStoppedTyping;
 
-  late Picker picker;
-  int grade = 0;
+  String? selectedGrade;
   bool isLoading = false;
   List<Chapter> chapters = [];
-
+  List<Textbook> textbooks = [];
+  List<String> grades = [];
+  Widget? pickerView;
   @override
   void initState() {
     super.initState();
-    this.picker = Picker(
-        adapter: NumberPickerAdapter(data: [
-          NumberPickerColumn(
-            begin: 0,
-            end: 12,
-          ),
-        ]),
-        hideHeader: true,
-        selecteds: [0],
-        height: 60,
-        title: Text(KPhrases.grade),
-        selectedTextStyle: TextStyle(color: Colors.blue),
-        onSelect: (Picker picker, int index, List<int> values) {
-          final grade = picker.getSelectedValues()[0];
-          setState(() {
-            this.grade = grade;
-          });
 
-          _onChangeHandler(grade);
-        });
-    loadTextBook(widget.type, grade);
+    loadTextBook(widget.type);
   }
 
-  _onChangeHandler(int value) {
-    const duration = Duration(
-        milliseconds:
-            800); // set the duration that you want call search() after that.
-    if (searchOnStoppedTyping != null) {
-      setState(() => searchOnStoppedTyping?.cancel()); // clear timer
-    }
-    setState(() => searchOnStoppedTyping =
-        new Timer(duration, () => loadTextBook(widget.type, value)));
+  _onChangeHandler(String grade) {
+    final chapters = textbooks.firstWhere((t) => t.grade == grade).chapters;
+    setState(() {
+      this.selectedGrade = grade;
+      this.chapters = chapters ?? [];
+    });
   }
 
-  void loadTextBook(KDocType type, int grade) async {
+  void loadTextBook(KDocType type) async {
     setState(() {
       this.isLoading = true;
     });
-    final response =
-        await KServerHandler.getListTextbook(type: type, grade: grade);
+    final response = await KServerHandler.getListTextbook(type: type);
 
-    if (response.isSuccess) {
-      final textbook = response.textbooks?.first;
-      final grade = picker.getSelectedValues()[0];
-      if (textbook?.grade != grade.toString()) {
-        setState(() {
-          this.chapters = [];
-          this.isLoading = false;
-        });
-        return;
-      }
-      final chapters = textbook!.chapters;
+    if (response.isSuccess && response.textbooks != null) {
+      final textbooks = response.textbooks!;
+      final grades = textbooks.map((t) => t.grade ?? "").toList();
+
+      final picker = Picker(
+          adapter: PickerDataAdapter<String>(pickerdata: grades),
+          hideHeader: true,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          selecteds: [this.grades.indexOf(selectedGrade ?? "")],
+          height: 60,
+          title: Text(KPhrases.grade),
+          textStyle:
+              TextStyle(color: Theme.of(context).textTheme.bodyText1!.color),
+          selectedTextStyle: TextStyle(color: Colors.blue),
+          onSelect: (Picker picker, int index, List<int> values) {
+            final grade = picker.getSelectedValues()[0];
+            _onChangeHandler(grade);
+          });
 
       setState(() {
-        this.chapters = chapters ?? [];
+        this.textbooks.addAll(response.textbooks!);
         this.isLoading = false;
+        this.grades.addAll(grades);
+        this.pickerView = picker.makePicker();
       });
+
+      _onChangeHandler(grades.first);
     } else {
       setState(() {
         this.chapters = [];
@@ -126,8 +117,10 @@ class _KDocPickerState extends State<KDocPicker> {
             return Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(KPhrases.headstartGrade),
-                Expanded(child: picker.makePicker())
+                Column(
+                  children: [Text(KPhrases.headstart), Text(KPhrases.grade)],
+                ),
+                Expanded(child: pickerView ?? Container()),
               ],
             );
           }
