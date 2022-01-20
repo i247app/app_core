@@ -109,7 +109,7 @@ abstract class KPhrases {
 
   static String get grade => _klingo.yak("grade");
 
-  static String get headstartGrade => _klingo.yak("headstart_grade");
+  static String get headstart => _klingo.yak("headstart");
 
   static String get headstartDoc => _klingo.yak("headstart_documents");
 
