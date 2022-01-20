@@ -8,6 +8,7 @@ class Textbook {
   static const String TEXTBOOK_ID = "textbookID";
   static const String COURSE_ID = "courseID";
   static const String TITLE = "title";
+  static const String SUBJECT = "subject";
   static const String CATEGORY = "category";
   static const String CHAPTER_NUMBER = "chapterNumber";
   static const String SUBTITLE = "subtitle";
@@ -28,6 +29,9 @@ class Textbook {
 
   @JsonKey(name: TITLE)
   String? title;
+
+  @JsonKey(name: SUBJECT)
+  String? subject;
 
   @JsonKey(name: CATEGORY)
   String? category;

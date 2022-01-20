@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/helper/service/ktheme_service.dart';
@@ -56,13 +57,17 @@ class _KDocPickerState extends State<KDocPicker> {
     if (response.isSuccess && response.textbooks != null) {
       final textbooks = response.textbooks!;
       final grades = textbooks.map((t) => t.grade ?? "").toList();
+      dynamic subjects = [
+        {"MATH": grades},
+        {"ENGLISH": grades},
+      ];
 
       final picker = Picker(
-          adapter: PickerDataAdapter<String>(pickerdata: grades),
+          adapter: PickerDataAdapter<String>(pickerdata: subjects),
           hideHeader: true,
           itemExtent: 60,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          selecteds: [this.grades.indexOf(selectedGrade ?? "")],
+          selecteds: [0, 0],
           height: 120,
           title: Text(KPhrases.grade),
           textStyle:
@@ -70,7 +75,7 @@ class _KDocPickerState extends State<KDocPicker> {
           selectedTextStyle:
               TextStyle(color: Theme.of(context).colorScheme.primary),
           onSelect: (Picker picker, int index, List<int> values) {
-            final grade = picker.getSelectedValues()[0];
+            final grade = picker.getSelectedValues()[1];
             _onChangeHandler(grade);
           });
 
@@ -124,19 +129,6 @@ class _KDocPickerState extends State<KDocPicker> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Text(
-                              KPhrases.headstart,
-                              style: Theme.of(context).textTheme.headline6,
-                            ),
-                            Text(KPhrases.grade,
-                                style: Theme.of(context).textTheme.headline6)
-                          ],
-                        ),
-                      ),
                       Expanded(child: pickerView ?? Container()),
                     ],
                   );
