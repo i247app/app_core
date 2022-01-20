@@ -167,6 +167,8 @@
   "hi": "Hi",
   "app_failed": "App Failed",
   "grade": "Grade",
+  "math": "Math",
+  "english": "English",
   "headstart": "Headstart",
   "headstart_documents": "Headstart documents",
   "class_documents": "Class documents"

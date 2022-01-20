@@ -58,8 +58,8 @@ class _KDocPickerState extends State<KDocPicker> {
       final textbooks = response.textbooks!;
       final grades = textbooks.map((t) => t.grade ?? "").toList();
       dynamic subjects = [
-        {"MATH": grades},
-        {"ENGLISH": grades},
+        {KPhrases.math: grades},
+        {KPhrases.english: grades},
       ];
 
       final picker = Picker(
@@ -125,11 +125,16 @@ class _KDocPickerState extends State<KDocPicker> {
               itemCount: chapters.length + 1,
               itemBuilder: (BuildContext context, int index) {
                 if (index == 0) {
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Expanded(child: pickerView ?? Container()),
+                      if (pickerView != null) pickerView!,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 12),
+                        child: Divider(
+                            color: Theme.of(context).colorScheme.primary),
+                      )
                     ],
                   );
                 }
@@ -157,44 +162,56 @@ class _ChapterItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => onTap.call(chapter),
-      child: Card(
-        child: Container(
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Icon(
-                  Icons.file_copy_outlined,
-                  size: 60,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        chapter.title ?? "",
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.subtitle1!,
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Text(
-                        chapter.subtitle ?? "",
-                        style: Theme.of(context).textTheme.bodyText1,
-                      )
-                    ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: InkWell(
+        onTap: () => onTap.call(chapter),
+        child: Card(
+          elevation: 0,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.grey.shade900.withOpacity(0.4),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  topRight: Radius.circular(8),
+                  bottomLeft: Radius.circular(8),
+                  bottomRight: Radius.circular(8)),
+            ),
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Icon(
+                    Icons.file_copy_outlined,
+                    size: 60,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
-              )
-            ],
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          chapter.title ?? "",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.subtitle1!,
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Text(
+                          chapter.subtitle ?? "",
+                          style: Theme.of(context).textTheme.bodyText1,
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
