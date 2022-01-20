@@ -60,13 +60,15 @@ class _KDocPickerState extends State<KDocPicker> {
       final picker = Picker(
           adapter: PickerDataAdapter<String>(pickerdata: grades),
           hideHeader: true,
+          itemExtent: 60,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           selecteds: [this.grades.indexOf(selectedGrade ?? "")],
-          height: 60,
+          height: 120,
           title: Text(KPhrases.grade),
           textStyle:
-              TextStyle(color: Theme.of(context).textTheme.bodyText1!.color),
-          selectedTextStyle: TextStyle(color: Colors.blue),
+              Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 32),
+          selectedTextStyle:
+              TextStyle(color: Theme.of(context).colorScheme.primary),
           onSelect: (Picker picker, int index, List<int> values) {
             final grade = picker.getSelectedValues()[0];
             _onChangeHandler(grade);
@@ -109,36 +111,44 @@ class _KDocPickerState extends State<KDocPicker> {
             ? KPhrases.headstartDoc
             : KPhrases.classDoc),
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(8),
-        itemCount: isLoading ? 2 : chapters.length + 1,
-        itemBuilder: (BuildContext context, int index) {
-          if (index == 0) {
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Column(
-                  children: [Text(KPhrases.headstart), Text(KPhrases.grade)],
-                ),
-                Expanded(child: pickerView ?? Container()),
-              ],
-            );
-          }
-          if (index == 1 && isLoading) {
-            return Container(
-              height: 400,
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-          final chapter = chapters[index - 1];
-          return _ChapterItem(
-            chapter: chapter,
-            onTap: onChapterClick,
-          );
-        },
-      ),
+      body: isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(8),
+              itemCount: chapters.length + 1,
+              itemBuilder: (BuildContext context, int index) {
+                if (index == 0) {
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text(
+                              KPhrases.headstart,
+                              style: Theme.of(context).textTheme.headline6,
+                            ),
+                            Text(KPhrases.grade,
+                                style: Theme.of(context).textTheme.headline6)
+                          ],
+                        ),
+                      ),
+                      Expanded(child: pickerView ?? Container()),
+                    ],
+                  );
+                }
+
+                final chapter = chapters[index - 1];
+                return _ChapterItem(
+                  chapter: chapter,
+                  onTap: onChapterClick,
+                );
+              },
+            ),
     );
   }
 }
@@ -159,13 +169,15 @@ class _ChapterItem extends StatelessWidget {
       onTap: () => onTap.call(chapter),
       child: Card(
         child: Container(
-          height: 100,
           child: Row(
             children: [
-              Icon(
-                Icons.file_copy_outlined,
-                size: 90,
-                color: Theme.of(context).colorScheme.primary,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Icon(
+                  Icons.file_copy_outlined,
+                  size: 60,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
               Expanded(
                 child: Padding(
@@ -175,6 +187,8 @@ class _ChapterItem extends StatelessWidget {
                     children: [
                       Text(
                         chapter.title ?? "",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.subtitle1!,
                       ),
                       SizedBox(
@@ -182,7 +196,7 @@ class _ChapterItem extends StatelessWidget {
                       ),
                       Text(
                         chapter.subtitle ?? "",
-                        style: Theme.of(context).textTheme.caption,
+                        style: Theme.of(context).textTheme.bodyText1,
                       )
                     ],
                   ),
