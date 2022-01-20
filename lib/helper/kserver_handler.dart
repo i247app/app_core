@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/bank_withdrawal.dart';
+import 'package:app_core/model/chapter.dart';
 import 'package:app_core/model/course.dart';
 import 'package:app_core/model/kanswer.dart';
 import 'package:app_core/model/kgame.dart';
@@ -22,6 +23,7 @@ import 'package:app_core/model/response/get_lop_schedules_response.dart';
 import 'package:app_core/model/response/get_scores_response.dart';
 import 'package:app_core/model/response/get_users_response.dart';
 import 'package:app_core/model/response/list_heroes_response.dart';
+import 'package:app_core/model/response/list_textbooks_response.dart';
 import 'package:app_core/model/response/list_xfr_proxy_response.dart';
 import 'package:app_core/model/response/list_xfr_role_response.dart';
 import 'package:app_core/model/response/old_schedules_response.dart';
@@ -30,8 +32,10 @@ import 'package:app_core/model/response/resume_session_response.dart';
 import 'package:app_core/model/response/search_users_response.dart';
 import 'package:app_core/model/response/send_2fa_response.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
+import 'package:app_core/model/textbook.dart';
 import 'package:app_core/model/xfr_proxy.dart';
 import 'package:app_core/model/xfr_ticket.dart';
+import 'package:app_core/ui/school/kdoc_picker.dart';
 
 abstract class KServerHandler {
   static Future<SimpleResponse> logToServer(String key, value) async {
@@ -587,15 +591,17 @@ abstract class KServerHandler {
         .then((data) => GetLopSchedulesResponse.fromJson(data));
   }
 
-  static Future<SimpleResponse> pushCurrentPage(
-    int pageIndex,
-    String scheduleID,
-  ) async {
+  static Future<SimpleResponse> pushCurrentPage({
+    required int pageIndex,
+    String? scheduleID,
+    // String? gigID,
+  }) async {
     final params = {
       "svc": "bird",
       "req": "lop.page.push",
       "pageIndex": "$pageIndex",
       "scheduleID": scheduleID,
+      // "gigID": gigID,
     };
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }
@@ -643,5 +649,37 @@ abstract class KServerHandler {
     };
     return TLSHelper.send(params)
         .then((data) => OldSchedulesResponse.fromJson(data));
+  }
+
+  static Future<ListTextbooksResponse> getListTextbook({
+    int? grade,
+    required KDocType type,
+    int? chapter,
+  }) async {
+    final params = {
+      "svc": "bird",
+      "req": "headstart.picker",
+      "textbook": Textbook()
+        ..category = type == KDocType.headstart ? "HEADSTART" : "CLASS"
+        ..grade = grade != null ? grade.toString() : null
+        ..chapterNumber = (chapter != null) ? chapter.toString() : null
+    };
+    return TLSHelper.send(params)
+        .then((data) => ListTextbooksResponse.fromJson(data));
+  }
+
+  static Future<ListTextbooksResponse> getTextbook({
+    required String textbookID,
+    required String chapterID,
+  }) async {
+    final params = {
+      "svc": "bird",
+      "req": "textbook.get",
+      "textbook": Chapter()
+        ..textbookID = textbookID
+        ..chapterID = chapterID
+    };
+    return TLSHelper.send(params)
+        .then((data) => ListTextbooksResponse.fromJson(data));
   }
 }

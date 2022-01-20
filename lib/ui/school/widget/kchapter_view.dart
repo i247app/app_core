@@ -7,17 +7,19 @@ import 'package:app_core/ui/widget/kimage_viewer.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
 
-class KTextbookView extends StatefulWidget {
+enum KChapterViewMode { movable, fixed }
+
+class KChapterView extends StatefulWidget {
   final ValueNotifier<int>? controller;
   final Chapter chapter;
 
-  KTextbookView({this.controller, required this.chapter});
+  KChapterView({this.controller, required this.chapter});
 
   @override
-  _KTextbookViewState createState() => _KTextbookViewState();
+  _KChapterViewState createState() => _KChapterViewState();
 }
 
-class _KTextbookViewState extends State<KTextbookView> {
+class _KChapterViewState extends State<KChapterView> {
   int index = 0;
 
   TBPage? get currentPage => widget.chapter.pages?[index];

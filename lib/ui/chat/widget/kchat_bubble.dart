@@ -1,7 +1,8 @@
 import 'package:app_core/app_core.dart';
+import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/chapter.dart';
-import 'package:app_core/model/tbpage.dart';
-import 'package:app_core/ui/school/widget/ktextbook_view.dart';
+import 'package:app_core/ui/school/widget/kchapter_screen.dart';
+import 'package:app_core/ui/school/widget/kchapter_view.dart';
 import 'package:app_core/ui/widget/kimage_viewer.dart';
 import 'package:app_core/ui/widget/ksmart_image.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
@@ -123,25 +124,24 @@ class KChatBubble extends StatelessWidget {
     }
   }
 
-  void onTextbookClick(ctx, String textbookID) async {
-    KToastHelper.success("Textbook $textbookID");
-    final textbook = await Future.value(Chapter()
-      ..pages = [
-        TBPage()
-          ..mediaURL =
-              "https://ae01.alicdn.com/kf/H4b39f2a8b82f4a049de1305fa95595296/Full-diamond-embroidery-Cute-koala-on-the-tree-diamond-painting-cross-stitch-diy-diamond-painting-hobi.jpg"
-      ]);
-    final screen = Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          KTextbookView(chapter: textbook),
-          Align(
-            alignment: Alignment.topLeft,
-            child: SafeArea(child: BackButton()),
-          ),
-        ],
-      ),
+  void onChapterClick(ctx, String encodedIDs) async {
+    // KToastHelper.success("Chapter $chapterID");
+
+    // Load in chapter
+    Chapter? chapter;
+    try {
+      final textbookID = encodedIDs.split("::")[0];
+      final chapterID = encodedIDs.split("::")[1];
+      chapter = await KServerHandler.getTextbook(
+              textbookID: textbookID, chapterID: chapterID)
+          .then((r) => r.textbooks!.first.chapters!.first);
+    } catch (_) {
+      chapter = null;
+    }
+
+    final screen = KChapterScreen(
+      chapter: chapter!,
+      mode: KChapterViewMode.movable,
     );
     Navigator.of(ctx).push(MaterialPageRoute(builder: (_) => screen));
   }
@@ -269,9 +269,9 @@ class KChatBubble extends StatelessWidget {
           chatBGColor,
         );
         break;
-      case KChatMessage.CONTENT_TYPE_TEXTBOOK:
+      case KChatMessage.CONTENT_TYPE_CHAPTER:
         content = GestureDetector(
-          onTap: () => onTextbookClick(context, msg.message ?? "?"),
+          onTap: () => onChapterClick(context, msg.message ?? "?"),
           child: wrapWithChatBubble(
             Column(
               mainAxisSize: MainAxisSize.min,
