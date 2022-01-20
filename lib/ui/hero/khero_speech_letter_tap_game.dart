@@ -451,7 +451,8 @@ class KSpeechLetterTapGameScreenState extends State<KSpeechLetterTapGameScreen>
   String get defaultLanguage => KLocaleHelper.TTS_LANGUAGE_EN;
   String? currentLanguage;
 
-  bool get canShowLanguageToggle => false;
+  bool get canShowLanguageToggle =>
+      Platform.isAndroid && currentLanguage != null;
 
   // Platform.isAndroid && currentLanguage != null;
 
