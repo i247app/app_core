@@ -10,6 +10,7 @@ Textbook _$TextbookFromJson(Map<String, dynamic> json) => Textbook()
   ..textbookID = json['textbookID'] as String?
   ..courseID = json['courseID'] as String?
   ..title = json['title'] as String?
+  ..subject = json['subject'] as String?
   ..category = json['category'] as String?
   ..chapterNumber = json['chapterNumber'] as String?
   ..subtitle = json['subtitle'] as String?
@@ -36,6 +37,7 @@ Map<String, dynamic> _$TextbookToJson(Textbook instance) {
   writeNotNull('textbookID', instance.textbookID);
   writeNotNull('courseID', instance.courseID);
   writeNotNull('title', instance.title);
+  writeNotNull('subject', instance.subject);
   writeNotNull('category', instance.category);
   writeNotNull('chapterNumber', instance.chapterNumber);
   writeNotNull('subtitle', instance.subtitle);
