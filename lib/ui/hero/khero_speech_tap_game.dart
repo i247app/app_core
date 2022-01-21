@@ -788,34 +788,6 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
     this.setState(() {
       this.isShowCountDown = true;
     });
-    final view = KGameCountDownIntro(
-      onFinish: () {
-        this.setState(() {
-          this.isShowCountDown = false;
-        });
-
-        if (this.overlayID != null) {
-          KOverlayHelper.removeOverlay(this.overlayID!);
-          this.overlayID = null;
-        }
-
-        setState(() {
-          isStart = true;
-          time = 0;
-        });
-        startSpeak(currentQuestion.text ?? "");
-      },
-    );
-    final overlay = Stack(
-      fit: StackFit.expand,
-      children: [
-        Align(
-          alignment: Alignment.center,
-          child: view,
-        ),
-      ],
-    );
-    this.overlayID = KOverlayHelper.addOverlay(overlay);
   }
 
   void toggleBackgroundSound() {
@@ -1069,6 +1041,18 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
     if (!widget.isLoaded) {
       return Container();
     }
+
+    final countDown = KGameCountDownIntro(
+      onFinish: () {
+        if (mounted) {
+          setState(() {
+            this.isShowCountDown = false;
+            isStart = true;
+            time = 0;
+          });
+        }
+      },
+    );
 
     final body = Stack(
       fit: StackFit.expand,
@@ -1489,6 +1473,11 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
                 ],
               ),
             ),
+          ),
+        if (isShowCountDown)
+          Align(
+            alignment: Alignment.center,
+            child: countDown,
           ),
       ],
     );

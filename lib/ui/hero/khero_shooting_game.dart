@@ -639,7 +639,8 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused && !this.isPause) showPauseDialog();
+    if (state == AppLifecycleState.paused && !this.isPause)
+      showPauseDialog();
     else if (state == AppLifecycleState.resumed && this.isPause) resumeGame();
   }
 
@@ -736,35 +737,6 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
     this.setState(() {
       this.isShowCountDown = true;
     });
-    final view = KGameCountDownIntro(
-      onFinish: () {
-        this.setState(() {
-          this.isShowCountDown = false;
-        });
-
-        if (this.overlayID != null) {
-          KOverlayHelper.removeOverlay(this.overlayID!);
-          this.overlayID = null;
-        }
-
-        if (!isStart && currentLevel == 0) {
-          setState(() {
-            isStart = true;
-            time = 0;
-          });
-        }
-      },
-    );
-    final overlay = Stack(
-      fit: StackFit.expand,
-      children: [
-        Align(
-          alignment: Alignment.center,
-          child: view,
-        ),
-      ],
-    );
-    this.overlayID = KOverlayHelper.addOverlay(overlay);
   }
 
   void loadAudioAsset() async {
@@ -1111,6 +1083,18 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
 
   @override
   Widget build(BuildContext context) {
+    final countDown = KGameCountDownIntro(
+      onFinish: () {
+        if (mounted) {
+          setState(() {
+            this.isShowCountDown = false;
+            isStart = true;
+            time = 0;
+          });
+        }
+      },
+    );
+
     final body = Stack(
       fit: StackFit.expand,
       children: [
@@ -1492,6 +1476,11 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
                 ],
               ),
             ),
+          ),
+        if (isShowCountDown)
+          Align(
+            alignment: Alignment.center,
+            child: countDown,
           ),
       ],
     );

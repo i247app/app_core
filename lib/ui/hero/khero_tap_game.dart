@@ -696,33 +696,7 @@ class KTapGameScreenState extends State<KTapGameScreen>
     this.setState(() {
       this.isShowCountDown = true;
     });
-    final view = KGameCountDownIntro(
-      onFinish: () {
-        this.setState(() {
-          this.isShowCountDown = false;
-        });
-
-        if (this.countdownOverlayID != null) {
-          KOverlayHelper.removeOverlay(this.countdownOverlayID!);
-          this.countdownOverlayID = null;
-        }
-
-        setState(() {
-          isStart = true;
-          time = 0;
-        });
-      },
-    );
-    final overlay = Stack(
-      fit: StackFit.expand,
-      children: [
-        Align(
-          alignment: Alignment.center,
-          child: view,
-        ),
-      ],
-    );
-    this.countdownOverlayID = KOverlayHelper.addOverlay(overlay);
+    // this.countdownOverlayID = KOverlayHelper.addOverlay(overlay);
   }
 
   void toggleBackgroundSound() {
@@ -969,6 +943,18 @@ class KTapGameScreenState extends State<KTapGameScreen>
     if (!widget.isLoaded) {
       return Container();
     }
+
+    final countDown = KGameCountDownIntro(
+      onFinish: () {
+        if (mounted) {
+          setState(() {
+            this.isShowCountDown = false;
+            isStart = true;
+            time = 0;
+          });
+        }
+      },
+    );
 
     final body = Stack(
       fit: StackFit.expand,
@@ -1364,6 +1350,11 @@ class KTapGameScreenState extends State<KTapGameScreen>
                 ],
               ),
             ),
+          ),
+        if (isShowCountDown)
+          Align(
+            alignment: Alignment.center,
+            child: countDown,
           ),
       ],
     );
