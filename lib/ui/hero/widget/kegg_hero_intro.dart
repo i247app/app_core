@@ -110,7 +110,7 @@ class _KEggHeroIntroState extends State<KEggHeroIntro>
     ).animate(_shakeTheTopAnimationController);
 
     _barrelMovingAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 2250),
       vsync: this,
     )
       ..addListener(() => setState(() {}))
@@ -134,7 +134,7 @@ class _KEggHeroIntroState extends State<KEggHeroIntro>
         parent: _barrelMovingAnimationController, curve: Curves.linear));
 
     _barrelHeroMovingAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 2250),
       vsync: this,
     )
       ..addListener(() => setState(() {}))
@@ -163,7 +163,7 @@ class _KEggHeroIntroState extends State<KEggHeroIntro>
     this._barrelMovingAnimationController.forward();
     this._barrelHeroMovingAnimationController.forward();
 
-    Future.delayed(Duration(milliseconds: 500), () {
+    Future.delayed(Duration(milliseconds: 250), () {
       try {
         final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
         ap.play(introAudioFileUri ?? "", isLocal: true);
