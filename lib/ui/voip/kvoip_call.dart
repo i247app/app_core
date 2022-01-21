@@ -1054,7 +1054,7 @@ class _KVOIPCallState extends State<KVOIPCall>
                   onHangUp: hangUp,
                 ),
                 SizedBox(height: 28),
-                Expanded(child: Container(child: chatroom)),
+                // Expanded(child: Container(child: chatroom)),
               ],
             );
 
@@ -1077,8 +1077,8 @@ class _KVOIPCallState extends State<KVOIPCall>
               backdropEnabled: false,
               boxShadow: null,
               controller: this.panelCtrl,
-              minHeight: 150,
-              maxHeight: maxHeight,
+              minHeight: 153,
+              maxHeight: 153,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(24.0),
                 topRight: Radius.circular(24.0),
