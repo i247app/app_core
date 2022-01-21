@@ -151,6 +151,8 @@ class _KVOIPCallState extends State<KVOIPCall>
   @override
   void initState() {
     super.initState();
+    FocusManager.instance.primaryFocus?.unfocus();
+
     Wakelock.enable();
     KCallKitHelper.instance.isCalling = true;
     WidgetsBinding.instance?.addObserver(this);
@@ -763,7 +765,8 @@ class _KVOIPCallState extends State<KVOIPCall>
             left: 24,
           ),
         ],
-        if (!this.isChatEnabled || !this.isVideoInitialized) ...[
+        if (!this.isChatEnabled ||
+            this.callState != _CallState.in_progress) ...[
           Positioned(
             bottom: 20.0,
             left: 10.0,
