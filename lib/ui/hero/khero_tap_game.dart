@@ -432,6 +432,8 @@ class KTapGameScreenState extends State<KTapGameScreen>
   double topBoundary = -2.1;
 
   int? overlayID;
+  int? highScoreOverlayID;
+  int? countdownOverlayID;
   bool isPause = false;
   bool isBackgroundSoundPlaying = false;
 
@@ -590,6 +592,16 @@ class KTapGameScreenState extends State<KTapGameScreen>
       this.overlayID = null;
     }
 
+    if (this.highScoreOverlayID != null) {
+      KOverlayHelper.removeOverlay(this.highScoreOverlayID!);
+      this.highScoreOverlayID = null;
+    }
+
+    if (this.countdownOverlayID != null) {
+      KOverlayHelper.removeOverlay(this.countdownOverlayID!);
+      this.countdownOverlayID = null;
+    }
+
     audioPlayer.dispose();
     backgroundAudioPlayer.dispose();
 
@@ -623,7 +635,13 @@ class KTapGameScreenState extends State<KTapGameScreen>
         Align(
           alignment: Alignment.center,
           child: KGameHighscoreDialog(
-            onClose: resumeGame,
+            onClose: () {
+              if (this.highScoreOverlayID != null) {
+                KOverlayHelper.removeOverlay(this.highScoreOverlayID!);
+                this.highScoreOverlayID = null;
+              }
+              resumeGame();
+            },
             game: widget.gameID,
             score: null,
             canSaveHighScore: false,
@@ -641,7 +659,7 @@ class KTapGameScreenState extends State<KTapGameScreen>
         ),
       ],
     );
-    this.overlayID = KOverlayHelper.addOverlay(overlay);
+    this.highScoreOverlayID = KOverlayHelper.addOverlay(overlay);
   }
 
   void showPauseDialog() {
@@ -684,9 +702,9 @@ class KTapGameScreenState extends State<KTapGameScreen>
           this.isShowCountDown = false;
         });
 
-        if (this.overlayID != null) {
-          KOverlayHelper.removeOverlay(this.overlayID!);
-          this.overlayID = null;
+        if (this.countdownOverlayID != null) {
+          KOverlayHelper.removeOverlay(this.countdownOverlayID!);
+          this.countdownOverlayID = null;
         }
 
         setState(() {
@@ -704,7 +722,7 @@ class KTapGameScreenState extends State<KTapGameScreen>
         ),
       ],
     );
-    this.overlayID = KOverlayHelper.addOverlay(overlay);
+    this.countdownOverlayID = KOverlayHelper.addOverlay(overlay);
   }
 
   void toggleBackgroundSound() {
