@@ -1,8 +1,8 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/chapter.dart';
-import 'package:app_core/ui/school/widget/kchapter_screen.dart';
-import 'package:app_core/ui/school/widget/kchapter_view.dart';
+import 'package:app_core/ui/school/widget/kdoc_screen.dart';
+import 'package:app_core/ui/school/widget/kdoc_view.dart';
 import 'package:app_core/ui/widget/kimage_viewer.dart';
 import 'package:app_core/ui/widget/ksmart_image.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
@@ -129,9 +129,11 @@ class KChatBubble extends StatelessWidget {
 
     // Load in chapter
     Chapter? chapter;
+    String? ssID;
     try {
       final textbookID = encodedIDs.split("::")[0];
       final chapterID = encodedIDs.split("::")[1];
+      ssID = encodedIDs.split("::")[2];
       chapter = await KServerHandler.getTextbook(
               textbookID: textbookID, chapterID: chapterID)
           .then((r) => r.textbooks!.first.chapters!.first);
@@ -139,9 +141,10 @@ class KChatBubble extends StatelessWidget {
       chapter = null;
     }
 
-    final screen = KChapterScreen(
+    final screen = KDocScreen(
       chapter: chapter!,
-      mode: KChapterViewMode.movable,
+      mode: KDocViewMode.movable,
+      ssID: ssID,
     );
     Navigator.of(ctx).push(MaterialPageRoute(builder: (_) => screen));
   }

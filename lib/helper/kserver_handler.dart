@@ -12,6 +12,7 @@ import 'package:app_core/model/kquestion.dart';
 import 'package:app_core/model/lop_schedule.dart';
 import 'package:app_core/model/response/chat_add_members_response.dart';
 import 'package:app_core/model/response/chat_remove_members_response.dart';
+import 'package:app_core/model/response/create_push_page_response.dart';
 import 'package:app_core/model/response/credit_transfer_response.dart';
 import 'package:app_core/model/response/get_balances_response.dart';
 import 'package:app_core/model/response/get_business_response.dart';
@@ -681,5 +682,40 @@ abstract class KServerHandler {
     };
     return TLSHelper.send(params)
         .then((data) => ListTextbooksResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> docPushPage({
+    required String ssID,
+    required String pageIndex,
+  }) async {
+    final params = {
+      "svc": "bird",
+      "req": "push.page",
+      "ssID": ssID,
+      "pageIndex": pageIndex,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<CreatePushPageResponse> docPushPageCreate({
+    required String refID,
+    required String refApp,
+    String? refPUID,
+    String? role,
+    String? textbookID,
+    String? chapterID,
+  }) async {
+    final params = {
+      "svc": "bird",
+      "req": "push.page.create",
+      "refID": refID,
+      "refApp": refApp,
+      "refPUID": refPUID,
+      "role": role ?? "RO",
+      "textbookID": textbookID,
+      "chapterID": chapterID,
+    };
+    return TLSHelper.send(params)
+        .then((data) => CreatePushPageResponse.fromJson(data));
   }
 }

@@ -6,19 +6,19 @@ import 'package:app_core/ui/widget/kimage_viewer.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
 
-enum KChapterViewMode { movable, fixed }
+enum KDocViewMode { movable, fixed }
 
-class KChapterView extends StatefulWidget {
+class KDocView extends StatefulWidget {
   final ValueNotifier<int>? controller;
   final Chapter chapter;
 
-  KChapterView({this.controller, required this.chapter});
+  KDocView({this.controller, required this.chapter});
 
   @override
-  _KChapterViewState createState() => _KChapterViewState();
+  _KDocViewState createState() => _KDocViewState();
 }
 
-class _KChapterViewState extends State<KChapterView> {
+class _KDocViewState extends State<KDocView> {
   int index = 0;
 
   TBPage? get currentPage => widget.chapter.pages?[index];
