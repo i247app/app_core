@@ -419,6 +419,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
     );
 
     final tapGame = KTapGameScreen(
+      gameID: GAME_ID,
       key: _keyTapGame,
       hero: widget.hero,
       totalLevel: totalLevel,

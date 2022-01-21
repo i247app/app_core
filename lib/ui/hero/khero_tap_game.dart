@@ -206,6 +206,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                             // ),
                             Expanded(
                               child: KTapGameScreen(
+                                gameID: GAME_ID,
                                 hero: widget.hero,
                                 totalLevel: totalLevel,
                                 isShowEndLevel: isShowEndLevel,
@@ -316,6 +317,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
 
 class KTapGameScreen extends StatefulWidget {
   final KHero? hero;
+  final String gameID;
   final Function(int)? onChangeLevel;
   final Function(int, int, bool, bool)? onFinishLevel;
   final bool isShowEndLevel;
@@ -331,6 +333,7 @@ class KTapGameScreen extends StatefulWidget {
     this.onChangeLevel,
     this.onFinishLevel,
     this.totalLevel,
+    required this.gameID,
     required this.isShowEndLevel,
     required this.isLoaded,
     required this.questions,
@@ -605,6 +608,40 @@ class KTapGameScreenState extends State<KTapGameScreen>
     this.setState(() {
       this.isPause = false;
     });
+  }
+
+  void showHighscoreDialog() {
+    if (this.isPause) return;
+    if (this.isBackgroundSoundPlaying) {
+      toggleBackgroundSound();
+    }
+    this.setState(() {
+      this.isPause = true;
+    });
+    final view = Stack(
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: KGameHighscoreDialog(
+            onClose: resumeGame,
+            game: widget.gameID,
+            score: null,
+            canSaveHighScore: false,
+            currentLevel: currentLevel,
+          ),
+        ),
+      ],
+    );
+    final overlay = Stack(
+      fit: StackFit.expand,
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: view,
+        ),
+      ],
+    );
+    this.overlayID = KOverlayHelper.addOverlay(overlay);
   }
 
   void showPauseDialog() {
@@ -1241,6 +1278,29 @@ class KTapGameScreenState extends State<KTapGameScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  if (isStart) ...[
+                    InkWell(
+                      child: Container(
+                        width: 50,
+                        height: 50,
+                        padding: EdgeInsets.only(
+                            top: 5, bottom: 5, left: 5, right: 5),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(40),
+                        ),
+                        child: Icon(
+                          Icons.star_border,
+                          color: Color(0xff2c1c44),
+                          size: 30,
+                        ),
+                      ),
+                      onTap: () => showHighscoreDialog(),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                  ],
                   if (isStart || result != null)
                     InkWell(
                       child: Container(
