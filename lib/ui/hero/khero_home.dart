@@ -296,7 +296,7 @@ class _KHeroHomeState extends State<KHeroHome> {
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(6),
-                color: KStyles.colorPrimary,
+                color: Theme.of(context).colorScheme.primary,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
