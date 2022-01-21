@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:app_core/header/kassets.dart';
 import 'package:app_core/model/chapter.dart';
 import 'package:app_core/model/tbpage.dart';
 import 'package:app_core/ui/widget/kimage_viewer.dart';

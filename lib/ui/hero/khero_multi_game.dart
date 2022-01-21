@@ -15,7 +15,6 @@ import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
 import 'package:app_core/ui/hero/widget/khero_game_intro.dart';
 import 'package:app_core/ui/hero/widget/ktamago_chan_jumping.dart';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
 
 class KHeroMultiGame extends StatefulWidget {
   final KHero? hero;

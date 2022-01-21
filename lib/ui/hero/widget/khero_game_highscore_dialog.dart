@@ -3,7 +3,6 @@ import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:collection/collection.dart';
 
 class KGameHighscoreDialog extends StatefulWidget {
   final Function onClose;

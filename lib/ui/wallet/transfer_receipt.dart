@@ -4,7 +4,6 @@ import 'package:app_core/helper/kmoney_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/kcredit_transaction.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class TransferReceipt extends StatefulWidget {
   final String transactionID;
