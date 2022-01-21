@@ -178,7 +178,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onPlaySpeechLetterTapGame(null),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("🔈"),
@@ -197,7 +197,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onPlaySpeechTapGame(null),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("🔈"),
@@ -236,7 +236,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onTraining(widget.hero),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("💪"),
@@ -255,7 +255,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onPlayJumpOverGame(null),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("👾️"),
@@ -274,7 +274,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onPlayTapGame(null),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("👾️"),
@@ -293,7 +293,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onPlayMovingTapGame(null),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("👾️"),
@@ -312,7 +312,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onPlayLetterTapGame(null),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("👾️️"),
@@ -331,7 +331,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onPlayJumpGame(null),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("🕹️"),
@@ -350,7 +350,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onPlayJumpMultiRowGame(null),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("🏆"),
@@ -369,7 +369,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onPlayShootingGame(null),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("🔫"),
@@ -388,7 +388,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onPlayMultiGame(null),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("🎮"),
@@ -427,7 +427,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onTraining(widget.hero),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("💪"),
@@ -446,7 +446,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onPlayJumpOverGame(null),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("👾️"),
@@ -465,7 +465,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onPlayTapGame(null),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("👾️"),
@@ -484,7 +484,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onPlayMovingTapGame(null),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("👾️"),
@@ -503,7 +503,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onPlayLetterTapGame(null),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("👾️️"),
@@ -522,7 +522,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onPlayJumpGame(null),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("🕹️"),
@@ -541,7 +541,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onPlayJumpMultiRowGame(null),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("🏆"),
@@ -560,7 +560,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onPlayShootingGame(null),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("🔫"),
@@ -579,7 +579,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () => onPlayMultiGame(null),
                     style: KStyles.squaredButton(
-                      KStyles.colorPrimary,
+                      Theme.of(context).colorScheme.primary,
                       textColor: Colors.white,
                     ),
                     child: Text("🎮"),
