@@ -110,7 +110,7 @@ class _KEggHeroIntroState extends State<KEggHeroIntro>
     ).animate(_shakeTheTopAnimationController);
 
     _barrelMovingAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 2250),
+      duration: const Duration(milliseconds: 2750),
       vsync: this,
     )
       ..addListener(() => setState(() {}))
@@ -134,7 +134,7 @@ class _KEggHeroIntroState extends State<KEggHeroIntro>
         parent: _barrelMovingAnimationController, curve: Curves.linear));
 
     _barrelHeroMovingAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 2250),
+      duration: const Duration(milliseconds: 2750),
       vsync: this,
     )
       ..addListener(() => setState(() {}))
