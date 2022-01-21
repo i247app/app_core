@@ -763,7 +763,8 @@ class _KVOIPCallState extends State<KVOIPCall>
             left: 24,
           ),
         ],
-        if (!this.isChatEnabled || !this.isVideoInitialized) ...[
+        if (!this.isChatEnabled ||
+            this.callState != _CallState.in_progress) ...[
           Positioned(
             bottom: 20.0,
             left: 10.0,
