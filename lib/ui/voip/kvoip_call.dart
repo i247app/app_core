@@ -151,6 +151,8 @@ class _KVOIPCallState extends State<KVOIPCall>
   @override
   void initState() {
     super.initState();
+    FocusManager.instance.primaryFocus?.unfocus();
+
     Wakelock.enable();
     KCallKitHelper.instance.isCalling = true;
     WidgetsBinding.instance?.addObserver(this);
