@@ -212,6 +212,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                                 questions: questions,
                                 level: currentLevel,
                                 isLoaded: isLoaded,
+                                loadGame: loadGame,
                                 onFinishLevel: (level, score, canAdvance,
                                     canSaveHighScore) {
                                   if (!canAdvance) {
@@ -317,6 +318,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
 class KTapGameScreen extends StatefulWidget {
   final KHero? hero;
   final String gameID;
+  final Function()? loadGame;
   final Function(int)? onChangeLevel;
   final Function(int, int, bool, bool)? onFinishLevel;
   final bool isShowEndLevel;
@@ -329,6 +331,7 @@ class KTapGameScreen extends StatefulWidget {
   const KTapGameScreen({
     Key? key,
     this.hero,
+    this.loadGame,
     this.onChangeLevel,
     this.onFinishLevel,
     this.totalLevel,
@@ -361,24 +364,10 @@ class KTapGameScreenState extends State<KTapGameScreen>
       _moveUpAnimationController,
       _spinAnimationController;
 
-  double screenWidth = 0;
-  double screenHeight = 0;
-  double heroY = 0;
-  double initialPos = 0;
-  double height = 0;
-  double time = 0;
-  double gravity = -8.0;
-  double velocity = 2.0;
   Timer? _timer;
   bool isStart = false;
   bool isShowCountDown = false;
-  double heroHeight = 90;
-  double heroWidth = 90;
-  int trueAnswer = 2;
   bool? result;
-  bool isScroll = true;
-  double scrollSpeed = 0.01;
-  bool isShooting = false;
   int eggReceive = 0;
   bool isWrongAnswer = false;
   int rightAnswerCount = 0;
@@ -398,12 +387,6 @@ class KTapGameScreenState extends State<KTapGameScreen>
   List<String> levelIconAssets = [];
 
   int points = 0;
-  bool resetPos = false;
-  bool isShowPlusPoint = false;
-  DateTime? lastGetPointTime;
-
-  List<List<String>> levelQuestions = [];
-  List<List<int>> levelRightAnswers = [];
 
   int currentQuestionIndex = 0;
 
@@ -452,36 +435,6 @@ class KTapGameScreenState extends State<KTapGameScreen>
       this.totalLevel,
       (index) => baseLevelIconAssets[
           Math.Random().nextInt(baseLevelIconAssets.length)],
-    );
-    this.levelQuestions = List.filled(
-      this.totalLevel,
-      [
-        "1 + 1",
-        "3 + 2",
-        "4 - 1",
-        "4 + 5",
-        "2 x 1",
-        "2 x 3",
-        "1 + 2 - 1",
-        "4 + 8 - 5",
-        "1 x 2 + 3",
-        "1 + 2 x 3",
-      ],
-    );
-    this.levelRightAnswers = List.filled(
-      this.totalLevel,
-      [
-        2,
-        5,
-        3,
-        9,
-        2,
-        6,
-        2,
-        7,
-        5,
-        7,
-      ],
     );
 
     loadAudioAsset();
@@ -539,12 +492,6 @@ class KTapGameScreenState extends State<KTapGameScreen>
       ..addListener(() => setState(() {}))
       ..addStatusListener((status) {
         if (mounted && status == AnimationStatus.completed) {
-          // this.setState(() {
-          //   isShowPlusPoint = false;
-          // });
-          // Future.delayed(Duration(milliseconds: 50), () {
-          //   this._moveUpAnimationController.reset();
-          // });
         }
       });
     _moveUpAnimation = new Tween(
@@ -552,9 +499,6 @@ class KTapGameScreenState extends State<KTapGameScreen>
       end: 1.0,
     ).animate(new CurvedAnimation(
         parent: _moveUpAnimationController, curve: Curves.bounceOut));
-
-    // this.screenHeight = MediaQuery.of(context).size.height;
-    // this.screenWidth = MediaQuery.of(context).size.width;
 
     _timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
       if (isStart && mounted && !isPause) {
@@ -750,7 +694,6 @@ class KTapGameScreenState extends State<KTapGameScreen>
       } else {
         setState(() {
           isStart = true;
-          time = 0;
         });
       }
       if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
@@ -826,7 +769,6 @@ class KTapGameScreenState extends State<KTapGameScreen>
 
     this.setState(() {
       spinningHeroIndex = answerIndex;
-      isShooting = false;
     });
     this._spinAnimationController.reset();
     this._spinAnimationController.forward();
@@ -835,7 +777,6 @@ class KTapGameScreenState extends State<KTapGameScreen>
       this.setState(() {
         result = true;
         points = points + 5;
-        isScroll = false;
         if (!isWrongAnswer) {
           currentShowStarIndex = answerIndex;
           rightAnswerCount += 1;
@@ -861,11 +802,6 @@ class KTapGameScreenState extends State<KTapGameScreen>
                   currentQuestionIndex = currentQuestionIndex + 1;
                   randomBoxPosition();
                   getListAnswer();
-                });
-                Future.delayed(Duration(milliseconds: 50), () {
-                  this.setState(() {
-                    isScroll = true;
-                  });
                 });
               } else {
                 if (widget.onFinishLevel != null) {
@@ -922,8 +858,6 @@ class KTapGameScreenState extends State<KTapGameScreen>
     this.setState(() {
       this.isPlaySound = false;
       this.isStart = true;
-      this.isScroll = true;
-      this.isShooting = false;
       this.result = null;
       this.points = 0;
       this.currentQuestionIndex = 0;
@@ -949,7 +883,6 @@ class KTapGameScreenState extends State<KTapGameScreen>
           setState(() {
             this.isShowCountDown = false;
             isStart = true;
-            time = 0;
           });
         }
       },
@@ -1052,29 +985,32 @@ class KTapGameScreenState extends State<KTapGameScreen>
                     SizedBox(
                       height: 16,
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.75,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(40),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.5),
-                            blurRadius: 8,
-                            offset: Offset(2, 6),
+                    GestureDetector(
+                      onTap: () => start(),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.75,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(40),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.5),
+                              blurRadius: 8,
+                              offset: Offset(2, 6),
+                            ),
+                          ],
+                        ),
+                        child: Text(
+                          "START",
+                          textScaleFactor: 1.0,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
-                      ),
-                      child: Text(
-                        "START",
-                        textScaleFactor: 1.0,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 35,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -1087,39 +1023,48 @@ class KTapGameScreenState extends State<KTapGameScreen>
                     SizedBox(
                       height: 16,
                     ),
-                    canAdvance
-                        ? Container(
-                            width: MediaQuery.of(context).size.width * 0.75,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 15),
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(40),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.5),
-                                  blurRadius: 8,
-                                  offset: Offset(2, 6),
-                                ),
-                              ],
-                            ),
-                            child: Text(
-                              "NEXT LEVEL",
-                              textScaleFactor: 1.0,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 35,
-                                fontWeight: FontWeight.bold,
+                    if (canAdvance) ...[
+                      GestureDetector(
+                        onTap: () => start(),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.75,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(40),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.5),
+                                blurRadius: 8,
+                                offset: Offset(2, 6),
                               ),
+                            ],
+                          ),
+                          child: Text(
+                            "NEXT LEVEL",
+                            textScaleFactor: 1.0,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 35,
+                              fontWeight: FontWeight.bold,
                             ),
-                          )
-                        : Container(
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      if (widget.loadGame != null)
+                        GestureDetector(
+                          onTap: () => widget.loadGame!(),
+                          child: Container(
                             width: MediaQuery.of(context).size.width * 0.75,
                             padding: EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 15),
                             decoration: BoxDecoration(
-                              color: Colors.red,
+                              color: Colors.orange,
                               borderRadius: BorderRadius.circular(40),
                               boxShadow: [
                                 BoxShadow(
@@ -1140,6 +1085,38 @@ class KTapGameScreenState extends State<KTapGameScreen>
                               ),
                             ),
                           ),
+                        ),
+                    ],
+                    if (!canAdvance)
+                      GestureDetector(
+                        onTap: () => restartGame(),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.75,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(40),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.5),
+                                blurRadius: 8,
+                                offset: Offset(2, 6),
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            "REPLAY LEVEL",
+                            textScaleFactor: 1.0,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 35,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                   if (!canRestartGame) ...[
                     Text(
@@ -1151,13 +1128,13 @@ class KTapGameScreenState extends State<KTapGameScreen>
               ),
             ),
           ),
-        if (!isStart)
-          GestureDetector(
-              onTap: (isShowCountDown || widget.isShowEndLevel || isPause)
-                  ? () {}
-                  : (result == null
-                      ? start
-                      : (canRestartGame ? restartGame : () {}))),
+        // if (!isStart)
+        //   GestureDetector(
+        //       onTap: (isShowCountDown || widget.isShowEndLevel || isPause)
+        //           ? () {}
+        //           : (result == null
+        //               ? start
+        //               : (canRestartGame ? restartGame : () {}))),
         Align(
           alignment: Alignment.bottomRight,
           child: Padding(
