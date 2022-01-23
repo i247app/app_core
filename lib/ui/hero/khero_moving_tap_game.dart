@@ -205,12 +205,14 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
                             // ),
                             Expanded(
                               child: KMovingTapGameScreen(
+                                gameID: GAME_ID,
                                 hero: widget.hero,
                                 totalLevel: totalLevel,
                                 isShowEndLevel: isShowEndLevel,
                                 questions: questions,
                                 level: currentLevel,
                                 isLoaded: isLoaded,
+                                loadGame: loadGame,
                                 onFinishLevel: (level, score, canAdvance,
                                     canSaveHighScore) {
                                   if (!canAdvance) {
@@ -315,6 +317,8 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
 
 class KMovingTapGameScreen extends StatefulWidget {
   final KHero? hero;
+  final String gameID;
+  final Function()? loadGame;
   final Function(int)? onChangeLevel;
   final Function(int, int, bool, bool)? onFinishLevel;
   final bool isShowEndLevel;
@@ -327,9 +331,11 @@ class KMovingTapGameScreen extends StatefulWidget {
   const KMovingTapGameScreen({
     Key? key,
     this.hero,
+    this.loadGame,
     this.onChangeLevel,
     this.onFinishLevel,
     this.totalLevel,
+    required this.gameID,
     required this.isShowEndLevel,
     required this.questions,
     required this.isLoaded,
@@ -628,6 +634,40 @@ class KMovingTapGameScreenState extends State<KMovingTapGameScreen>
     this.setState(() {
       this.isPause = false;
     });
+  }
+
+  void showHighscoreDialog() {
+    if (this.isPause) return;
+    if (this.isBackgroundSoundPlaying) {
+      toggleBackgroundSound();
+    }
+    this.setState(() {
+      this.isPause = true;
+    });
+    final view = Stack(
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: KGameHighscoreDialog(
+            onClose: resumeGame,
+            game: widget.gameID,
+            score: null,
+            canSaveHighScore: false,
+            currentLevel: currentLevel,
+          ),
+        ),
+      ],
+    );
+    final overlay = Stack(
+      fit: StackFit.expand,
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: view,
+        ),
+      ],
+    );
+    this.overlayID = KOverlayHelper.addOverlay(overlay);
   }
 
   void showPauseDialog() {
@@ -1072,39 +1112,48 @@ class KMovingTapGameScreenState extends State<KMovingTapGameScreen>
                     SizedBox(
                       height: 16,
                     ),
-                    canAdvance
-                        ? Container(
-                            width: MediaQuery.of(context).size.width * 0.75,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 15),
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(40),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.5),
-                                  blurRadius: 8,
-                                  offset: Offset(2, 6),
-                                ),
-                              ],
-                            ),
-                            child: Text(
-                              "NEXT LEVEL",
-                              textScaleFactor: 1.0,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 35,
-                                fontWeight: FontWeight.bold,
+                    if (canAdvance) ...[
+                      GestureDetector(
+                        onTap: () => start(),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.75,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(40),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.5),
+                                blurRadius: 8,
+                                offset: Offset(2, 6),
                               ),
+                            ],
+                          ),
+                          child: Text(
+                            "NEXT LEVEL",
+                            textScaleFactor: 1.0,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 35,
+                              fontWeight: FontWeight.bold,
                             ),
-                          )
-                        : Container(
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      if (widget.loadGame != null)
+                        GestureDetector(
+                          onTap: () => widget.loadGame!(),
+                          child: Container(
                             width: MediaQuery.of(context).size.width * 0.75,
                             padding: EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 15),
                             decoration: BoxDecoration(
-                              color: Colors.red,
+                              color: Colors.orange,
                               borderRadius: BorderRadius.circular(40),
                               boxShadow: [
                                 BoxShadow(
@@ -1125,6 +1174,38 @@ class KMovingTapGameScreenState extends State<KMovingTapGameScreen>
                               ),
                             ),
                           ),
+                        ),
+                    ],
+                    if (!canAdvance)
+                      GestureDetector(
+                        onTap: () => restartGame(),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.75,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(40),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.5),
+                                blurRadius: 8,
+                                offset: Offset(2, 6),
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            "REPLAY LEVEL",
+                            textScaleFactor: 1.0,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 35,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                   if (!canRestartGame) ...[
                     Text(
@@ -1136,13 +1217,13 @@ class KMovingTapGameScreenState extends State<KMovingTapGameScreen>
               ),
             ),
           ),
-        if (!isStart)
-          GestureDetector(
-              onTap: (isShowCountDown || widget.isShowEndLevel || isPause)
-                  ? () {}
-                  : (result == null
-                      ? start
-                      : (canRestartGame ? restartGame : () {}))),
+        // if (!isStart)
+        //   GestureDetector(
+        //       onTap: (isShowCountDown || widget.isShowEndLevel || isPause)
+        //           ? () {}
+        //           : (result == null
+        //               ? start
+        //               : (canRestartGame ? restartGame : () {}))),
         Align(
           alignment: Alignment.bottomRight,
           child: Padding(
@@ -1284,7 +1365,28 @@ class KMovingTapGameScreenState extends State<KMovingTapGameScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  if (isStart || result != null)
+                  InkWell(
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      padding:
+                          EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      child: Icon(
+                        Icons.star_border,
+                        color: Color(0xff2c1c44),
+                        size: 30,
+                      ),
+                    ),
+                    onTap: () => showHighscoreDialog(),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  if (isStart || result != null) ...[
                     InkWell(
                       child: Container(
                         width: 50,
@@ -1305,9 +1407,10 @@ class KMovingTapGameScreenState extends State<KMovingTapGameScreen>
                       ),
                       onTap: () => this.toggleBackgroundSound(),
                     ),
-                  SizedBox(
-                    width: 10,
-                  ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                  ],
                   InkWell(
                     child: Container(
                       width: 50,
