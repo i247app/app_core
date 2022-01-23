@@ -1258,30 +1258,28 @@ class KTapGameScreenState extends State<KTapGameScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  if (isStart) ...[
-                    InkWell(
-                      child: Container(
-                        width: 50,
-                        height: 50,
-                        padding: EdgeInsets.only(
-                            top: 5, bottom: 5, left: 5, right: 5),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(40),
-                        ),
-                        child: Icon(
-                          Icons.star_border,
-                          color: Color(0xff2c1c44),
-                          size: 30,
-                        ),
+                  InkWell(
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      padding: EdgeInsets.only(
+                          top: 5, bottom: 5, left: 5, right: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(40),
                       ),
-                      onTap: () => showHighscoreDialog(),
+                      child: Icon(
+                        Icons.star_border,
+                        color: Color(0xff2c1c44),
+                        size: 30,
+                      ),
                     ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                  ],
-                  if (isStart || result != null)
+                    onTap: () => showHighscoreDialog(),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  if (isStart || result != null) ...[
                     InkWell(
                       child: Container(
                         width: 50,
@@ -1302,9 +1300,10 @@ class KTapGameScreenState extends State<KTapGameScreen>
                       ),
                       onTap: () => this.toggleBackgroundSound(),
                     ),
-                  SizedBox(
-                    width: 10,
-                  ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                  ],
                   InkWell(
                     child: Container(
                       width: 50,
