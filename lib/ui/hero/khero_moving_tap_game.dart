@@ -1075,29 +1075,32 @@ class KMovingTapGameScreenState extends State<KMovingTapGameScreen>
                     SizedBox(
                       height: 16,
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.75,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(40),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.5),
-                            blurRadius: 8,
-                            offset: Offset(2, 6),
+                    GestureDetector(
+                      onTap: () => start(),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.75,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(40),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.5),
+                              blurRadius: 8,
+                              offset: Offset(2, 6),
+                            ),
+                          ],
+                        ),
+                        child: Text(
+                          "START",
+                          textScaleFactor: 1.0,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
-                      ),
-                      child: Text(
-                        "START",
-                        textScaleFactor: 1.0,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 35,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
