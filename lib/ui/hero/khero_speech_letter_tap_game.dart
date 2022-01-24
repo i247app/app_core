@@ -1054,6 +1054,8 @@ class KSpeechLetterTapGameScreenState extends State<KSpeechLetterTapGameScreen>
             isStart = true;
             time = 0;
           });
+
+          startSpeak(currentQuestion.text ?? "");
         }
       },
     );

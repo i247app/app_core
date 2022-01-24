@@ -1044,11 +1044,13 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
     final countDown = KGameCountDownIntro(
       onFinish: () {
         if (mounted) {
-          setState(() {
+          this.setState(() {
             this.isShowCountDown = false;
             isStart = true;
             time = 0;
           });
+
+          startSpeak(currentQuestion.text ?? "");
         }
       },
     );
