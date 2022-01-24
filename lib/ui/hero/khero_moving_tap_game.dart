@@ -1114,7 +1114,7 @@ class KMovingTapGameScreenState extends State<KMovingTapGameScreen>
                     ),
                     if (canAdvance) ...[
                       GestureDetector(
-                        onTap: () => start(),
+                        onTap: () => restartGame(),
                         child: Container(
                           width: MediaQuery.of(context).size.width * 0.75,
                           padding: EdgeInsets.symmetric(
