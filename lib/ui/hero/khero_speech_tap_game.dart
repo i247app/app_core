@@ -1341,53 +1341,53 @@ class KSpeechTapGameScreenState extends State<KSpeechTapGameScreen>
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.center,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-              child: InkWell(
-                onTap: () => isSpeech
-                    ? stopSpeak(false)
-                    : startSpeak(currentQuestion.text ?? ""),
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.75,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(40),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        blurRadius: 8,
-                        offset: Offset(2, 6),
-                      ),
-                    ],
-                  ),
-                  child: isSpeech
-                      ? Text(
-                          "Pause",
-                          textScaleFactor: 1.0,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 35,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                      : Text(
-                          "Play",
-                          textScaleFactor: 1.0,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 35,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                ),
-              ),
-            ),
-          ),
+          // Align(
+          //   alignment: Alignment.center,
+          //   child: Padding(
+          //     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+          //     child: InkWell(
+          //       onTap: () => isSpeech
+          //           ? stopSpeak(false)
+          //           : startSpeak(currentQuestion.text ?? ""),
+          //       child: Container(
+          //         width: MediaQuery.of(context).size.width * 0.75,
+          //         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          //         decoration: BoxDecoration(
+          //           color: Colors.white,
+          //           borderRadius: BorderRadius.circular(40),
+          //           boxShadow: [
+          //             BoxShadow(
+          //               color: Colors.black.withOpacity(0.5),
+          //               blurRadius: 8,
+          //               offset: Offset(2, 6),
+          //             ),
+          //           ],
+          //         ),
+          //         child: isSpeech
+          //             ? Text(
+          //                 "Pause",
+          //                 textScaleFactor: 1.0,
+          //                 textAlign: TextAlign.center,
+          //                 style: TextStyle(
+          //                   color: Colors.black,
+          //                   fontSize: 35,
+          //                   fontWeight: FontWeight.bold,
+          //                 ),
+          //               )
+          //             : Text(
+          //                 "Play",
+          //                 textScaleFactor: 1.0,
+          //                 textAlign: TextAlign.center,
+          //                 style: TextStyle(
+          //                   color: Colors.black,
+          //                   fontSize: 35,
+          //                   fontWeight: FontWeight.bold,
+          //                 ),
+          //               ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
         if (!isPause)
           Align(
