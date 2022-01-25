@@ -11,10 +11,14 @@ enum KDocType { headstart, classes }
 
 class KDocPicker extends StatefulWidget {
   final KDocType type;
+  final String? subject;
+  final String? grade;
 
   const KDocPicker({
     Key? key,
     required this.type,
+    this.subject,
+    this.grade,
   }) : super(key: key);
 
   @override
@@ -60,12 +64,20 @@ class _KDocPickerState extends State<KDocPicker> {
         {KPhrases.english: grades},
       ];
 
+      var selected = [0, 0];
+      if (widget.subject != null) {
+        selected = [
+          subjects.indexWhere((s) => s.keys.first == widget.subject),
+          grades.indexWhere((g) => g == widget.grade),
+        ];
+      }
+
       final picker = Picker(
           adapter: PickerDataAdapter<String>(pickerdata: subjects),
           hideHeader: true,
           itemExtent: 60,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          selecteds: [0, 0],
+          selecteds: selected,
           height: 120,
           title: Text(KPhrases.grade),
           textStyle:
