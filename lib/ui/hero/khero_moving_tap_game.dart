@@ -47,6 +47,7 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
 
   int totalLevel = 4;
   int currentLevel = 0;
+  int eggReceive = 0;
   bool isShowEndLevel = false;
   bool isShowIntro = true;
 
@@ -213,6 +214,12 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
                                 level: currentLevel,
                                 isLoaded: isLoaded,
                                 loadGame: loadGame,
+                                eggReceive: eggReceive,
+                                onEggReceive: () {
+                                  this.setState(() {
+                                    eggReceive = eggReceive + 1;
+                                  });
+                                },
                                 onFinishLevel: (level, score, canAdvance,
                                     canSaveHighScore) {
                                   if (!canAdvance) {
@@ -318,6 +325,7 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
 class KMovingTapGameScreen extends StatefulWidget {
   final KHero? hero;
   final String gameID;
+  final Function()? onEggReceive;
   final Function()? loadGame;
   final Function(int)? onChangeLevel;
   final Function(int, int, bool, bool)? onFinishLevel;
@@ -326,11 +334,13 @@ class KMovingTapGameScreen extends StatefulWidget {
   final List<KQuestion> questions;
   final int? totalLevel;
   final int? level;
+  final int? eggReceive;
   final int? grade;
 
   const KMovingTapGameScreen({
     Key? key,
     this.hero,
+    this.onEggReceive,
     this.loadGame,
     this.onChangeLevel,
     this.onFinishLevel,
@@ -340,6 +350,7 @@ class KMovingTapGameScreen extends StatefulWidget {
     required this.questions,
     required this.isLoaded,
     this.level,
+    this.eggReceive = 0,
     this.grade,
   }) : super(key: key);
 
@@ -383,7 +394,6 @@ class KMovingTapGameScreenState extends State<KMovingTapGameScreen>
   bool isScroll = true;
   double scrollSpeed = 0.01;
   bool isShooting = false;
-  int eggReceive = 0;
   bool isWrongAnswer = false;
   int rightAnswerCount = 0;
   int wrongAnswerCount = 0;
@@ -901,7 +911,7 @@ class KMovingTapGameScreenState extends State<KMovingTapGameScreen>
                 this.setState(() {
                   if (rightAnswerCount / questions.length >=
                       levelHardness[currentLevel]) {
-                    eggReceive = eggReceive + 1;
+                    if (widget.onEggReceive != null) widget.onEggReceive!();
                     if (currentLevel + 1 < totalLevel) {
                       canAdvance = true;
                     }
@@ -1036,7 +1046,8 @@ class KMovingTapGameScreenState extends State<KMovingTapGameScreen>
                         shrinkWrap: true,
                         crossAxisCount: 3,
                         reverse: true,
-                        children: List.generate(eggReceive, (index) {
+                        children:
+                            List.generate(widget.eggReceive ?? 0, (index) {
                           return Padding(
                             padding: EdgeInsets.only(top: 4),
                             child: Image.asset(

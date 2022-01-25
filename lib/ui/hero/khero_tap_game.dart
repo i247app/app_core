@@ -47,6 +47,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
 
   int totalLevel = 4;
   int currentLevel = 0;
+  int eggReceive = 0;
   bool isShowEndLevel = false;
   bool isShowIntro = true;
 
@@ -213,6 +214,12 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
                                 level: currentLevel,
                                 isLoaded: isLoaded,
                                 loadGame: loadGame,
+                                eggReceive: eggReceive,
+                                onEggReceive: () {
+                                  this.setState(() {
+                                    eggReceive = eggReceive + 1;
+                                  });
+                                },
                                 onFinishLevel: (level, score, canAdvance,
                                     canSaveHighScore) {
                                   if (!canAdvance) {
@@ -318,6 +325,7 @@ class _KHeroTapGameState extends State<KHeroTapGame> {
 class KTapGameScreen extends StatefulWidget {
   final KHero? hero;
   final String gameID;
+  final Function()? onEggReceive;
   final Function()? loadGame;
   final Function(int)? onChangeLevel;
   final Function(int, int, bool, bool)? onFinishLevel;
@@ -326,11 +334,13 @@ class KTapGameScreen extends StatefulWidget {
   final List<KQuestion> questions;
   final int? totalLevel;
   final int? level;
+  final int? eggReceive;
   final int? grade;
 
   const KTapGameScreen({
     Key? key,
     this.hero,
+    this.onEggReceive,
     this.loadGame,
     this.onChangeLevel,
     this.onFinishLevel,
@@ -340,6 +350,7 @@ class KTapGameScreen extends StatefulWidget {
     required this.isLoaded,
     required this.questions,
     this.level,
+    this.eggReceive = 0,
     this.grade,
   }) : super(key: key);
 
@@ -368,7 +379,6 @@ class KTapGameScreenState extends State<KTapGameScreen>
   bool isStart = false;
   bool isShowCountDown = false;
   bool? result;
-  int eggReceive = 0;
   bool isWrongAnswer = false;
   int rightAnswerCount = 0;
   int wrongAnswerCount = 0;
@@ -816,7 +826,7 @@ class KTapGameScreenState extends State<KTapGameScreen>
                 this.setState(() {
                   if (rightAnswerCount / questions.length >=
                       levelHardness[currentLevel]) {
-                    eggReceive = eggReceive + 1;
+                    if (widget.onEggReceive != null) widget.onEggReceive!();
                     if (currentLevel + 1 < totalLevel) {
                       canAdvance = true;
                     }
@@ -946,7 +956,7 @@ class KTapGameScreenState extends State<KTapGameScreen>
                         shrinkWrap: true,
                         crossAxisCount: 3,
                         reverse: true,
-                        children: List.generate(eggReceive, (index) {
+                        children: List.generate(widget.eggReceive ?? 0, (index) {
                           return Padding(
                             padding: EdgeInsets.only(top: 4),
                             child: Image.asset(
