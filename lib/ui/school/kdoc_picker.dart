@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:app_core/helper/kserver_handler.dart';
+import 'package:app_core/helper/service/ktheme_service.dart';
 import 'package:app_core/model/chapter.dart';
 import 'package:app_core/model/textbook.dart';
 import 'package:app_core/value/kphrases.dart';
@@ -177,10 +178,12 @@ class _ChapterItem extends StatelessWidget {
       child: InkWell(
         onTap: () => onTap.call(chapter),
         child: Card(
-          elevation: 0,
+          elevation: KThemeService.isDarkMode() ? 0 : 1,
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.grey.shade900.withOpacity(0.4),
+              color: KThemeService.isDarkMode()
+                  ? Colors.grey.shade900.withOpacity(0.4)
+                  : Colors.transparent,
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(8),
                   topRight: Radius.circular(8),
