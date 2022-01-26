@@ -1,3 +1,7 @@
+import 'package:app_core/ui/game/games/kgame_moving_tap.dart';
+import 'package:app_core/ui/game/games/kgame_tap.dart';
+import 'package:app_core/ui/game/kgame.dart';
+import 'package:app_core/ui/game/service/kgame_controller.dart';
 import 'package:app_core/ui/hero/khero_jump_game.dart';
 import 'package:app_core/ui/hero/khero_letter_tap_game.dart';
 import 'package:app_core/ui/hero/khero_moving_tap_game.dart';
@@ -154,6 +158,84 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
     final gameListing = ListView(
       shrinkWrap: true,
       children: [
+        Text(
+          "New System",
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 18,
+          ),
+        ),
+        SizedBox(height: 5),
+        Container(
+          child: GridView.count(
+            shrinkWrap: true,
+            childAspectRatio: 1,
+            crossAxisCount: 4,
+            crossAxisSpacing: 10,
+            physics: NeverScrollableScrollPhysics(),
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) => KGameRoom(
+                        KGameController(
+                          gameID: KGameTap.GAME_ID,
+                          gameName: KGameTap.GAME_NAME,
+                          levelCount: 4,
+                          currentLevel: 0,
+                        ),
+                      ),
+                    )),
+                    style: KStyles.squaredButton(
+                      Theme.of(context).colorScheme.primary,
+                      textColor: Colors.white,
+                    ),
+                    child: Text("👾"),
+                  ),
+                  SizedBox(width: 5),
+                  FittedBox(
+                    child: Text("Tap"),
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) => KGameRoom(
+                        KGameController(
+                          gameID: KGameMovingTap.GAME_ID,
+                          gameName: KGameMovingTap.GAME_NAME,
+                          levelCount: 4,
+                          currentLevel: 0,
+                        ),
+                      ),
+                    )),
+                    style: KStyles.squaredButton(
+                      Theme.of(context).colorScheme.primary,
+                      textColor: Colors.white,
+                    ),
+                    child: Text("👾"),
+                  ),
+                  SizedBox(width: 5),
+                  FittedBox(
+                    child: Text("Moving Tap"),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 25),
         Text(
           "Newbie",
           style: TextStyle(

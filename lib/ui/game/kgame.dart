@@ -1,14 +1,16 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as Math;
+import 'dart:typed_data';
 
 import 'package:app_core/app_core.dart';
-import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/model/kanswer.dart';
-import 'package:app_core/model/kgame.dart';
+import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/kquestion.dart';
-import 'package:app_core/model/kgame_score.dart';
+import 'package:app_core/ui/game/games/kgame_moving_tap.dart';
+import 'package:app_core/ui/game/games/kgame_tap.dart';
+import 'package:app_core/ui/game/service/kgame_controller.dart';
+import 'package:app_core/ui/game/service/kgame_data.dart';
 import 'package:app_core/ui/hero/widget/kegg_hero_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
@@ -16,24 +18,24 @@ import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
 import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
 import 'package:app_core/ui/hero/widget/ktamago_chan_jumping.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
 
-class KHeroJumpGame extends StatefulWidget {
+class KGameRoom extends StatefulWidget {
+  final KGameController controller;
   final KHero? hero;
 
-  const KHeroJumpGame({this.hero});
+  const KGameRoom(this.controller, {this.hero});
 
   @override
-  _KHeroJumpGameState createState() => _KHeroJumpGameState();
+  _KGameRoomState createState() => _KGameRoomState();
 }
 
-class _KHeroJumpGameState extends State<KHeroJumpGame> {
-  static const GAME_NAME = "jump_game";
-  static const GAME_ID = "530";
+class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
+  AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  String? backgroundAudioFileUri;
 
   static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
@@ -43,34 +45,131 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
     KAssets.IMG_BG_XMAS_LIGHT,
     KAssets.IMG_BG_XMAS_DARK,
   ];
-  late final String gameBackground = (BACKGROUND_IMAGES..shuffle()).first;
 
+  String? gameBackground;
   int? overlayID;
 
-  int totalLevel = 4;
-  int currentLevel = 0;
+  Timer? _timer;
+
+  bool isBackgroundSoundPlaying = false;
+  bool isShowCountDown = false;
+
   bool isShowEndLevel = false;
   bool isShowIntro = true;
-
-  KGameScore? score;
-  KGame? game = null;
-
-  List<KQuestion> get questions => game?.qnas?[0].questions ?? [];
   bool isLoaded = false;
-  bool isCached = false;
+
+  bool get isStart => gameData.isStart ?? false;
+
+  bool get isPause => gameData.isPause ?? false;
+
+  bool get canAdvance => gameData.canAdvance ?? false;
+
+  bool get canRestartGame => gameData.canRestartGame;
+
+  KGameData get gameData => widget.controller.value;
+
+  int get currentLevel => gameData.currentLevel ?? 0;
+
+  String get gameID => gameData.gameID;
+
+  KGameScore? get score => gameData.score;
+
+  bool? get result => gameData.result;
+
+  bool get isLoading => gameData.isLoading ?? false;
+
+  List<int> get levelPlayTimes => gameData.levelPlayTimes;
+
+  List<KQuestion> get questions => gameData.questions;
+
+  int get levelCount => gameData.levelCount ?? 0;
+
+  int get rightAnswerCount => gameData.rightAnswerCount ?? 0;
+
+  int get eggReceive => gameData.eggReceive ?? 0;
+
+  List<double> get levelHardness => gameData.levelHardness;
+
+  List<String> levelIconAssets = [];
 
   @override
   void initState() {
     super.initState();
 
+    levelIconAssets = List.generate(
+      gameData.levelCount ?? 0,
+      (index) => [
+        KAssets.BULLET_BALL_GREEN,
+        KAssets.BULLET_BALL_BLUE,
+        KAssets.BULLET_BALL_ORANGE,
+        KAssets.BULLET_BALL_RED,
+      ][Math.Random().nextInt(4)],
+    );
+
+    loadAudioAsset();
     cacheHeroImages();
-    loadGame();
+
+    this.gameBackground = ([...BACKGROUND_IMAGES]..shuffle()).first;
+
+    widget.controller.addListener(basicSetStateListener);
+    WidgetsBinding.instance?.addObserver(this);
+
+    widget.controller.loadGame();
+
+    _timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
+      if (isStart && mounted && !isPause) {
+        if (currentLevel < levelPlayTimes.length) {
+          widget.controller.updatePlayTime();
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+    widget.controller.removeListener(basicSetStateListener);
+    WidgetsBinding.instance?.removeObserver(this);
+
+    backgroundAudioPlayer.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused && !this.isPause)
+      showPauseDialog();
+    else if (state == AppLifecycleState.resumed && this.isPause) resumeGame();
+  }
+
+  void basicSetStateListener() => setState(() {});
+
+  void loadAudioAsset() async {
+    try {
+      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.LOOP);
+
+      Directory tempDir = await getTemporaryDirectory();
+
+      ByteData backgroundAudioFileData = await rootBundle
+          .load("packages/app_core/assets/audio/background.mp3");
+
+      File backgroundAudioTempFile = File('${tempDir.path}/background.mp3');
+      await backgroundAudioTempFile.writeAsBytes(
+          backgroundAudioFileData.buffer.asUint8List(),
+          flush: true);
+
+      this.setState(() {
+        this.backgroundAudioFileUri = backgroundAudioTempFile.uri.toString();
+      });
+    } catch (e) {}
   }
 
   void cacheHeroImages() async {
-    setState(() {
-      this.isCached = false;
-    });
     try {
       for (int i = 0; i < KImageAnimationHelper.animationImages.length; i++) {
         await Future.wait(KImageAnimationHelper.animationImages
@@ -79,39 +178,19 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
     } catch (e) {
       print(e);
     }
-    setState(() {
-      this.isCached = true;
-    });
   }
 
-  loadGame() async {
-    try {
-      setState(() {
-        this.isLoaded = false;
+  void toggleBackgroundSound() {
+    if (this.isBackgroundSoundPlaying) {
+      this.setState(() {
+        this.isBackgroundSoundPlaying = false;
       });
-
-      final response = await KServerHandler.getGames(
-          gameID: GAME_ID, level: currentLevel.toString());
-
-      if (response.isSuccess &&
-          response.games != null &&
-          response.games!.length > 0) {
-        setState(() {
-          this.game = response.games![0];
-          this.isLoaded = true;
-        });
-      } else {
-        KSnackBarHelper.error("Can not get game data");
-      }
-    } catch (e) {}
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    if (this.overlayID != null) {
-      KOverlayHelper.removeOverlay(this.overlayID!);
-      this.overlayID = null;
+      this.backgroundAudioPlayer.pause();
+    } else {
+      this.setState(() {
+        this.isBackgroundSoundPlaying = true;
+      });
+      this.backgroundAudioPlayer.resume();
     }
   }
 
@@ -121,21 +200,40 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
     });
     final heroGameEnd = KHeroGameEnd(
       hero: KHero()..imageURL = KImageAnimationHelper.randomImage,
-      onFinish: onFinish,
+      onFinish: () {
+        this.setState(() {
+          this.isShowEndLevel = false;
+        });
+        if (this.overlayID != null) {
+          KOverlayHelper.removeOverlay(this.overlayID!);
+          this.overlayID = null;
+        }
+        onFinish();
+      },
     );
     showCustomOverlay(heroGameEnd);
   }
 
-  void showHeroGameLevelOverlay(Function() onFinish, {bool? canAdvance}) async {
+  void showHeroGameLevelOverlay(onFinish) async {
     this.setState(() {
       this.isShowEndLevel = true;
     });
-    final heroGameLevel =
-        KTamagoChanJumping(onFinish: onFinish, canAdvance: canAdvance);
+    final heroGameLevel = KTamagoChanJumping(
+        onFinish: () {
+          this.setState(() {
+            this.isShowEndLevel = false;
+          });
+          if (this.overlayID != null) {
+            KOverlayHelper.removeOverlay(this.overlayID!);
+            this.overlayID = null;
+          }
+          onFinish();
+        },
+        canAdvance: canAdvance);
     showCustomOverlay(heroGameLevel);
   }
 
-  void showHeroGameHighscoreOverlay(Function() onClose) async {
+  void showHeroGameHighscoreOverlay() async {
     this.setState(() {
       this.isShowEndLevel = true;
     });
@@ -144,10 +242,18 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
         Align(
           alignment: Alignment.center,
           child: KGameHighscoreDialog(
-            onClose: onClose,
-            game: GAME_ID,
-            score: this.score,
-            ascendingSort: false,
+            onClose: () {
+              this.setState(() {
+                this.isShowEndLevel = false;
+              });
+              if (this.overlayID != null) {
+                KOverlayHelper.removeOverlay(this.overlayID!);
+                this.overlayID = null;
+              }
+            },
+            game: gameID,
+            score: score,
+            canSaveHighScore: rightAnswerCount == questions.length,
             currentLevel: currentLevel,
           ),
         ),
@@ -156,22 +262,538 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
     showCustomOverlay(heroGameHighScore);
   }
 
+  void resumeGame() {
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+    if (isStart && !this.isBackgroundSoundPlaying) {
+      toggleBackgroundSound();
+    }
+    widget.controller.togglePause(false);
+  }
+
+  void showPauseDialog() {
+    if (this.isPause) return;
+    if (this.isBackgroundSoundPlaying) {
+      toggleBackgroundSound();
+    }
+    widget.controller.togglePause(true);
+    final view = Align(
+      alignment: Alignment.center,
+      child: KGamePauseDialog(
+        onExit: () {
+          if (this.overlayID != null) {
+            KOverlayHelper.removeOverlay(this.overlayID!);
+            this.overlayID = null;
+          }
+          Navigator.of(context).pop();
+        },
+        onResume: resumeGame,
+      ),
+    );
+    showCustomOverlay(view);
+  }
+
+  void showHighscoreDialog() {
+    if (this.isPause) return;
+    if (this.isBackgroundSoundPlaying) {
+      toggleBackgroundSound();
+    }
+    widget.controller.togglePause(true);
+    final view = Align(
+      alignment: Alignment.center,
+      child: KGameHighscoreDialog(
+        onClose: () {
+          if (this.overlayID != null) {
+            KOverlayHelper.removeOverlay(this.overlayID!);
+            this.overlayID = null;
+          }
+          resumeGame();
+        },
+        game: gameID,
+        score: null,
+        canSaveHighScore: false,
+        currentLevel: currentLevel,
+      ),
+    );
+    showCustomOverlay(view);
+  }
+
   void showCustomOverlay(Widget view) {
     final overlay = Stack(
       fit: StackFit.expand,
       children: [
         Container(color: Colors.black.withOpacity(0.6)),
-        Align(
-          alignment: Alignment.topCenter,
-          child: view,
-        ),
+        view,
       ],
     );
     this.overlayID = KOverlayHelper.addOverlay(overlay);
   }
 
+  void showCountDownOverlay() {
+    this.setState(() {
+      this.isShowCountDown = true;
+    });
+  }
+
+  void start() {
+    if (!isStart) {
+      if (currentLevel == 0) {
+        showCountDownOverlay();
+      } else {
+        widget.controller.toggleStart(true);
+      }
+      if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+        print(backgroundAudioPlayer.state);
+
+        this.setState(() {
+          this.isBackgroundSoundPlaying = true;
+        });
+        backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
+      }
+    }
+  }
+
+  void advanceGame() async {
+    try {
+      if (currentLevel + 1 < levelCount &&
+          (rightAnswerCount / questions.length) >=
+              levelHardness[currentLevel]) {
+        widget.controller.value.currentLevel = currentLevel + 1;
+        await widget.controller.loadGame();
+
+        widget.controller.value.isStart = true;
+        widget.controller.value.result = null;
+        widget.controller.value.point = 0;
+        widget.controller.value.currentQuestionIndex = 0;
+        widget.controller.value.rightAnswerCount = 0;
+        widget.controller.value.wrongAnswerCount = 0;
+        widget.controller.value.canAdvance = false;
+
+        widget.controller.notify();
+      }
+    } catch (e) {}
+  }
+
+  void restartGame() async {
+    try {
+      widget.controller.value.levelPlayTimes[currentLevel] = 0;
+      await widget.controller.loadGame();
+
+      widget.controller.value.isStart = true;
+      widget.controller.value.result = null;
+      widget.controller.value.point = 0;
+      widget.controller.value.currentQuestionIndex = 0;
+      widget.controller.value.rightAnswerCount = 0;
+      widget.controller.value.wrongAnswerCount = 0;
+      widget.controller.value.canAdvance = false;
+
+      widget.controller.notify();
+    } catch (e) {}
+  }
+
+  void onFinishLevel() {
+    if (!canAdvance) {
+      this.showHeroGameLevelOverlay(() {});
+      return;
+    }
+
+    widget.controller.value.score = KGameScore()
+      ..game = gameID
+      ..avatarURL = KSessionData.me!.avatarURL
+      ..kunm = KSessionData.me!.kunm
+      ..level = "${currentLevel}"
+      ..score = "${levelPlayTimes[currentLevel]}";
+    widget.controller.notify();
+
+    if (currentLevel + 1 < levelCount) {
+      this.showHeroGameLevelOverlay(() {
+        this.showHeroGameHighscoreOverlay();
+      });
+    } else {
+      this.showHeroGameEndOverlay(() {
+        this.showHeroGameHighscoreOverlay();
+      });
+    }
+  }
+
+  Widget getCurrentGameWidget() {
+    switch (gameID) {
+      case KGameTap.GAME_ID:
+        return KGameTap(
+          controller: widget.controller,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
+      case KGameMovingTap.GAME_ID:
+        return KGameMovingTap(
+          controller: widget.controller,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
+      default:
+        return Container();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final timeCounter = Align(
+      alignment: Alignment(-1, -1),
+      child: currentLevel < levelPlayTimes.length
+          ? Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+              child: Container(
+                height: 50,
+                padding:
+                    EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      KUtil.prettyStopwatchWithFraction(
+                        Duration(
+                          milliseconds: levelPlayTimes[currentLevel],
+                        ),
+                      ),
+                      textScaleFactor: 1.0,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : Container(),
+    );
+
+    final highscoreButton = InkWell(
+      child: Container(
+        width: 50,
+        height: 50,
+        padding: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(40),
+        ),
+        child: Icon(
+          Icons.star_border,
+          color: Color(0xff2c1c44),
+          size: 30,
+        ),
+      ),
+      onTap: () => showHighscoreDialog(),
+    );
+
+    final soundButton = InkWell(
+      child: Container(
+        width: 50,
+        height: 50,
+        padding: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(40),
+        ),
+        child: Icon(
+          this.isBackgroundSoundPlaying ? Icons.volume_up : Icons.volume_off,
+          color: Color(0xff2c1c44),
+          size: 30,
+        ),
+      ),
+      onTap: () => this.toggleBackgroundSound(),
+    );
+
+    final pauseButton = InkWell(
+      child: Container(
+        width: 50,
+        height: 50,
+        padding: EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(40),
+        ),
+        child: Icon(
+          Icons.pause,
+          color: Colors.red,
+          size: 30,
+        ),
+      ),
+      onTap: () => showPauseDialog(),
+    );
+
+    final countDown = KGameCountDownIntro(
+      onFinish: () {
+        if (mounted) {
+          setState(() {
+            isShowCountDown = false;
+          });
+          widget.controller.toggleStart(true);
+        }
+      },
+    );
+
+    final levelBox = Align(
+      alignment: Alignment.bottomRight,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            if (isStart || result != null)
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.25,
+                    height: 50,
+                    padding:
+                        EdgeInsets.only(top: 5, bottom: 5, left: 30, right: 10),
+                    decoration: BoxDecoration(
+                      color: Color(0xff2c1c44),
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    child: Text(
+                      "${rightAnswerCount}",
+                      textScaleFactor: 1.0,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            color: Color(0xfffdcd3a),
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ),
+                  if (currentLevel < levelIconAssets.length &&
+                      levelIconAssets[currentLevel].isNotEmpty)
+                    Positioned(
+                      left: -30,
+                      top: -15,
+                      child: SizedBox(
+                        height: 80,
+                        child: Image.asset(
+                          levelIconAssets[currentLevel],
+                          fit: BoxFit.contain,
+                          package: 'app_core',
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+
+    final startScreen = Align(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Level ${currentLevel + 1}",
+              style: TextStyle(fontSize: 30, color: Colors.white),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            GestureDetector(
+              onTap: () => start(),
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.75,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(40),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      blurRadius: 8,
+                      offset: Offset(2, 6),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  "START",
+                  textScaleFactor: 1.0,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    final advanceScreen = Align(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "${questions.length > 0 ? ((rightAnswerCount / questions.length) * 100).floor() : 0}% Correct",
+              style: TextStyle(fontSize: 30, color: Colors.white),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            if (canAdvance) ...[
+              GestureDetector(
+                onTap: () => advanceGame(),
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(40),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        blurRadius: 8,
+                        offset: Offset(2, 6),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    "NEXT LEVEL",
+                    textScaleFactor: 1.0,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 35,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              GestureDetector(
+                onTap: () => restartGame(),
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.circular(40),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        blurRadius: 8,
+                        offset: Offset(2, 6),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    "REPLAY LEVEL",
+                    textScaleFactor: 1.0,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 35,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+            if (!canAdvance)
+              GestureDetector(
+                onTap: () => restartGame(),
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(40),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        blurRadius: 8,
+                        offset: Offset(2, 6),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    "REPLAY LEVEL",
+                    textScaleFactor: 1.0,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 35,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+
+    final eggReceiveBox = Align(
+      alignment: Alignment(-1, 1),
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.3,
+        height: MediaQuery.of(context).size.height * 0.5,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 4),
+                child: GridView.count(
+                  shrinkWrap: true,
+                  crossAxisCount: 3,
+                  reverse: true,
+                  children: List.generate(eggReceive, (index) {
+                    return Padding(
+                      padding: EdgeInsets.only(top: 4),
+                      child: Image.asset(
+                        KAssets.IMG_EGG,
+                        width: 32,
+                        height: 32,
+                        package: 'app_core',
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              Image.asset(
+                KAssets.IMG_NEST,
+                fit: BoxFit.fitWidth,
+                package: 'app_core',
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    final currentGame = getCurrentGameWidget();
+
     final body = Column(
       children: [
         Expanded(
@@ -186,110 +808,62 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
               ),
             ),
             padding: EdgeInsets.symmetric(vertical: 20),
-            child: !isLoaded || !isCached || game == null
-                ? Container()
-                : (this.isShowIntro
-                    ? Stack(
-                        fit: StackFit.expand,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                if (isStart || result != null) timeCounter,
+                if (isStart) eggReceiveBox,
+                levelBox,
+                if (isStart && gameData.game != null && !isLoading)
+                  Align(
+                    alignment: Alignment.center,
+                    child: currentGame,
+                  ),
+                if (!isLoading &&
+                    !isStart &&
+                    !isShowCountDown &&
+                    !isShowEndLevel) ...[
+                  if (result == null) startScreen,
+                  if (result != null && canRestartGame) advanceScreen,
+                  if (!canRestartGame)
+                    Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Game Over",
+                        style: TextStyle(fontSize: 30, color: Colors.white),
+                      ),
+                    ),
+                ],
+                if (!isPause)
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          if (this.isShowIntro) ...[
-                            KEggHeroIntro(
-                                onFinish: () =>
-                                    setState(() => this.isShowIntro = false)),
-                            GestureDetector(
-                                onTap: () =>
-                                    setState(() => this.isShowIntro = false)),
+                          highscoreButton,
+                          SizedBox(
+                            width: 10,
+                          ),
+                          if (isStart || result != null) ...[
+                            soundButton,
+                            SizedBox(
+                              width: 10,
+                            ),
                           ],
+                          pauseButton,
                         ],
-                      )
-                    : SafeArea(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Expanded(
-                            //   child: _KJumpGameScreen(
-                            //     hero: widget.hero,
-                            //     totalLevel: totalLevel,
-                            //     isShowEndLevel: isShowEndLevel,
-                            //     questions: questions,
-                            //     level: currentLevel,
-                            //     isLoaded: isLoaded,
-                            //     onFinishLevel: (level, score, canAdvance) {
-                            //       if (!canAdvance) {
-                            //         this.showHeroGameLevelOverlay(() {
-                            //           this.setState(() {
-                            //             this.isShowEndLevel = false;
-                            //           });
-                            //           if (this.overlayID != null) {
-                            //             KOverlayHelper.removeOverlay(
-                            //                 this.overlayID!);
-                            //             this.overlayID = null;
-                            //           }
-                            //         }, canAdvance: canAdvance);
-                            //         return;
-                            //       }
-                            //
-                            //       this.setState(() {
-                            //         this.score = KGameScore()
-                            //           ..game = GAME_ID
-                            //           ..avatarURL = KSessionData.me!.avatarURL
-                            //           ..kunm = KSessionData.me!.kunm
-                            //           ..level = "$level"
-                            //           ..score = "$score";
-                            //       });
-                            //       if (level < totalLevel) {
-                            //         this.showHeroGameLevelOverlay(() {
-                            //           if (this.overlayID != null) {
-                            //             KOverlayHelper.removeOverlay(
-                            //                 this.overlayID!);
-                            //             this.overlayID = null;
-                            //           }
-                            //           this.showHeroGameHighscoreOverlay(() {
-                            //             this.setState(() {
-                            //               this.isShowEndLevel = false;
-                            //             });
-                            //             if (this.overlayID != null) {
-                            //               KOverlayHelper.removeOverlay(
-                            //                   this.overlayID!);
-                            //               this.overlayID = null;
-                            //             }
-                            //           });
-                            //         }, canAdvance: canAdvance);
-                            //       } else {
-                            //         this.showHeroGameEndOverlay(
-                            //           () {
-                            //             if (this.overlayID != null) {
-                            //               KOverlayHelper.removeOverlay(
-                            //                   this.overlayID!);
-                            //               this.overlayID = null;
-                            //             }
-                            //             this.showHeroGameHighscoreOverlay(() {
-                            //               this.setState(() {
-                            //                 this.isShowEndLevel = false;
-                            //               });
-                            //               if (this.overlayID != null) {
-                            //                 KOverlayHelper.removeOverlay(
-                            //                     this.overlayID!);
-                            //                 this.overlayID = null;
-                            //               }
-                            //             });
-                            //           },
-                            //         );
-                            //       }
-                            //     },
-                            //     onChangeLevel: (level) {
-                            //       this.setState(
-                            //         () {
-                            //           this.currentLevel = level;
-                            //         },
-                            //       );
-                            //       this.loadGame();
-                            //     },
-                            //   ),
-                            // ),
-                          ],
-                        ),
-                      )),
+                      ),
+                    ),
+                  ),
+                if (isShowCountDown)
+                  Align(
+                    alignment: Alignment.center,
+                    child: countDown,
+                  ),
+              ],
+            ),
           ),
         ),
       ],
