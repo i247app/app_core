@@ -7,7 +7,14 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/kquestion.dart';
+import 'package:app_core/ui/game/games/kgame_jump_multirow.dart';
+import 'package:app_core/ui/game/games/kgame_jump_over.dart';
+import 'package:app_core/ui/game/games/kgame_jump_up.dart';
+import 'package:app_core/ui/game/games/kgame_letter_tap.dart';
 import 'package:app_core/ui/game/games/kgame_moving_tap.dart';
+import 'package:app_core/ui/game/games/kgame_shooting.dart';
+import 'package:app_core/ui/game/games/kgame_speech_letter_tap.dart';
+import 'package:app_core/ui/game/games/kgame_speech_tap.dart';
 import 'package:app_core/ui/game/games/kgame_tap.dart';
 import 'package:app_core/ui/game/service/kgame_controller.dart';
 import 'package:app_core/ui/game/service/kgame_data.dart';
@@ -15,6 +22,7 @@ import 'package:app_core/ui/hero/widget/kegg_hero_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
+import 'package:app_core/ui/hero/widget/khero_game_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
 import 'package:app_core/ui/hero/widget/ktamago_chan_jumping.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -78,6 +86,10 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
 
   bool get isLoading => gameData.isLoading ?? false;
 
+  bool get isSpeechGame => gameData.isSpeechGame ?? false;
+
+  bool get isCountTime => gameData.isCountTime ?? false;
+
   List<int> get levelPlayTimes => gameData.levelPlayTimes;
 
   List<KQuestion> get questions => gameData.questions;
@@ -87,6 +99,8 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
   int get rightAnswerCount => gameData.rightAnswerCount ?? 0;
 
   int get eggReceive => gameData.eggReceive ?? 0;
+
+  int get point => gameData.point ?? 0;
 
   List<double> get levelHardness => gameData.levelHardness;
 
@@ -114,7 +128,7 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
     widget.controller.addListener(basicSetStateListener);
     WidgetsBinding.instance?.addObserver(this);
 
-    widget.controller.loadGame();
+    loadGame();
 
     _timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
       if (isStart && mounted && !isPause) {
@@ -145,6 +159,12 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
     if (state == AppLifecycleState.paused && !this.isPause)
       showPauseDialog();
     else if (state == AppLifecycleState.resumed && this.isPause) resumeGame();
+  }
+
+  void loadGame() async {
+    try {
+      await widget.controller.loadGame();
+    } catch (e) {}
   }
 
   void basicSetStateListener() => setState(() {});
@@ -181,6 +201,9 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
   }
 
   void toggleBackgroundSound() {
+    if (isSpeechGame) {
+      return;
+    }
     if (this.isBackgroundSoundPlaying) {
       this.setState(() {
         this.isBackgroundSoundPlaying = false;
@@ -255,6 +278,7 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
             score: score,
             canSaveHighScore: rightAnswerCount == questions.length,
             currentLevel: currentLevel,
+            isTime: isCountTime,
           ),
         ),
       ],
@@ -344,9 +368,7 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       } else {
         widget.controller.toggleStart(true);
       }
-      if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
-        print(backgroundAudioPlayer.state);
-
+      if (backgroundAudioPlayer.state != PlayerState.PLAYING && !isSpeechGame) {
         this.setState(() {
           this.isBackgroundSoundPlaying = true;
         });
@@ -404,7 +426,7 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       ..avatarURL = KSessionData.me!.avatarURL
       ..kunm = KSessionData.me!.kunm
       ..level = "${currentLevel}"
-      ..score = "${levelPlayTimes[currentLevel]}";
+      ..score = "${isCountTime ? levelPlayTimes[currentLevel] : point}";
     widget.controller.notify();
 
     if (currentLevel + 1 < levelCount) {
@@ -420,6 +442,24 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
 
   Widget getCurrentGameWidget() {
     switch (gameID) {
+      case KGameSpeechLetterTap.GAME_ID:
+        return KGameSpeechLetterTap(
+          controller: widget.controller,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
+      case KGameSpeechTap.GAME_ID:
+        return KGameSpeechTap(
+          controller: widget.controller,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
+      case KGameJumpOver.GAME_ID:
+        return KGameJumpOver(
+          controller: widget.controller,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
       case KGameTap.GAME_ID:
         return KGameTap(
           controller: widget.controller,
@@ -432,6 +472,30 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
         );
+      case KGameLetterTap.GAME_ID:
+        return KGameLetterTap(
+          controller: widget.controller,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
+      case KGameJumpUp.GAME_ID:
+        return KGameJumpUp(
+          controller: widget.controller,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
+      case KGameJumpMultiRow.GAME_ID:
+        return KGameMovingTap(
+          controller: widget.controller,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
+      case KGameShooting.GAME_ID:
+        return KGameShooting(
+          controller: widget.controller,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
       default:
         return Container();
     }
@@ -439,6 +503,26 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final gameIntro = gameID == KGameShooting.GAME_ID
+        ? GestureDetector(
+            onTap: () => this.setState(() => this.isShowIntro = false),
+            child: Container(
+              child: KGameIntro(
+                hero: widget.hero,
+                onFinish: () => this.setState(() => this.isShowIntro = false),
+              ),
+            ),
+          )
+        : Stack(
+            fit: StackFit.expand,
+            children: [
+              KEggHeroIntro(
+                  onFinish: () => setState(() => this.isShowIntro = false)),
+              GestureDetector(
+                  onTap: () => setState(() => this.isShowIntro = false)),
+            ],
+          );
+
     final timeCounter = Align(
       alignment: Alignment(-1, -1),
       child: currentLevel < levelPlayTimes.length
@@ -808,62 +892,66 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
               ),
             ),
             padding: EdgeInsets.symmetric(vertical: 20),
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                if (isStart || result != null) timeCounter,
-                if (isStart) eggReceiveBox,
-                levelBox,
-                if (isStart && gameData.game != null && !isLoading)
-                  Align(
-                    alignment: Alignment.center,
-                    child: currentGame,
-                  ),
-                if (!isLoading &&
-                    !isStart &&
-                    !isShowCountDown &&
-                    !isShowEndLevel) ...[
-                  if (result == null) startScreen,
-                  if (result != null && canRestartGame) advanceScreen,
-                  if (!canRestartGame)
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Game Over",
-                        style: TextStyle(fontSize: 30, color: Colors.white),
-                      ),
-                    ),
-                ],
-                if (!isPause)
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          highscoreButton,
-                          SizedBox(
-                            width: 10,
-                          ),
-                          if (isStart || result != null) ...[
-                            soundButton,
-                            SizedBox(
-                              width: 10,
+            child: isShowIntro
+                ? gameIntro
+                : Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      if (isCountTime && (isStart || result != null))
+                        timeCounter,
+                      if (isStart) eggReceiveBox,
+                      levelBox,
+                      if (isStart && gameData.game != null && !isLoading)
+                        Align(
+                          alignment: Alignment.center,
+                          child: currentGame,
+                        ),
+                      if (!isLoading &&
+                          !isStart &&
+                          !isShowCountDown &&
+                          !isShowEndLevel) ...[
+                        if (result == null) startScreen,
+                        if (result != null && canRestartGame) advanceScreen,
+                        if (!canRestartGame)
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "Game Over",
+                              style:
+                                  TextStyle(fontSize: 30, color: Colors.white),
                             ),
-                          ],
-                          pauseButton,
-                        ],
-                      ),
-                    ),
+                          ),
+                      ],
+                      if (!isPause)
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                highscoreButton,
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                if (isStart || result != null) ...[
+                                  soundButton,
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                ],
+                                pauseButton,
+                              ],
+                            ),
+                          ),
+                        ),
+                      if (isShowCountDown)
+                        Align(
+                          alignment: Alignment.center,
+                          child: countDown,
+                        ),
+                    ],
                   ),
-                if (isShowCountDown)
-                  Align(
-                    alignment: Alignment.center,
-                    child: countDown,
-                  ),
-              ],
-            ),
           ),
         ),
       ],

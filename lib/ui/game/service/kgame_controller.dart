@@ -7,16 +7,22 @@ class KGameController extends ValueNotifier<KGameData> {
   KGameController({
     required String gameID,
     String? gameName,
+    String? answerType,
     int? levelCount,
     int? currentLevel,
+    bool? isSpeechGame,
+    bool? isCountTime,
   }) : super(KGameData(
           gameID: gameID,
           gameName: gameName,
           levelCount: levelCount,
           currentLevel: currentLevel,
+          isSpeechGame: isSpeechGame,
+          answerType: answerType,
+          isCountTime: isCountTime,
         ));
 
-  void notify () {
+  void notify() {
     notifyListeners();
   }
 
@@ -30,7 +36,7 @@ class KGameController extends ValueNotifier<KGameData> {
     notifyListeners();
   }
 
-  void updatePlayTime () {
+  void updatePlayTime() {
     this.value.levelPlayTimes[this.value.currentLevel ?? 0] += 1;
     notifyListeners();
   }
@@ -42,6 +48,8 @@ class KGameController extends ValueNotifier<KGameData> {
     final response = await KServerHandler.getGames(
       gameID: this.value.gameID,
       level: (this.value.currentLevel ?? 0).toString(),
+      cat: this.value.answerType ?? "MATH",
+      mimeType: (this.value.isSpeechGame ?? false) ? "AUDIO" : "TEXT",
     );
 
     if (response.isSuccess &&

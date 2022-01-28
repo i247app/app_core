@@ -11,6 +11,7 @@ class KGameHighscoreDialog extends StatefulWidget {
   final bool? canSaveHighScore;
   final int currentLevel;
   final bool ascendingSort;
+  final bool? isTime;
 
   const KGameHighscoreDialog({
     required this.onClose,
@@ -19,6 +20,7 @@ class KGameHighscoreDialog extends StatefulWidget {
     this.canSaveHighScore = true,
     required this.currentLevel,
     this.ascendingSort = true,
+    this.isTime = false,
   });
 
   @override
@@ -220,7 +222,9 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
                               width: 10,
                             ),
                             Text(
-                              '${(double.parse(score.score ?? '0') / 1000).toStringAsFixed(3)} s',
+                              (widget.isTime ?? false)
+                                  ? '${(double.parse(score.score ?? '0') / 1000).toStringAsFixed(3)} s'
+                                  : '${double.parse(score.score ?? '0')}',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 22,

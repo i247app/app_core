@@ -3,42 +3,36 @@ import 'dart:io';
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
-import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/model/kanswer.dart';
-import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/khero.dart';
-import 'package:app_core/model/kquestion.dart';
 import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/ui/hero/widget/kegg_hero_intro.dart';
-import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
 import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
-import 'package:app_core/ui/hero/widget/ktamago_chan_jumping.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
 
-class _KJumpGameScreen extends StatefulWidget {
+class KGameJumpMultiRow extends StatefulWidget {
+  static const GAME_ID = "534";
+  static const GAME_NAME = "jump_multi_row";
+
   final KHero? hero;
   final Function(int)? onChangeLevel;
   final Function(int, int, bool)? onFinishLevel;
   final bool isShowEndLevel;
   final int? totalLevel;
-  final bool isLoaded;
-  final List<KQuestion> questions;
   final int? level;
   final int? grade;
 
-  const _KJumpGameScreen({
+  const KGameJumpMultiRow({
     this.hero,
     this.onChangeLevel,
     this.onFinishLevel,
-    required this.questions,
-    required this.isLoaded,
     required this.isShowEndLevel,
     this.totalLevel,
     this.level,
@@ -46,10 +40,10 @@ class _KJumpGameScreen extends StatefulWidget {
   });
 
   @override
-  _KJumpGameScreenState createState() => _KJumpGameScreenState();
+  _KGameJumpMultiRowState createState() => _KGameJumpMultiRowState();
 }
 
-class _KJumpGameScreenState extends State<_KJumpGameScreen>
+class _KGameJumpMultiRowState extends State<KGameJumpMultiRow>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
@@ -77,10 +71,10 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   double height = 0;
   double time = 0;
   double gravity = -8.0;
-  bool isShowCountDown = false;
   double velocity = 2.0;
   Timer? _timer;
   bool isStart = false;
+  bool isShowCountDown = false;
   double heroHeight = 90;
   double heroWidth = 90;
   int trueAnswer = 2;
@@ -113,35 +107,43 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
 
   List<List<String>> levelQuestions = [];
   List<List<int>> levelRightAnswers = [];
+
+  List<String> get questions => levelQuestions[currentLevel];
+
+  List<int> get rightAnswers => levelRightAnswers[currentLevel];
   int currentQuestionIndex = 0;
-
-  List<KQuestion> get questions => widget.questions;
-
-  KQuestion get currentQuestion => questions[currentQuestionIndex];
-
-  List<KAnswer> get questionAnswers => currentQuestion.generateAnswers();
-
-  List<KAnswer> currentQuestionAnswers = [];
-
   int? spinningHeroIndex;
   int? currentShowStarIndex;
   int? currentCollisionIndex;
   bool isPlaySound = false;
 
-  List<double> barrierX = [2, 2 + 1.5];
+  static const List<double> BARRIER_Y_BASE = [-0.3, 0.35, 1];
+  List<double> barrierX = [2, 3.5, 5];
+  List<double> barrierY = [1, -0.3, 0.35];
   List<String> barrierImageUrls = [
+    KImageAnimationHelper.randomImage,
     KImageAnimationHelper.randomImage,
     KImageAnimationHelper.randomImage,
   ];
 
+  double get randomBarrierY =>
+      BARRIER_Y_BASE[Math.Random().nextInt(BARRIER_Y_BASE.length)];
+
+  double get randomBarrierX => Math.Random().nextDouble() * 3.5 + 2;
+
+  int get getRandomAnswer => rightAnswers[currentQuestionIndex] <= 4
+      ? (Math.Random().nextInt(4) + rightAnswers[currentQuestionIndex])
+      : (Math.Random().nextInt(4) + rightAnswers[currentQuestionIndex] - 3);
+
   bool get canRestartGame =>
-      currentLevel + 1 < totalLevel ||
-      (currentLevel < totalLevel &&
+      currentLevel + 1 < levelHardness.length ||
+      (currentLevel < levelHardness.length &&
           (rightAnswerCount / questions.length) < levelHardness[currentLevel]);
 
-  List<KAnswer> barrierValues = [];
+  List<int> barrierValues = [];
   double barrierWidth = 0.5;
   List<List<double>> barrierHeight = [
+    [0.6, 0.4],
     [0.6, 0.4],
     [0.6, 0.4],
   ];
@@ -156,6 +158,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addObserver(this);
+
     this.currentLevel = widget.level ?? 0;
     this.totalLevel = widget.totalLevel ?? 1;
     this.levelHardness = List.generate(
@@ -198,13 +201,14 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
         7,
       ],
     );
-    currentQuestionAnswers = questionAnswers;
 
     loadAudioAsset();
 
-    barrierValues = [];
-    barrierValues.add(this.getRandomAnswer());
-    barrierValues.add(this.getRandomAnswer());
+    barrierValues = [
+      this.getRandomAnswer,
+      this.getRandomAnswer,
+      this.getRandomAnswer,
+    ];
 
     _playerScaleAnimationController = AnimationController(
       duration: const Duration(milliseconds: 200),
@@ -290,13 +294,13 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
               this.setState(() {
                 currentShowStarIndex = null;
               });
-              Future.delayed(Duration(milliseconds: 500), () {
-                if (mounted) {
-                  this._scaleAnimationController.reset();
-                  this._moveUpAnimationController.reset();
-                }
-              });
             }
+            Future.delayed(Duration(milliseconds: 500), () {
+              if (mounted) {
+                this._scaleAnimationController.reset();
+                this._moveUpAnimationController.reset();
+              }
+            });
           });
         } else if (mounted && status == AnimationStatus.dismissed) {}
       });
@@ -406,32 +410,16 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
     super.dispose();
   }
 
-  KAnswer getRandomAnswer() {
-    if (currentQuestionAnswers.length <= 0) {
-      return KAnswer();
-    }
-
-    final List<KAnswer> answerNotInCurrent = currentQuestionAnswers
-        .where((answer) =>
-            barrierValues
-                .map((barrierValue) => barrierValue.text)
-                .toList()
-                .indexOf(answer.text) ==
-            -1)
-        .toList();
-
-    if (answerNotInCurrent.length > 0) {
-      return answerNotInCurrent[
-          Math.Random().nextInt(answerNotInCurrent.length)];
-    } else {
-      return currentQuestionAnswers[
-          Math.Random().nextInt(currentQuestionAnswers.length)];
-    }
+  bool isReachTarget() {
+    return false;
   }
 
-  void showCountDownOverlay() {
-    this.setState(() {
-      this.isShowCountDown = true;
+  void jump() {
+    setState(() {
+      if (isStart) {
+        time = 0;
+        initialPos = heroY;
+      }
     });
   }
 
@@ -478,23 +466,44 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
     this.overlayID = KOverlayHelper.addOverlay(overlay);
   }
 
-  void toggleBackgroundSound() {
-    if (this.isBackgroundSoundPlaying) {
-      this.setState(() {
-        this.isBackgroundSoundPlaying = false;
-      });
-      this.backgroundAudioPlayer.pause();
-    } else {
-      this.setState(() {
-        this.isBackgroundSoundPlaying = true;
-      });
-      this.backgroundAudioPlayer.resume();
+  void showCountDownOverlay() {
+    this.setState(() {
+      this.isShowCountDown = true;
+    });
+  }
+
+  void moveMap() {
+    if (isScroll) {
+      for (int i = 0; i < barrierX.length; i++) {
+        double speed = scrollSpeed;
+        if (currentLevel < totalLevel) {
+          speed += scrollSpeed * levelHardness[currentLevel];
+        }
+        setState(() {
+          barrierX[i] -= scrollSpeed;
+        });
+
+        if (barrierX[i] <= -1.5) {
+          setState(() {
+            barrierX[i] = this.randomBarrierX;
+            if (i > 0 && barrierX[i - 1] >= 1.5) {
+              barrierX[i] = barrierX[i] + 1.5;
+            } else if (i == 0 && barrierX[barrierX.length - 1] >= 1.5) {
+              barrierX[i] = barrierX[i] + 1.5;
+            }
+            barrierY[i] = this.randomBarrierY;
+            // points += 1;
+            barrierValues[i] = this.getRandomAnswer;
+          });
+        }
+      }
     }
   }
 
   void loadAudioAsset() async {
     try {
       await backgroundAudioPlayer.setReleaseMode(ReleaseMode.LOOP);
+
       Directory tempDir = await getTemporaryDirectory();
 
       ByteData correctAudioFileData =
@@ -525,42 +534,6 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
     } catch (e) {}
   }
 
-  bool isReachTarget() {
-    return false;
-  }
-
-  void jump() {
-    setState(() {
-      if (isStart) {
-        time = 0;
-        initialPos = heroY;
-      }
-    });
-  }
-
-  void moveMap() {
-    if (isScroll) {
-      for (int i = 0; i < barrierX.length; i++) {
-        double speed = scrollSpeed;
-        if (currentLevel < totalLevel) {
-          speed += scrollSpeed * levelHardness[currentLevel];
-        }
-        setState(() {
-          barrierX[i] -= scrollSpeed;
-        });
-
-        if (barrierX[i] <= -1.5) {
-          setState(() {
-            barrierX[i] += 3;
-            // points += 1;
-            barrierValues[i] = this.getRandomAnswer();
-            barrierImageUrls[i] = KImageAnimationHelper.randomImage;
-          });
-        }
-      }
-    }
-  }
-
   void playSound(bool isTrueAnswer) async {
     try {
       if (isTrueAnswer) {
@@ -574,6 +547,20 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
     });
   }
 
+  void toggleBackgroundSound() {
+    if (this.isBackgroundSoundPlaying) {
+      this.setState(() {
+        this.isBackgroundSoundPlaying = false;
+      });
+      this.backgroundAudioPlayer.pause();
+    } else {
+      this.setState(() {
+        this.isBackgroundSoundPlaying = true;
+      });
+      this.backgroundAudioPlayer.resume();
+    }
+  }
+
   void checkResult() {
     if (isScroll) {
       for (int i = 0; i < barrierX.length; i++) {
@@ -581,7 +568,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
             (MediaQuery.of(context).size.width / 2) * barrierWidth / 2 - 10;
         double _barrierHeight = (MediaQuery.of(context).size.height / 2) *
             barrierHeight[i][1] *
-            0.35;
+            0.3;
 
         double leftBarrier =
             (((2 * barrierX[i] + barrierWidth) / (2 - barrierWidth)) *
@@ -595,9 +582,10 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                 (_barrierWidth / 2);
 
         double bottomBarrier =
-            (-1.0 * MediaQuery.of(context).size.height / 2) / 2;
+            ((-0.8 + barrierY[i]) * MediaQuery.of(context).size.height / 2) / 2;
         double topBarrier =
-            (-1.0 * MediaQuery.of(context).size.height / 2) / 2 -
+            ((-0.8 + barrierY[i]) * MediaQuery.of(context).size.height / 2) /
+                    2 -
                 _barrierHeight;
 
         double bottomBulletY =
@@ -618,7 +606,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                     bottomBulletY <= bottomBarrier &&
                     bottomBulletY >= topBarrier)) {
           this._bouncingAnimationController.forward();
-          bool isTrueAnswer = barrierValues[i].isCorrect ?? false;
+          bool isTrueAnswer =
+              barrierValues[i] == rightAnswers[currentQuestionIndex];
 
           if (this.currentCollisionIndex == null ||
               this.currentCollisionIndex != i) {
@@ -658,35 +647,38 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
               if (mounted && currentQuestionIndex + 1 < questions.length) {
                 this.setState(() {
                   currentQuestionIndex = currentQuestionIndex + 1;
-                  barrierX = [2, 2 + 1.5];
+                  this.barrierX = [
+                    this.randomBarrierX,
+                    this.randomBarrierX,
+                    this.randomBarrierX
+                  ];
+                  this.barrierY = [
+                    this.randomBarrierY,
+                    this.randomBarrierY,
+                    this.randomBarrierY
+                  ];
                   barrierImageUrls = [
                     KImageAnimationHelper.randomImage,
-                    KImageAnimationHelper.randomImage
+                    KImageAnimationHelper.randomImage,
+                    KImageAnimationHelper.randomImage,
                   ];
-                  barrierValues = [];
-                  barrierValues.add(this.getRandomAnswer());
-                  barrierValues.add(this.getRandomAnswer());
+                  barrierValues = [
+                    this.getRandomAnswer,
+                    this.getRandomAnswer,
+                    this.getRandomAnswer,
+                  ];
                   this.currentCollisionIndex = null;
                   this.isPlaySound = false;
                 });
                 Future.delayed(Duration(milliseconds: 50), () {
                   this.setState(() {
-                    currentQuestionAnswers = questionAnswers;
-                  });
-                  this.setState(() {
-                    barrierValues = [];
-                    barrierValues.add(this.getRandomAnswer());
-                    barrierValues.add(this.getRandomAnswer());
                     isScroll = true;
                   });
                 });
               } else {
                 if (widget.onFinishLevel != null) {
-                  widget.onFinishLevel!(
-                      currentLevel + 1,
-                      levelPoints[currentLevel],
-                      rightAnswerCount / questions.length >=
-                          levelHardness[currentLevel]);
+                  widget.onFinishLevel!(currentLevel + 1,
+                      levelPoints[currentLevel], wrongAnswerCount > 0);
                 }
                 this.setState(() {
                   if (rightAnswerCount / questions.length >=
@@ -697,14 +689,26 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                     }
                   }
                   isStart = false;
-                  barrierX = [2, 2 + 1.5];
+                  this.barrierX = [
+                    this.randomBarrierX,
+                    this.randomBarrierX,
+                    this.randomBarrierX
+                  ];
+                  this.barrierY = [
+                    this.randomBarrierY,
+                    this.randomBarrierY,
+                    this.randomBarrierY
+                  ];
                   barrierImageUrls = [
                     KImageAnimationHelper.randomImage,
-                    KImageAnimationHelper.randomImage
+                    KImageAnimationHelper.randomImage,
+                    KImageAnimationHelper.randomImage,
                   ];
-                  barrierValues = [];
-                  barrierValues.add(this.getRandomAnswer());
-                  barrierValues.add(this.getRandomAnswer());
+                  barrierValues = [
+                    this.getRandomAnswer,
+                    this.getRandomAnswer,
+                    this.getRandomAnswer,
+                  ];
                   this.currentCollisionIndex = null;
                   this.isPlaySound = false;
                 });
@@ -738,13 +742,6 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
           time = 0;
         });
       }
-
-      if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
-        this.setState(() {
-          this.isBackgroundSoundPlaying = true;
-        });
-        backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
-      }
     }
   }
 
@@ -767,26 +764,30 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
       this.points = 0;
       this.currentQuestionIndex = 0;
       this.spinningHeroIndex = null;
-      this.barrierX = [2, 2 + 1.5];
+      this.barrierX = [
+        this.randomBarrierX,
+        this.randomBarrierX,
+        this.randomBarrierX
+      ];
+      this.barrierY = [
+        this.randomBarrierY,
+        this.randomBarrierY,
+        this.randomBarrierY
+      ];
       this.barrierImageUrls = [
         KImageAnimationHelper.randomImage,
         KImageAnimationHelper.randomImage,
+        KImageAnimationHelper.randomImage,
+      ];
+      this.barrierValues = [
+        this.getRandomAnswer,
+        this.getRandomAnswer,
+        this.getRandomAnswer,
       ];
       isWrongAnswer = false;
       rightAnswerCount = 0;
       wrongAnswerCount = 0;
       canAdvance = false;
-      this.barrierValues = [];
-    });
-    Future.delayed(Duration(milliseconds: 50), () {
-      this.setState(() {
-        currentQuestionAnswers = questionAnswers;
-      });
-      this.setState(() {
-        barrierValues = [];
-        barrierValues.add(this.getRandomAnswer());
-        barrierValues.add(this.getRandomAnswer());
-      });
     });
   }
 
@@ -847,7 +848,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
             ),
           ),
         ),
-        if (!isStart && !isShowCountDown)
+        if (!isStart && !isShowCountDown && !widget.isShowEndLevel)
           Align(
             alignment: Alignment.center,
             child: Padding(
@@ -855,7 +856,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (result == null) ...[
+                  if (currentLevel == 0 && result == null) ...[
                     Text(
                       "Level ${currentLevel + 1}",
                       style: TextStyle(fontSize: 30, color: Colors.white),
@@ -890,7 +891,9 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                       ),
                     ),
                   ],
-                  if (result != null && canRestartGame) ...[
+                  if (currentLevel >= 0 &&
+                      result != null &&
+                      canRestartGame) ...[
                     Text(
                       "${((rightAnswerCount / questions.length) * 100).floor()}% Correct",
                       style: TextStyle(fontSize: 30, color: Colors.white),
@@ -1126,7 +1129,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                   ],
                 ),
                 child: Text(
-                  currentQuestion.text ?? "",
+                  questions[currentQuestionIndex],
                   textScaleFactor: 1.0,
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -1148,10 +1151,11 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                     barrierValues.length,
                     (i) => _Barrier(
                       barrierX: barrierX[i],
+                      barrierY: barrierY[i],
                       barrierWidth: barrierWidth,
                       barrierHeight: barrierHeight[i][1],
                       imageUrl: barrierImageUrls[i],
-                      answer: barrierValues[i],
+                      value: barrierValues[i],
                       rotateAngle: spinningHeroIndex == i
                           ? -this._spinAnimationController.value * 4 * Math.pi
                           : 0,
@@ -1170,7 +1174,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
           ),
         ],
         GestureDetector(
-            onTap: (isShowCountDown || isPause)
+            onTap: (isShowCountDown || widget.isShowEndLevel || isPause)
                 ? () {}
                 : (isStart
                     ? jump
@@ -1247,10 +1251,11 @@ class _Barrier extends StatelessWidget {
   final double barrierWidth;
   final double barrierHeight;
   final double barrierX;
+  final double barrierY;
   final String imageUrl;
   final double rotateAngle;
   final Animation<double>? scaleAnimation;
-  final KAnswer answer;
+  final int value;
   final Offset bouncingAnimation;
   final double? starY;
   final bool? isShowStar;
@@ -1259,10 +1264,11 @@ class _Barrier extends StatelessWidget {
     required this.barrierHeight,
     required this.barrierWidth,
     required this.barrierX,
+    required this.barrierY,
     required this.imageUrl,
     required this.rotateAngle,
     this.scaleAnimation,
-    required this.answer,
+    required this.value,
     required this.bouncingAnimation,
     this.starY,
     this.isShowStar,
@@ -1271,8 +1277,8 @@ class _Barrier extends StatelessWidget {
   @override
   Widget build(context) {
     return Container(
-      alignment:
-          Alignment((2 * barrierX + barrierWidth) / (2 - barrierWidth), -0.3),
+      alignment: Alignment(
+          (2 * barrierX + barrierWidth) / (2 - barrierWidth), barrierY),
       child: Container(
         width: (MediaQuery.of(context).size.width / 2) * barrierWidth,
         height: (MediaQuery.of(context).size.height / 2) * barrierHeight,
@@ -1307,7 +1313,7 @@ class _Barrier extends StatelessWidget {
                       0.4,
                   child: FittedBox(
                     child: Text(
-                      "${answer.text}",
+                      "${this.value}",
                       textScaleFactor: 1.0,
                       textAlign: TextAlign.center,
                       style: TextStyle(

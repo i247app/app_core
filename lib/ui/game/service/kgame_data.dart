@@ -8,6 +8,7 @@ import 'package:app_core/model/kquestion.dart';
 class KGameData {
   String gameID;
   String? gameName;
+  String? answerType;
   int? levelCount;
   int? currentLevel;
   KGame? game;
@@ -23,6 +24,8 @@ class KGameData {
   bool? isPause;
   bool? canAdvance;
   bool? isLoading;
+  bool? isSpeechGame;
+  bool? isCountTime;
 
   bool get isInitializing => this.game == null;
   List<double> get levelHardness => List.generate(
@@ -33,7 +36,7 @@ class KGameData {
 
   List<KQuestion> get questions => this.game?.qnas?[0].questions ?? [];
   KQuestion get currentQuestion => this.questions.length > 0 && this.currentQuestionIndex != null && this.currentQuestionIndex! < this.questions.length ? this.questions[this.currentQuestionIndex ?? 0] : KQuestion();
-  List<KAnswer> get currentQuestionAnswers => this.currentQuestion.generateAnswers();
+  List<KAnswer> get currentQuestionAnswers => this.currentQuestion.generateAnswers(4, answerType ?? 'MATH');
 
   bool get canRestartGame =>
       (currentLevel ?? 0) + 1 < levelHardness.length ||
@@ -47,7 +50,10 @@ class KGameData {
     this.currentLevel = 0,
     this.game,
     this.score,
+    this.isSpeechGame = false,
     this.baseLevelHardness = 0.7,
     this.currentQuestionIndex = 0,
+    this.answerType = "MATH",
+    this.isCountTime = false,
   });
 }
