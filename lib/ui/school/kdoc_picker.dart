@@ -43,7 +43,7 @@ class _KDocPickerState extends State<KDocPicker> {
     loadTextBook(widget.type);
   }
 
-  _onChangeHandler(String grade) {
+  void _onChangeHandler(String grade) {
     final chapters = textbooks.firstWhere((t) => t.grade == grade).chapters;
     setState(() {
       this.selectedGrade = grade;
