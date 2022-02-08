@@ -72,7 +72,7 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
 
   get isContinued => ttsState == TtsState.continued;
 
-  double speechRate = 0.3;
+  double speechRate = 0.2;
   double speechVolume = 1.0;
   double speechPitch = 1;
   int speechDelay = 2000;
