@@ -961,7 +961,9 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
 
     return Scaffold(
       // appBar: AppBar(title: Text("Play game")),
-      body: body,
+      body: SafeArea(
+        child: body,
+      ),
     );
   }
 }

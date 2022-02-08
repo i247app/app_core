@@ -9,6 +9,7 @@ import 'package:app_core/model/kquestion.dart';
 import 'package:app_core/ui/game/service/kgame_controller.dart';
 import 'package:app_core/ui/game/service/kgame_data.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -78,10 +79,11 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
   int speechDelay = 2000;
 
   String get defaultLanguage => KLocaleHelper.TTS_LANGUAGE_EN;
-  String? currentLanguage;
+  String currentLanguage = KLocaleHelper.TTS_LANGUAGE_EN;
 
-  bool get canShowLanguageToggle =>
-      Platform.isAndroid && currentLanguage != null;
+  bool isLanguagesInstalled = false;
+
+  bool get canShowLanguageToggle => Platform.isAndroid && isLanguagesInstalled;
 
   bool get isStart => gameData.isStart ?? false;
 
@@ -222,6 +224,19 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
 
   Future _setAwaitOptions() async {
     await flutterTts.awaitSpeakCompletion(true);
+
+    try {
+      bool isViInstalled =
+          await flutterTts.isLanguageInstalled(KLocaleHelper.TTS_LANGUAGE_VI);
+      bool isEnInstalled =
+          await flutterTts.isLanguageInstalled(KLocaleHelper.TTS_LANGUAGE_EN);
+
+      if (isViInstalled && isEnInstalled) {
+        this.setState(() {
+          isLanguagesInstalled = true;
+        });
+      }
+    } catch (e) {}
   }
 
   Future _getDefaultEngine() async {
@@ -299,11 +314,10 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
   }
 
   Future startSpeak(String text) async {
-    if ((currentQuestion.text ?? "").isNotEmpty && ttsState == TtsState.stopped) {
+    if ((currentQuestion.text ?? "").isNotEmpty &&
+        ttsState == TtsState.stopped) {
       if (mounted && isSpeech) {
-        if (currentLanguage != null) {
-          await flutterTts.setLanguage(currentLanguage!);
-        }
+        await flutterTts.setLanguage(currentLanguage);
 
         await flutterTts.setSpeechRate(speechRate);
         await flutterTts.setPitch(speechPitch);
@@ -311,7 +325,7 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
         await flutterTts.speak(currentQuestion.text ?? "");
         if (mounted && isSpeech) {
           Future.delayed(Duration(milliseconds: speechDelay), () {
-              startSpeak(currentQuestion.text ?? "");
+            startSpeak(currentQuestion.text ?? "");
           });
         }
       }
@@ -490,7 +504,7 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
         Align(
           alignment: Alignment.center,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+            padding: EdgeInsets.only(left: 10, right: 10, top: 50),
             child: Stack(
               children: [
                 ...List.generate(
@@ -516,6 +530,33 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
             ),
           ),
         ),
+        if (!isPause && canShowLanguageToggle)
+          Align(
+            alignment: Alignment.topCenter,
+            child: Transform.translate(
+              offset: Offset(-10, 50),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text("${KLocaleHelper.LANGUAGE_EN.toUpperCase()}"),
+                  Switch(
+                    onChanged: currentLanguage == KLocaleHelper.TTS_LANGUAGE_VI
+                        ? (_) => setTtsLanguage(KLocaleHelper.TTS_LANGUAGE_EN)
+                        : (_) => setTtsLanguage(KLocaleHelper.TTS_LANGUAGE_VI),
+                    value: () {
+                      // print("IS TUTOR ONLINE? - ${OnlineService.isTutorOnlineCache}");
+                      return currentLanguage == KLocaleHelper.TTS_LANGUAGE_VI;
+                    }.call(),
+                    activeColor: Colors.grey.shade50,
+                    activeTrackColor: Colors.grey.shade50.withAlpha(0x80),
+                    inactiveThumbColor: Colors.grey.shade50,
+                    inactiveTrackColor: Colors.grey.shade50.withAlpha(0x80),
+                  ),
+                  Text("${KLocaleHelper.LANGUAGE_VI.toUpperCase()}"),
+                ],
+              ),
+            ),
+          ),
       ],
     );
 
