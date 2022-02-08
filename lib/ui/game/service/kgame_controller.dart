@@ -37,7 +37,7 @@ class KGameController extends ValueNotifier<KGameData> {
   }
 
   void updatePlayTime() {
-    this.value.levelPlayTimes[this.value.currentLevel ?? 0] += 1;
+    this.value.levelPlayTimes[this.value.currentLevel ?? 0] += 16;
     notifyListeners();
   }
 
