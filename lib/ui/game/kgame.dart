@@ -156,9 +156,11 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused && !this.isPause)
-      showPauseDialog();
-    else if (state == AppLifecycleState.resumed && this.isPause) resumeGame();
+    if (isStart) {
+      if (state == AppLifecycleState.paused && !this.isPause)
+        showPauseDialog();
+      else if (state == AppLifecycleState.resumed && this.isPause) resumeGame();
+    }
   }
 
   void loadGame() async {
