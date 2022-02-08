@@ -510,11 +510,11 @@ class KTapGameScreenState extends State<KTapGameScreen>
     ).animate(new CurvedAnimation(
         parent: _moveUpAnimationController, curve: Curves.bounceOut));
 
-    _timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 16), (timer) {
       if (isStart && mounted && !isPause) {
         if (currentLevel < totalLevel) {
           this.setState(() {
-            this.levelPlayTimes[currentLevel] += 1;
+            this.levelPlayTimes[currentLevel] += 16;
           });
         }
       }
