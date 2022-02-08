@@ -52,7 +52,7 @@ dependencies:
   gallery_saver: 2.1.0 # +2.1.1 broken so far
   path_provider: ^2.0.1
 
-  google_fonts: ^2.1.0
+  google_fonts: 2.1.0
 
   # VoIP
   connectycube_flutter_call_kit:
