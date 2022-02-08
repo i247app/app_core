@@ -130,7 +130,7 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
 
     loadGame();
 
-    _timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 16), (timer) {
       if (isStart && mounted && !isPause) {
         if (currentLevel < levelPlayTimes.length) {
           widget.controller.updatePlayTime();
