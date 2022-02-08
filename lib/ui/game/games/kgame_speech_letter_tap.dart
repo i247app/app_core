@@ -188,15 +188,13 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
     this.isSpeech = true;
     startSpeak(currentQuestion.text ?? "");
     widget.controller.addListener(() {
-      if ((widget.controller.value.isPause ?? false) && this.speechVolume == 1.0) {
+      if ((widget.controller.value.isPause ?? false) && isSpeech) {
+        stopSpeak();
+      } else if (!(widget.controller.value.isPause ?? false) && !isSpeech) {
         setState(() {
-          this.speechVolume = 0.0;
+          this.isSpeech = true;
         });
-        flutterTts.stop();
-      } else if (!(widget.controller.value.isPause ?? false) && this.speechVolume == 0.0) {
-        setState(() {
-          this.speechVolume = 1.0;
-        });
+        startSpeak(currentQuestion.text ?? "");
       }
     });
 
