@@ -631,6 +631,40 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
           : Container(),
     );
 
+    final correctAnswerCounter = Align(
+      alignment: Alignment(-1, -1),
+      child: currentLevel < levelPlayTimes.length
+          ? Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+        child: Container(
+          height: 50,
+          padding:
+          EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+          decoration: BoxDecoration(
+            color: Colors.red,
+            borderRadius: BorderRadius.circular(40),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "${rightAnswerCount}/${questions.length}",
+                textScaleFactor: 1.0,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      )
+          : Container(),
+    );
+
     final highscoreButton = InkWell(
       child: Container(
         width: 50,
@@ -1024,6 +1058,8 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
                     children: [
                       if (isCountTime && (isStart || result != null))
                         timeCounter,
+                      if (!isCountTime && (isStart || result != null))
+                        correctAnswerCounter,
                       if (isStart) eggReceiveBox,
                       levelBox,
                       if (!isStart && isSpeechGame && currentLanguage == null)
