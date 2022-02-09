@@ -508,6 +508,7 @@ abstract class KServerHandler {
       {required String gameID,
       required String level,
       String? cat,
+      String? language,
       String? mimeType}) async {
     final params = {
       "svc": "game",
@@ -516,7 +517,8 @@ abstract class KServerHandler {
         ..gameID = gameID
         ..level = "$level"
         ..cat = cat ?? "MATH"
-        ..mimeType = mimeType ?? "TEXT",
+        ..mimeType = mimeType ?? "TEXT"
+        ..language = language ?? "en",
     };
     return TLSHelper.send(params)
         .then((data) => KGetGamesResponse.fromJson(data));

@@ -29,6 +29,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:path_provider/path_provider.dart';
 
 class KGameRoom extends StatefulWidget {
@@ -44,6 +45,8 @@ class KGameRoom extends StatefulWidget {
 class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
   AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? backgroundAudioFileUri;
+
+  late FlutterTts flutterTts;
 
   static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
@@ -104,7 +107,12 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
 
   List<double> get levelHardness => gameData.levelHardness;
 
+  String? get currentLanguage => gameData.language;
+
   List<String> levelIconAssets = [];
+
+  List<String> languageLabels = [];
+  List<String> languageValues = [];
 
   @override
   void initState() {
@@ -128,7 +136,11 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
     widget.controller.addListener(basicSetStateListener);
     WidgetsBinding.instance?.addObserver(this);
 
-    loadGame();
+    if (!isSpeechGame) {
+      loadGame();
+    } else {
+      checkInstalledLanguage();
+    }
 
     _timer = Timer.periodic(Duration(milliseconds: 16), (timer) {
       if (isStart && mounted && !isPause) {
@@ -163,10 +175,66 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
     }
   }
 
+  void checkInstalledLanguage() async {
+    flutterTts = FlutterTts();
+
+    try {
+      await flutterTts.awaitSpeakCompletion(true);
+
+      if (Platform.isAndroid) {
+        try {
+          bool isInstalled = await flutterTts
+              .isLanguageInstalled(KLocaleHelper.TTS_LANGUAGE_VI);
+          if (isInstalled) {
+            this.setState(() {
+              languageLabels.add("Vietnamese");
+              languageValues.add(KLocaleHelper.LANGUAGE_VI);
+            });
+          }
+        } catch (e) {}
+        try {
+          bool isInstalled = await flutterTts
+              .isLanguageInstalled(KLocaleHelper.TTS_LANGUAGE_EN);
+          if (isInstalled) {
+            this.setState(() {
+              languageLabels.add("English");
+              languageValues.add(KLocaleHelper.LANGUAGE_EN);
+            });
+          }
+        } catch (e) {}
+      } else if (Platform.isIOS) {
+        handleSelectLanguage(KLocaleHelper.LANGUAGE_EN);
+        // List<dynamic> _languages = await flutterTts.getLanguages;
+        //
+        // if (_languages.contains(KLocaleHelper.TTS_LANGUAGE_VI)) {
+        //   this.setState(() {
+        //     languageLabels.add("Vietnamese");
+        //     languageValues.add(KLocaleHelper.LANGUAGE_VI);
+        //   });
+        // }
+        // if (_languages.contains(KLocaleHelper.TTS_LANGUAGE_EN)) {
+        //   this.setState(() {
+        //     languageLabels.add("English");
+        //     languageValues.add(KLocaleHelper.LANGUAGE_EN);
+        //   });
+        // }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   void loadGame() async {
     try {
       await widget.controller.loadGame();
     } catch (e) {}
+  }
+
+  void handleSelectLanguage(String language) {
+    widget.controller.value.language = language;
+    widget.controller.notify();
+
+    loadGame();
   }
 
   void basicSetStateListener() => setState(() {});
@@ -878,6 +946,61 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       ),
     );
 
+    final languageSelect = Align(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Choose your language",
+              style: TextStyle(fontSize: 30, color: Colors.white),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            ...List.generate(languageLabels.length, (index) {
+              final language = languageLabels[index];
+              final languageValue = languageValues[index];
+
+              return Padding(
+                padding: EdgeInsets.only(bottom: 16),
+                child: GestureDetector(
+                  onTap: () => handleSelectLanguage(languageValue),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.75,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(40),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.5),
+                          blurRadius: 8,
+                          offset: Offset(2, 6),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      "${language}",
+                      textScaleFactor: 1.0,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+
     final currentGame = getCurrentGameWidget();
 
     final body = Column(
@@ -903,12 +1026,15 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
                         timeCounter,
                       if (isStart) eggReceiveBox,
                       levelBox,
+                      if (!isStart && isSpeechGame && currentLanguage == null)
+                        languageSelect,
                       if (isStart && gameData.game != null && !isLoading)
                         Align(
                           alignment: Alignment.center,
                           child: currentGame,
                         ),
-                      if (!isLoading &&
+                      if ((!isSpeechGame || currentLanguage != null) &&
+                          !isLoading &&
                           !isStart &&
                           !isShowCountDown &&
                           !isShowEndLevel) ...[

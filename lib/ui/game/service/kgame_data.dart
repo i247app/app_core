@@ -9,6 +9,7 @@ class KGameData {
   String gameID;
   String? gameName;
   String? answerType;
+  String? language;
   int? levelCount;
   int? currentLevel;
   KGame? game;
