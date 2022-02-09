@@ -73,7 +73,7 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
 
   get isContinued => ttsState == TtsState.continued;
 
-  double speechRate = 0.2;
+  double speechRate = 0.3;
   double speechVolume = 1.0;
   double speechPitch = 1;
   int speechDelay = 2000;
@@ -112,6 +112,8 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
   List<KQuestion> get questions => gameData.questions;
 
   KQuestion get currentQuestion => gameData.currentQuestion;
+
+  bool isPauseLocal = false;
 
   @override
   void initState() {
@@ -187,16 +189,23 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
     ).animate(new CurvedAnimation(
         parent: _moveUpAnimationController, curve: Curves.bounceOut));
 
+    isPauseLocal = isPause;
     this.isSpeech = true;
     startSpeak(currentQuestion.text ?? "");
     widget.controller.addListener(() {
-      if ((widget.controller.value.isPause ?? false) && isSpeech) {
+      if ((widget.controller.value.isPause ?? false) && !isPauseLocal && isSpeech) {
         stopSpeak();
-      } else if (!(widget.controller.value.isPause ?? false) && !isSpeech) {
+      } else if (!(widget.controller.value.isPause ?? false) && isPauseLocal && !isSpeech) {
         setState(() {
           this.isSpeech = true;
         });
         startSpeak(currentQuestion.text ?? "");
+      }
+
+      if (isPauseLocal != widget.controller.value.isPause) {
+        this.setState(() {
+          isPauseLocal = widget.controller.value.isPause ?? false;
+        });
       }
     });
 
@@ -325,7 +334,9 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
         await flutterTts.speak(currentQuestion.text ?? "");
         if (mounted && isSpeech) {
           Future.delayed(Duration(milliseconds: speechDelay), () {
-            startSpeak(currentQuestion.text ?? "");
+            if (mounted && isSpeech) {
+              startSpeak(currentQuestion.text ?? "");
+            }
           });
         }
       }
@@ -405,7 +416,7 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
     });
   }
 
-  void handlePickAnswer(KAnswer answer, int answerIndex) {
+  void handlePickAnswer(KAnswer answer, int answerIndex) async {
     if (_spinAnimationController.value != 0) {
       return;
     }
@@ -426,7 +437,7 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
 
     if (isTrueAnswer) {
       if (isSpeech) {
-        stopSpeak();
+        await stopSpeak();
       }
       widget.controller.value.result = true;
       widget.controller.value.point = point + 5;
