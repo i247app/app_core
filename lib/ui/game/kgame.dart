@@ -184,6 +184,9 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
     flutterTts = FlutterTts();
 
     try {
+      if (Platform.isIOS) {
+        await flutterTts.setSharedInstance(true);
+      }
       await flutterTts.awaitSpeakCompletion(true);
 
       if (Platform.isAndroid) {

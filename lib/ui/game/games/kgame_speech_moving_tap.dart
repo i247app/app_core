@@ -277,6 +277,9 @@ class _KGameSpeechMovingTapState extends State<KGameSpeechMovingTap>
 
   Future _setAwaitOptions() async {
     await flutterTts.awaitSpeakCompletion(true);
+    if (Platform.isIOS) {
+      await flutterTts.setSharedInstance(true);
+    }
 
     try {
       bool isViInstalled =
@@ -502,7 +505,7 @@ class _KGameSpeechMovingTapState extends State<KGameSpeechMovingTap>
                 Future.delayed(Duration(milliseconds: 50), () {
                   randomBoxPosition();
                   getListAnswer();
-                  Future.delayed(Duration(milliseconds: 50), () {
+                  Future.delayed(Duration(milliseconds: 200), () {
                     setState(() {
                       this.isSpeech = true;
                     });
