@@ -14,6 +14,7 @@ class KGame {
   static const String LEVEL = "level";
   static const String MIMETYPE = "mimeType";
   static const String QNAS = "qnas";
+  static const String LANGUAGE = "language";
 
   @JsonKey(name: GAME_ID)
   String? gameID;
@@ -32,6 +33,9 @@ class KGame {
 
   @JsonKey(name: CAT)
   String? cat;
+
+  @JsonKey(name: LANGUAGE)
+  String? language;
 
   @JsonKey(name: LEVEL)
   String? level; // image | video

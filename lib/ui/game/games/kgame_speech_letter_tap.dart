@@ -78,8 +78,9 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
   double speechPitch = 1;
   int speechDelay = 2000;
 
-  String get defaultLanguage => KLocaleHelper.TTS_LANGUAGE_EN;
-  String currentLanguage = KLocaleHelper.TTS_LANGUAGE_EN;
+  String get currentLanguage => gameData.language == KLocaleHelper.LANGUAGE_VI
+      ? KLocaleHelper.TTS_LANGUAGE_VI
+      : KLocaleHelper.TTS_LANGUAGE_EN;
 
   bool isLanguagesInstalled = false;
 
@@ -193,9 +194,13 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
     this.isSpeech = true;
     startSpeak(currentQuestion.text ?? "");
     widget.controller.addListener(() {
-      if ((widget.controller.value.isPause ?? false) && !isPauseLocal && isSpeech) {
+      if ((widget.controller.value.isPause ?? false) &&
+          !isPauseLocal &&
+          isSpeech) {
         stopSpeak();
-      } else if (!(widget.controller.value.isPause ?? false) && isPauseLocal && !isSpeech) {
+      } else if (!(widget.controller.value.isPause ?? false) &&
+          isPauseLocal &&
+          !isSpeech) {
         setState(() {
           this.isSpeech = true;
         });
@@ -255,18 +260,6 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
     }
   }
 
-  setTtsLanguage(String language) async {
-    if (Platform.isAndroid) {
-      bool isInstalled = await flutterTts.isLanguageInstalled(language);
-      if (!isInstalled) {
-        return;
-      }
-    }
-    setState(() {
-      currentLanguage = language;
-    });
-  }
-
   initTts() {
     flutterTts = FlutterTts();
 
@@ -274,10 +267,7 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
 
     if (Platform.isAndroid) {
       _getDefaultEngine();
-      setTtsLanguage(defaultLanguage);
     } else if (Platform.isIOS) {
-      setTtsLanguage(KLocaleHelper.TTS_LANGUAGE_EN);
-
       flutterTts.setPauseHandler(() {
         setState(() {
           print("Paused");
@@ -541,33 +531,33 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
             ),
           ),
         ),
-        if (!isPause && canShowLanguageToggle)
-          Align(
-            alignment: Alignment.topCenter,
-            child: Transform.translate(
-              offset: Offset(-10, 50),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text("${KLocaleHelper.LANGUAGE_EN.toUpperCase()}"),
-                  Switch(
-                    onChanged: currentLanguage == KLocaleHelper.TTS_LANGUAGE_VI
-                        ? (_) => setTtsLanguage(KLocaleHelper.TTS_LANGUAGE_EN)
-                        : (_) => setTtsLanguage(KLocaleHelper.TTS_LANGUAGE_VI),
-                    value: () {
-                      // print("IS TUTOR ONLINE? - ${OnlineService.isTutorOnlineCache}");
-                      return currentLanguage == KLocaleHelper.TTS_LANGUAGE_VI;
-                    }.call(),
-                    activeColor: Colors.grey.shade50,
-                    activeTrackColor: Colors.grey.shade50.withAlpha(0x80),
-                    inactiveThumbColor: Colors.grey.shade50,
-                    inactiveTrackColor: Colors.grey.shade50.withAlpha(0x80),
-                  ),
-                  Text("${KLocaleHelper.LANGUAGE_VI.toUpperCase()}"),
-                ],
-              ),
-            ),
-          ),
+        // if (!isPause && canShowLanguageToggle)
+        //   Align(
+        //     alignment: Alignment.topCenter,
+        //     child: Transform.translate(
+        //       offset: Offset(-10, 50),
+        //       child: Row(
+        //         mainAxisAlignment: MainAxisAlignment.end,
+        //         children: [
+        //           Text("${KLocaleHelper.LANGUAGE_EN.toUpperCase()}"),
+        //           Switch(
+        //             onChanged: currentLanguage == KLocaleHelper.TTS_LANGUAGE_VI
+        //                 ? (_) => setTtsLanguage(KLocaleHelper.TTS_LANGUAGE_EN)
+        //                 : (_) => setTtsLanguage(KLocaleHelper.TTS_LANGUAGE_VI),
+        //             value: () {
+        //               // print("IS TUTOR ONLINE? - ${OnlineService.isTutorOnlineCache}");
+        //               return currentLanguage == KLocaleHelper.TTS_LANGUAGE_VI;
+        //             }.call(),
+        //             activeColor: Colors.grey.shade50,
+        //             activeTrackColor: Colors.grey.shade50.withAlpha(0x80),
+        //             inactiveThumbColor: Colors.grey.shade50,
+        //             inactiveTrackColor: Colors.grey.shade50.withAlpha(0x80),
+        //           ),
+        //           Text("${KLocaleHelper.LANGUAGE_VI.toUpperCase()}"),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
       ],
     );
 

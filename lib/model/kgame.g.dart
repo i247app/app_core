@@ -13,6 +13,7 @@ KGame _$KGameFromJson(Map<String, dynamic> json) => KGame()
   ..subtitle = json['subtitle'] as String?
   ..text = json['text'] as String?
   ..cat = json['cat'] as String?
+  ..language = json['language'] as String?
   ..level = json['level'] as String?
   ..mimeType = json['mimeType'] as String?
   ..qnas = (json['qnas'] as List<dynamic>?)
@@ -34,6 +35,7 @@ Map<String, dynamic> _$KGameToJson(KGame instance) {
   writeNotNull('subtitle', instance.subtitle);
   writeNotNull('text', instance.text);
   writeNotNull('cat', instance.cat);
+  writeNotNull('language', instance.language);
   writeNotNull('level', instance.level);
   writeNotNull('mimeType', instance.mimeType);
   writeNotNull('qnas', instance.qnas?.map((e) => e.toJson()).toList());
