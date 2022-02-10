@@ -221,7 +221,6 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,
-                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
@@ -234,7 +233,7 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
                                   : '${double.parse(score.score ?? '0')}',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 22,
+                                fontSize: 18,
                               ),
                             ),
                             SizedBox(

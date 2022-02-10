@@ -196,6 +196,27 @@ abstract class KStyles {
   static ThemeData themeDataBuilder(
       KPaletteGroup paletteGroup, Brightness brightness) {
     final palette = paletteGroup.getPaletteByBrightness(brightness);
+    final textTheme = TextTheme(
+      headline1:
+          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+      headline2:
+          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+      headline4:
+          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+      headline5:
+          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+      headline6:
+          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+      subtitle1:
+          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+      subtitle2:
+          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+      bodyText1:
+          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+      bodyText2:
+          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+      caption: TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+    );
     return ThemeData(brightness: brightness).copyWith(
       colorScheme: brightness == Brightness.dark
           ? ColorScheme.dark(
@@ -216,29 +237,20 @@ abstract class KStyles {
           TextSelectionThemeData(cursorColor: palette.schemePrimary),
       iconTheme: IconThemeData(color: palette.primaryLight),
       primaryIconTheme: IconThemeData(color: palette.primaryLight),
-      textTheme: GoogleFonts.openSansTextTheme(
-        TextTheme(
-          headline1:
-              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-          headline2:
-              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-          headline4:
-              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-          headline5:
-              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-          headline6:
-              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-          subtitle1:
-              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-          subtitle2:
-              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-          bodyText1:
-              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-          bodyText2:
-              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-          caption:
-              TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-        ),
+      textTheme: TextTheme(
+        headline1: GoogleFonts.openSans(textStyle: textTheme.headline1),
+        headline2: GoogleFonts.openSans(textStyle: textTheme.headline2),
+        headline3: GoogleFonts.openSans(textStyle: textTheme.headline3),
+        headline4: GoogleFonts.openSans(textStyle: textTheme.headline4),
+        headline5: GoogleFonts.openSans(textStyle: textTheme.headline5),
+        headline6: GoogleFonts.openSans(textStyle: textTheme.headline6),
+        subtitle1: GoogleFonts.openSans(textStyle: textTheme.subtitle1),
+        subtitle2: GoogleFonts.openSans(textStyle: textTheme.subtitle2),
+        bodyText1: GoogleFonts.openSans(textStyle: textTheme.bodyText1),
+        bodyText2: GoogleFonts.openSans(textStyle: textTheme.bodyText2),
+        caption: GoogleFonts.openSans(textStyle: textTheme.caption),
+        button: GoogleFonts.openSans(textStyle: textTheme.button),
+        overline: GoogleFonts.openSans(textStyle: textTheme.overline),
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: palette.contrasting,
