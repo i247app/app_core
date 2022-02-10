@@ -3,6 +3,7 @@ import 'package:app_core/ui/game/games/kgame_jump_over.dart';
 import 'package:app_core/ui/game/games/kgame_jump_up.dart';
 import 'package:app_core/ui/game/games/kgame_letter_tap.dart';
 import 'package:app_core/ui/game/games/kgame_moving_tap.dart';
+import 'package:app_core/ui/game/games/kgame_multi.dart';
 import 'package:app_core/ui/game/games/kgame_shooting.dart';
 import 'package:app_core/ui/game/games/kgame_speech_letter_tap.dart';
 import 'package:app_core/ui/game/games/kgame_speech_tap.dart';
@@ -181,6 +182,36 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
             crossAxisSpacing: 10,
             physics: NeverScrollableScrollPhysics(),
             children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => KGameRoom(
+                            KGameController(
+                              gameID: KGameMulti.GAME_ID,
+                              gameName: KGameMulti.GAME_NAME,
+                              levelCount: 4,
+                              currentLevel: 0,
+                              // isCountTime: true,
+                            ),
+                          ),
+                        )),
+                    style: KStyles.squaredButton(
+                      Theme.of(context).colorScheme.primary,
+                      textColor: Colors.white,
+                    ),
+                    child: Text("👾"),
+                  ),
+                  SizedBox(width: 5),
+                  FittedBox(
+                    child: Text("Multi game"),
+                  ),
+                ],
+              ),
               Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,

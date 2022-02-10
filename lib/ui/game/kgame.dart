@@ -32,6 +32,8 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'games/kgame_multi.dart';
+
 class KGameRoom extends StatefulWidget {
   final KGameController controller;
   final KHero? hero;
@@ -183,6 +185,8 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
 
       if (Platform.isAndroid) {
         try {
+          final languages = await flutterTts.getLanguages;
+          print(languages);
           bool isInstalled = await flutterTts
               .isLanguageInstalled(KLocaleHelper.TTS_LANGUAGE_VI);
           if (isInstalled) {
@@ -566,6 +570,20 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
         );
+      case KGameMulti.GAME_ID: {
+        if (currentLevel == 0 || currentLevel == 2) {
+          return KGameTap(
+            controller: widget.controller,
+            hero: widget.hero,
+            onFinishLevel: onFinishLevel,
+          );
+        }
+        return KGameMovingTap(
+          controller: widget.controller,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
+      }
       default:
         return Container();
     }
