@@ -6,6 +6,7 @@ import 'kgame_data.dart';
 class KGameController extends ValueNotifier<KGameData> {
   KGameController({
     required String gameID,
+    String? gameAppID,
     String? gameName,
     String? answerType,
     int? levelCount,
@@ -14,6 +15,7 @@ class KGameController extends ValueNotifier<KGameData> {
     bool? isCountTime,
   }) : super(KGameData(
           gameID: gameID,
+          gameAppID: gameAppID,
           gameName: gameName,
           levelCount: levelCount,
           currentLevel: currentLevel,
@@ -47,6 +49,7 @@ class KGameController extends ValueNotifier<KGameData> {
 
     final response = await KServerHandler.getGames(
       gameID: this.value.gameID,
+      gameAppID: this.value.gameAppID,
       level: (this.value.currentLevel ?? 0).toString(),
       cat: this.value.answerType ?? "MATH",
       mimeType: (this.value.isSpeechGame ?? false) ? "AUDIO" : "TEXT",

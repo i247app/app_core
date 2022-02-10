@@ -192,6 +192,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                           builder: (ctx) => KGameRoom(
                             KGameController(
                               gameID: KGameSpeechLetterTap.GAME_ID,
+                              gameAppID: KGameSpeechLetterTap.GAME_APP_ID,
                               gameName: KGameSpeechLetterTap.GAME_NAME,
                               levelCount: 4,
                               currentLevel: 0,
@@ -224,6 +225,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                           builder: (ctx) => KGameRoom(
                             KGameController(
                               gameID: KGameSpeechTap.GAME_ID,
+                              gameAppID: KGameSpeechTap.GAME_APP_ID,
                               gameName: KGameSpeechTap.GAME_NAME,
                               levelCount: 4,
                               currentLevel: 0,

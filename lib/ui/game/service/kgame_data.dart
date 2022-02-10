@@ -7,6 +7,7 @@ import 'package:app_core/model/kquestion.dart';
 
 class KGameData {
   String gameID;
+  String? gameAppID;
   String? gameName;
   String? answerType;
   String? language;
@@ -46,6 +47,7 @@ class KGameData {
 
   KGameData({
     required this.gameID,
+    this.gameAppID,
     this.gameName,
     this.levelCount = 1,
     this.currentLevel = 0,

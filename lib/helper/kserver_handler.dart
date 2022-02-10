@@ -504,17 +504,22 @@ abstract class KServerHandler {
         .then((data) => ListXFRProxyResponse.fromJson(data));
   }
 
-  static Future<KGetGamesResponse> getGames(
-      {required String gameID,
-      required String level,
-      String? cat,
-      String? language,
-      String? mimeType}) async {
+  static Future<KGetGamesResponse> getGames({
+    required String gameID,
+    required String level,
+    String? gameAppID,
+    String? cat,
+    String? language,
+    String? mimeType,
+  }) async {
+    print(gameAppID);
+    print("gameAppID");
     final params = {
       "svc": "game",
       "req": "game.get",
       "game": KGame()
         ..gameID = gameID
+        ..gameAppID = gameAppID
         ..level = "$level"
         ..cat = cat ?? "MATH"
         ..mimeType = mimeType ?? "TEXT"

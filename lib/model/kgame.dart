@@ -15,9 +15,13 @@ class KGame {
   static const String MIMETYPE = "mimeType";
   static const String QNAS = "qnas";
   static const String LANGUAGE = "language";
+  static const String GAME_APP_ID = "gameAppID";
 
   @JsonKey(name: GAME_ID)
   String? gameID;
+
+  @JsonKey(name: GAME_APP_ID)
+  String? gameAppID;
 
   @JsonKey(name: GAME_CODE)
   String? gameCode;

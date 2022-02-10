@@ -18,6 +18,7 @@ enum TtsState { playing, stopped, paused, continued }
 
 class KGameSpeechTap extends StatefulWidget {
   static const GAME_ID = "600";
+  static const GAME_APP_ID = "1001";
   static const GAME_NAME = "speech_tap";
 
   final KGameController controller;
