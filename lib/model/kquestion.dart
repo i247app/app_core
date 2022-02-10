@@ -48,7 +48,7 @@ class KQuestion {
 
   List<KAnswer> generateAnswers([int count = 4, String? answerType]) {
     try {
-      if (answerType == 'ENGLISH') {
+      if (answerType == 'letter') {
         final correct = correctAnswer?.text ?? "";
         if (correct == null) {
           throw Exception();
@@ -56,6 +56,7 @@ class KQuestion {
 
         final answerValues = [correct];
 
+        print(answerValues.length);
         // Generate unique random values
         while (answerValues.length < count) {
           final letter = KUtil.generateRandomString(1);
@@ -63,6 +64,7 @@ class KQuestion {
             answerValues.add(letter);
           }
         }
+        print(answerValues.toString());
 
         return (answerValues..shuffle())
             .map((av) => KAnswer()
@@ -92,7 +94,8 @@ class KQuestion {
           ..isCorrect = correct == av)
             .toList();
       }
-    } catch (_) {
+    } catch (e) {
+      print(e);
       return [];
     }
   }

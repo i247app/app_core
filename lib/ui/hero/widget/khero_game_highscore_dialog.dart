@@ -1,6 +1,7 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/kgame_score.dart';
+import 'package:app_core/ui/game/service/kgame_data.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
 
@@ -12,11 +13,13 @@ class KGameHighscoreDialog extends StatefulWidget {
   final int currentLevel;
   final bool ascendingSort;
   final bool? isTime;
+  final KGameData? gameData;
 
   const KGameHighscoreDialog({
     required this.onClose,
     required this.game,
     this.score,
+    this.gameData,
     this.canSaveHighScore = true,
     required this.currentLevel,
     this.ascendingSort = true,
@@ -56,6 +59,9 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
         level: widget.currentLevel.toString(),
         time: widget.score!.time,
         points: widget.score!.points,
+        gameAppID: widget.gameData?.gameAppID,
+        language: widget.gameData?.language ?? "en",
+        topic: widget.gameData?.answerType ?? "number",
       );
 
       if (result.isSuccess) {

@@ -38,7 +38,7 @@ class KGameData {
 
   List<KQuestion> get questions => this.game?.qnas?[0].questions ?? [];
   KQuestion get currentQuestion => this.questions.length > 0 && this.currentQuestionIndex != null && this.currentQuestionIndex! < this.questions.length ? this.questions[this.currentQuestionIndex ?? 0] : KQuestion();
-  List<KAnswer> get currentQuestionAnswers => this.currentQuestion.generateAnswers(4, answerType ?? 'MATH');
+  List<KAnswer> get currentQuestionAnswers => this.currentQuestion.generateAnswers(4, answerType ?? 'number');
 
   bool get canRestartGame =>
       (currentLevel ?? 0) + 1 < levelHardness.length ||
@@ -56,7 +56,7 @@ class KGameData {
     this.isSpeechGame = false,
     this.baseLevelHardness = 0.7,
     this.currentQuestionIndex = 0,
-    this.answerType = "MATH",
+    this.answerType = "number",
     this.isCountTime = false,
   });
 }

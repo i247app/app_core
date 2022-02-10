@@ -17,7 +17,10 @@ KGameScore _$KGameScoreFromJson(Map<String, dynamic> json) => KGameScore()
   ..score = json['score'] as String?
   ..time = json['time'] as String?
   ..points = json['points'] as String?
-  ..scoreDate = zzz_str2Date(json['scoreDate'] as String?);
+  ..scoreDate = zzz_str2Date(json['scoreDate'] as String?)
+  ..gameAppID = json['gameAppID'] as String?
+  ..language = json['language'] as String?
+  ..topic = json['topic'] as String?;
 
 Map<String, dynamic> _$KGameScoreToJson(KGameScore instance) {
   final val = <String, dynamic>{};
@@ -39,5 +42,8 @@ Map<String, dynamic> _$KGameScoreToJson(KGameScore instance) {
   writeNotNull('time', instance.time);
   writeNotNull('points', instance.points);
   writeNotNull('scoreDate', zzz_date2Str(instance.scoreDate));
+  writeNotNull('gameAppID', instance.gameAppID);
+  writeNotNull('language', instance.language);
+  writeNotNull('topic', instance.topic);
   return val;
 }

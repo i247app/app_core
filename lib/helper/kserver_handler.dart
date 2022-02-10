@@ -316,11 +316,15 @@ abstract class KServerHandler {
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }
 
-  static Future<SimpleResponse> saveGameScore(
-      {required String gameID,
-      required String level,
-      String? time,
-      String? points}) async {
+  static Future<SimpleResponse> saveGameScore({
+    required String gameID,
+    required String level,
+    String? time,
+    String? points,
+    String? gameAppID,
+    String? language,
+    String? topic,
+  }) async {
     final params = {
       "svc": "game",
       "req": "game.score.save",
@@ -329,6 +333,9 @@ abstract class KServerHandler {
         ..level = level
         ..time = time
         ..points = points
+        ..gameAppID = gameAppID
+        ..language = language
+        ..topic = topic,
     };
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }

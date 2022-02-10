@@ -12,10 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
-class KGameMulti extends StatelessWidget {
-  static const GAME_ID = "514";
+class KGameMultiLetter extends StatelessWidget {
+  static const GAME_ID = "515";
   static const GAME_APP_ID = "1001";
-  static const GAME_NAME = "multi";
+  static const GAME_NAME = "multi_letter";
 
   @override
   Widget build(BuildContext context) {

@@ -12,7 +12,9 @@ import 'package:app_core/ui/game/games/kgame_jump_over.dart';
 import 'package:app_core/ui/game/games/kgame_jump_up.dart';
 import 'package:app_core/ui/game/games/kgame_letter_tap.dart';
 import 'package:app_core/ui/game/games/kgame_moving_tap.dart';
+import 'package:app_core/ui/game/games/kgame_multi_letter.dart';
 import 'package:app_core/ui/game/games/kgame_shooting.dart';
+import 'package:app_core/ui/game/games/kgame_speech_letter_moving_tap.dart';
 import 'package:app_core/ui/game/games/kgame_speech_letter_tap.dart';
 import 'package:app_core/ui/game/games/kgame_speech_moving_tap.dart';
 import 'package:app_core/ui/game/games/kgame_speech_tap.dart';
@@ -72,6 +74,8 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
   bool isShowIntro = true;
   bool isLoaded = false;
 
+  KGameData get gameData => widget.controller.value;
+
   bool get isStart => gameData.isStart ?? false;
 
   bool get isPause => gameData.isPause ?? false;
@@ -79,8 +83,6 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
   bool get canAdvance => gameData.canAdvance ?? false;
 
   bool get canRestartGame => gameData.canRestartGame;
-
-  KGameData get gameData => widget.controller.value;
 
   int get currentLevel => gameData.currentLevel ?? 0;
 
@@ -414,6 +416,7 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
         score: null,
         canSaveHighScore: false,
         currentLevel: currentLevel,
+        gameData: gameData,
       ),
     );
     showCustomOverlay(view);
@@ -588,6 +591,20 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
           );
         }
         return KGameSpeechMovingTap(
+          controller: widget.controller,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
+      }
+      case KGameMultiLetter.GAME_ID: {
+        if (currentLevel == 0 || currentLevel == 2) {
+          return KGameSpeechLetterTap(
+            controller: widget.controller,
+            hero: widget.hero,
+            onFinishLevel: onFinishLevel,
+          );
+        }
+        return KGameSpeechLetterMovingTap(
           controller: widget.controller,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
