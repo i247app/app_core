@@ -30,6 +30,12 @@ class KGameScore {
   @JsonKey(name: "score")
   String? score;
 
+  @JsonKey(name: "time")
+  String? time;
+
+  @JsonKey(name: "points")
+  String? points;
+
   @JsonKey(name: "scoreDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
   DateTime? scoreDate;
 

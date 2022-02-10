@@ -194,26 +194,7 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
     isPauseLocal = isPause;
     this.isSpeech = true;
     startSpeak(currentQuestion.text ?? "");
-    widget.controller.addListener(() {
-      if ((widget.controller.value.isPause ?? false) &&
-          !isPauseLocal &&
-          isSpeech) {
-        stopSpeak();
-      } else if (!(widget.controller.value.isPause ?? false) &&
-          isPauseLocal &&
-          !isSpeech) {
-        setState(() {
-          this.isSpeech = true;
-        });
-        startSpeak(currentQuestion.text ?? "");
-      }
-
-      if (isPauseLocal != widget.controller.value.isPause) {
-        this.setState(() {
-          isPauseLocal = widget.controller.value.isPause ?? false;
-        });
-      }
-    });
+    widget.controller.addListener(pauseListener);
 
     randomBoxPosition();
     getListAnswer();
@@ -221,6 +202,7 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
 
   @override
   void dispose() {
+    widget.controller.removeListener(pauseListener);
     _heroScaleAnimationController.dispose();
     _bouncingAnimationController.dispose();
     _moveUpAnimationController.dispose();
@@ -252,6 +234,27 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
         });
       }
     } catch (e) {}
+  }
+
+  void pauseListener() {
+    if ((widget.controller.value.isPause ?? false) &&
+        !isPauseLocal &&
+        isSpeech) {
+      stopSpeak();
+    } else if (!(widget.controller.value.isPause ?? false) &&
+        isPauseLocal &&
+        !isSpeech) {
+      setState(() {
+        this.isSpeech = true;
+      });
+      startSpeak(currentQuestion.text ?? "");
+    }
+
+    if (isPauseLocal != widget.controller.value.isPause) {
+      this.setState(() {
+        isPauseLocal = widget.controller.value.isPause ?? false;
+      });
+    }
   }
 
   Future _getDefaultEngine() async {

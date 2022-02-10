@@ -16,16 +16,16 @@ import 'package:flutter_tts/flutter_tts.dart';
 
 enum TtsState { playing, stopped, paused, continued }
 
-class KGameSpeechTap extends StatefulWidget {
-  static const GAME_ID = "600";
+class KGameSpeechMovingTap extends StatefulWidget {
+  static const GAME_ID = "601";
   static const GAME_APP_ID = "1001";
-  static const GAME_NAME = "speech_tap";
+  static const GAME_NAME = "speech_moving_tap";
 
   final KGameController controller;
   final KHero? hero;
   final Function? onFinishLevel;
 
-  const KGameSpeechTap({
+  const KGameSpeechMovingTap({
     Key? key,
     this.hero,
     this.onFinishLevel,
@@ -33,10 +33,10 @@ class KGameSpeechTap extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _KGameSpeechTapState createState() => _KGameSpeechTapState();
+  _KGameSpeechMovingTapState createState() => _KGameSpeechMovingTapState();
 }
 
-class _KGameSpeechTapState extends State<KGameSpeechTap>
+class _KGameSpeechMovingTapState extends State<KGameSpeechMovingTap>
     with TickerProviderStateMixin {
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
@@ -46,10 +46,13 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
   late Animation<Offset> _bouncingAnimation;
   late Animation<double> _moveUpAnimation, _heroScaleAnimation;
 
-  late AnimationController _heroScaleAnimationController,
+  late AnimationController _barrierMovingAnimationController,
+      _heroScaleAnimationController,
       _bouncingAnimationController,
       _moveUpAnimationController,
       _spinAnimationController;
+
+  Timer? _timer;
 
   KGameData get gameData => widget.controller.value;
 
@@ -78,7 +81,9 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
   double speechPitch = 1;
   int speechDelay = 2000;
 
-  String get currentLanguage => gameData.language == KLocaleHelper.LANGUAGE_VI ? KLocaleHelper.TTS_LANGUAGE_VI : KLocaleHelper.TTS_LANGUAGE_EN;
+  String get currentLanguage => gameData.language == KLocaleHelper.LANGUAGE_VI
+      ? KLocaleHelper.TTS_LANGUAGE_VI
+      : KLocaleHelper.TTS_LANGUAGE_EN;
 
   bool isLanguagesInstalled = false;
 
@@ -113,6 +118,8 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
   KQuestion get currentQuestion => gameData.currentQuestion;
 
   bool isPauseLocal = false;
+
+  List<bool> barrierOutSide = [false, false, false, false];
 
   @override
   void initState() {
@@ -188,10 +195,30 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
     ).animate(new CurvedAnimation(
         parent: _moveUpAnimationController, curve: Curves.bounceOut));
 
+    _barrierMovingAnimationController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+
     isPauseLocal = isPause;
     this.isSpeech = true;
     startSpeak(currentQuestion.text ?? "");
     widget.controller.addListener(pauseListener);
+
+    _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
+      if (isStart && mounted && !isPause) {
+        if (barrierOutSide[0] &&
+            barrierOutSide[1] &&
+            barrierOutSide[2] &&
+            barrierOutSide[3]) {
+          resetListAnswer();
+          Future.delayed(Duration(milliseconds: 50), () {
+            randomBoxPosition();
+            getListAnswer();
+          });
+        }
+      }
+    });
 
     randomBoxPosition();
     getListAnswer();
@@ -200,6 +227,8 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
   @override
   void dispose() {
     widget.controller.removeListener(pauseListener);
+    _timer?.cancel();
+    _barrierMovingAnimationController.dispose();
     _heroScaleAnimationController.dispose();
     _bouncingAnimationController.dispose();
     _moveUpAnimationController.dispose();
@@ -217,9 +246,13 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
   }
 
   void pauseListener() {
-    if ((widget.controller.value.isPause ?? false) && !isPauseLocal && isSpeech) {
+    if ((widget.controller.value.isPause ?? false) &&
+        !isPauseLocal &&
+        isSpeech) {
       stopSpeak();
-    } else if (!(widget.controller.value.isPause ?? false) && isPauseLocal && !isSpeech) {
+    } else if (!(widget.controller.value.isPause ?? false) &&
+        isPauseLocal &&
+        !isSpeech) {
       setState(() {
         this.isSpeech = true;
       });
@@ -231,6 +264,15 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
         isPauseLocal = widget.controller.value.isPause ?? false;
       });
     }
+  }
+
+  void resetListAnswer() {
+    this.setState(() {
+      this.barrierValues = [];
+      this.barrierX = [0, 0, 0, 0];
+      this.barrierY = [0, 0, 0, 0];
+      this.barrierOutSide = [false, false, false, false];
+    });
   }
 
   Future _setAwaitOptions() async {
@@ -348,22 +390,24 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
   void randomBoxPosition() {
     Math.Random rand = new Math.Random();
     //rand.nextDouble() * (max - min) + min
-    double topLeftX = rand.nextDouble() * (-0.3 - -1) + -1;
-    double topLeftY = rand.nextDouble() * (-0.3 - -0.8) - 0.8;
-    double topRightX = rand.nextDouble() * (1 - 0.3) + 0.3;
-    double topRightY = rand.nextDouble() * (-0.3 - -0.8) - 0.8;
-    double bottomLeftX = rand.nextDouble() * (-0.3 - -1) + -1;
-    double bottomLeftY = rand.nextDouble() * (0.8 - 0.3) + 0.3;
-    double bottomRightX = rand.nextDouble() * (1 - 0.3) + 0.3;
-    double bottomRightY = rand.nextDouble() * (0.8 - 0.3) + 0.3;
-    barrierX[0] = topLeftX;
-    barrierY[0] = topLeftY;
-    barrierX[1] = topRightX;
-    barrierY[1] = topRightY;
-    barrierX[2] = bottomLeftX;
-    barrierY[2] = bottomLeftY;
-    barrierX[3] = bottomRightX;
-    barrierY[3] = bottomRightY;
+    double topLeftX = rand.nextDouble() * (-3.0 - -1.5) + -1.5;
+    double topLeftY = rand.nextDouble() * (-3.0 - -1.5) + -1.5;
+    double topRightX = rand.nextDouble() * (3.0 - 1.5) + 1.5;
+    double topRightY = rand.nextDouble() * (-3.0 - -1.5) + -1.5;
+    double bottomLeftX = rand.nextDouble() * (-3.0 - -1.5) + -1.5;
+    double bottomLeftY = rand.nextDouble() * (3.0 - 1.5) + 1.5;
+    double bottomRightX = rand.nextDouble() * (3.0 - 1.5) + 1.5;
+    double bottomRightY = rand.nextDouble() * (3.0 - 1.5) + 1.5;
+    this.setState(() {
+      barrierX[0] = topLeftX;
+      barrierY[0] = topLeftY;
+      barrierX[1] = topRightX;
+      barrierY[1] = topRightY;
+      barrierX[2] = bottomLeftX;
+      barrierY[2] = bottomLeftY;
+      barrierX[3] = bottomRightX;
+      barrierY[3] = bottomRightY;
+    });
   }
 
   void loadAudioAsset() async {
@@ -454,13 +498,16 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
               if (currentQuestionIndex + 1 < questions.length) {
                 widget.controller.value.currentQuestionIndex =
                     currentQuestionIndex + 1;
-                randomBoxPosition();
-                getListAnswer();
+                resetListAnswer();
                 Future.delayed(Duration(milliseconds: 50), () {
-                  setState(() {
-                    this.isSpeech = true;
+                  randomBoxPosition();
+                  getListAnswer();
+                  Future.delayed(Duration(milliseconds: 50), () {
+                    setState(() {
+                      this.isSpeech = true;
+                    });
+                    startSpeak(currentQuestion.text ?? "");
                   });
-                  startSpeak(currentQuestion.text ?? "");
                 });
               } else {
                 if (questions.length > 0 &&
@@ -502,59 +549,50 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
         Align(
           alignment: Alignment.center,
           child: Padding(
-            padding: EdgeInsets.only(left: 10, right: 10, top: 50),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
             child: Stack(
-              children: [
-                ...List.generate(
-                  barrierValues.length,
-                  (i) => _Barrier(
-                    onTap: (KAnswer answer) => handlePickAnswer(answer, i),
-                    barrierX: barrierX[i],
-                    barrierY: barrierY[i],
-                    answer: barrierValues[i],
-                    rotateAngle: spinningHeroIndex == i
-                        ? -this._spinAnimationController.value * 4 * Math.pi
-                        : 0,
-                    bouncingAnimation: spinningHeroIndex == i
-                        ? _bouncingAnimation.value
-                        : Offset(0, 0),
-                    scaleAnimation:
-                        spinningHeroIndex == i ? _heroScaleAnimation : null,
-                    starY: _moveUpAnimation.value,
-                    isShowStar: currentShowStarIndex == i,
-                  ),
-                ),
-              ],
+              key: Key("${barrierValues.join("_")}"),
+              children: barrierValues.length > 0
+                  ? [
+                      ...List.generate(
+                        barrierValues.length,
+                        (i) => _Barrier(
+                          animationController:
+                              _barrierMovingAnimationController,
+                          onTap: (KAnswer answer) =>
+                              handlePickAnswer(answer, i),
+                          onOutSide: () {
+                            if (!this.barrierOutSide[i]) {
+                              this.setState(() {
+                                this.barrierOutSide[i] = true;
+                              });
+                            }
+                          },
+                          barrierX: barrierX[i],
+                          barrierY: barrierY[i],
+                          answer: barrierValues[i],
+                          rotateAngle: spinningHeroIndex == i
+                              ? -this._spinAnimationController.value *
+                                  4 *
+                                  Math.pi
+                              : 0,
+                          bouncingAnimation: spinningHeroIndex == i
+                              ? _bouncingAnimation.value
+                              : Offset(0, 0),
+                          scaleAnimation: spinningHeroIndex == i
+                              ? _heroScaleAnimation
+                              : null,
+                          starY: spinningHeroIndex == i
+                              ? _moveUpAnimation.value
+                              : 0.0,
+                          isShowStar: currentShowStarIndex == i,
+                        ),
+                      ),
+                    ]
+                  : [],
             ),
           ),
         ),
-        // if (!isPause && canShowLanguageToggle)
-        //   Align(
-        //     alignment: Alignment.topCenter,
-        //     child: Transform.translate(
-        //       offset: Offset(-10, 50),
-        //       child: Row(
-        //         mainAxisAlignment: MainAxisAlignment.end,
-        //         children: [
-        //           Text("${KLocaleHelper.LANGUAGE_EN.toUpperCase()}"),
-        //           Switch(
-        //             onChanged: currentLanguage == KLocaleHelper.TTS_LANGUAGE_VI
-        //                 ? (_) => setTtsLanguage(KLocaleHelper.TTS_LANGUAGE_EN)
-        //                 : (_) => setTtsLanguage(KLocaleHelper.TTS_LANGUAGE_VI),
-        //             value: () {
-        //               // print("IS TUTOR ONLINE? - ${OnlineService.isTutorOnlineCache}");
-        //               return currentLanguage == KLocaleHelper.TTS_LANGUAGE_VI;
-        //             }.call(),
-        //             activeColor: Colors.grey.shade50,
-        //             activeTrackColor: Colors.grey.shade50.withAlpha(0x80),
-        //             inactiveThumbColor: Colors.grey.shade50,
-        //             inactiveTrackColor: Colors.grey.shade50.withAlpha(0x80),
-        //           ),
-        //           Text("${KLocaleHelper.LANGUAGE_VI.toUpperCase()}"),
-        //         ],
-        //       ),
-        //     ),
-        //   ),
       ],
     );
 
@@ -562,7 +600,8 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
   }
 }
 
-class _Barrier extends StatelessWidget {
+class _Barrier extends StatefulWidget {
+  final AnimationController animationController;
   final double barrierX;
   final double barrierY;
   final double rotateAngle;
@@ -571,9 +610,11 @@ class _Barrier extends StatelessWidget {
   final Offset bouncingAnimation;
   final double? starY;
   final bool? isShowStar;
-  final Function(KAnswer value) onTap;
+  final Function(KAnswer answer) onTap;
+  final Function() onOutSide;
 
   _Barrier({
+    required this.animationController,
     required this.barrierX,
     required this.barrierY,
     required this.rotateAngle,
@@ -583,13 +624,53 @@ class _Barrier extends StatelessWidget {
     this.starY,
     this.isShowStar,
     required this.onTap,
+    required this.onOutSide,
   });
+
+  @override
+  _BarrierState createState() => _BarrierState();
+}
+
+class _BarrierState extends State<_Barrier>
+    with SingleTickerProviderStateMixin {
+  late Animation<Offset> _movingAnimation;
+
+  late AnimationController _movingAnimationController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    _movingAnimationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 7000))
+          ..addListener(() => setState(() {}))
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              widget.onOutSide();
+            } else if (status == AnimationStatus.dismissed) {
+              // _bouncingAnimationController.forward(from: 0.0);
+            }
+          });
+    _movingAnimation = Tween(
+            begin: Offset(0, 0), end: Offset(widget.barrierX, widget.barrierY))
+        .animate(_movingAnimationController);
+
+    _movingAnimationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _movingAnimationController.dispose();
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   Widget build(context) {
     final box = InkWell(
       onTap: () {
-        onTap(answer);
+        widget.onTap(widget.answer);
       },
       child: Container(
         width: 80,
@@ -600,7 +681,7 @@ class _Barrier extends StatelessWidget {
         ),
         child: FittedBox(
           child: Text(
-            "${this.answer.text}",
+            "${widget.answer.text}",
             textScaleFactor: 1.0,
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -614,7 +695,8 @@ class _Barrier extends StatelessWidget {
     );
 
     return Container(
-      alignment: Alignment(barrierX, barrierY),
+      alignment:
+          Alignment(_movingAnimation.value.dx, _movingAnimation.value.dy),
       child: Container(
         width: 80,
         height: 80,
@@ -626,13 +708,13 @@ class _Barrier extends StatelessWidget {
               child: Transform.translate(
                 offset: Offset(0, 0),
                 child: Transform.translate(
-                  offset: Offset(0, -60 * (starY ?? 0)),
+                  offset: Offset(0, -60 * (widget.starY ?? 0)),
                   child: AnimatedOpacity(
                     duration: Duration(milliseconds: 500),
-                    opacity:
-                        (isShowStar ?? false) && (answer.isCorrect ?? false)
-                            ? 1
-                            : 0,
+                    opacity: (widget.isShowStar ?? false) &&
+                            (widget.answer.isCorrect ?? false)
+                        ? 1
+                        : 0,
                     child: Icon(
                       Icons.star,
                       color: Colors.amberAccent,
@@ -643,12 +725,12 @@ class _Barrier extends StatelessWidget {
               ),
             ),
             Transform.translate(
-              offset: bouncingAnimation,
+              offset: widget.bouncingAnimation,
               child: Transform.rotate(
-                angle: rotateAngle,
-                child: scaleAnimation != null
+                angle: widget.rotateAngle,
+                child: widget.scaleAnimation != null
                     ? (ScaleTransition(
-                        scale: scaleAnimation!,
+                        scale: widget.scaleAnimation!,
                         child: box,
                       ))
                     : box,

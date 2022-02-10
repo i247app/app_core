@@ -14,6 +14,7 @@ import 'package:app_core/ui/game/games/kgame_letter_tap.dart';
 import 'package:app_core/ui/game/games/kgame_moving_tap.dart';
 import 'package:app_core/ui/game/games/kgame_shooting.dart';
 import 'package:app_core/ui/game/games/kgame_speech_letter_tap.dart';
+import 'package:app_core/ui/game/games/kgame_speech_moving_tap.dart';
 import 'package:app_core/ui/game/games/kgame_speech_tap.dart';
 import 'package:app_core/ui/game/games/kgame_tap.dart';
 import 'package:app_core/ui/game/service/kgame_controller.dart';
@@ -352,7 +353,7 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
             score: score,
             canSaveHighScore: rightAnswerCount == questions.length,
             currentLevel: currentLevel,
-            isTime: isCountTime,
+            isTime: isShowTimer(),
           ),
         ),
       ],
@@ -500,7 +501,9 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       ..avatarURL = KSessionData.me!.avatarURL
       ..kunm = KSessionData.me!.kunm
       ..level = "${currentLevel}"
-      ..score = "${isCountTime ? levelPlayTimes[currentLevel] : point}";
+      ..points = "${point}"
+      ..time = "${levelPlayTimes[currentLevel]}";
+      // ..score = "${isShowTimer() ? levelPlayTimes[currentLevel] : point}";
     widget.controller.notify();
 
     if (currentLevel + 1 < levelCount) {
@@ -524,6 +527,12 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
         );
       case KGameSpeechTap.GAME_ID:
         return KGameSpeechTap(
+          controller: widget.controller,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
+      case KGameSpeechMovingTap.GAME_ID:
+        return KGameSpeechMovingTap(
           controller: widget.controller,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
@@ -572,13 +581,13 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
         );
       case KGameMulti.GAME_ID: {
         if (currentLevel == 0 || currentLevel == 2) {
-          return KGameTap(
+          return KGameSpeechTap(
             controller: widget.controller,
             hero: widget.hero,
             onFinishLevel: onFinishLevel,
           );
         }
-        return KGameMovingTap(
+        return KGameSpeechMovingTap(
           controller: widget.controller,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
@@ -586,6 +595,16 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       }
       default:
         return Container();
+    }
+  }
+
+  bool isShowTimer() {
+    switch (gameID) {
+      case KGameMovingTap.GAME_ID:
+      case KGameLetterTap.GAME_ID:
+        return true;
+      default:
+        return false;
     }
   }
 
@@ -1074,9 +1093,9 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
                 : Stack(
                     fit: StackFit.expand,
                     children: [
-                      if (isCountTime && (isStart || result != null))
+                      if (isShowTimer() && (isStart || result != null))
                         timeCounter,
-                      if (!isCountTime && (isStart || result != null))
+                      if (!isShowTimer() && (isStart || result != null))
                         correctAnswerCounter,
                       if (isStart) eggReceiveBox,
                       levelBox,

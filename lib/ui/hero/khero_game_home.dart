@@ -6,6 +6,7 @@ import 'package:app_core/ui/game/games/kgame_moving_tap.dart';
 import 'package:app_core/ui/game/games/kgame_multi.dart';
 import 'package:app_core/ui/game/games/kgame_shooting.dart';
 import 'package:app_core/ui/game/games/kgame_speech_letter_tap.dart';
+import 'package:app_core/ui/game/games/kgame_speech_moving_tap.dart';
 import 'package:app_core/ui/game/games/kgame_speech_tap.dart';
 import 'package:app_core/ui/game/games/kgame_tap.dart';
 import 'package:app_core/ui/game/kgame.dart';
@@ -196,6 +197,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                               gameName: KGameMulti.GAME_NAME,
                               levelCount: 4,
                               currentLevel: 0,
+                              isSpeechGame: true,
                               // isCountTime: true,
                             ),
                           ),
@@ -227,7 +229,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                               gameName: KGameSpeechLetterTap.GAME_NAME,
                               levelCount: 4,
                               currentLevel: 0,
-                              answerType: 'ENGLISH',
+                              answerType: 'letter',
                               isSpeechGame: true,
                               // isCountTime: true,
                             ),
@@ -256,7 +258,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                           builder: (ctx) => KGameRoom(
                             KGameController(
                               gameID: KGameSpeechTap.GAME_ID,
-                              gameAppID: KGameSpeechTap.GAME_APP_ID,
+                              // gameAppID: KGameSpeechTap.GAME_APP_ID,
                               gameName: KGameSpeechTap.GAME_NAME,
                               levelCount: 4,
                               currentLevel: 0,
@@ -274,6 +276,38 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   SizedBox(width: 5),
                   FittedBox(
                     child: Text("Speech Math"),
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => KGameRoom(
+                            KGameController(
+                              gameID: KGameSpeechMovingTap.GAME_ID,
+                              gameAppID: KGameSpeechMovingTap.GAME_APP_ID,
+                              gameName: KGameSpeechMovingTap.GAME_NAME,
+                              levelCount: 4,
+                              currentLevel: 0,
+                              isSpeechGame: true,
+                              // isCountTime: true,
+                            ),
+                          ),
+                        )),
+                    style: KStyles.squaredButton(
+                      Theme.of(context).colorScheme.primary,
+                      textColor: Colors.white,
+                    ),
+                    child: Text("🔈"),
+                  ),
+                  SizedBox(width: 5),
+                  FittedBox(
+                    child: Text("Speech Math Moving"),
                   ),
                 ],
               ),
@@ -380,7 +414,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                               gameName: KGameLetterTap.GAME_NAME,
                               levelCount: 4,
                               currentLevel: 0,
-                              answerType: 'ENGLISH',
+                              answerType: 'letter',
                               isCountTime: true,
                             ),
                           ),

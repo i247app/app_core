@@ -72,7 +72,7 @@ class _KHeroLetterTapGameState extends State<KHeroLetterTapGame> {
       final response = await KServerHandler.getGames(
         gameID: GAME_ID,
         level: currentLevel.toString(),
-        cat: "ENGLISH",
+        topic: "letter",
       );
 
       if (response.isSuccess &&

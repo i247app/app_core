@@ -54,7 +54,8 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
       final result = await KServerHandler.saveGameScore(
         gameID: widget.game,
         level: widget.currentLevel.toString(),
-        score: widget.score!.score!,
+        time: widget.score!.time,
+        points: widget.score!.points,
       );
 
       if (result.isSuccess) {

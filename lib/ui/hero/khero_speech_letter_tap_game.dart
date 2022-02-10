@@ -76,7 +76,7 @@ class _KHeroSpeechLetterTapGameState extends State<KHeroSpeechLetterTapGame> {
       final response = await KServerHandler.getGames(
         gameID: GAME_ID,
         level: currentLevel.toString(),
-        cat: "ENGLISH",
+        topic: "letter",
         mimeType: "AUDIO",
       );
 

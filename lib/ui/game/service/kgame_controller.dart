@@ -51,7 +51,7 @@ class KGameController extends ValueNotifier<KGameData> {
       gameID: this.value.gameID,
       gameAppID: this.value.gameAppID,
       level: (this.value.currentLevel ?? 0).toString(),
-      cat: this.value.answerType ?? "MATH",
+      topic: this.value.answerType ?? "number",
       mimeType: (this.value.isSpeechGame ?? false) ? "AUDIO" : "TEXT",
       language: this.value.language ?? "en",
     );
