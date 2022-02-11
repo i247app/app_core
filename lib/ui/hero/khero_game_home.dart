@@ -17,6 +17,7 @@ import 'package:app_core/ui/hero/khero_letter_tap_game.dart';
 import 'package:app_core/ui/hero/khero_moving_tap_game.dart';
 import 'package:app_core/ui/hero/khero_speech_letter_tap_game.dart';
 import 'package:app_core/ui/hero/khero_tap_game.dart';
+import 'package:app_core/ui/hero/widget/kegg_hatch_new_short_intro.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
@@ -42,6 +43,7 @@ class KHeroGameHome extends StatefulWidget {
 
 class _KHeroGameHomeState extends State<KHeroGameHome> {
   int? overlayID;
+  bool isShowIntro = true;
 
   @override
   void initState() {
@@ -611,7 +613,15 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
     final body = Stack(
       fit: StackFit.expand,
       children: [
-        content,
+        if (!this.isShowIntro)
+          content,
+        if (this.isShowIntro) ...[
+          Container(color: Theme.of(context).backgroundColor.withOpacity(1)),
+          KEggHatchNewShortIntro(
+              onFinish: () => setState(() => this.isShowIntro = false)),
+          GestureDetector(
+              onTap: () => setState(() => this.isShowIntro = false)),
+        ],
       ],
     );
 
