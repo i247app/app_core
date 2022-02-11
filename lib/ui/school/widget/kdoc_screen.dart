@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:app_core/helper/kmath_helper.dart';
 import 'package:app_core/helper/kpush_data_helper.dart';
+import 'package:app_core/helper/kscreen_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/chapter.dart';
 import 'package:app_core/model/kpush_data.dart';
 import 'package:app_core/ui/school/widget/kdoc_view.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class KDocScreen extends StatefulWidget {
   final Chapter chapter;
@@ -28,12 +30,14 @@ class _KDocScreenState extends State<KDocScreen> {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setPreferredOrientations(DeviceOrientation.values);
     streamSub = KPushDataHelper.stream.listen(pushDataListener);
   }
 
   @override
   void dispose() {
     streamSub.cancel();
+    KScreenHelper.resetOrientation(context);
     super.dispose();
   }
 
