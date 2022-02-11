@@ -37,7 +37,6 @@ class _KDocScreenState extends State<KDocScreen> {
   @override
   void dispose() {
     streamSub.cancel();
-    KScreenHelper.resetOrientation(context);
     super.dispose();
   }
 
@@ -77,20 +76,54 @@ class _KDocScreenState extends State<KDocScreen> {
         if (widget.ssID != null) pushButton,
       ],
     );
+    final isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
 
-    final body = Scaffold(
-      backgroundColor: KStyles.darkGrey,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          chapterView,
-          Align(
-            alignment: Alignment.topLeft,
-            child: SafeArea(child: topBar),
-          ),
-        ],
+    final forceLandscape = IconButton(
+      onPressed: () {
+        KScreenHelper.landscapeOrientation(context);
+      },
+      icon: Icon(
+        Icons.screen_lock_landscape,
+        size: 32,
       ),
     );
+
+    final forcePortrait = IconButton(
+      onPressed: () {
+        KScreenHelper.resetOrientation(context);
+        Future.delayed(const Duration(milliseconds: 500), () {
+          SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+        });
+      },
+      icon: Icon(Icons.stay_current_portrait, size: 32),
+    );
+
+    final body = WillPopScope(
+        child: Scaffold(
+          backgroundColor: KStyles.darkGrey,
+          body: Stack(
+            fit: StackFit.expand,
+            children: [
+              chapterView,
+              Align(
+                alignment: Alignment.topLeft,
+                child: SafeArea(child: topBar),
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: isPortrait ? forceLandscape : forcePortrait,
+              ),
+            ],
+          ),
+        ),
+        onWillPop: () {
+          KScreenHelper.resetOrientation(context);
+          return Future.delayed(const Duration(milliseconds: 500), () {
+            Navigator.pop(context);
+            return true;
+          });
+        });
 
     return body;
   }
