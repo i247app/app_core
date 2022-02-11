@@ -258,7 +258,8 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       ByteData backgroundAudioFileData = await rootBundle
           .load("packages/app_core/assets/audio/music_background_1.mp3");
 
-      File backgroundAudioTempFile = File('${tempDir.path}/music_background_1.mp3');
+      File backgroundAudioTempFile =
+          File('${tempDir.path}/music_background_1.mp3');
       await backgroundAudioTempFile.writeAsBytes(
           backgroundAudioFileData.buffer.asUint8List(),
           flush: true);
@@ -322,17 +323,18 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       this.isShowEndLevel = true;
     });
     final heroGameLevel = KTamagoChanJumping(
-        onFinish: () {
-          this.setState(() {
-            this.isShowEndLevel = false;
-          });
-          if (this.overlayID != null) {
-            KOverlayHelper.removeOverlay(this.overlayID!);
-            this.overlayID = null;
-          }
-          onFinish();
-        },
-        canAdvance: canAdvance);
+      onFinish: () {
+        this.setState(() {
+          this.isShowEndLevel = false;
+        });
+        if (this.overlayID != null) {
+          KOverlayHelper.removeOverlay(this.overlayID!);
+          this.overlayID = null;
+        }
+        onFinish();
+      },
+      canAdvance: canAdvance,
+    );
     showCustomOverlay(heroGameLevel);
   }
 
@@ -509,7 +511,7 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       ..level = "${currentLevel}"
       ..points = "${point}"
       ..time = "${levelPlayTimes[currentLevel]}";
-      // ..score = "${isShowTimer() ? levelPlayTimes[currentLevel] : point}";
+    // ..score = "${isShowTimer() ? levelPlayTimes[currentLevel] : point}";
     widget.controller.notify();
 
     if (currentLevel + 1 < levelCount) {
@@ -585,34 +587,36 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
         );
-      case KGameMulti.GAME_ID: {
-        if (currentLevel == 0 || currentLevel == 2) {
-          return KGameSpeechTap(
+      case KGameMulti.GAME_ID:
+        {
+          if (currentLevel == 0 || currentLevel == 2) {
+            return KGameSpeechTap(
+              controller: widget.controller,
+              hero: widget.hero,
+              onFinishLevel: onFinishLevel,
+            );
+          }
+          return KGameSpeechMovingTap(
             controller: widget.controller,
             hero: widget.hero,
             onFinishLevel: onFinishLevel,
           );
         }
-        return KGameSpeechMovingTap(
-          controller: widget.controller,
-          hero: widget.hero,
-          onFinishLevel: onFinishLevel,
-        );
-      }
-      case KGameMultiLetter.GAME_ID: {
-        if (currentLevel == 0 || currentLevel == 2) {
-          return KGameSpeechLetterTap(
+      case KGameMultiLetter.GAME_ID:
+        {
+          if (currentLevel == 0 || currentLevel == 2) {
+            return KGameSpeechLetterTap(
+              controller: widget.controller,
+              hero: widget.hero,
+              onFinishLevel: onFinishLevel,
+            );
+          }
+          return KGameSpeechLetterMovingTap(
             controller: widget.controller,
             hero: widget.hero,
             onFinishLevel: onFinishLevel,
           );
         }
-        return KGameSpeechLetterMovingTap(
-          controller: widget.controller,
-          hero: widget.hero,
-          onFinishLevel: onFinishLevel,
-        );
-      }
       default:
         return Container();
     }
@@ -692,33 +696,33 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       alignment: Alignment(-1, -1),
       child: currentLevel < levelPlayTimes.length
           ? Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-        child: Container(
-          height: 50,
-          padding:
-          EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
-          decoration: BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(40),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                "${rightAnswerCount}/${questions.length}",
-                textScaleFactor: 1.0,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w600,
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+              child: Container(
+                height: 50,
+                padding:
+                    EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "${rightAnswerCount}/${questions.length}",
+                      textScaleFactor: 1.0,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      )
+            )
           : Container(),
     );
 
