@@ -25,4 +25,11 @@ abstract class KScreenHelper {
 
     SystemChrome.setPreferredOrientations(orientations);
   }
+
+  static void landscapeOrientation(BuildContext context) async {
+    // Always support portrait mode AT LEAST
+    List<DeviceOrientation> orientations = [DeviceOrientation.landscapeLeft];
+
+    SystemChrome.setPreferredOrientations(orientations);
+  }
 }
