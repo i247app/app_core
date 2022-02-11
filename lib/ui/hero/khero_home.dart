@@ -32,7 +32,7 @@ class _KHeroHomeState extends State<KHeroHome> {
   KHero? selectedHero;
 
   bool isHatchingHero = false;
-  bool isShowIntro = true;
+  bool isShowIntro = false;
 
   @override
   void initState() {
