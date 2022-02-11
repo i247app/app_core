@@ -393,14 +393,14 @@ class _KGameSpeechMovingTapState extends State<KGameSpeechMovingTap>
   void randomBoxPosition() {
     Math.Random rand = new Math.Random();
     //rand.nextDouble() * (max - min) + min
-    double topLeftX = rand.nextDouble() * (-3.0 - -1.5) + -1.5;
-    double topLeftY = rand.nextDouble() * (-3.0 - -1.5) + -1.5;
-    double topRightX = rand.nextDouble() * (3.0 - 1.5) + 1.5;
-    double topRightY = rand.nextDouble() * (-3.0 - -1.5) + -1.5;
-    double bottomLeftX = rand.nextDouble() * (-3.0 - -1.5) + -1.5;
-    double bottomLeftY = rand.nextDouble() * (3.0 - 1.5) + 1.5;
-    double bottomRightX = rand.nextDouble() * (3.0 - 1.5) + 1.5;
-    double bottomRightY = rand.nextDouble() * (3.0 - 1.5) + 1.5;
+    double topLeftX = rand.nextDouble() * (-1.5 - -1.3) + -1.3;
+    double topLeftY = rand.nextDouble() * (-1.5 - -1.3) + -1.3;
+    double topRightX = rand.nextDouble() * (1.5 - 1.3) + 1.3;
+    double topRightY = rand.nextDouble() * (-1.5 - -1.3) + -1.3;
+    double bottomLeftX = rand.nextDouble() * (-1.5 - -1.3) + -1.3;
+    double bottomLeftY = rand.nextDouble() * (1.5 - 1.3) + 1.3;
+    double bottomRightX = rand.nextDouble() * (1.5 - 1.3) + 1.3;
+    double bottomRightY = rand.nextDouble() * (1.5 - 1.3) + 1.3;
     this.setState(() {
       barrierX[0] = topLeftX;
       barrierY[0] = topLeftY;
