@@ -1,5 +1,3 @@
-import 'dart:math' as Math;
-
 import 'package:app_core/model/kanswer.dart';
 import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/kgame_score.dart';
@@ -30,20 +28,30 @@ class KGameData {
   bool? isCountTime;
 
   bool get isInitializing => this.game == null;
+
   List<double> get levelHardness => List.generate(
-    this.levelCount ?? 0,
+        this.levelCount ?? 0,
         (index) => (baseLevelHardness ?? 0) + (index * 0.1),
-  );
+      );
   List<int> levelPlayTimes = [];
 
   List<KQuestion> get questions => this.game?.qnas?[0].questions ?? [];
-  KQuestion get currentQuestion => this.questions.length > 0 && this.currentQuestionIndex != null && this.currentQuestionIndex! < this.questions.length ? this.questions[this.currentQuestionIndex ?? 0] : KQuestion();
-  List<KAnswer> get currentQuestionAnswers => this.currentQuestion.generateAnswers(4, answerType ?? 'number');
+
+  KQuestion get currentQuestion => this.questions.length > 0 &&
+          this.currentQuestionIndex != null &&
+          this.currentQuestionIndex! < this.questions.length
+      ? this.questions[this.currentQuestionIndex ?? 0]
+      : KQuestion();
+
+  List<KAnswer> get currentQuestionAnswers =>
+      this.currentQuestion.generateAnswers(4, answerType ?? 'number');
 
   bool get canRestartGame =>
       (currentLevel ?? 0) + 1 < levelHardness.length ||
-          ((currentLevel ?? 0) < levelHardness.length && questions.length > 0 &&
-              ((rightAnswerCount ?? 0) / questions.length) < levelHardness[currentLevel ?? 0]);
+      ((currentLevel ?? 0) < levelHardness.length &&
+          questions.length > 0 &&
+          ((rightAnswerCount ?? 0) / questions.length) <
+              levelHardness[currentLevel ?? 0]);
 
   KGameData({
     required this.gameID,

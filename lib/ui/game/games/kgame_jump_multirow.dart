@@ -4,17 +4,12 @@ import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/khero.dart';
-import 'package:app_core/model/kgame_score.dart';
-import 'package:app_core/ui/hero/widget/kegg_hero_intro.dart';
-import 'package:app_core/ui/hero/widget/khero_game_end.dart';
-import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
+import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
 
 class KGameJumpMultiRow extends StatefulWidget {
