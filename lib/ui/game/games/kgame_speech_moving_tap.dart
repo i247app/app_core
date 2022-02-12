@@ -3,34 +3,29 @@ import 'dart:io';
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
-import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/kanswer.dart';
-import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/kquestion.dart';
-import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/ui/game/service/kgame_controller.dart';
 import 'package:app_core/ui/game/service/kgame_data.dart';
-import 'package:app_core/ui/hero/widget/kegg_hero_intro.dart';
-import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
-import 'package:app_core/ui/hero/widget/khero_game_end.dart';
-import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
-import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
-import 'package:app_core/ui/hero/widget/ktamago_chan_jumping.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
-class KGameMovingTap extends StatefulWidget {
-  static const GAME_ID = "510";
-  static const GAME_NAME = "tap";
+enum TtsState { playing, stopped, paused, continued }
+
+class KGameSpeechMovingTap extends StatefulWidget {
+  static const GAME_ID = "601";
+  static const GAME_APP_ID = "1001";
+  static const GAME_NAME = "speech_moving_tap";
 
   final KGameController controller;
   final KHero? hero;
   final Function? onFinishLevel;
 
-  const KGameMovingTap({
+  const KGameSpeechMovingTap({
     Key? key,
     this.hero,
     this.onFinishLevel,
@@ -38,15 +33,16 @@ class KGameMovingTap extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _KGameMovingTapState createState() => _KGameMovingTapState();
+  _KGameSpeechMovingTapState createState() => _KGameSpeechMovingTapState();
 }
 
-class _KGameMovingTapState extends State<KGameMovingTap>
+class _KGameSpeechMovingTapState extends State<KGameSpeechMovingTap>
     with TickerProviderStateMixin {
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
 
+  late FlutterTts flutterTts;
   late Animation<Offset> _bouncingAnimation;
   late Animation<double> _moveUpAnimation, _heroScaleAnimation;
 
@@ -67,7 +63,31 @@ class _KGameMovingTapState extends State<KGameMovingTap>
   List<double> barrierX = [0, 0, 0, 0];
   List<double> barrierY = [0, 0, 0, 0];
   List<KAnswer> barrierValues = [];
-  List<bool> barrierOutSide = [false, false, false, false];
+
+  bool isSpeech = false;
+
+  TtsState ttsState = TtsState.stopped;
+
+  get isPlaying => ttsState == TtsState.playing;
+
+  get isStopped => ttsState == TtsState.stopped;
+
+  get isPaused => ttsState == TtsState.paused;
+
+  get isContinued => ttsState == TtsState.continued;
+
+  double speechRate = 0.3;
+  double speechVolume = 1.0;
+  double speechPitch = 1;
+  int speechDelay = 2000;
+
+  String get currentLanguage => gameData.language == KLocaleHelper.LANGUAGE_VI
+      ? KLocaleHelper.TTS_LANGUAGE_VI
+      : KLocaleHelper.TTS_LANGUAGE_EN;
+
+  bool isLanguagesInstalled = false;
+
+  bool get canShowLanguageToggle => Platform.isAndroid && isLanguagesInstalled;
 
   bool get isStart => gameData.isStart ?? false;
 
@@ -97,10 +117,15 @@ class _KGameMovingTapState extends State<KGameMovingTap>
 
   KQuestion get currentQuestion => gameData.currentQuestion;
 
+  bool isPauseLocal = false;
+
+  List<bool> barrierOutSide = [false, false, false, false];
+
   @override
   void initState() {
     super.initState();
 
+    initTts();
     loadAudioAsset();
 
     _heroScaleAnimationController = AnimationController(
@@ -132,6 +157,7 @@ class _KGameMovingTapState extends State<KGameMovingTap>
             if (status == AnimationStatus.completed) {
               _bouncingAnimationController.reverse();
             } else if (status == AnimationStatus.dismissed) {
+              // _bouncingAnimationController.forward(from: 0.0);
               this._heroScaleAnimationController.forward();
             }
           });
@@ -154,7 +180,14 @@ class _KGameMovingTapState extends State<KGameMovingTap>
     )
       ..addListener(() => setState(() {}))
       ..addStatusListener((status) {
-        if (mounted && status == AnimationStatus.completed) {}
+        if (mounted && status == AnimationStatus.completed) {
+          // this.setState(() {
+          //   isShowPlusPoint = false;
+          // });
+          // Future.delayed(Duration(milliseconds: 50), () {
+          //   this._moveUpAnimationController.reset();
+          // });
+        }
       });
     _moveUpAnimation = new Tween(
       begin: 0.0,
@@ -166,6 +199,11 @@ class _KGameMovingTapState extends State<KGameMovingTap>
       duration: const Duration(seconds: 2),
       vsync: this,
     )..repeat(reverse: true);
+
+    isPauseLocal = isPause;
+    this.isSpeech = true;
+    startSpeak(currentQuestion.text ?? "");
+    widget.controller.addListener(pauseListener);
 
     _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
       if (isStart && mounted && !isPause) {
@@ -188,6 +226,7 @@ class _KGameMovingTapState extends State<KGameMovingTap>
 
   @override
   void dispose() {
+    widget.controller.removeListener(pauseListener);
     _timer?.cancel();
     _barrierMovingAnimationController.dispose();
     _heroScaleAnimationController.dispose();
@@ -195,10 +234,36 @@ class _KGameMovingTapState extends State<KGameMovingTap>
     _moveUpAnimationController.dispose();
     _spinAnimationController.dispose();
 
-    audioPlayer.dispose();
+    try {
+      audioPlayer.dispose();
+    } catch (e) {}
+    try {
+      flutterTts.stop();
+    } catch (e) {}
 
     // TODO: implement dispose
     super.dispose();
+  }
+
+  void pauseListener() {
+    if ((widget.controller.value.isPause ?? false) &&
+        !isPauseLocal &&
+        isSpeech) {
+      stopSpeak();
+    } else if (!(widget.controller.value.isPause ?? false) &&
+        isPauseLocal &&
+        !isSpeech) {
+      setState(() {
+        this.isSpeech = true;
+      });
+      startSpeak(currentQuestion.text ?? "");
+    }
+
+    if (isPauseLocal != widget.controller.value.isPause) {
+      this.setState(() {
+        isPauseLocal = widget.controller.value.isPause ?? false;
+      });
+    }
   }
 
   void resetListAnswer() {
@@ -208,6 +273,115 @@ class _KGameMovingTapState extends State<KGameMovingTap>
       this.barrierY = [0, 0, 0, 0];
       this.barrierOutSide = [false, false, false, false];
     });
+  }
+
+  Future _setAwaitOptions() async {
+    await flutterTts.awaitSpeakCompletion(true);
+    if (Platform.isIOS) {
+      await flutterTts.setSharedInstance(true);
+    }
+
+    try {
+      bool isViInstalled =
+          await flutterTts.isLanguageInstalled(KLocaleHelper.TTS_LANGUAGE_VI);
+      bool isEnInstalled =
+          await flutterTts.isLanguageInstalled(KLocaleHelper.TTS_LANGUAGE_EN);
+
+      if (isViInstalled && isEnInstalled) {
+        this.setState(() {
+          isLanguagesInstalled = true;
+        });
+      }
+    } catch (e) {}
+  }
+
+  Future _getDefaultEngine() async {
+    var engine = await flutterTts.getDefaultEngine;
+    if (engine != null) {
+      print(engine);
+    }
+  }
+
+  initTts() {
+    flutterTts = FlutterTts();
+
+    _setAwaitOptions();
+
+    if (Platform.isAndroid) {
+      _getDefaultEngine();
+    } else if (Platform.isIOS) {
+      flutterTts.setPauseHandler(() {
+        setState(() {
+          print("Paused");
+          ttsState = TtsState.paused;
+        });
+      });
+
+      flutterTts.setContinueHandler(() {
+        setState(() {
+          print("Continued");
+          ttsState = TtsState.continued;
+        });
+      });
+    }
+
+    flutterTts.setStartHandler(() {
+      setState(() {
+        print("Playing");
+        ttsState = TtsState.playing;
+      });
+    });
+
+    flutterTts.setCompletionHandler(() {
+      setState(() {
+        print("Complete");
+        ttsState = TtsState.stopped;
+      });
+    });
+
+    flutterTts.setCancelHandler(() {
+      setState(() {
+        print("Cancel");
+        ttsState = TtsState.stopped;
+      });
+    });
+
+    flutterTts.setErrorHandler((msg) {
+      setState(() {
+        print("error: $msg");
+        ttsState = TtsState.stopped;
+      });
+    });
+  }
+
+  Future startSpeak(String text) async {
+    if ((currentQuestion.text ?? "").isNotEmpty &&
+        ttsState == TtsState.stopped) {
+      if (mounted && isSpeech) {
+        await flutterTts.setLanguage(currentLanguage);
+
+        await flutterTts.setSpeechRate(speechRate);
+        await flutterTts.setPitch(speechPitch);
+        await flutterTts.setVolume(speechVolume);
+        await flutterTts.speak(currentQuestion.text ?? "");
+        if (mounted && isSpeech) {
+          Future.delayed(Duration(milliseconds: speechDelay), () {
+            if (mounted && isSpeech) {
+              startSpeak(currentQuestion.text ?? "");
+            }
+          });
+        }
+      }
+    }
+  }
+
+  Future stopSpeak() async {
+    if (isSpeech) {
+      setState(() {
+        this.isSpeech = false;
+      });
+      await flutterTts.stop();
+    }
   }
 
   void getListAnswer() {
@@ -276,7 +450,7 @@ class _KGameMovingTapState extends State<KGameMovingTap>
     });
   }
 
-  void handlePickAnswer(KAnswer answer, int answerIndex) {
+  void handlePickAnswer(KAnswer answer, int answerIndex) async {
     if (_spinAnimationController.value != 0) {
       return;
     }
@@ -296,6 +470,9 @@ class _KGameMovingTapState extends State<KGameMovingTap>
     this._spinAnimationController.forward();
 
     if (isTrueAnswer) {
+      if (isSpeech) {
+        await stopSpeak();
+      }
       widget.controller.value.result = true;
       widget.controller.value.point = point + 5;
       if (!isWrongAnswer) {
@@ -328,6 +505,12 @@ class _KGameMovingTapState extends State<KGameMovingTap>
                 Future.delayed(Duration(milliseconds: 50), () {
                   randomBoxPosition();
                   getListAnswer();
+                  Future.delayed(Duration(milliseconds: 200), () {
+                    setState(() {
+                      this.isSpeech = true;
+                    });
+                    startSpeak(currentQuestion.text ?? "");
+                  });
                 });
               } else {
                 if (questions.length > 0 &&
@@ -349,17 +532,16 @@ class _KGameMovingTapState extends State<KGameMovingTap>
         }
       });
     } else {
-      this.setState(() {
-        widget.controller.value.result = false;
-        widget.controller.value.point = point > 0 ? point - 1 : 0;
-        if (!isWrongAnswer) {
-          widget.controller.value.wrongAnswerCount = wrongAnswerCount + 1;
-          this.setState(() {
-            isWrongAnswer = true;
-          });
-        }
-      });
+      widget.controller.value.result = false;
+      widget.controller.value.point = point > 0 ? point - 1 : 0;
+      if (!isWrongAnswer) {
+        widget.controller.value.wrongAnswerCount = wrongAnswerCount + 1;
+        this.setState(() {
+          isWrongAnswer = true;
+        });
+      }
     }
+    widget.controller.notify();
   }
 
   @override
@@ -411,37 +593,6 @@ class _KGameMovingTapState extends State<KGameMovingTap>
                       ),
                     ]
                   : [],
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.center,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.75,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(40),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.5),
-                    blurRadius: 8,
-                    offset: Offset(2, 6),
-                  ),
-                ],
-              ),
-              child: Text(
-                currentQuestion.text ?? "",
-                textScaleFactor: 1.0,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 35,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
             ),
           ),
         ),

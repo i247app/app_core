@@ -12,8 +12,11 @@ import 'package:app_core/ui/game/games/kgame_jump_over.dart';
 import 'package:app_core/ui/game/games/kgame_jump_up.dart';
 import 'package:app_core/ui/game/games/kgame_letter_tap.dart';
 import 'package:app_core/ui/game/games/kgame_moving_tap.dart';
+import 'package:app_core/ui/game/games/kgame_multi_letter.dart';
 import 'package:app_core/ui/game/games/kgame_shooting.dart';
+import 'package:app_core/ui/game/games/kgame_speech_letter_moving_tap.dart';
 import 'package:app_core/ui/game/games/kgame_speech_letter_tap.dart';
+import 'package:app_core/ui/game/games/kgame_speech_moving_tap.dart';
 import 'package:app_core/ui/game/games/kgame_speech_tap.dart';
 import 'package:app_core/ui/game/games/kgame_tap.dart';
 import 'package:app_core/ui/game/service/kgame_controller.dart';
@@ -29,7 +32,10 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:path_provider/path_provider.dart';
+
+import 'games/kgame_multi.dart';
 
 class KGameRoom extends StatefulWidget {
   final KGameController controller;
@@ -44,6 +50,8 @@ class KGameRoom extends StatefulWidget {
 class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
   AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? backgroundAudioFileUri;
+
+  late FlutterTts flutterTts;
 
   static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
@@ -66,6 +74,8 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
   bool isShowIntro = true;
   bool isLoaded = false;
 
+  KGameData get gameData => widget.controller.value;
+
   bool get isStart => gameData.isStart ?? false;
 
   bool get isPause => gameData.isPause ?? false;
@@ -73,8 +83,6 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
   bool get canAdvance => gameData.canAdvance ?? false;
 
   bool get canRestartGame => gameData.canRestartGame;
-
-  KGameData get gameData => widget.controller.value;
 
   int get currentLevel => gameData.currentLevel ?? 0;
 
@@ -104,7 +112,12 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
 
   List<double> get levelHardness => gameData.levelHardness;
 
+  String? get currentLanguage => gameData.language;
+
   List<String> levelIconAssets = [];
+
+  List<String> languageLabels = [];
+  List<String> languageValues = [];
 
   @override
   void initState() {
@@ -128,9 +141,13 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
     widget.controller.addListener(basicSetStateListener);
     WidgetsBinding.instance?.addObserver(this);
 
-    loadGame();
+    if (!isSpeechGame) {
+      loadGame();
+    } else {
+      checkInstalledLanguage();
+    }
 
-    _timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 16), (timer) {
       if (isStart && mounted && !isPause) {
         if (currentLevel < levelPlayTimes.length) {
           widget.controller.updatePlayTime();
@@ -156,15 +173,78 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused && !this.isPause)
-      showPauseDialog();
-    else if (state == AppLifecycleState.resumed && this.isPause) resumeGame();
+    if (isStart) {
+      if (state == AppLifecycleState.paused && !this.isPause)
+        showPauseDialog();
+      else if (state == AppLifecycleState.resumed && this.isPause) resumeGame();
+    }
+  }
+
+  void checkInstalledLanguage() async {
+    flutterTts = FlutterTts();
+
+    try {
+      if (Platform.isIOS) {
+        await flutterTts.setSharedInstance(true);
+      }
+      await flutterTts.awaitSpeakCompletion(true);
+
+      if (Platform.isAndroid) {
+        try {
+          final languages = await flutterTts.getLanguages;
+          print(languages);
+          bool isInstalled = await flutterTts
+              .isLanguageInstalled(KLocaleHelper.TTS_LANGUAGE_VI);
+          if (isInstalled) {
+            this.setState(() {
+              languageLabels.add("Vietnamese");
+              languageValues.add(KLocaleHelper.LANGUAGE_VI);
+            });
+          }
+        } catch (e) {}
+        try {
+          bool isInstalled = await flutterTts
+              .isLanguageInstalled(KLocaleHelper.TTS_LANGUAGE_EN);
+          if (isInstalled) {
+            this.setState(() {
+              languageLabels.add("English");
+              languageValues.add(KLocaleHelper.LANGUAGE_EN);
+            });
+          }
+        } catch (e) {}
+      } else if (Platform.isIOS) {
+        handleSelectLanguage(KLocaleHelper.LANGUAGE_EN);
+        // List<dynamic> _languages = await flutterTts.getLanguages;
+        //
+        // if (_languages.contains(KLocaleHelper.TTS_LANGUAGE_VI)) {
+        //   this.setState(() {
+        //     languageLabels.add("Vietnamese");
+        //     languageValues.add(KLocaleHelper.LANGUAGE_VI);
+        //   });
+        // }
+        // if (_languages.contains(KLocaleHelper.TTS_LANGUAGE_EN)) {
+        //   this.setState(() {
+        //     languageLabels.add("English");
+        //     languageValues.add(KLocaleHelper.LANGUAGE_EN);
+        //   });
+        // }
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   void loadGame() async {
     try {
       await widget.controller.loadGame();
     } catch (e) {}
+  }
+
+  void handleSelectLanguage(String language) {
+    widget.controller.value.language = language;
+    widget.controller.notify();
+
+    loadGame();
   }
 
   void basicSetStateListener() => setState(() {});
@@ -176,9 +256,10 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       Directory tempDir = await getTemporaryDirectory();
 
       ByteData backgroundAudioFileData = await rootBundle
-          .load("packages/app_core/assets/audio/background.mp3");
+          .load("packages/app_core/assets/audio/music_background_1.mp3");
 
-      File backgroundAudioTempFile = File('${tempDir.path}/background.mp3');
+      File backgroundAudioTempFile =
+          File('${tempDir.path}/music_background_1.mp3');
       await backgroundAudioTempFile.writeAsBytes(
           backgroundAudioFileData.buffer.asUint8List(),
           flush: true);
@@ -242,17 +323,18 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       this.isShowEndLevel = true;
     });
     final heroGameLevel = KTamagoChanJumping(
-        onFinish: () {
-          this.setState(() {
-            this.isShowEndLevel = false;
-          });
-          if (this.overlayID != null) {
-            KOverlayHelper.removeOverlay(this.overlayID!);
-            this.overlayID = null;
-          }
-          onFinish();
-        },
-        canAdvance: canAdvance);
+      onFinish: () {
+        this.setState(() {
+          this.isShowEndLevel = false;
+        });
+        if (this.overlayID != null) {
+          KOverlayHelper.removeOverlay(this.overlayID!);
+          this.overlayID = null;
+        }
+        onFinish();
+      },
+      canAdvance: canAdvance,
+    );
     showCustomOverlay(heroGameLevel);
   }
 
@@ -278,7 +360,7 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
             score: score,
             canSaveHighScore: rightAnswerCount == questions.length,
             currentLevel: currentLevel,
-            isTime: isCountTime,
+            isTime: isShowTimer(),
           ),
         ),
       ],
@@ -339,6 +421,7 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
         score: null,
         canSaveHighScore: false,
         currentLevel: currentLevel,
+        gameData: gameData,
       ),
     );
     showCustomOverlay(view);
@@ -426,7 +509,9 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       ..avatarURL = KSessionData.me!.avatarURL
       ..kunm = KSessionData.me!.kunm
       ..level = "${currentLevel}"
-      ..score = "${isCountTime ? levelPlayTimes[currentLevel] : point}";
+      ..points = "${point}"
+      ..time = "${levelPlayTimes[currentLevel]}";
+    // ..score = "${isShowTimer() ? levelPlayTimes[currentLevel] : point}";
     widget.controller.notify();
 
     if (currentLevel + 1 < levelCount) {
@@ -450,6 +535,12 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
         );
       case KGameSpeechTap.GAME_ID:
         return KGameSpeechTap(
+          controller: widget.controller,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
+      case KGameSpeechMovingTap.GAME_ID:
+        return KGameSpeechMovingTap(
           controller: widget.controller,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
@@ -496,8 +587,48 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
         );
+      case KGameMulti.GAME_ID:
+        {
+          if (currentLevel == 0 || currentLevel == 2) {
+            return KGameSpeechTap(
+              controller: widget.controller,
+              hero: widget.hero,
+              onFinishLevel: onFinishLevel,
+            );
+          }
+          return KGameSpeechMovingTap(
+            controller: widget.controller,
+            hero: widget.hero,
+            onFinishLevel: onFinishLevel,
+          );
+        }
+      case KGameMultiLetter.GAME_ID:
+        {
+          if (currentLevel == 0 || currentLevel == 2) {
+            return KGameSpeechLetterTap(
+              controller: widget.controller,
+              hero: widget.hero,
+              onFinishLevel: onFinishLevel,
+            );
+          }
+          return KGameSpeechLetterMovingTap(
+            controller: widget.controller,
+            hero: widget.hero,
+            onFinishLevel: onFinishLevel,
+          );
+        }
       default:
         return Container();
+    }
+  }
+
+  bool isShowTimer() {
+    switch (gameID) {
+      case KGameMovingTap.GAME_ID:
+      case KGameLetterTap.GAME_ID:
+        return true;
+      default:
+        return false;
     }
   }
 
@@ -546,6 +677,40 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
                           milliseconds: levelPlayTimes[currentLevel],
                         ),
                       ),
+                      textScaleFactor: 1.0,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : Container(),
+    );
+
+    final correctAnswerCounter = Align(
+      alignment: Alignment(-1, -1),
+      child: currentLevel < levelPlayTimes.length
+          ? Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+              child: Container(
+                height: 50,
+                padding:
+                    EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(40),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "${rightAnswerCount}/${questions.length}",
                       textScaleFactor: 1.0,
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -876,6 +1041,61 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       ),
     );
 
+    final languageSelect = Align(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Choose your language",
+              style: TextStyle(fontSize: 30, color: Colors.white),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            ...List.generate(languageLabels.length, (index) {
+              final language = languageLabels[index];
+              final languageValue = languageValues[index];
+
+              return Padding(
+                padding: EdgeInsets.only(bottom: 16),
+                child: GestureDetector(
+                  onTap: () => handleSelectLanguage(languageValue),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.75,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(40),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.5),
+                          blurRadius: 8,
+                          offset: Offset(2, 6),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      "${language}",
+                      textScaleFactor: 1.0,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 35,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+
     final currentGame = getCurrentGameWidget();
 
     final body = Column(
@@ -897,16 +1117,21 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
                 : Stack(
                     fit: StackFit.expand,
                     children: [
-                      if (isCountTime && (isStart || result != null))
+                      if (isShowTimer() && (isStart || result != null))
                         timeCounter,
+                      if (!isShowTimer() && (isStart || result != null))
+                        correctAnswerCounter,
                       if (isStart) eggReceiveBox,
                       levelBox,
+                      if (!isStart && isSpeechGame && currentLanguage == null)
+                        languageSelect,
                       if (isStart && gameData.game != null && !isLoading)
                         Align(
                           alignment: Alignment.center,
                           child: currentGame,
                         ),
-                      if (!isLoading &&
+                      if ((!isSpeechGame || currentLanguage != null) &&
+                          !isLoading &&
                           !isStart &&
                           !isShowCountDown &&
                           !isShowEndLevel) ...[
@@ -959,7 +1184,9 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
 
     return Scaffold(
       // appBar: AppBar(title: Text("Play game")),
-      body: body,
+      body: SafeArea(
+        child: body,
+      ),
     );
   }
 }

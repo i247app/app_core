@@ -72,7 +72,7 @@ class _KHeroLetterTapGameState extends State<KHeroLetterTapGame> {
       final response = await KServerHandler.getGames(
         gameID: GAME_ID,
         level: currentLevel.toString(),
-        cat: "ENGLISH",
+        topic: "letter",
       );
 
       if (response.isSuccess &&
@@ -545,11 +545,11 @@ class KLetterTapGameScreenState extends State<KLetterTapGameScreen>
     // this.screenHeight = MediaQuery.of(context).size.height;
     // this.screenWidth = MediaQuery.of(context).size.width;
 
-    _timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 16), (timer) {
       if (isStart && mounted && !isPause) {
         if (currentLevel < totalLevel) {
           this.setState(() {
-            this.levelPlayTimes[currentLevel] += 1;
+            this.levelPlayTimes[currentLevel] += 16;
           });
         }
       }
@@ -712,7 +712,7 @@ class KLetterTapGameScreenState extends State<KLetterTapGameScreen>
       ByteData wrongAudioFileData =
           await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
       ByteData backgroundAudioFileData = await rootBundle
-          .load("packages/app_core/assets/audio/background.mp3");
+          .load("packages/app_core/assets/audio/music_background_1.mp3");
 
       File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
       await correctAudioTempFile
@@ -722,7 +722,7 @@ class KLetterTapGameScreenState extends State<KLetterTapGameScreen>
       await wrongAudioTempFile
           .writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
 
-      File backgroundAudioTempFile = File('${tempDir.path}/background.mp3');
+      File backgroundAudioTempFile = File('${tempDir.path}/music_background_1.mp3');
       await backgroundAudioTempFile.writeAsBytes(
           backgroundAudioFileData.buffer.asUint8List(),
           flush: true);

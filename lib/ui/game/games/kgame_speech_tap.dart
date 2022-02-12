@@ -18,6 +18,7 @@ enum TtsState { playing, stopped, paused, continued }
 
 class KGameSpeechTap extends StatefulWidget {
   static const GAME_ID = "600";
+  static const GAME_APP_ID = "1001";
   static const GAME_NAME = "speech_tap";
 
   final KGameController controller;
@@ -77,11 +78,11 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
   double speechPitch = 1;
   int speechDelay = 2000;
 
-  String get defaultLanguage => KLocaleHelper.TTS_LANGUAGE_EN;
-  String? currentLanguage;
+  String get currentLanguage => gameData.language == KLocaleHelper.LANGUAGE_VI ? KLocaleHelper.TTS_LANGUAGE_VI : KLocaleHelper.TTS_LANGUAGE_EN;
 
-  bool get canShowLanguageToggle =>
-      Platform.isAndroid && currentLanguage != null;
+  bool isLanguagesInstalled = false;
+
+  bool get canShowLanguageToggle => Platform.isAndroid && isLanguagesInstalled;
 
   bool get isStart => gameData.isStart ?? false;
 
@@ -110,6 +111,8 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
   List<KQuestion> get questions => gameData.questions;
 
   KQuestion get currentQuestion => gameData.currentQuestion;
+
+  bool isPauseLocal = false;
 
   @override
   void initState() {
@@ -141,28 +144,28 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
         parent: _heroScaleAnimationController, curve: Curves.bounceOut));
 
     _bouncingAnimationController =
-    AnimationController(vsync: this, duration: Duration(milliseconds: 100))
-      ..addListener(() => setState(() {}))
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          _bouncingAnimationController.reverse();
-        } else if (status == AnimationStatus.dismissed) {
-          // _bouncingAnimationController.forward(from: 0.0);
-          this._heroScaleAnimationController.forward();
-        }
-      });
+        AnimationController(vsync: this, duration: Duration(milliseconds: 100))
+          ..addListener(() => setState(() {}))
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              _bouncingAnimationController.reverse();
+            } else if (status == AnimationStatus.dismissed) {
+              // _bouncingAnimationController.forward(from: 0.0);
+              this._heroScaleAnimationController.forward();
+            }
+          });
     _bouncingAnimation = Tween(begin: Offset(0, 0), end: Offset(0, -10.0))
         .animate(_bouncingAnimationController);
 
     _spinAnimationController =
-    AnimationController(vsync: this, duration: Duration(milliseconds: 500))
-      ..addListener(() => setState(() {}))
-      ..addStatusListener((status) {
-        if (mounted && status == AnimationStatus.completed) {
-          this._spinAnimationController.reset();
-          this._heroScaleAnimationController.reverse();
-        } else if (status == AnimationStatus.dismissed) {}
-      });
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500))
+          ..addListener(() => setState(() {}))
+          ..addStatusListener((status) {
+            if (mounted && status == AnimationStatus.completed) {
+              this._spinAnimationController.reset();
+              this._heroScaleAnimationController.reverse();
+            } else if (status == AnimationStatus.dismissed) {}
+          });
 
     _moveUpAnimationController = AnimationController(
       duration: const Duration(milliseconds: 500),
@@ -185,20 +188,10 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
     ).animate(new CurvedAnimation(
         parent: _moveUpAnimationController, curve: Curves.bounceOut));
 
+    isPauseLocal = isPause;
     this.isSpeech = true;
     startSpeak(currentQuestion.text ?? "");
-    widget.controller.addListener(() {
-      if ((widget.controller.value.isPause ?? false) && this.speechVolume == 1.0) {
-        flutterTts.stop();
-        setState(() {
-          this.speechVolume = 0.0;
-        });
-      } else if (!(widget.controller.value.isPause ?? false) && this.speechVolume == 0.0) {
-        setState(() {
-          this.speechVolume = 1.0;
-        });
-      }
-    });
+    widget.controller.addListener(pauseListener);
 
     randomBoxPosition();
     getListAnswer();
@@ -206,6 +199,7 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
 
   @override
   void dispose() {
+    widget.controller.removeListener(pauseListener);
     _heroScaleAnimationController.dispose();
     _bouncingAnimationController.dispose();
     _moveUpAnimationController.dispose();
@@ -222,8 +216,41 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
     super.dispose();
   }
 
+  void pauseListener() {
+    if ((widget.controller.value.isPause ?? false) && !isPauseLocal && isSpeech) {
+      stopSpeak();
+    } else if (!(widget.controller.value.isPause ?? false) && isPauseLocal && !isSpeech) {
+      setState(() {
+        this.isSpeech = true;
+      });
+      startSpeak(currentQuestion.text ?? "");
+    }
+
+    if (isPauseLocal != widget.controller.value.isPause) {
+      this.setState(() {
+        isPauseLocal = widget.controller.value.isPause ?? false;
+      });
+    }
+  }
+
   Future _setAwaitOptions() async {
     await flutterTts.awaitSpeakCompletion(true);
+    if (Platform.isIOS) {
+      await flutterTts.setSharedInstance(true);
+    }
+
+    try {
+      bool isViInstalled =
+          await flutterTts.isLanguageInstalled(KLocaleHelper.TTS_LANGUAGE_VI);
+      bool isEnInstalled =
+          await flutterTts.isLanguageInstalled(KLocaleHelper.TTS_LANGUAGE_EN);
+
+      if (isViInstalled && isEnInstalled) {
+        this.setState(() {
+          isLanguagesInstalled = true;
+        });
+      }
+    } catch (e) {}
   }
 
   Future _getDefaultEngine() async {
@@ -233,18 +260,6 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
     }
   }
 
-  setTtsLanguage(String language) async {
-    if (Platform.isAndroid) {
-      bool isInstalled = await flutterTts.isLanguageInstalled(language);
-      if (!isInstalled) {
-        return;
-      }
-    }
-    setState(() {
-      currentLanguage = language;
-    });
-  }
-
   initTts() {
     flutterTts = FlutterTts();
 
@@ -252,10 +267,7 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
 
     if (Platform.isAndroid) {
       _getDefaultEngine();
-      setTtsLanguage(defaultLanguage);
     } else if (Platform.isIOS) {
-      setTtsLanguage(KLocaleHelper.TTS_LANGUAGE_EN);
-
       flutterTts.setPauseHandler(() {
         setState(() {
           print("Paused");
@@ -301,11 +313,10 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
   }
 
   Future startSpeak(String text) async {
-    if ((currentQuestion.text ?? "").isNotEmpty && ttsState == TtsState.stopped) {
+    if ((currentQuestion.text ?? "").isNotEmpty &&
+        ttsState == TtsState.stopped) {
       if (mounted && isSpeech) {
-        if (currentLanguage != null) {
-          await flutterTts.setLanguage(currentLanguage!);
-        }
+        await flutterTts.setLanguage(currentLanguage);
 
         await flutterTts.setSpeechRate(speechRate);
         await flutterTts.setPitch(speechPitch);
@@ -313,7 +324,9 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
         await flutterTts.speak(currentQuestion.text ?? "");
         if (mounted && isSpeech) {
           Future.delayed(Duration(milliseconds: speechDelay), () {
-            startSpeak(currentQuestion.text ?? "");
+            if (mounted && isSpeech) {
+              startSpeak(currentQuestion.text ?? "");
+            }
           });
         }
       }
@@ -361,9 +374,9 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
       Directory tempDir = await getTemporaryDirectory();
 
       ByteData correctAudioFileData =
-      await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
+          await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
       ByteData wrongAudioFileData =
-      await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
+          await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
 
       File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
       await correctAudioTempFile
@@ -393,7 +406,7 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
     });
   }
 
-  void handlePickAnswer(KAnswer answer, int answerIndex) {
+  void handlePickAnswer(KAnswer answer, int answerIndex) async {
     if (_spinAnimationController.value != 0) {
       return;
     }
@@ -414,7 +427,7 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
 
     if (isTrueAnswer) {
       if (isSpeech) {
-        stopSpeak();
+        await stopSpeak();
       }
       widget.controller.value.result = true;
       widget.controller.value.point = point + 5;
@@ -446,7 +459,7 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
                     currentQuestionIndex + 1;
                 randomBoxPosition();
                 getListAnswer();
-                Future.delayed(Duration(milliseconds: 50), () {
+                Future.delayed(Duration(milliseconds: 200), () {
                   setState(() {
                     this.isSpeech = true;
                   });
@@ -492,12 +505,12 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
         Align(
           alignment: Alignment.center,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+            padding: EdgeInsets.only(left: 10, right: 10, top: 50),
             child: Stack(
               children: [
                 ...List.generate(
                   barrierValues.length,
-                      (i) => _Barrier(
+                  (i) => _Barrier(
                     onTap: (KAnswer answer) => handlePickAnswer(answer, i),
                     barrierX: barrierX[i],
                     barrierY: barrierY[i],
@@ -509,7 +522,7 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
                         ? _bouncingAnimation.value
                         : Offset(0, 0),
                     scaleAnimation:
-                    spinningHeroIndex == i ? _heroScaleAnimation : null,
+                        spinningHeroIndex == i ? _heroScaleAnimation : null,
                     starY: _moveUpAnimation.value,
                     isShowStar: currentShowStarIndex == i,
                   ),
@@ -518,6 +531,33 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
             ),
           ),
         ),
+        // if (!isPause && canShowLanguageToggle)
+        //   Align(
+        //     alignment: Alignment.topCenter,
+        //     child: Transform.translate(
+        //       offset: Offset(-10, 50),
+        //       child: Row(
+        //         mainAxisAlignment: MainAxisAlignment.end,
+        //         children: [
+        //           Text("${KLocaleHelper.LANGUAGE_EN.toUpperCase()}"),
+        //           Switch(
+        //             onChanged: currentLanguage == KLocaleHelper.TTS_LANGUAGE_VI
+        //                 ? (_) => setTtsLanguage(KLocaleHelper.TTS_LANGUAGE_EN)
+        //                 : (_) => setTtsLanguage(KLocaleHelper.TTS_LANGUAGE_VI),
+        //             value: () {
+        //               // print("IS TUTOR ONLINE? - ${OnlineService.isTutorOnlineCache}");
+        //               return currentLanguage == KLocaleHelper.TTS_LANGUAGE_VI;
+        //             }.call(),
+        //             activeColor: Colors.grey.shade50,
+        //             activeTrackColor: Colors.grey.shade50.withAlpha(0x80),
+        //             inactiveThumbColor: Colors.grey.shade50,
+        //             inactiveTrackColor: Colors.grey.shade50.withAlpha(0x80),
+        //           ),
+        //           Text("${KLocaleHelper.LANGUAGE_VI.toUpperCase()}"),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
       ],
     );
 
@@ -593,9 +633,9 @@ class _Barrier extends StatelessWidget {
                   child: AnimatedOpacity(
                     duration: Duration(milliseconds: 500),
                     opacity:
-                    (isShowStar ?? false) && (answer.isCorrect ?? false)
-                        ? 1
-                        : 0,
+                        (isShowStar ?? false) && (answer.isCorrect ?? false)
+                            ? 1
+                            : 0,
                     child: Icon(
                       Icons.star,
                       color: Colors.amberAccent,
@@ -611,9 +651,9 @@ class _Barrier extends StatelessWidget {
                 angle: rotateAngle,
                 child: scaleAnimation != null
                     ? (ScaleTransition(
-                  scale: scaleAnimation!,
-                  child: box,
-                ))
+                        scale: scaleAnimation!,
+                        child: box,
+                      ))
                     : box,
               ),
             ),

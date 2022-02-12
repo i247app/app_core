@@ -510,11 +510,11 @@ class KTapGameScreenState extends State<KTapGameScreen>
     ).animate(new CurvedAnimation(
         parent: _moveUpAnimationController, curve: Curves.bounceOut));
 
-    _timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 16), (timer) {
       if (isStart && mounted && !isPause) {
         if (currentLevel < totalLevel) {
           this.setState(() {
-            this.levelPlayTimes[currentLevel] += 1;
+            this.levelPlayTimes[currentLevel] += 16;
           });
         }
       }
@@ -728,7 +728,7 @@ class KTapGameScreenState extends State<KTapGameScreen>
       ByteData wrongAudioFileData =
           await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
       ByteData backgroundAudioFileData = await rootBundle
-          .load("packages/app_core/assets/audio/background.mp3");
+          .load("packages/app_core/assets/audio/music_background_1.mp3");
 
       File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
       await correctAudioTempFile
@@ -738,7 +738,7 @@ class KTapGameScreenState extends State<KTapGameScreen>
       await wrongAudioTempFile
           .writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
 
-      File backgroundAudioTempFile = File('${tempDir.path}/background.mp3');
+      File backgroundAudioTempFile = File('${tempDir.path}/music_background_1.mp3');
       await backgroundAudioTempFile.writeAsBytes(
           backgroundAudioFileData.buffer.asUint8List(),
           flush: true);

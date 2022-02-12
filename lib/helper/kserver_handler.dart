@@ -316,17 +316,26 @@ abstract class KServerHandler {
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }
 
-  static Future<SimpleResponse> saveGameScore(
-      {required String gameID,
-      required String level,
-      required String score}) async {
+  static Future<SimpleResponse> saveGameScore({
+    required String gameID,
+    required String level,
+    String? time,
+    String? points,
+    String? gameAppID,
+    String? language,
+    String? topic,
+  }) async {
     final params = {
       "svc": "game",
       "req": "game.score.save",
       "gameScore": KGameScore()
         ..game = gameID
         ..level = level
-        ..score = score
+        ..time = time
+        ..points = points
+        ..gameAppID = gameAppID
+        ..language = language
+        ..topic = topic,
     };
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }
@@ -504,19 +513,26 @@ abstract class KServerHandler {
         .then((data) => ListXFRProxyResponse.fromJson(data));
   }
 
-  static Future<KGetGamesResponse> getGames(
-      {required String gameID,
-      required String level,
-      String? cat,
-      String? mimeType}) async {
+  static Future<KGetGamesResponse> getGames({
+    required String gameID,
+    required String level,
+    String? gameAppID,
+    String? topic,
+    String? language,
+    String? mimeType,
+  }) async {
+    print(gameAppID);
+    print("gameAppID");
     final params = {
       "svc": "game",
       "req": "game.get",
       "game": KGame()
         ..gameID = gameID
+        ..gameAppID = gameAppID
         ..level = "$level"
-        ..cat = cat ?? "MATH"
-        ..mimeType = mimeType ?? "TEXT",
+        ..topic = topic ?? "number"
+        ..mimeType = mimeType ?? "TEXT"
+        ..language = language ?? "en",
     };
     return TLSHelper.send(params)
         .then((data) => KGetGamesResponse.fromJson(data));

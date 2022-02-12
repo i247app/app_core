@@ -9,6 +9,7 @@ import 'package:app_core/model/kquestion.dart';
 import 'package:app_core/ui/game/service/kgame_controller.dart';
 import 'package:app_core/ui/game/service/kgame_data.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -18,6 +19,7 @@ enum TtsState { playing, stopped, paused, continued }
 
 class KGameSpeechLetterTap extends StatefulWidget {
   static const GAME_ID = "602";
+  static const GAME_APP_ID = "1001";
   static const GAME_NAME = "speech_letter_tap";
 
   final KGameController controller;
@@ -77,11 +79,13 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
   double speechPitch = 1;
   int speechDelay = 2000;
 
-  String get defaultLanguage => KLocaleHelper.TTS_LANGUAGE_EN;
-  String? currentLanguage;
+  String get currentLanguage => gameData.language == KLocaleHelper.LANGUAGE_VI
+      ? KLocaleHelper.TTS_LANGUAGE_VI
+      : KLocaleHelper.TTS_LANGUAGE_EN;
 
-  bool get canShowLanguageToggle =>
-      Platform.isAndroid && currentLanguage != null;
+  bool isLanguagesInstalled = false;
+
+  bool get canShowLanguageToggle => Platform.isAndroid && isLanguagesInstalled;
 
   bool get isStart => gameData.isStart ?? false;
 
@@ -110,6 +114,8 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
   List<KQuestion> get questions => gameData.questions;
 
   KQuestion get currentQuestion => gameData.currentQuestion;
+
+  bool isPauseLocal = false;
 
   @override
   void initState() {
@@ -185,20 +191,10 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
     ).animate(new CurvedAnimation(
         parent: _moveUpAnimationController, curve: Curves.bounceOut));
 
+    isPauseLocal = isPause;
     this.isSpeech = true;
     startSpeak(currentQuestion.text ?? "");
-    widget.controller.addListener(() {
-      if ((widget.controller.value.isPause ?? false) && this.speechVolume == 1.0) {
-        setState(() {
-          this.speechVolume = 0.0;
-        });
-        flutterTts.stop();
-      } else if (!(widget.controller.value.isPause ?? false) && this.speechVolume == 0.0) {
-        setState(() {
-          this.speechVolume = 1.0;
-        });
-      }
-    });
+    widget.controller.addListener(pauseListener);
 
     randomBoxPosition();
     getListAnswer();
@@ -206,6 +202,7 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
 
   @override
   void dispose() {
+    widget.controller.removeListener(pauseListener);
     _heroScaleAnimationController.dispose();
     _bouncingAnimationController.dispose();
     _moveUpAnimationController.dispose();
@@ -224,6 +221,43 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
 
   Future _setAwaitOptions() async {
     await flutterTts.awaitSpeakCompletion(true);
+    if (Platform.isIOS) {
+      await flutterTts.setSharedInstance(true);
+    }
+
+    try {
+      bool isViInstalled =
+          await flutterTts.isLanguageInstalled(KLocaleHelper.TTS_LANGUAGE_VI);
+      bool isEnInstalled =
+          await flutterTts.isLanguageInstalled(KLocaleHelper.TTS_LANGUAGE_EN);
+
+      if (isViInstalled && isEnInstalled) {
+        this.setState(() {
+          isLanguagesInstalled = true;
+        });
+      }
+    } catch (e) {}
+  }
+
+  void pauseListener() {
+    if ((widget.controller.value.isPause ?? false) &&
+        !isPauseLocal &&
+        isSpeech) {
+      stopSpeak();
+    } else if (!(widget.controller.value.isPause ?? false) &&
+        isPauseLocal &&
+        !isSpeech) {
+      setState(() {
+        this.isSpeech = true;
+      });
+      startSpeak(currentQuestion.text ?? "");
+    }
+
+    if (isPauseLocal != widget.controller.value.isPause) {
+      this.setState(() {
+        isPauseLocal = widget.controller.value.isPause ?? false;
+      });
+    }
   }
 
   Future _getDefaultEngine() async {
@@ -233,18 +267,6 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
     }
   }
 
-  setTtsLanguage(String language) async {
-    if (Platform.isAndroid) {
-      bool isInstalled = await flutterTts.isLanguageInstalled(language);
-      if (!isInstalled) {
-        return;
-      }
-    }
-    setState(() {
-      currentLanguage = language;
-    });
-  }
-
   initTts() {
     flutterTts = FlutterTts();
 
@@ -252,10 +274,7 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
 
     if (Platform.isAndroid) {
       _getDefaultEngine();
-      setTtsLanguage(defaultLanguage);
     } else if (Platform.isIOS) {
-      setTtsLanguage(KLocaleHelper.TTS_LANGUAGE_EN);
-
       flutterTts.setPauseHandler(() {
         setState(() {
           print("Paused");
@@ -301,11 +320,10 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
   }
 
   Future startSpeak(String text) async {
-    if ((currentQuestion.text ?? "").isNotEmpty && ttsState == TtsState.stopped) {
+    if ((currentQuestion.text ?? "").isNotEmpty &&
+        ttsState == TtsState.stopped) {
       if (mounted && isSpeech) {
-        if (currentLanguage != null) {
-          await flutterTts.setLanguage(currentLanguage!);
-        }
+        await flutterTts.setLanguage(currentLanguage);
 
         await flutterTts.setSpeechRate(speechRate);
         await flutterTts.setPitch(speechPitch);
@@ -313,7 +331,9 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
         await flutterTts.speak(currentQuestion.text ?? "");
         if (mounted && isSpeech) {
           Future.delayed(Duration(milliseconds: speechDelay), () {
+            if (mounted && isSpeech) {
               startSpeak(currentQuestion.text ?? "");
+            }
           });
         }
       }
@@ -393,7 +413,7 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
     });
   }
 
-  void handlePickAnswer(KAnswer answer, int answerIndex) {
+  void handlePickAnswer(KAnswer answer, int answerIndex) async {
     if (_spinAnimationController.value != 0) {
       return;
     }
@@ -414,7 +434,7 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
 
     if (isTrueAnswer) {
       if (isSpeech) {
-        stopSpeak();
+        await stopSpeak();
       }
       widget.controller.value.result = true;
       widget.controller.value.point = point + 5;
@@ -446,7 +466,7 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
                     currentQuestionIndex + 1;
                 randomBoxPosition();
                 getListAnswer();
-                Future.delayed(Duration(milliseconds: 50), () {
+                Future.delayed(Duration(milliseconds: 200), () {
                   setState(() {
                     this.isSpeech = true;
                   });
@@ -492,7 +512,7 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
         Align(
           alignment: Alignment.center,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+            padding: EdgeInsets.only(left: 10, right: 10, top: 50),
             child: Stack(
               children: [
                 ...List.generate(
@@ -518,6 +538,33 @@ class _KGameSpeechLetterTapState extends State<KGameSpeechLetterTap>
             ),
           ),
         ),
+        // if (!isPause && canShowLanguageToggle)
+        //   Align(
+        //     alignment: Alignment.topCenter,
+        //     child: Transform.translate(
+        //       offset: Offset(-10, 50),
+        //       child: Row(
+        //         mainAxisAlignment: MainAxisAlignment.end,
+        //         children: [
+        //           Text("${KLocaleHelper.LANGUAGE_EN.toUpperCase()}"),
+        //           Switch(
+        //             onChanged: currentLanguage == KLocaleHelper.TTS_LANGUAGE_VI
+        //                 ? (_) => setTtsLanguage(KLocaleHelper.TTS_LANGUAGE_EN)
+        //                 : (_) => setTtsLanguage(KLocaleHelper.TTS_LANGUAGE_VI),
+        //             value: () {
+        //               // print("IS TUTOR ONLINE? - ${OnlineService.isTutorOnlineCache}");
+        //               return currentLanguage == KLocaleHelper.TTS_LANGUAGE_VI;
+        //             }.call(),
+        //             activeColor: Colors.grey.shade50,
+        //             activeTrackColor: Colors.grey.shade50.withAlpha(0x80),
+        //             inactiveThumbColor: Colors.grey.shade50,
+        //             inactiveTrackColor: Colors.grey.shade50.withAlpha(0x80),
+        //           ),
+        //           Text("${KLocaleHelper.LANGUAGE_VI.toUpperCase()}"),
+        //         ],
+        //       ),
+        //     ),
+        //   ),
       ],
     );
 

@@ -8,11 +8,14 @@ part of 'kgame.dart';
 
 KGame _$KGameFromJson(Map<String, dynamic> json) => KGame()
   ..gameID = json['gameID'] as String?
+  ..gameAppID = json['gameAppID'] as String?
   ..gameCode = json['gameCode'] as String?
   ..title = json['title'] as String?
   ..subtitle = json['subtitle'] as String?
   ..text = json['text'] as String?
   ..cat = json['cat'] as String?
+  ..topic = json['topic'] as String?
+  ..language = json['language'] as String?
   ..level = json['level'] as String?
   ..mimeType = json['mimeType'] as String?
   ..qnas = (json['qnas'] as List<dynamic>?)
@@ -29,11 +32,14 @@ Map<String, dynamic> _$KGameToJson(KGame instance) {
   }
 
   writeNotNull('gameID', instance.gameID);
+  writeNotNull('gameAppID', instance.gameAppID);
   writeNotNull('gameCode', instance.gameCode);
   writeNotNull('title', instance.title);
   writeNotNull('subtitle', instance.subtitle);
   writeNotNull('text', instance.text);
   writeNotNull('cat', instance.cat);
+  writeNotNull('topic', instance.topic);
+  writeNotNull('language', instance.language);
   writeNotNull('level', instance.level);
   writeNotNull('mimeType', instance.mimeType);
   writeNotNull('qnas', instance.qnas?.map((e) => e.toJson()).toList());

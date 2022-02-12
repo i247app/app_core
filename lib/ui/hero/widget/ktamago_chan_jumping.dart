@@ -22,7 +22,10 @@ class KTamagoChanJumping extends StatefulWidget {
 class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
     with TickerProviderStateMixin {
   Completer<AudioPlayer> cAudioPlayer = Completer();
+  Completer<AudioPlayer> cBackgroundAudioPlayer = Completer();
   String? correctAudioFileUri;
+  String? winAudioFileUri;
+  String? loseAudioFileUri;
 
   late Animation _bouncingAnimation,
       _shakeTheTopLeftAnimation,
@@ -71,7 +74,8 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
                 }
               }
             } else if (status == AnimationStatus.dismissed) {
-              if ((!(widget.canAdvance ?? false) && eggBreakStep == 10) || eggBreakStep >= 4) {
+              if ((!(widget.canAdvance ?? false) && eggBreakStep == 10) ||
+                  eggBreakStep >= 4) {
                 Future.delayed(Duration(milliseconds: 1000), () {
                   if (this.widget.onFinish != null) this.widget.onFinish!();
                 });
@@ -138,9 +142,23 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
 
     Future.delayed(Duration(milliseconds: 500), () {
       try {
-        final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
-        ap.play(correctAudioFileUri ?? "", isLocal: true);
-        cAudioPlayer.complete(ap);
+        // final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+        // ap.play(correctAudioFileUri ?? "", isLocal: true);
+        // cAudioPlayer.complete(ap);
+
+        if (widget.canAdvance ?? false) {
+          try {
+            final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+            ap.play(winAudioFileUri ?? "", isLocal: true);
+            cBackgroundAudioPlayer.complete(ap);
+          } catch (e) {}
+        } else {
+          try {
+            final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+            ap.play(loseAudioFileUri ?? "", isLocal: true);
+            cBackgroundAudioPlayer.complete(ap);
+          } catch (e) {}
+        }
       } catch (e) {}
     });
 
@@ -149,7 +167,7 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
         this.setState(() {
           this.eggBreakStep = 10;
         });
-        Future.delayed(Duration(milliseconds: 1250), () {
+        Future.delayed(Duration(milliseconds: 2700), () {
           if (this.widget.onFinish != null) this.widget.onFinish!();
         });
       } else {
@@ -165,6 +183,14 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
 
   @override
   void dispose() {
+    cBackgroundAudioPlayer.future.then((ap) {
+      ap.stop();
+      ap.dispose();
+    });
+    cAudioPlayer.future.then((ap) {
+      ap.stop();
+      ap.dispose();
+    });
     this._bouncingAnimationController.dispose();
     super.dispose();
   }
@@ -175,13 +201,25 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
 
       ByteData correctAudioFileData =
           await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
+      ByteData winAudioFileData = await rootBundle
+          .load("packages/app_core/assets/audio/jingle_win.mp3");
+      ByteData loseAudioFileData = await rootBundle
+          .load("packages/app_core/assets/audio/jingle_lose.mp3");
 
       File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
       await correctAudioTempFile
           .writeAsBytes(correctAudioFileData.buffer.asUint8List(), flush: true);
+      File winAudioTempFile = File('${tempDir.path}/jingle_win.mp3');
+      await winAudioTempFile
+          .writeAsBytes(winAudioFileData.buffer.asUint8List(), flush: true);
+      File loseAudioTempFile = File('${tempDir.path}/jingle_lose.mp3');
+      await loseAudioTempFile
+          .writeAsBytes(loseAudioFileData.buffer.asUint8List(), flush: true);
 
       this.setState(() {
         this.correctAudioFileUri = correctAudioTempFile.uri.toString();
+        this.winAudioFileUri = winAudioTempFile.uri.toString();
+        this.loseAudioFileUri = loseAudioTempFile.uri.toString();
       });
     } catch (e) {}
   }
@@ -260,18 +298,18 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
       opacity: this.eggBreakStep == 10 ? 1.0 : 0.0,
       child: this.eggBreakStep == 10
           ? Container(
-        transform:
-        Matrix4.rotationZ(_shakeTheTopRightAnimation.value * Math.pi),
-        transformAlignment: Alignment.bottomCenter,
-        child: Transform.translate(
-          offset: _bouncingAnimation.value,
-          child: Image.asset(
-            KAssets.IMG_TAMAGO_CHAN_SAD,
-            package: 'app_core',
-            width: 120,
-          ),
-        ),
-      )
+              transform:
+                  Matrix4.rotationZ(_shakeTheTopRightAnimation.value * Math.pi),
+              transformAlignment: Alignment.bottomCenter,
+              child: Transform.translate(
+                offset: _bouncingAnimation.value,
+                child: Image.asset(
+                  KAssets.IMG_TAMAGO_CHAN_SAD,
+                  package: 'app_core',
+                  width: 120,
+                ),
+              ),
+            )
           : Container(),
     );
 
