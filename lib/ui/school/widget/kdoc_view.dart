@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'dart:ffi';
 
 import 'package:app_core/model/chapter.dart';
 import 'package:app_core/model/tbpage.dart';
 import 'package:app_core/ui/widget/kimage_viewer.dart';
 import 'package:app_core/value/kstyles.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 enum KDocViewMode { movable, fixed }
 
@@ -32,6 +35,18 @@ class _KDocViewState extends State<KDocView> {
   @override
   void initState() {
     super.initState();
+    precache();
+  }
+
+  void precache() async {
+    // Priority first load
+    await DefaultCacheManager()
+        .downloadFile(widget.chapter.pages?.first.mediaURL ?? "");
+    final pages = widget.chapter.pages ?? [];
+    if (pages.length < 1) return;
+    for (var i = 1; i < pages.length; i++) {
+      DefaultCacheManager().downloadFile(pages[i].mediaURL ?? "");
+    }
   }
 
   @override
@@ -63,8 +78,12 @@ class _TextbookPageView extends StatelessWidget {
         // boundaryMargin: EdgeInsets.all(40),
         child: Container(
           color: KStyles.darkGrey,
-          child: Image.network(
-            page.mediaURL ?? "",
+          child: CachedNetworkImage(
+            imageUrl: page.mediaURL ?? "",
+            placeholder: (context, url) => Center(
+              child: CircularProgressIndicator(),
+            ),
+            errorWidget: (context, url, error) => Icon(Icons.error),
           ),
         ),
       ),
