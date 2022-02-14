@@ -9,17 +9,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 
-class KTamagoChanJumping extends StatefulWidget {
+class KTamagoChanJumpingOld extends StatefulWidget {
   final Function? onFinish;
   final bool? canAdvance;
 
-  const KTamagoChanJumping({this.onFinish, this.canAdvance});
+  const KTamagoChanJumpingOld({this.onFinish, this.canAdvance});
 
   @override
   _KTamagoChanJumpingState createState() => _KTamagoChanJumpingState();
 }
 
-class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
+class _KTamagoChanJumpingState extends State<KTamagoChanJumpingOld>
     with TickerProviderStateMixin {
   Completer<AudioPlayer> cAudioPlayer = Completer();
   Completer<AudioPlayer> cBackgroundAudioPlayer = Completer();
@@ -60,7 +60,7 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
                 this._shakeTheTopRightAnimationController.forward();
               } else {
                 _bouncingAnimationController.reverse();
-                if (eggBreakStep < 2) {
+                if (eggBreakStep < 4) {
                   Future.delayed(Duration(milliseconds: 1000), () {
                     if (mounted) {
                       this.setState(() {
@@ -75,8 +75,8 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
               }
             } else if (status == AnimationStatus.dismissed) {
               if ((!(widget.canAdvance ?? false) && eggBreakStep == 10) ||
-                  eggBreakStep >= 2) {
-                Future.delayed(Duration(milliseconds: 1200), () {
+                  eggBreakStep >= 4) {
+                Future.delayed(Duration(milliseconds: 1000), () {
                   if (this.widget.onFinish != null) this.widget.onFinish!();
                 });
               }
@@ -96,7 +96,7 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
           _shakeTheTopRightAnimationController.reverse();
         } else if (status == AnimationStatus.dismissed) {
           _bouncingAnimationController.reverse();
-          if (eggBreakStep < 2) {
+          if (eggBreakStep < 4) {
             Future.delayed(Duration(milliseconds: 1000), () {
               this.setState(() {
                 this.eggBreakStep = this.eggBreakStep + 1;
@@ -210,8 +210,8 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
       await correctAudioTempFile
           .writeAsBytes(correctAudioFileData.buffer.asUint8List(), flush: true);
       File winAudioTempFile = File('${tempDir.path}/jingle_win.mp3');
-      await winAudioTempFile
-          .writeAsBytes(winAudioFileData.buffer.asUint8List(), flush: true);
+      await winAudioTempFile.writeAsBytes(winAudioFileData.buffer.asUint8List(),
+          flush: true);
       File loseAudioTempFile = File('${tempDir.path}/jingle_lose.mp3');
       await loseAudioTempFile
           .writeAsBytes(loseAudioFileData.buffer.asUint8List(), flush: true);
