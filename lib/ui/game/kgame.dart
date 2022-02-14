@@ -254,11 +254,12 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
 
       Directory tempDir = await getTemporaryDirectory();
 
+      String backgroundAudioPath = getCurrentGameBackgroundAudioPath();
       ByteData backgroundAudioFileData = await rootBundle
-          .load("packages/app_core/assets/audio/music_background_1.mp3");
+          .load(backgroundAudioPath);
 
       File backgroundAudioTempFile =
-          File('${tempDir.path}/music_background_1.mp3');
+          File('${tempDir.path}/game_background_audio.mp3');
       await backgroundAudioTempFile.writeAsBytes(
           backgroundAudioFileData.buffer.asUint8List(),
           flush: true);
@@ -521,6 +522,26 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       this.showHeroGameEndOverlay(() {
         this.showHeroGameHighscoreOverlay();
       });
+    }
+  }
+
+  String getCurrentGameBackgroundAudioPath() {
+    switch (gameID) {
+      case KGameShooting.GAME_ID:
+        return "packages/app_core/assets/audio/music_arcade_1.mp3";
+      case KGameMulti.GAME_ID:
+      case KGameMultiLetter.GAME_ID:
+      case KGameSpeechLetterTap.GAME_ID:
+      case KGameSpeechTap.GAME_ID:
+      case KGameSpeechMovingTap.GAME_ID:
+      case KGameJumpOver.GAME_ID:
+      case KGameTap.GAME_ID:
+      case KGameMovingTap.GAME_ID:
+      case KGameLetterTap.GAME_ID:
+      case KGameJumpUp.GAME_ID:
+      case KGameJumpMultiRow.GAME_ID:
+      default:
+        return "packages/app_core/assets/audio/music_background_1.mp3";
     }
   }
 
