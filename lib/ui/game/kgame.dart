@@ -646,6 +646,7 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
     switch (gameID) {
       case KGameMovingTap.GAME_ID:
       case KGameLetterTap.GAME_ID:
+      case KGameTap.GAME_ID:
         return true;
       default:
         return false;
