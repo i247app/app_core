@@ -532,11 +532,12 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       case KGameMulti.GAME_ID:
       case KGameMultiLetter.GAME_ID:
         return "packages/app_core/assets/audio/music_arcade_soft28.mp3";
+      case KGameTap.GAME_ID:
+        return "packages/app_core/assets/audio/music_arcade_soft28.mp3";
       case KGameSpeechLetterTap.GAME_ID:
       case KGameSpeechTap.GAME_ID:
       case KGameSpeechMovingTap.GAME_ID:
       case KGameJumpOver.GAME_ID:
-      case KGameTap.GAME_ID:
       case KGameMovingTap.GAME_ID:
       case KGameLetterTap.GAME_ID:
       case KGameJumpUp.GAME_ID:
