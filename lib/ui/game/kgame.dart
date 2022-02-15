@@ -531,9 +531,9 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
         return "packages/app_core/assets/audio/music_arcade_1.mp3";
       case KGameMulti.GAME_ID:
       case KGameMultiLetter.GAME_ID:
-        return "packages/app_core/assets/audio/music_arcade_soft28.mp3";
+        return "packages/app_core/assets/audio/music_quiz.mp3";
       case KGameTap.GAME_ID:
-        return "packages/app_core/assets/audio/music_arcade_soft28.mp3";
+        return "packages/app_core/assets/audio/music_arcade_soft_1minute.mp3";
       case KGameSpeechLetterTap.GAME_ID:
       case KGameSpeechTap.GAME_ID:
       case KGameSpeechMovingTap.GAME_ID:
@@ -543,7 +543,7 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       case KGameJumpUp.GAME_ID:
       case KGameJumpMultiRow.GAME_ID:
       default:
-        return "packages/app_core/assets/audio/music_background_1.mp3";
+        return "packages/app_core/assets/audio/music_game_1.mp3";
     }
   }
 
