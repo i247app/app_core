@@ -42,6 +42,7 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
   final Duration bouncingDuration = Duration(milliseconds: 250);
 
   int eggBreakStep = 1;
+  int eggMaxBreakStep = 3;
 
   @override
   void initState() {
@@ -60,7 +61,7 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
                 this._shakeTheTopRightAnimationController.forward();
               } else {
                 _bouncingAnimationController.reverse();
-                if (eggBreakStep < 2) {
+                if (eggBreakStep < eggMaxBreakStep) {
                   Future.delayed(Duration(milliseconds: 1000), () {
                     if (mounted) {
                       this.setState(() {
@@ -75,7 +76,7 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
               }
             } else if (status == AnimationStatus.dismissed) {
               if ((!(widget.canAdvance ?? false) && eggBreakStep == 10) ||
-                  eggBreakStep >= 2) {
+                  eggBreakStep >= eggMaxBreakStep) {
                 Future.delayed(Duration(milliseconds: 1200), () {
                   if (this.widget.onFinish != null) this.widget.onFinish!();
                 });
@@ -96,7 +97,7 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
           _shakeTheTopRightAnimationController.reverse();
         } else if (status == AnimationStatus.dismissed) {
           _bouncingAnimationController.reverse();
-          if (eggBreakStep < 2) {
+          if (eggBreakStep < eggMaxBreakStep) {
             Future.delayed(Duration(milliseconds: 1000), () {
               this.setState(() {
                 this.eggBreakStep = this.eggBreakStep + 1;
@@ -123,7 +124,7 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
           _shakeTheTopLeftAnimationController.reverse();
         } else if (status == AnimationStatus.dismissed) {
           _bouncingAnimationController.reverse();
-          if (eggBreakStep < 4) {
+          if (eggBreakStep < eggMaxBreakStep) {
             Future.delayed(Duration(milliseconds: 1000), () {
               this.setState(() {
                 this.eggBreakStep = this.eggBreakStep + 1;
