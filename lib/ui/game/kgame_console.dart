@@ -533,6 +533,8 @@ class _KGameConsoleState extends State<KGameConsole> with WidgetsBindingObserver
         return "packages/app_core/assets/audio/music_soft_28s.mp3";
       case KGameTap.GAME_ID:
         return "packages/app_core/assets/audio/music_quiz.mp3";
+      case KGameShooting.GAME_ID:
+        return "packages/app_core/assets/audio/music_swampy_110bpm.mp3";
       case KGameSpeechLetterTap.GAME_ID:
       case KGameSpeechTap.GAME_ID:
       case KGameSpeechMovingTap.GAME_ID:
@@ -541,7 +543,7 @@ class _KGameConsoleState extends State<KGameConsole> with WidgetsBindingObserver
       case KGameLetterTap.GAME_ID:
       case KGameJumpUp.GAME_ID:
       case KGameJumpMultiRow.GAME_ID:
-      case KGameShooting.GAME_ID:
+
       default:
         return "packages/app_core/assets/audio/music_fast.mp3";
     }
