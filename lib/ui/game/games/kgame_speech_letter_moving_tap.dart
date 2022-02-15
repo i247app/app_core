@@ -8,6 +8,7 @@ import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/kquestion.dart';
 import 'package:app_core/ui/game/service/kgame_controller.dart';
 import 'package:app_core/ui/game/service/kgame_data.dart';
+import 'package:app_core/ui/game/widget/ktamago_answer.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,7 +34,8 @@ class KGameSpeechLetterMovingTap extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _KGameSpeechLetterMovingTapState createState() => _KGameSpeechLetterMovingTapState();
+  _KGameSpeechLetterMovingTapState createState() =>
+      _KGameSpeechLetterMovingTapState();
 }
 
 class _KGameSpeechLetterMovingTapState extends State<KGameSpeechLetterMovingTap>
@@ -59,6 +61,7 @@ class _KGameSpeechLetterMovingTapState extends State<KGameSpeechLetterMovingTap>
   bool isWrongAnswer = false;
   int? spinningHeroIndex;
   int? currentShowStarIndex;
+  bool? tamagoAnimateValue;
   bool isPlaySound = false;
   List<double> barrierX = [0, 0, 0, 0];
   List<double> barrierY = [0, 0, 0, 0];
@@ -487,6 +490,14 @@ class _KGameSpeechLetterMovingTapState extends State<KGameSpeechLetterMovingTap>
       }
       this.setState(() {
         isWrongAnswer = false;
+        tamagoAnimateValue = true;
+      });
+      Future.delayed(Duration(milliseconds: 1000), () {
+        if (mounted) {
+          this.setState(() {
+            tamagoAnimateValue = null;
+          });
+        }
       });
 
       Future.delayed(Duration(milliseconds: 500), () {
@@ -532,6 +543,16 @@ class _KGameSpeechLetterMovingTapState extends State<KGameSpeechLetterMovingTap>
         }
       });
     } else {
+      this.setState(() {
+        tamagoAnimateValue = false;
+      });
+      Future.delayed(Duration(milliseconds: 1000), () {
+        if (mounted) {
+          this.setState(() {
+            tamagoAnimateValue = null;
+          });
+        }
+      });
       widget.controller.value.result = false;
       widget.controller.value.point = point > 0 ? point - 1 : 0;
       if (!isWrongAnswer) {
@@ -594,6 +615,12 @@ class _KGameSpeechLetterMovingTapState extends State<KGameSpeechLetterMovingTap>
                     ]
                   : [],
             ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: KTamagoAnswer(
+            isCorrectAnswer: tamagoAnimateValue,
           ),
         ),
       ],
