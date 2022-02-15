@@ -165,7 +165,7 @@ class _KEggHeroIntroState extends State<KEggHeroIntro>
 
     Future.delayed(Duration(milliseconds: 250), () {
       try {
-        final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+        final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
         ap.play(introAudioFileUri ?? "", isLocal: true);
         cBackgroundAudioPlayer.complete(ap);
       } catch (e) {}

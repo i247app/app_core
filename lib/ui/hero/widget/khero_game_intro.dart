@@ -211,7 +211,7 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
     Future.delayed(Duration(milliseconds: 500), () async {
       try {
         print("play");
-        final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+        final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
         ap.play(introAudioFileUri ?? "", isLocal: true);
         cBackgroundAudioPlayer.complete(ap);
       } catch (e) {

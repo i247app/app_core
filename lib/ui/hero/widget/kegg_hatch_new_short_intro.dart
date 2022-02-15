@@ -182,7 +182,7 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
 
     Future.delayed(Duration(milliseconds: 500), () {
       try {
-        final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+        final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
         ap.play(introAudioFileUri ?? "", isLocal: true);
         cBackgroundAudioPlayer.complete(ap);
       } catch (e) {}

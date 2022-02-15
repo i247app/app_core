@@ -47,7 +47,7 @@ class KGameRoom extends StatefulWidget {
 }
 
 class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
-  AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
   String? backgroundAudioFileUri;
 
   late FlutterTts flutterTts;

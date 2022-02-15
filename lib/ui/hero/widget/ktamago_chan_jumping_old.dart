@@ -148,13 +148,13 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumpingOld>
 
         if (widget.canAdvance ?? false) {
           try {
-            final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+            final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
             ap.play(winAudioFileUri ?? "", isLocal: true);
             cBackgroundAudioPlayer.complete(ap);
           } catch (e) {}
         } else {
           try {
-            final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+            final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
             ap.play(loseAudioFileUri ?? "", isLocal: true);
             cBackgroundAudioPlayer.complete(ap);
           } catch (e) {}
