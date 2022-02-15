@@ -36,17 +36,17 @@ import 'package:path_provider/path_provider.dart';
 
 import 'games/kgame_multi.dart';
 
-class KGameRoom extends StatefulWidget {
+class KGameConsole extends StatefulWidget {
   final KGameController controller;
   final KHero? hero;
 
-  const KGameRoom(this.controller, {this.hero});
+  const KGameConsole(this.controller, {this.hero});
 
   @override
-  _KGameRoomState createState() => _KGameRoomState();
+  _KGameConsoleState createState() => _KGameConsoleState();
 }
 
-class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
+class _KGameConsoleState extends State<KGameConsole> with WidgetsBindingObserver {
   AudioPlayer backgroundAudioPlayer =
       AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
   String? backgroundAudioFileUri;

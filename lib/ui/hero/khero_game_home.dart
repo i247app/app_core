@@ -8,7 +8,7 @@ import 'package:app_core/ui/game/games/kgame_multi.dart';
 import 'package:app_core/ui/game/games/kgame_multi_letter.dart';
 import 'package:app_core/ui/game/games/kgame_shooting.dart';
 import 'package:app_core/ui/game/games/kgame_tap.dart';
-import 'package:app_core/ui/game/kgame_room.dart';
+import 'package:app_core/ui/game/kgame_console.dart';
 import 'package:app_core/ui/game/service/kgame_controller.dart';
 import 'package:app_core/ui/hero/khero_jump_game.dart';
 import 'package:app_core/ui/hero/khero_jump_multirow_game.dart';
@@ -190,7 +190,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () =>
                         Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => KGameRoom(
+                      builder: (ctx) => KGameConsole(
                         KGameController(
                           gameID: KGameMultiLetter.GAME_ID,
                           gameAppID: KGameMultiLetter.GAME_APP_ID,
@@ -223,7 +223,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () =>
                         Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => KGameRoom(
+                      builder: (ctx) => KGameConsole(
                         KGameController(
                           gameID: KGameMulti.GAME_ID,
                           gameAppID: KGameMulti.GAME_APP_ID,
@@ -372,7 +372,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () =>
                         Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) => KGameRoom(
+                          builder: (ctx) => KGameConsole(
                             KGameController(
                               gameID: KGameTap.GAME_ID,
                               gameName: KGameTap.GAME_NAME,
@@ -402,7 +402,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () =>
                         Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) => KGameRoom(
+                          builder: (ctx) => KGameConsole(
                             KGameController(
                               gameID: KGameMovingTap.GAME_ID,
                               gameName: KGameMovingTap.GAME_NAME,
@@ -432,7 +432,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () =>
                         Navigator.of(context).push(MaterialPageRoute(
-                          builder: (ctx) => KGameRoom(
+                          builder: (ctx) => KGameConsole(
                             KGameController(
                               gameID: KGameJumpUp.GAME_ID,
                               gameName: KGameJumpUp.GAME_NAME,
@@ -461,7 +461,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () =>
                         Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => KGameRoom(
+                      builder: (ctx) => KGameConsole(
                         KGameController(
                           gameID: KGameJumpOver.GAME_ID,
                           gameName: KGameJumpOver.GAME_NAME,
@@ -490,7 +490,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () =>
                         Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => KGameRoom(
+                      builder: (ctx) => KGameConsole(
                         KGameController(
                           gameID: KGameLetterTap.GAME_ID,
                           gameName: KGameLetterTap.GAME_NAME,
@@ -550,7 +550,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ElevatedButton(
                     onPressed: () =>
                         Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => KGameRoom(
+                      builder: (ctx) => KGameConsole(
                         KGameController(
                           gameID: KGameShooting.GAME_ID,
                           gameName: KGameShooting.GAME_NAME,
