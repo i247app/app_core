@@ -47,7 +47,8 @@ class KGameRoom extends StatefulWidget {
 }
 
 class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
-  AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+  AudioPlayer backgroundAudioPlayer =
+      AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
   String? backgroundAudioFileUri;
 
   late FlutterTts flutterTts;
@@ -255,8 +256,8 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       Directory tempDir = await getTemporaryDirectory();
 
       String backgroundAudioPath = getCurrentGameBackgroundAudioPath();
-      ByteData backgroundAudioFileData = await rootBundle
-          .load(backgroundAudioPath);
+      ByteData backgroundAudioFileData =
+          await rootBundle.load(backgroundAudioPath);
 
       File backgroundAudioTempFile =
           File('${tempDir.path}/game_background_audio.mp3');
@@ -527,13 +528,11 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
 
   String getCurrentGameBackgroundAudioPath() {
     switch (gameID) {
-      case KGameShooting.GAME_ID:
-        return "packages/app_core/assets/audio/music_arcade_1.mp3";
       case KGameMulti.GAME_ID:
       case KGameMultiLetter.GAME_ID:
-        return "packages/app_core/assets/audio/music_quiz.mp3";
+        return "packages/app_core/assets/audio/music_soft_28s.mp3";
       case KGameTap.GAME_ID:
-        return "packages/app_core/assets/audio/music_arcade_soft_1minute.mp3";
+        return "packages/app_core/assets/audio/music_quiz.mp3";
       case KGameSpeechLetterTap.GAME_ID:
       case KGameSpeechTap.GAME_ID:
       case KGameSpeechMovingTap.GAME_ID:
@@ -542,8 +541,9 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       case KGameLetterTap.GAME_ID:
       case KGameJumpUp.GAME_ID:
       case KGameJumpMultiRow.GAME_ID:
+      case KGameShooting.GAME_ID:
       default:
-        return "packages/app_core/assets/audio/music_game_1.mp3";
+        return "packages/app_core/assets/audio/music_fast.mp3";
     }
   }
 
