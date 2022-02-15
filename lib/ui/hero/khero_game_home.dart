@@ -8,7 +8,7 @@ import 'package:app_core/ui/game/games/kgame_multi.dart';
 import 'package:app_core/ui/game/games/kgame_multi_letter.dart';
 import 'package:app_core/ui/game/games/kgame_shooting.dart';
 import 'package:app_core/ui/game/games/kgame_tap.dart';
-import 'package:app_core/ui/game/kgame.dart';
+import 'package:app_core/ui/game/kgame_room.dart';
 import 'package:app_core/ui/game/service/kgame_controller.dart';
 import 'package:app_core/ui/hero/khero_jump_game.dart';
 import 'package:app_core/ui/hero/khero_jump_multirow_game.dart';
