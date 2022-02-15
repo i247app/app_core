@@ -282,9 +282,9 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
   }
 
   void toggleBackgroundSound() {
-    if (isSpeechGame) {
-      return;
-    }
+    // if (isSpeechGame) {
+    //   return;
+    // }
     if (this.isBackgroundSoundPlaying) {
       this.setState(() {
         this.isBackgroundSoundPlaying = false;
@@ -451,7 +451,7 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
       } else {
         widget.controller.toggleStart(true);
       }
-      if (backgroundAudioPlayer.state != PlayerState.PLAYING && !isSpeechGame) {
+      if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
         this.setState(() {
           this.isBackgroundSoundPlaying = true;
         });
@@ -531,6 +531,7 @@ class _KGameRoomState extends State<KGameRoom> with WidgetsBindingObserver {
         return "packages/app_core/assets/audio/music_arcade_1.mp3";
       case KGameMulti.GAME_ID:
       case KGameMultiLetter.GAME_ID:
+        return "packages/app_core/assets/audio/music_arcade_soft28.mp3";
       case KGameSpeechLetterTap.GAME_ID:
       case KGameSpeechTap.GAME_ID:
       case KGameSpeechMovingTap.GAME_ID:
