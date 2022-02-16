@@ -451,12 +451,12 @@ class _KGameConsoleState extends State<KGameConsole> with WidgetsBindingObserver
         showCountDownOverlay();
       } else {
         widget.controller.toggleStart(true);
-      }
-      if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
-        this.setState(() {
-          this.isBackgroundSoundPlaying = true;
-        });
-        backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
+        if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+          this.setState(() {
+            this.isBackgroundSoundPlaying = true;
+          });
+          backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
+        }
       }
     }
   }
@@ -812,6 +812,12 @@ class _KGameConsoleState extends State<KGameConsole> with WidgetsBindingObserver
             isShowCountDown = false;
           });
           widget.controller.toggleStart(true);
+          if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+            this.setState(() {
+              this.isBackgroundSoundPlaying = true;
+            });
+            backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
+          }
         }
       },
     );
