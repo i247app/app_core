@@ -53,6 +53,7 @@ class _KGameMovingTapState extends State<KGameMovingTap>
   bool isWrongAnswer = false;
   int? spinningHeroIndex;
   int? currentShowStarIndex;
+  bool isAnswering = false;
   bool isPlaySound = false;
   List<double> barrierX = [0, 0, 0, 0];
   List<double> barrierY = [0, 0, 0, 0];
@@ -267,7 +268,7 @@ class _KGameMovingTapState extends State<KGameMovingTap>
   }
 
   void handlePickAnswer(KAnswer answer, int answerIndex) {
-    if (_spinAnimationController.value != 0) {
+    if (isAnswering) {
       return;
     }
     bool isTrueAnswer = answer.isCorrect ?? false;
@@ -280,6 +281,7 @@ class _KGameMovingTapState extends State<KGameMovingTap>
     }
 
     this.setState(() {
+      isAnswering = true;
       spinningHeroIndex = answerIndex;
     });
     this._spinAnimationController.reset();
@@ -334,18 +336,27 @@ class _KGameMovingTapState extends State<KGameMovingTap>
                   widget.onFinishLevel!();
                 }
               }
+
+              this.setState(() {
+                isAnswering = false;
+              });
             }
           });
         }
       });
     } else {
-      this.setState(() {
-        widget.controller.value.result = false;
-        widget.controller.value.point = point > 0 ? point - 1 : 0;
-        if (!isWrongAnswer) {
-          widget.controller.value.wrongAnswerCount = wrongAnswerCount + 1;
+      widget.controller.value.result = false;
+      widget.controller.value.point = point > 0 ? point - 1 : 0;
+      if (!isWrongAnswer) {
+        widget.controller.value.wrongAnswerCount = wrongAnswerCount + 1;
+        this.setState(() {
+          isWrongAnswer = true;
+        });
+      }
+      Future.delayed(Duration(milliseconds: 250), () {
+        if (mounted) {
           this.setState(() {
-            isWrongAnswer = true;
+            isAnswering = false;
           });
         }
       });

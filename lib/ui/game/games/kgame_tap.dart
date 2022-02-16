@@ -49,6 +49,7 @@ class _KGameTapState extends State<KGameTap> with TickerProviderStateMixin {
   bool isWrongAnswer = false;
   int? spinningHeroIndex;
   int? currentShowStarIndex;
+  bool isAnswering = false;
   bool isPlaySound = false;
   List<double> barrierX = [0, 0, 0, 0];
   List<double> barrierY = [0, 0, 0, 0];
@@ -230,7 +231,7 @@ class _KGameTapState extends State<KGameTap> with TickerProviderStateMixin {
   }
 
   void handlePickAnswer(KAnswer answer, int answerIndex) {
-    if (_spinAnimationController.value != 0) {
+    if (isAnswering) {
       return;
     }
     bool isTrueAnswer = answer.isCorrect ?? false;
@@ -243,6 +244,7 @@ class _KGameTapState extends State<KGameTap> with TickerProviderStateMixin {
     }
 
     this.setState(() {
+      isAnswering = true;
       spinningHeroIndex = answerIndex;
     });
     this._spinAnimationController.reset();
@@ -294,6 +296,10 @@ class _KGameTapState extends State<KGameTap> with TickerProviderStateMixin {
                   widget.onFinishLevel!();
                 }
               }
+
+              this.setState(() {
+                isAnswering = false;
+              });
             }
           });
         }
@@ -307,6 +313,13 @@ class _KGameTapState extends State<KGameTap> with TickerProviderStateMixin {
           isWrongAnswer = true;
         });
       }
+      Future.delayed(Duration(milliseconds: 250), () {
+        if (mounted) {
+          this.setState(() {
+            isAnswering = false;
+          });
+        }
+      });
     }
     widget.controller.notify();
   }

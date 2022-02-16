@@ -61,6 +61,7 @@ class _KGameSpeechMovingTapState extends State<KGameSpeechMovingTap>
   int? spinningHeroIndex;
   int? currentShowStarIndex;
   bool? tamagoAnimateValue;
+  bool isAnswering = false;
   bool isPlaySound = false;
   List<double> barrierX = [0, 0, 0, 0];
   List<double> barrierY = [0, 0, 0, 0];
@@ -453,7 +454,7 @@ class _KGameSpeechMovingTapState extends State<KGameSpeechMovingTap>
   }
 
   void handlePickAnswer(KAnswer answer, int answerIndex) async {
-    if (_spinAnimationController.value != 0) {
+    if (isAnswering) {
       return;
     }
     bool isTrueAnswer = answer.isCorrect ?? false;
@@ -466,6 +467,7 @@ class _KGameSpeechMovingTapState extends State<KGameSpeechMovingTap>
     }
 
     this.setState(() {
+      isAnswering = true;
       spinningHeroIndex = answerIndex;
     });
     this._spinAnimationController.reset();
@@ -537,6 +539,10 @@ class _KGameSpeechMovingTapState extends State<KGameSpeechMovingTap>
                   widget.onFinishLevel!();
                 }
               }
+
+              this.setState(() {
+                isAnswering = false;
+              });
             }
           });
         }
@@ -560,6 +566,13 @@ class _KGameSpeechMovingTapState extends State<KGameSpeechMovingTap>
           isWrongAnswer = true;
         });
       }
+      Future.delayed(Duration(milliseconds: 250), () {
+        if (mounted) {
+          this.setState(() {
+            isAnswering = false;
+          });
+        }
+      });
     }
     widget.controller.notify();
   }
