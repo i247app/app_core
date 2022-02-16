@@ -648,7 +648,7 @@ class _KGameConsoleState extends State<KGameConsole>
       case KGameTap.GAME_ID:
         return true;
       default:
-        return false;
+        return true;
     }
   }
 

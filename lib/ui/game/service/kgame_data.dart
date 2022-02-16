@@ -43,7 +43,7 @@ class KGameData {
       ? this.questions[this.currentQuestionIndex ?? 0]
       : KQuestion();
 
-  List<KAnswer> get currentQuestionAnswers => (this.currentQuestion.isGenAnswer ?? true) && (this.currentQuestion.answers ?? []).length > 1 ?
+  List<KAnswer> get currentQuestionAnswers => (this.currentQuestion.isGenAnswer ?? true) || (this.currentQuestion.answers ?? []).length == 1 ?
       this.currentQuestion.generateAnswers(4, answerType ?? 'number') : this.currentQuestion.answers!;
 
   bool get canRestartGame =>
