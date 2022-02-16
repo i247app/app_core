@@ -15,7 +15,8 @@ KQuestion _$KQuestionFromJson(Map<String, dynamic> json) => KQuestion()
   ..mediaType = json['mediaType'] as String?
   ..answers = (json['answers'] as List<dynamic>?)
       ?.map((e) => KAnswer.fromJson(e as Map<String, dynamic>))
-      .toList();
+      .toList()
+  ..isGenAnswer = zzz_str2Bool(json['isGenAnswer'] as String?);
 
 Map<String, dynamic> _$KQuestionToJson(KQuestion instance) {
   final val = <String, dynamic>{};
@@ -33,5 +34,6 @@ Map<String, dynamic> _$KQuestionToJson(KQuestion instance) {
   writeNotNull('mediaURL', instance.mediaURL);
   writeNotNull('mediaType', instance.mediaType);
   writeNotNull('answers', instance.answers?.map((e) => e.toJson()).toList());
+  writeNotNull('isGenAnswer', zzz_bool2Str(instance.isGenAnswer));
   return val;
 }

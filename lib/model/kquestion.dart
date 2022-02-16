@@ -16,6 +16,7 @@ class KQuestion {
   static const String MEDIA_TYPE = "mediaType"; // image | video
   static const String ANSWERS = "answers";
   static const String REVIEWS = "reviews";
+  static const String IS_GEN_ANSWER = "isGenAnswer";
 
   static const String MEDIA_TYPE_TEXT = "text";
   static const String MEDIA_TYPE_IMAGE = "image";
@@ -41,6 +42,9 @@ class KQuestion {
 
   @JsonKey(name: ANSWERS)
   List<KAnswer>? answers;
+
+  @JsonKey(name: IS_GEN_ANSWER, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
+  bool? isGenAnswer;
 
   @JsonKey(ignore: true)
   KAnswer? get correctAnswer =>
