@@ -656,7 +656,16 @@ class _KGameConsoleState extends State<KGameConsole>
   Widget build(BuildContext context) {
     final gameIntro = gameID == KGameShooting.GAME_ID
         ? GestureDetector(
-            onTap: () => this.setState(() => this.isShowIntro = false),
+            onTap: () {
+              this.setState(() => this.isShowIntro = false);
+              if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+                this.setState(() {
+                  this.isBackgroundSoundPlaying = true;
+                });
+                backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
+                    isLocal: true);
+              }
+            },
             child: Container(
               child: KGameIntro(
                 hero: widget.hero,
@@ -677,7 +686,16 @@ class _KGameConsoleState extends State<KGameConsole>
             fit: StackFit.expand,
             children: [
               KEggHeroIntro(
-                  onFinish: () => setState(() => this.isShowIntro = false)),
+                  onFinish: () {
+                    setState(() => this.isShowIntro = false);
+                    if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+                      this.setState(() {
+                        this.isBackgroundSoundPlaying = true;
+                      });
+                      backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
+                          isLocal: true);
+                    }
+                  }),
               GestureDetector(
                 onTap: () {
                   setState(() => this.isShowIntro = false);
