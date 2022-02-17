@@ -14,7 +14,7 @@ import 'package:path_provider/path_provider.dart';
 
 class KGameMovingTap extends StatefulWidget {
   static const GAME_ID = "510";
-  static const GAME_NAME = "tap";
+  static const GAME_NAME = "moving_tap";
 
   final KGameController controller;
   final KHero? hero;

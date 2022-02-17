@@ -409,9 +409,9 @@ class _KGameConsoleState extends State<KGameConsole>
 
   void showHighscoreDialog() {
     if (this.isPause) return;
-    if (this.isBackgroundSoundPlaying) {
-      toggleBackgroundSound();
-    }
+    // if (this.isBackgroundSoundPlaying) {
+    //   toggleBackgroundSound();
+    // }
     widget.controller.togglePause(true);
     final view = Align(
       alignment: Alignment.center,
