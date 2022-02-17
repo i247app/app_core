@@ -532,7 +532,7 @@ class _KGameConsoleState extends State<KGameConsole>
         return "packages/app_core/assets/audio/music_soft_28s.mp3";
       case KGameJumpOver.GAME_ID:
       case KGameJumpUp.GAME_ID:
-        return "packages/app_core/assets/audio/music_quiz.mp3";
+        // return "packages/app_core/assets/audio/music_quiz.mp3";
       case KGameShooting.GAME_ID:
         return "packages/app_core/assets/audio/music_swampy_110bpm.mp3";
       case KGameSpeechLetterTap.GAME_ID:
@@ -544,7 +544,7 @@ class _KGameConsoleState extends State<KGameConsole>
       case KGameJumpMultiRow.GAME_ID:
 
       default:
-        return "packages/app_core/assets/audio/music_fast.mp3";
+        return "packages/app_core/assets/audio/music_arcade_loop.mp3";
     }
   }
 

@@ -7,7 +7,7 @@ part 'get_scores_response.g.dart';
 
 @JsonSerializable()
 class KGetGameScoresResponse extends BaseResponse {
-  @JsonKey(name: "games")
+  @JsonKey(name: "gameScores")
   List<KGameScore>? scores;
 
   // JSON
