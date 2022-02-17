@@ -32,14 +32,14 @@ class KGameHighscoreDialog extends StatefulWidget {
 
 class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
   List<KGameScore> get sortedScores {
-    var scores = this.scores;
-    scores.sort((a, b) => widget.ascendingSort
+    var gameScores = this.gameScores;
+    gameScores.sort((a, b) => widget.ascendingSort
         ? double.parse(a.score ?? "0").compareTo(double.parse(b.score ?? "0"))
         : double.parse(b.score ?? "0").compareTo(double.parse(a.score ?? "0")));
-    return scores;
+    return gameScores;
   }
 
-  List<KGameScore> scores = [];
+  List<KGameScore> gameScores = [];
   bool isCurrentHighest = false;
   bool isLoaded = false;
 
@@ -47,7 +47,7 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
   void initState() {
     super.initState();
     if (widget.score != null) {
-      scores.add(widget.score!);
+      gameScores.add(widget.score!);
     }
     loadScore();
   }
@@ -88,9 +88,9 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
         level: widget.currentLevel.toString(),
       );
 
-      if (result.isSuccess && result.scores != null) {
+      if (result.isSuccess && result.gameScores != null) {
         setState(() {
-          scores = result.scores!;
+          gameScores = result.gameScores!;
           isLoaded = true;
         });
       }
