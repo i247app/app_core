@@ -21,6 +21,7 @@ class KGameData {
   int? eggReceive;
   bool? result;
   bool? isStart;
+  bool? isMuted;
   bool? isPause;
   bool? canAdvance;
   bool? isLoading;
@@ -66,5 +67,6 @@ class KGameData {
     this.currentQuestionIndex = 0,
     this.answerType = "number",
     this.isCountTime = false,
+    this.isMuted = false,
   });
 }

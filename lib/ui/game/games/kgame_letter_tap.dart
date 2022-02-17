@@ -31,7 +31,8 @@ class KGameLetterTap extends StatefulWidget {
   _KGameLetterTapState createState() => _KGameLetterTapState();
 }
 
-class _KGameLetterTapState extends State<KGameLetterTap> with TickerProviderStateMixin {
+class _KGameLetterTapState extends State<KGameLetterTap>
+    with TickerProviderStateMixin {
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
@@ -60,6 +61,8 @@ class _KGameLetterTapState extends State<KGameLetterTap> with TickerProviderStat
   bool get isPause => gameData.isPause ?? false;
 
   bool get canAdvance => gameData.canAdvance ?? false;
+
+  bool get isMuted => gameData.isMuted ?? false;
 
   int get point => gameData.point ?? 0;
 
@@ -112,28 +115,28 @@ class _KGameLetterTapState extends State<KGameLetterTap> with TickerProviderStat
         parent: _heroScaleAnimationController, curve: Curves.bounceOut));
 
     _bouncingAnimationController =
-    AnimationController(vsync: this, duration: Duration(milliseconds: 100))
-      ..addListener(() => setState(() {}))
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          _bouncingAnimationController.reverse();
-        } else if (status == AnimationStatus.dismissed) {
-          // _bouncingAnimationController.forward(from: 0.0);
-          this._heroScaleAnimationController.forward();
-        }
-      });
+        AnimationController(vsync: this, duration: Duration(milliseconds: 100))
+          ..addListener(() => setState(() {}))
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              _bouncingAnimationController.reverse();
+            } else if (status == AnimationStatus.dismissed) {
+              // _bouncingAnimationController.forward(from: 0.0);
+              this._heroScaleAnimationController.forward();
+            }
+          });
     _bouncingAnimation = Tween(begin: Offset(0, 0), end: Offset(0, -10.0))
         .animate(_bouncingAnimationController);
 
     _spinAnimationController =
-    AnimationController(vsync: this, duration: Duration(milliseconds: 500))
-      ..addListener(() => setState(() {}))
-      ..addStatusListener((status) {
-        if (mounted && status == AnimationStatus.completed) {
-          this._spinAnimationController.reset();
-          this._heroScaleAnimationController.reverse();
-        } else if (status == AnimationStatus.dismissed) {}
-      });
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500))
+          ..addListener(() => setState(() {}))
+          ..addStatusListener((status) {
+            if (mounted && status == AnimationStatus.completed) {
+              this._spinAnimationController.reset();
+              this._heroScaleAnimationController.reverse();
+            } else if (status == AnimationStatus.dismissed) {}
+          });
 
     _moveUpAnimationController = AnimationController(
       duration: const Duration(milliseconds: 500),
@@ -199,9 +202,9 @@ class _KGameLetterTapState extends State<KGameLetterTap> with TickerProviderStat
       Directory tempDir = await getTemporaryDirectory();
 
       ByteData correctAudioFileData =
-      await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
+          await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
       ByteData wrongAudioFileData =
-      await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
+          await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
 
       File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
       await correctAudioTempFile
@@ -219,13 +222,15 @@ class _KGameLetterTapState extends State<KGameLetterTap> with TickerProviderStat
   }
 
   void playSound(bool isTrueAnswer) async {
-    try {
-      if (isTrueAnswer) {
-        await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
-      } else {
-        await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
-      }
-    } catch (e) {}
+    if (!isMuted) {
+      try {
+        if (isTrueAnswer) {
+          await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
+        } else {
+          await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
+        }
+      } catch (e) {}
+    }
     this.setState(() {
       this.isPlaySound = false;
     });
@@ -338,7 +343,7 @@ class _KGameLetterTapState extends State<KGameLetterTap> with TickerProviderStat
               children: [
                 ...List.generate(
                   barrierValues.length,
-                      (i) => _Barrier(
+                  (i) => _Barrier(
                     onTap: (KAnswer answer) => handlePickAnswer(answer, i),
                     barrierX: barrierX[i],
                     barrierY: barrierY[i],
@@ -350,7 +355,7 @@ class _KGameLetterTapState extends State<KGameLetterTap> with TickerProviderStat
                         ? _bouncingAnimation.value
                         : Offset(0, 0),
                     scaleAnimation:
-                    spinningHeroIndex == i ? _heroScaleAnimation : null,
+                        spinningHeroIndex == i ? _heroScaleAnimation : null,
                     starY: _moveUpAnimation.value,
                     isShowStar: currentShowStarIndex == i,
                   ),
@@ -465,9 +470,9 @@ class _Barrier extends StatelessWidget {
                   child: AnimatedOpacity(
                     duration: Duration(milliseconds: 500),
                     opacity:
-                    (isShowStar ?? false) && (answer.isCorrect ?? false)
-                        ? 1
-                        : 0,
+                        (isShowStar ?? false) && (answer.isCorrect ?? false)
+                            ? 1
+                            : 0,
                     child: Icon(
                       Icons.star,
                       color: Colors.amberAccent,
@@ -483,9 +488,9 @@ class _Barrier extends StatelessWidget {
                 angle: rotateAngle,
                 child: scaleAnimation != null
                     ? (ScaleTransition(
-                  scale: scaleAnimation!,
-                  child: box,
-                ))
+                        scale: scaleAnimation!,
+                        child: box,
+                      ))
                     : box,
               ),
             ),

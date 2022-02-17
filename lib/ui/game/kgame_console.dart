@@ -291,11 +291,13 @@ class _KGameConsoleState extends State<KGameConsole>
       this.setState(() {
         this.isBackgroundSoundPlaying = false;
       });
+      this.widget.controller.toggleMuted(true);
       this.backgroundAudioPlayer.pause();
     } else {
       this.setState(() {
         this.isBackgroundSoundPlaying = true;
       });
+      this.widget.controller.toggleMuted(false);
       this.backgroundAudioPlayer.resume();
     }
   }
@@ -305,6 +307,7 @@ class _KGameConsoleState extends State<KGameConsole>
       this.isShowEndLevel = true;
     });
     final heroGameEnd = KHeroGameEnd(
+      gameData: gameData,
       hero: KHero()..imageURL = KImageAnimationHelper.randomImage,
       onFinish: () {
         this.setState(() {
@@ -325,6 +328,7 @@ class _KGameConsoleState extends State<KGameConsole>
       this.isShowEndLevel = true;
     });
     final heroGameLevel = KTamagoChanJumping(
+      gameData: gameData,
       onFinish: () {
         this.setState(() {
           this.isShowEndLevel = false;
@@ -685,17 +689,16 @@ class _KGameConsoleState extends State<KGameConsole>
         : Stack(
             fit: StackFit.expand,
             children: [
-              KEggHeroIntro(
-                  onFinish: () {
-                    setState(() => this.isShowIntro = false);
-                    if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
-                      this.setState(() {
-                        this.isBackgroundSoundPlaying = true;
-                      });
-                      backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
-                          isLocal: true);
-                    }
-                  }),
+              KEggHeroIntro(onFinish: () {
+                setState(() => this.isShowIntro = false);
+                if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+                  this.setState(() {
+                    this.isBackgroundSoundPlaying = true;
+                  });
+                  backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
+                      isLocal: true);
+                }
+              }),
               GestureDetector(
                 onTap: () {
                   setState(() => this.isShowIntro = false);

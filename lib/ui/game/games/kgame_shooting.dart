@@ -92,6 +92,8 @@ class _KGameShootingState extends State<KGameShooting>
 
   bool get canAdvance => gameData.canAdvance ?? false;
 
+  bool get isMuted => gameData.isMuted ?? false;
+
   int get point => gameData.point ?? 0;
 
   int get rightAnswerCount => gameData.rightAnswerCount ?? 0;
@@ -209,8 +211,7 @@ class _KGameShootingState extends State<KGameShooting>
       vsync: this,
     )
       ..addListener(() => setState(() {}))
-      ..addStatusListener((status) {
-      });
+      ..addStatusListener((status) {});
     _moveUpAnimation = new Tween(
       begin: 0.0,
       end: 1.0,
@@ -328,9 +329,11 @@ class _KGameShootingState extends State<KGameShooting>
 
   void fire() async {
     if (!isShooting && bulletsY.length < 3) {
-      try {
-        await audioPlayer.play(shootingAudioFileUri ?? "", isLocal: true);
-      } catch (e) {}
+      if (!isMuted) {
+        try {
+          await audioPlayer.play(shootingAudioFileUri ?? "", isLocal: true);
+        } catch (e) {}
+      }
       if (!_barrelScaleAnimationController.isAnimating) {
         _barrelScaleAnimationController.forward();
       }
@@ -377,13 +380,15 @@ class _KGameShootingState extends State<KGameShooting>
   }
 
   void playSound(bool isTrueAnswer) async {
-    try {
-      if (isTrueAnswer) {
-        await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
-      } else {
-        await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
-      }
-    } catch (e) {}
+    if (!isMuted) {
+      try {
+        if (isTrueAnswer) {
+          await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
+        } else {
+          await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
+        }
+      } catch (e) {}
+    }
     this.setState(() {
       this.isPlaySound = false;
     });
@@ -633,16 +638,13 @@ class _KGameShootingState extends State<KGameShooting>
                         imageUrl: barrierImageUrls[i],
                         answer: barrierValues[i],
                         rotateAngle: spinningHeroIndex == i
-                            ? -this._spinAnimationController.value *
-                                4 *
-                                Math.pi
+                            ? -this._spinAnimationController.value * 4 * Math.pi
                             : 0,
                         bouncingAnimation: spinningHeroIndex == i
                             ? _bouncingAnimation.value
                             : Offset(0, 0),
-                        scaleAnimation: spinningHeroIndex == i
-                            ? _heroScaleAnimation
-                            : null,
+                        scaleAnimation:
+                            spinningHeroIndex == i ? _heroScaleAnimation : null,
                         starY: _moveUpAnimation.value,
                         isShowStar: currentShowStarIndex == i,
                       ),

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/ui/game/service/kgame_data.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,10 +11,11 @@ import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 
 class KTamagoChanJumping extends StatefulWidget {
+  final KGameData? gameData;
   final Function? onFinish;
   final bool? canAdvance;
 
-  const KTamagoChanJumping({this.onFinish, this.canAdvance});
+  const KTamagoChanJumping({this.onFinish, this.canAdvance, this.gameData});
 
   @override
   _KTamagoChanJumpingState createState() => _KTamagoChanJumpingState();
@@ -43,6 +45,8 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
 
   int eggBreakStep = 1;
   int eggMaxBreakStep = 3;
+
+  bool get isMuted => widget.gameData?.isMuted ?? false;
 
   @override
   void initState() {
@@ -141,27 +145,31 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
       end: -0.06,
     ).animate(_shakeTheTopLeftAnimationController);
 
-    Future.delayed(Duration(milliseconds: 500), () {
-      try {
-        // final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
-        // ap.play(correctAudioFileUri ?? "", isLocal: true);
-        // cAudioPlayer.complete(ap);
+    if (!isMuted) {
+      Future.delayed(Duration(milliseconds: 500), () {
+        if (!isMuted) {
+          try {
+            // final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+            // ap.play(correctAudioFileUri ?? "", isLocal: true);
+            // cAudioPlayer.complete(ap);
 
-        if (widget.canAdvance ?? false) {
-          try {
-            final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
-            ap.play(winAudioFileUri ?? "", isLocal: true);
-            cBackgroundAudioPlayer.complete(ap);
-          } catch (e) {}
-        } else {
-          try {
-            final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
-            ap.play(loseAudioFileUri ?? "", isLocal: true);
-            cBackgroundAudioPlayer.complete(ap);
+            if (widget.canAdvance ?? false) {
+              try {
+                final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+                ap.play(winAudioFileUri ?? "", isLocal: true);
+                cBackgroundAudioPlayer.complete(ap);
+              } catch (e) {}
+            } else {
+              try {
+                final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+                ap.play(loseAudioFileUri ?? "", isLocal: true);
+                cBackgroundAudioPlayer.complete(ap);
+              } catch (e) {}
+            }
           } catch (e) {}
         }
-      } catch (e) {}
-    });
+      });
+    }
 
     Future.delayed(Duration(milliseconds: 1000), () {
       if (!(widget.canAdvance ?? false)) {
@@ -211,8 +219,8 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
       await correctAudioTempFile
           .writeAsBytes(correctAudioFileData.buffer.asUint8List(), flush: true);
       File winAudioTempFile = File('${tempDir.path}/jingle_win.mp3');
-      await winAudioTempFile
-          .writeAsBytes(winAudioFileData.buffer.asUint8List(), flush: true);
+      await winAudioTempFile.writeAsBytes(winAudioFileData.buffer.asUint8List(),
+          flush: true);
       File loseAudioTempFile = File('${tempDir.path}/jingle_lose.mp3');
       await loseAudioTempFile
           .writeAsBytes(loseAudioFileData.buffer.asUint8List(), flush: true);

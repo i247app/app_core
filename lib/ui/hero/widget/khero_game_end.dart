@@ -4,6 +4,7 @@ import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/khero.dart';
+import 'package:app_core/ui/game/service/kgame_data.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,10 +13,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:vector_math/vector_math_64.dart' as Vector;
 
 class KHeroGameEnd extends StatefulWidget {
+  final KGameData? gameData;
   final KHero? hero;
   final VoidCallback? onFinish;
 
-  const KHeroGameEnd({this.onFinish, this.hero});
+  const KHeroGameEnd({this.onFinish, this.hero, this.gameData});
 
   @override
   _KHeroGameEndState createState() => _KHeroGameEndState();
@@ -42,6 +44,8 @@ class _KHeroGameEndState extends State<KHeroGameEnd>
 
   int eggBreakStep = 1;
 
+  bool get isMuted => widget.gameData?.isMuted ?? false;
+
   @override
   void initState() {
     super.initState();
@@ -67,13 +71,17 @@ class _KHeroGameEndState extends State<KHeroGameEnd>
       end: 120.0,
     ).animate(_adultShakeAnimationController);
 
-    Future.delayed(Duration(milliseconds: 500), () {
-      try {
-        final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
-        ap.play(winAudioFileUri ?? "", isLocal: true);
-        cBackgroundAudioPlayer.complete(ap);
-      } catch (e) {}
-    });
+    if (!isMuted) {
+      Future.delayed(Duration(milliseconds: 500), () {
+        if (!isMuted) {
+          try {
+            final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+            ap.play(winAudioFileUri ?? "", isLocal: true);
+            cBackgroundAudioPlayer.complete(ap);
+          } catch (e) {}
+        }
+      });
+    }
   }
 
   @override

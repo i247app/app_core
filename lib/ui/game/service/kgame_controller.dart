@@ -33,6 +33,11 @@ class KGameController extends ValueNotifier<KGameData> {
     notifyListeners();
   }
 
+  void toggleMuted(bool value) {
+    this.value.isMuted = value;
+    notifyListeners();
+  }
+
   void toggleStart(bool value) {
     this.value.isStart = value;
     notifyListeners();

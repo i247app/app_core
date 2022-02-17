@@ -66,6 +66,8 @@ class _KGameMovingTapState extends State<KGameMovingTap>
 
   bool get canAdvance => gameData.canAdvance ?? false;
 
+  bool get isMuted => gameData.isMuted ?? false;
+
   int get point => gameData.point ?? 0;
 
   int get rightAnswerCount => gameData.rightAnswerCount ?? 0;
@@ -256,13 +258,15 @@ class _KGameMovingTapState extends State<KGameMovingTap>
   }
 
   void playSound(bool isTrueAnswer) async {
-    try {
-      if (isTrueAnswer) {
-        await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
-      } else {
-        await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
-      }
-    } catch (e) {}
+    if (!isMuted) {
+      try {
+        if (isTrueAnswer) {
+          await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
+        } else {
+          await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
+        }
+      } catch (e) {}
+    }
     this.setState(() {
       this.isPlaySound = false;
     });
