@@ -169,6 +169,7 @@ class _KGameTapState extends State<KGameTap> with TickerProviderStateMixin {
   void getListAnswer() {
     this.setState(() {
       this.barrierValues = currentQuestionAnswers;
+      this.barrierValues.shuffle();
     });
   }
 

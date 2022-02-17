@@ -111,13 +111,15 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
             Future.delayed(
                 Duration(milliseconds: introShakeTime - 1 > 0 ? 1000 : 500),
                 () {
-              if (introShakeTime - 1 > 0) {
-                this._shakeTheTopAnimationController.forward();
-              } else {
-                this._bouncingAnimationController.forward();
-              }
-              if (introShakeTime > 0)
-                this.setState(() => introShakeTime = introShakeTime - 1);
+                  if (mounted) {
+                    if (introShakeTime - 1 > 0) {
+                      this._shakeTheTopAnimationController.forward();
+                    } else {
+                      this._bouncingAnimationController.forward();
+                    }
+                    if (introShakeTime > 0)
+                      this.setState(() => introShakeTime = introShakeTime - 1);
+                  }
             });
           }
         }

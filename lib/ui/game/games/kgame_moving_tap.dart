@@ -204,6 +204,7 @@ class _KGameMovingTapState extends State<KGameMovingTap>
   void getListAnswer() {
     this.setState(() {
       this.barrierValues = currentQuestionAnswers;
+      this.barrierValues.shuffle();
     });
   }
 

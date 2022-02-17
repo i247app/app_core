@@ -390,6 +390,7 @@ class _KGameSpeechMovingTapState extends State<KGameSpeechMovingTap>
   void getListAnswer() {
     this.setState(() {
       this.barrierValues = currentQuestionAnswers;
+      this.barrierValues.shuffle();
     });
   }
 

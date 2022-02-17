@@ -354,6 +354,7 @@ class _KGameSpeechTapState extends State<KGameSpeechTap>
   void getListAnswer() {
     this.setState(() {
       this.barrierValues = currentQuestionAnswers;
+      this.barrierValues.shuffle();
     });
   }
 
