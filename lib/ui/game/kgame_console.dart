@@ -330,7 +330,7 @@ class _KGameConsoleState extends State<KGameConsole>
     this.setState(() {
       this.isShowEndLevel = true;
     });
-    if (score != null && rightAnswerCount == questions.length) {
+    if (score != null && (rightAnswerCount == questions.length || gameID == KGameShooting.GAME_ID)) {
       await saveScore();
     }
     final heroGameEnd = KHeroGameEnd(
@@ -681,6 +681,8 @@ class _KGameConsoleState extends State<KGameConsole>
 
   bool isShowTimer() {
     switch (gameID) {
+      case KGameShooting.GAME_ID:
+        return false;
       case KGameMovingTap.GAME_ID:
       case KGameLetterTap.GAME_ID:
       case KGameTap.GAME_ID:
@@ -786,7 +788,7 @@ class _KGameConsoleState extends State<KGameConsole>
           : Container(),
     );
 
-    final correctAnswerCounter = Align(
+    final scoreCounter = Align(
       alignment: Alignment(-1, -1),
       child: currentLevel < levelPlayTimes.length
           ? Padding(
@@ -794,7 +796,7 @@ class _KGameConsoleState extends State<KGameConsole>
               child: Container(
                 height: 50,
                 padding:
-                    EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+                    EdgeInsets.only(top: 5, bottom: 5, left: 20, right: 20),
                 decoration: BoxDecoration(
                   color: Colors.red,
                   borderRadius: BorderRadius.circular(40),
@@ -804,7 +806,7 @@ class _KGameConsoleState extends State<KGameConsole>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      "${rightAnswerCount}/${questions.length}",
+                      "${point}",
                       textScaleFactor: 1.0,
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -1214,7 +1216,7 @@ class _KGameConsoleState extends State<KGameConsole>
                       if (isShowTimer() && (isStart || result != null))
                         timeCounter,
                       if (!isShowTimer() && (isStart || result != null))
-                        correctAnswerCounter,
+                        scoreCounter,
                       if (isStart) eggReceiveBox,
                       levelBox,
                       if (!isStart && isSpeechGame && currentLanguage == null)

@@ -66,6 +66,7 @@ class _KGameShootingState extends State<KGameShooting>
   bool isScroll = true;
   double scrollSpeed = 0.01;
   bool isShooting = false;
+  bool isHit = false;
   double bulletHeight = 40;
   double bulletWidth = 40;
   List<double> bulletsY = [];
@@ -231,6 +232,8 @@ class _KGameShootingState extends State<KGameShooting>
               bulletsY.removeAt(i);
               bulletsTime.removeAt(i);
             });
+            widget.controller.value.point = point + 1;
+            widget.controller.notify();
             return;
           } else if (pos < 1) {
             setState(() {
@@ -427,7 +430,7 @@ class _KGameShootingState extends State<KGameShooting>
             (bulletY * MediaQuery.of(context).size.height / 2) / 2 -
                 (heroHeight / 2);
 
-        if ((leftBarrier < -heroWidth / 2 && rightBarrier >= heroWidth / 2 ||
+        if (!isHit && (leftBarrier < -heroWidth / 2 && rightBarrier >= heroWidth / 2 ||
                 leftBarrier <= -heroWidth / 2 &&
                     rightBarrier >= -heroWidth / 2 ||
                 leftBarrier <= heroWidth / 2 &&
@@ -443,6 +446,7 @@ class _KGameShootingState extends State<KGameShooting>
             bulletsTime.removeAt(bulletIndex);
             spinningHeroIndex = i;
             isShooting = false;
+            isHit = true;
           });
           bool isTrueAnswer = barrierValues[i].isCorrect ?? false;
 
@@ -458,7 +462,7 @@ class _KGameShootingState extends State<KGameShooting>
             this._scaleAnimationController.forward();
 
             widget.controller.value.result = true;
-            widget.controller.value.point = point + 5;
+            widget.controller.value.point = point + 10;
             if (!isWrongAnswer) {
               this.setState(() {
                 currentShowStarIndex = i;
@@ -506,6 +510,7 @@ class _KGameShootingState extends State<KGameShooting>
                       barrierValues.add(this.getRandomAnswer());
                       barrierValues.add(this.getRandomAnswer());
                       isScroll = true;
+                      isHit = false;
                     });
                   });
                 } else {
@@ -538,13 +543,16 @@ class _KGameShootingState extends State<KGameShooting>
             });
           } else {
             widget.controller.value.result = false;
-            widget.controller.value.point = point > 0 ? point - 1 : 0;
+            widget.controller.value.point = point >= 5 ? point - 5 : 0;
             if (!isWrongAnswer) {
               widget.controller.value.wrongAnswerCount = wrongAnswerCount + 1;
               this.setState(() {
                 isWrongAnswer = true;
               });
             }
+            this.setState(() {
+              isHit = false;
+            });
           }
           widget.controller.notify();
         }
