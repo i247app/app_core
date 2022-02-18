@@ -519,6 +519,25 @@ class _KGameConsoleState extends State<KGameConsole>
     } catch (e) {}
   }
 
+  void resetGame() async {
+    try {
+      widget.controller.value.currentLevel = 0;
+      widget.controller.value.rightAnswerCount = 0;
+      widget.controller.value.wrongAnswerCount = 0;
+      widget.controller.value.point = 0;
+      widget.controller.value.currentQuestionIndex = 0;
+      widget.controller.value.eggReceive = 0;
+      widget.controller.value.result = null;
+      widget.controller.value.isStart = false;
+      widget.controller.value.isMuted = false;
+      widget.controller.value.isPause = false;
+      widget.controller.value.levelPlayTimes = [];
+      await widget.controller.loadGame();
+
+      widget.controller.notify();
+    } catch (e) {}
+  }
+
   void restartGame() async {
     try {
       widget.controller.value.levelPlayTimes[currentLevel] = 0;
@@ -991,6 +1010,84 @@ class _KGameConsoleState extends State<KGameConsole>
       ),
     );
 
+    final gameOverScreen = Align(
+      alignment: Alignment.center,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Game Over",
+              style: TextStyle(fontSize: 30, color: Colors.white),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            GestureDetector(
+              onTap: () => resetGame(),
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.75,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(40),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      blurRadius: 8,
+                      offset: Offset(2, 6),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  "RESTART",
+                  textScaleFactor: 1.0,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              child: Container(
+                width: MediaQuery.of(context).size.width * 0.75,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(40),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      blurRadius: 8,
+                      offset: Offset(2, 6),
+                    ),
+                  ],
+                ),
+                child: Text(
+                  "EXIT",
+                  textScaleFactor: 1.0,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
     final advanceScreen = Align(
       alignment: Alignment.center,
       child: Padding(
@@ -1237,15 +1334,7 @@ class _KGameConsoleState extends State<KGameConsole>
                           !isShowEndLevel) ...[
                         if (result == null) startScreen,
                         if (result != null && canRestartGame) advanceScreen,
-                        if (!canRestartGame)
-                          Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Game Over",
-                              style:
-                                  TextStyle(fontSize: 30, color: Colors.white),
-                            ),
-                          ),
+                        if (!canRestartGame) gameOverScreen,
                       ],
                       if (!isPause)
                         Align(
