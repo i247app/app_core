@@ -556,11 +556,6 @@ class _KGameConsoleState extends State<KGameConsole>
   }
 
   void onFinishLevel() {
-    if (!canAdvance) {
-      this.showHeroGameLevelOverlay(() {});
-      return;
-    }
-
     widget.controller.value.score = KGameScore()
       ..game = gameID
       ..avatarURL = KSessionData.me!.avatarURL
@@ -570,6 +565,11 @@ class _KGameConsoleState extends State<KGameConsole>
       ..time = "${levelPlayTimes[currentLevel]}";
     // ..score = "${isShowTimer() ? levelPlayTimes[currentLevel] : point}";
     widget.controller.notify();
+
+    if (!canAdvance) {
+      this.showHeroGameLevelOverlay(() {});
+      return;
+    }
 
     if (currentLevel + 1 < levelCount) {
       this.showHeroGameLevelOverlay(() {
@@ -906,6 +906,14 @@ class _KGameConsoleState extends State<KGameConsole>
             isShowCountDown = false;
           });
           widget.controller.toggleStart(true);
+
+          if (!(widget.controller.value.isMuted ?? false) && backgroundAudioPlayer.state != PlayerState.PLAYING) {
+            this.setState(() {
+              this.isBackgroundSoundPlaying = true;
+            });
+            backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
+                isLocal: true);
+          }
         }
       },
     );
@@ -1030,7 +1038,7 @@ class _KGameConsoleState extends State<KGameConsole>
                 width: MediaQuery.of(context).size.width * 0.75,
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                 decoration: BoxDecoration(
-                  color: Colors.red,
+                  color: Colors.orange,
                   borderRadius: BorderRadius.circular(40),
                   boxShadow: [
                     BoxShadow(
