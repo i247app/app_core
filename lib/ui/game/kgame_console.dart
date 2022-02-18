@@ -330,7 +330,9 @@ class _KGameConsoleState extends State<KGameConsole>
     this.setState(() {
       this.isShowEndLevel = true;
     });
-    if (score != null && (rightAnswerCount == questions.length || gameID == KGameShooting.GAME_ID)) {
+    if (score != null &&
+        (rightAnswerCount == questions.length ||
+            gameID == KGameShooting.GAME_ID)) {
       await saveScore();
     }
     final heroGameEnd = KHeroGameEnd(
@@ -354,7 +356,9 @@ class _KGameConsoleState extends State<KGameConsole>
     this.setState(() {
       this.isShowEndLevel = true;
     });
-    if (score != null && rightAnswerCount == questions.length) {
+    if (score != null &&
+        (rightAnswerCount == questions.length ||
+            gameID == KGameShooting.GAME_ID)) {
       await saveScore();
     }
     final heroGameLevel = KTamagoChanJumping(
