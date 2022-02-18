@@ -14,6 +14,7 @@ class KGameHighscoreDialog extends StatefulWidget {
   final bool ascendingSort;
   final bool? isTime;
   final KGameData? gameData;
+  final bool? isCurrentHighest;
 
   const KGameHighscoreDialog({
     required this.onClose,
@@ -24,6 +25,7 @@ class KGameHighscoreDialog extends StatefulWidget {
     required this.currentLevel,
     this.ascendingSort = true,
     this.isTime = false,
+    this.isCurrentHighest = false,
   });
 
   @override
@@ -52,6 +54,11 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
     loadScore();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Future saveScore() async {
     try {
       final result = await KServerHandler.saveGameScore(
@@ -72,16 +79,11 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
     } catch (e) {}
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   void loadScore() async {
     try {
-      if (widget.score != null && (widget.canSaveHighScore ?? true)) {
-        await saveScore();
-      }
+      // if (widget.score != null && (widget.canSaveHighScore ?? true)) {
+      //   await saveScore();
+      // }
 
       final result = await KServerHandler.getGameHighscore(
         gameID: widget.game,
@@ -172,7 +174,7 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
                       final score = scores[index];
                       bool isCurrentUserHighScore =
                           score.puid == KSessionData.me!.puid &&
-                              isCurrentHighest;
+                              (widget.isCurrentHighest ?? false);
                       print(score.scoreType);
                       return Container(
                         padding: EdgeInsets.symmetric(

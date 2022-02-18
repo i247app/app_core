@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/kquestion.dart';
@@ -74,6 +75,7 @@ class _KGameConsoleState extends State<KGameConsole>
   bool isShowEndLevel = false;
   bool isShowIntro = true;
   bool isLoaded = false;
+  bool isCurrentHighest = false;
 
   KGameData get gameData => widget.controller.value;
 
@@ -88,6 +90,8 @@ class _KGameConsoleState extends State<KGameConsole>
   int get currentLevel => gameData.currentLevel ?? 0;
 
   String get gameID => gameData.gameID;
+
+  String? get gameAppID => gameData.gameAppID;
 
   KGameScore? get score => gameData.score;
 
@@ -302,10 +306,33 @@ class _KGameConsoleState extends State<KGameConsole>
     }
   }
 
+  Future saveScore() async {
+    try {
+      final result = await KServerHandler.saveGameScore(
+        gameID: gameID,
+        level: currentLevel.toString(),
+        time: score!.time,
+        point: score!.point,
+        gameAppID: gameAppID,
+        language: gameData.language ?? "en",
+        topic: gameData.answerType ?? "number",
+      );
+
+      if (result.isSuccess) {
+        setState(() {
+          isCurrentHighest = true;
+        });
+      }
+    } catch (e) {}
+  }
+
   void showHeroGameEndOverlay(Function() onFinish) async {
     this.setState(() {
       this.isShowEndLevel = true;
     });
+    if (score != null && rightAnswerCount == questions.length) {
+      await saveScore();
+    }
     final heroGameEnd = KHeroGameEnd(
       gameData: gameData,
       hero: KHero()..imageURL = KImageAnimationHelper.randomImage,
@@ -327,6 +354,9 @@ class _KGameConsoleState extends State<KGameConsole>
     this.setState(() {
       this.isShowEndLevel = true;
     });
+    if (score != null && rightAnswerCount == questions.length) {
+      await saveScore();
+    }
     final heroGameLevel = KTamagoChanJumping(
       gameData: gameData,
       onFinish: () {
@@ -407,7 +437,7 @@ class _KGameConsoleState extends State<KGameConsole>
     showCustomOverlay(view);
   }
 
-  void showHighscoreDialog() {
+  void showHighscoreDialog() async {
     if (this.isPause) return;
     // if (this.isBackgroundSoundPlaying) {
     //   toggleBackgroundSound();
@@ -421,6 +451,9 @@ class _KGameConsoleState extends State<KGameConsole>
             KOverlayHelper.removeOverlay(this.overlayID!);
             this.overlayID = null;
           }
+          this.setState(() {
+            isCurrentHighest = false;
+          });
           resumeGame();
         },
         game: gameID,
@@ -428,6 +461,7 @@ class _KGameConsoleState extends State<KGameConsole>
         canSaveHighScore: false,
         currentLevel: currentLevel,
         gameData: gameData,
+        isCurrentHighest: isCurrentHighest,
       ),
     );
     showCustomOverlay(view);
@@ -532,7 +566,7 @@ class _KGameConsoleState extends State<KGameConsole>
         return "packages/app_core/assets/audio/music_soft_28s.mp3";
       case KGameJumpOver.GAME_ID:
       case KGameJumpUp.GAME_ID:
-        // return "packages/app_core/assets/audio/music_quiz.mp3";
+      // return "packages/app_core/assets/audio/music_quiz.mp3";
       case KGameShooting.GAME_ID:
         return "packages/app_core/assets/audio/music_swampy_110bpm.mp3";
       case KGameSpeechLetterTap.GAME_ID:
