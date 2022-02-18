@@ -35,9 +35,9 @@ class KGameHighscoreDialog extends StatefulWidget {
 class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
   List<KGameScore> get sortedScores {
     var gameScores = this.gameScores;
-    gameScores.sort((a, b) => widget.ascendingSort
-        ? double.parse(a.score ?? "0").compareTo(double.parse(b.score ?? "0"))
-        : double.parse(b.score ?? "0").compareTo(double.parse(a.score ?? "0")));
+    // gameScores.sort((a, b) => widget.ascendingSort
+    //     ? double.parse(a.score ?? "0").compareTo(double.parse(b.score ?? "0"))
+    //     : double.parse(b.score ?? "0").compareTo(double.parse(a.score ?? "0")));
     return gameScores;
   }
 
