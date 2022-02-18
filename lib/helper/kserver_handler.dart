@@ -320,7 +320,7 @@ abstract class KServerHandler {
     required String gameID,
     required String level,
     String? time,
-    String? points,
+    String? point,
     String? gameAppID,
     String? language,
     String? topic,
@@ -332,7 +332,7 @@ abstract class KServerHandler {
         ..game = gameID
         ..level = level
         ..time = time
-        ..points = points
+        ..point = point
         ..gameAppID = gameAppID
         ..language = language
         ..topic = topic,

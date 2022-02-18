@@ -509,7 +509,7 @@ class _KGameConsoleState extends State<KGameConsole>
       ..avatarURL = KSessionData.me!.avatarURL
       ..kunm = KSessionData.me!.kunm
       ..level = "${currentLevel}"
-      ..points = "${point}"
+      ..point = "${point}"
       ..time = "${levelPlayTimes[currentLevel]}";
     // ..score = "${isShowTimer() ? levelPlayTimes[currentLevel] : point}";
     widget.controller.notify();

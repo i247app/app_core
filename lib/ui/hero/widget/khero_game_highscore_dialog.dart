@@ -58,7 +58,7 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
         gameID: widget.game,
         level: widget.currentLevel.toString(),
         time: widget.score!.time,
-        points: widget.score!.points,
+        point: widget.score!.point,
         gameAppID: widget.gameData?.gameAppID,
         language: widget.gameData?.language ?? "en",
         topic: widget.gameData?.answerType ?? "number",
@@ -173,7 +173,7 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
                       bool isCurrentUserHighScore =
                           score.puid == KSessionData.me!.puid &&
                               isCurrentHighest;
-
+                      print(score.scoreType);
                       return Container(
                         padding: EdgeInsets.symmetric(
                           vertical: 5,
@@ -228,7 +228,7 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
                               width: 10,
                             ),
                             Text(
-                              (widget.isTime ?? false)
+                              (score.scoreType == 'time')
                                   ? '${(double.parse(score.score ?? '0') / 1000).toStringAsFixed(3)} s'
                                   : '${double.parse(score.score ?? '0')}',
                               style: TextStyle(
