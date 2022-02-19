@@ -462,7 +462,6 @@ class _KGameShootingState extends State<KGameShooting>
             this._scaleAnimationController.forward();
 
             widget.controller.value.result = true;
-            widget.controller.value.point = point + 10;
             if (!isWrongAnswer) {
               this.setState(() {
                 currentShowStarIndex = i;
@@ -470,6 +469,9 @@ class _KGameShootingState extends State<KGameShooting>
               widget.controller.value.rightAnswerCount = rightAnswerCount + 1;
               this._moveUpAnimationController.reset();
               this._moveUpAnimationController.forward();
+              widget.controller.value.point = point + 10;
+            } else {
+              widget.controller.value.point = point + 5;
             }
             this.setState(() {
               isScroll = false;
