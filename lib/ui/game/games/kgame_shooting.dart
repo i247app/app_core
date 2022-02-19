@@ -516,6 +516,8 @@ class _KGameShootingState extends State<KGameShooting>
                     });
                   });
                 } else {
+                  widget.controller.value.currentQuestionIndex =
+                      currentQuestionIndex + 1;
                   if (questions.length > 0 &&
                       (rightAnswerCount / questions.length) >=
                           levelHardness[currentLevel]) {
