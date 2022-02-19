@@ -194,11 +194,20 @@ class _ChapterItem extends StatelessWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: Icon(
-                    Icons.menu_book,
-                    size: 60,
-                    color: Theme.of(context).colorScheme.primary,
+                  child: FittedBox(
+                    child: Text(
+                      "${chapter.chapterNumber}",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 60,
+                      ),
+                    ),
                   ),
+                  // Icon(
+                  //   Icons.menu_book,
+                  //   size: 60,
+                  //   color: Theme.of(context).colorScheme.primary,
+                  // ),
                 ),
                 Expanded(
                   child: Padding(

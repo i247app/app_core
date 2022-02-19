@@ -10,6 +10,7 @@ class Chapter {
   static const String TITLE = "title";
   static const String SUBTITLE = "subtitle";
   static const String TEXT = "text";
+  static const String CHAPTER_NUMBER = "chapterNumber";
   static const String MEDIA_URL = "mediaURL"; // cover
   static const String MEDIA_TYPE = "mediaType"; // image | video
   static const String CHAPTER_STATUS = "chapterStatus";
@@ -41,6 +42,9 @@ class Chapter {
 
   @JsonKey(name: PAGES)
   List<TBPage>? pages;
+
+  @JsonKey(name: CHAPTER_NUMBER)
+  String? chapterNumber;
 
   // JSON
   Chapter();
