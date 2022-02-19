@@ -609,7 +609,7 @@ class _KGameConsoleState extends State<KGameConsole>
                           borderRadius: BorderRadius.circular(40),
                         ),
                         child: Text(
-                          "${(currentQuestionIndex ?? 0) + 1}",
+                          "${(currentQuestionIndex ?? 0)}",
                           textScaleFactor: 1.0,
                           textAlign: TextAlign.center,
                           style: Theme.of(context).textTheme.bodyText1!.copyWith(
