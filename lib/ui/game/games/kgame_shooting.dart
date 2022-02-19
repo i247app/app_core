@@ -232,7 +232,7 @@ class _KGameShootingState extends State<KGameShooting>
               bulletsY.removeAt(i);
               bulletsTime.removeAt(i);
             });
-            widget.controller.value.point = point + 1;
+            widget.controller.value.point = point > 1 ? point - 1 : 0;
             widget.controller.notify();
             return;
           } else if (pos < 1) {

@@ -119,6 +119,8 @@ class _KGameConsoleState extends State<KGameConsole>
 
   String? get currentLanguage => gameData.language;
 
+  int? get currentQuestionIndex => gameData.currentQuestionIndex;
+
   List<String> levelIconAssets = [];
 
   List<String> languageLabels = [];
@@ -582,6 +584,117 @@ class _KGameConsoleState extends State<KGameConsole>
     }
   }
 
+  Widget getBottomBox() {
+    switch (gameID) {
+      case KGameShooting.GAME_ID:
+        return Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                if (isStart || result != null)
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        height: 50,
+                        padding:
+                        EdgeInsets.only(top: 5, bottom: 5, left: 30, right: 10),
+                        decoration: BoxDecoration(
+                          color: Color(0xff2c1c44),
+                          borderRadius: BorderRadius.circular(40),
+                        ),
+                        child: Text(
+                          "${(currentQuestionIndex ?? 0) + 1}",
+                          textScaleFactor: 1.0,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            color: Color(0xfffdcd3a),
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      if (currentLevel < levelIconAssets.length &&
+                          levelIconAssets[currentLevel].isNotEmpty)
+                        Positioned(
+                          left: -30,
+                          top: -15,
+                          child: SizedBox(
+                            height: 80,
+                            child: Image.asset(
+                              levelIconAssets[currentLevel],
+                              fit: BoxFit.contain,
+                              package: 'app_core',
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        );
+      default:
+        return Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                if (isStart || result != null)
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        height: 50,
+                        padding:
+                        EdgeInsets.only(top: 5, bottom: 5, left: 30, right: 10),
+                        decoration: BoxDecoration(
+                          color: Color(0xff2c1c44),
+                          borderRadius: BorderRadius.circular(40),
+                        ),
+                        child: Text(
+                          "${rightAnswerCount}",
+                          textScaleFactor: 1.0,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                            color: Color(0xfffdcd3a),
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      if (currentLevel < levelIconAssets.length &&
+                          levelIconAssets[currentLevel].isNotEmpty)
+                        Positioned(
+                          left: -30,
+                          top: -15,
+                          child: SizedBox(
+                            height: 80,
+                            child: Image.asset(
+                              levelIconAssets[currentLevel],
+                              fit: BoxFit.contain,
+                              package: 'app_core',
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        );
+    }
+  }
+
   String getCurrentGameBackgroundAudioPath() {
     switch (gameID) {
       case KGameMulti.GAME_ID:
@@ -916,59 +1029,6 @@ class _KGameConsoleState extends State<KGameConsole>
           }
         }
       },
-    );
-
-    final levelBox = Align(
-      alignment: Alignment.bottomRight,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            if (isStart || result != null)
-              Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.25,
-                    height: 50,
-                    padding:
-                        EdgeInsets.only(top: 5, bottom: 5, left: 30, right: 10),
-                    decoration: BoxDecoration(
-                      color: Color(0xff2c1c44),
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                    child: Text(
-                      "${rightAnswerCount}",
-                      textScaleFactor: 1.0,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                            color: Color(0xfffdcd3a),
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
-                    ),
-                  ),
-                  if (currentLevel < levelIconAssets.length &&
-                      levelIconAssets[currentLevel].isNotEmpty)
-                    Positioned(
-                      left: -30,
-                      top: -15,
-                      child: SizedBox(
-                        height: 80,
-                        child: Image.asset(
-                          levelIconAssets[currentLevel],
-                          fit: BoxFit.contain,
-                          package: 'app_core',
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-          ],
-        ),
-      ),
     );
 
     final startScreen = Align(
@@ -1327,7 +1387,7 @@ class _KGameConsoleState extends State<KGameConsole>
                       if (!isShowTimer() && (isStart || result != null))
                         scoreCounter,
                       if (isStart) eggReceiveBox,
-                      levelBox,
+                      getBottomBox(),
                       if (!isStart && isSpeechGame && currentLanguage == null)
                         languageSelect,
                       if (isStart && gameData.game != null && !isLoading)
