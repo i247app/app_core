@@ -582,8 +582,8 @@ class _KGameConsoleState extends State<KGameConsole>
       ..kunm = KSessionData.me!.kunm
       ..level = "${currentLevel}"
       ..point = "${point}"
-      ..time = "${levelPlayTimes[currentLevel]}";
-    // ..score = "${isShowTimer() ? levelPlayTimes[currentLevel] : point}";
+      ..time = "${levelPlayTimes[currentLevel]}"
+      ..score = "${isShowTimer() ? levelPlayTimes[currentLevel] : point}";
     widget.controller.notify();
 
     if (!canAdvance) {
