@@ -37,6 +37,7 @@ import 'package:app_core/model/textbook.dart';
 import 'package:app_core/model/xfr_proxy.dart';
 import 'package:app_core/model/xfr_ticket.dart';
 import 'package:app_core/ui/school/kdoc_picker.dart';
+import 'package:app_core/model/response/save_score_response.dart';
 
 abstract class KServerHandler {
   static Future<SimpleResponse> logToServer(String key, value) async {
@@ -316,7 +317,7 @@ abstract class KServerHandler {
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }
 
-  static Future<SimpleResponse> saveGameScore({
+  static Future<KSaveScoreResponse> saveGameScore({
     required String gameID,
     required String level,
     String? time,
@@ -337,7 +338,7 @@ abstract class KServerHandler {
         ..language = language
         ..topic = topic,
     };
-    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+    return TLSHelper.send(params).then((data) => KSaveScoreResponse.fromJson(data));
   }
 
   static Future<CreditTransferResponse> bankDeposit({

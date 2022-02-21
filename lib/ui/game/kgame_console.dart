@@ -126,6 +126,8 @@ class _KGameConsoleState extends State<KGameConsole>
   List<String> languageLabels = [];
   List<String> languageValues = [];
 
+  List<KGameScore>? gameScores = null;
+
   @override
   void initState() {
     super.initState();
@@ -325,6 +327,11 @@ class _KGameConsoleState extends State<KGameConsole>
           isCurrentHighest = true;
         });
       }
+      if (result.gameScores != null) {
+        setState(() {
+          gameScores = result.gameScores;
+        });
+      }
     } catch (e) {}
   }
 
@@ -403,6 +410,7 @@ class _KGameConsoleState extends State<KGameConsole>
             canSaveHighScore: rightAnswerCount == questions.length,
             currentLevel: currentLevel,
             isTime: isShowTimer(),
+            gameScores: gameScores,
           ),
         ),
       ],
@@ -468,6 +476,7 @@ class _KGameConsoleState extends State<KGameConsole>
         currentLevel: currentLevel,
         gameData: gameData,
         isCurrentHighest: isCurrentHighest,
+        gameScores: gameScores,
       ),
     );
     showCustomOverlay(view);
@@ -518,6 +527,9 @@ class _KGameConsoleState extends State<KGameConsole>
 
         widget.controller.notify();
       }
+      this.setState(() {
+        gameScores = null;
+      });
     } catch (e) {}
   }
 
@@ -537,6 +549,9 @@ class _KGameConsoleState extends State<KGameConsole>
       await widget.controller.loadGame();
 
       widget.controller.notify();
+      this.setState(() {
+        gameScores = null;
+      });
     } catch (e) {}
   }
 
@@ -554,6 +569,9 @@ class _KGameConsoleState extends State<KGameConsole>
       widget.controller.value.canAdvance = false;
 
       widget.controller.notify();
+      this.setState(() {
+        gameScores = null;
+      });
     } catch (e) {}
   }
 

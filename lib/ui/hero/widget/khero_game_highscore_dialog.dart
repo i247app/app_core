@@ -15,12 +15,14 @@ class KGameHighscoreDialog extends StatefulWidget {
   final bool? isTime;
   final KGameData? gameData;
   final bool? isCurrentHighest;
+  final List<KGameScore>? gameScores;
 
   const KGameHighscoreDialog({
     required this.onClose,
     required this.game,
     this.score,
     this.gameData,
+    this.gameScores,
     this.canSaveHighScore = true,
     required this.currentLevel,
     this.ascendingSort = true,
@@ -84,6 +86,13 @@ class _KGameHighscoreDialogState extends State<KGameHighscoreDialog> {
       // if (widget.score != null && (widget.canSaveHighScore ?? true)) {
       //   await saveScore();
       // }
+      if (widget.gameScores != null) {
+        setState(() {
+          gameScores = widget.gameScores!;
+          isLoaded = true;
+        });
+        return;
+      }
 
       final result = await KServerHandler.getGameHighscore(
         gameID: widget.game,
