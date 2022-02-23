@@ -4,6 +4,8 @@ import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/helper/service/ktheme_service.dart';
 import 'package:app_core/model/chapter.dart';
 import 'package:app_core/model/textbook.dart';
+import 'package:app_core/ui/school/widget/kdoc_screen.dart';
+import 'package:app_core/ui/school/widget/kdoc_view.dart';
 import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/flutter_picker.dart';
@@ -115,7 +117,9 @@ class _KDocPickerState extends State<KDocPicker> {
     if (response.isSuccess && (response.textbooks ?? []).isNotEmpty) {
       final fullChapter = response.textbooks!.first.chapters!
           .firstWhere((c) => selectedChapter.chapterID == c.chapterID);
-      Navigator.of(context).pop(fullChapter);
+      // Navigator.of(context).pop(fullChapter);
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (ctx) => KDocScreen(chapter: fullChapter, mode: KDocViewMode.movable)));
     }
   }
 

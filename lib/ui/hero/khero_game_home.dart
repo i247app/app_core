@@ -8,6 +8,7 @@ import 'package:app_core/ui/game/games/kgame_multi.dart';
 import 'package:app_core/ui/game/games/kgame_multi_letter.dart';
 import 'package:app_core/ui/game/games/kgame_shooting.dart';
 import 'package:app_core/ui/game/games/kgame_tap.dart';
+import 'package:app_core/ui/game/games/kgame_word.dart';
 import 'package:app_core/ui/game/kgame_console.dart';
 import 'package:app_core/ui/game/service/kgame_controller.dart';
 import 'package:app_core/ui/hero/khero_jump_game.dart';
@@ -364,6 +365,37 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
               //     ),
               //   ],
               // ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => KGameConsole(
+                            KGameController(
+                              gameID: KGameWord.GAME_ID,
+                              gameName: KGameWord.GAME_NAME,
+                              levelCount: 4,
+                              currentLevel: 0,
+                              answerType: 'letter',
+                              isCountTime: true,
+                            ),
+                          ),
+                        )),
+                    style: KStyles.squaredButton(
+                      Theme.of(context).colorScheme.primary,
+                      textColor: Colors.white,
+                    ),
+                    child: Text("👾"),
+                  ),
+                  SizedBox(width: 5),
+                  FittedBox(
+                    child: Text("Word"),
+                  ),
+                ],
+              ),
               Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
