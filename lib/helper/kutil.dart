@@ -400,6 +400,48 @@ abstract class KUtil {
     return pretty;
   }
 
+  static String formatDate(
+    dynamic rawDate, {
+    String format = "MM/yyyy",
+  }) {
+    String pretty = "";
+
+    try {
+      // Convert input to DateTime object
+      DateTime? date;
+      switch (rawDate.runtimeType) {
+        case DateTime:
+          date = KDateHelper.copy(rawDate);
+          break;
+        case String:
+        default:
+          date = KDateHelper.from20FSP(rawDate.toString(), isUTC: false);
+          break;
+      }
+
+      // if (date != null && date.isUtc) {
+      //   print("a date is utc");
+      //   date = date.toLocal(); // localized for display only
+      // }
+      date = date?.toLocal();
+
+      // Build pretty string
+      try {
+        if (date != null) {
+          pretty = DateFormat(format).format(date);
+        }
+      } catch (e) {
+        print(e.toString());
+        // pretty = date.toIso8601String();
+        pretty = 'hellobye';
+      }
+    } catch (e) {
+      pretty = "";
+    }
+
+    return pretty;
+  }
+
   // WARNING - isUTC or not
   static String prettyDate(
     dynamic rawDate, {
@@ -684,6 +726,7 @@ abstract class KUtil {
   static String generateRandomString(int len) {
     var r = Random();
     const _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    return List.generate(len, (index) => _chars[r.nextInt(_chars.length)]).join();
+    return List.generate(len, (index) => _chars[r.nextInt(_chars.length)])
+        .join();
   }
 }
