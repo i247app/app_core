@@ -39,6 +39,9 @@ class Tutor extends KUser {
   @JsonKey(name: "tutorStatus")
   String? tutorStatus;
 
+  @JsonKey(name: "userType")
+  String? userType;
+
   @JsonKey(name: "userTags")
   List<UserTag>? userTags;
 
