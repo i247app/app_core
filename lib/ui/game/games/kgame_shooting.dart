@@ -607,7 +607,7 @@ class _KGameShootingState extends State<KGameShooting>
             padding: EdgeInsets.only(
               left: 10,
               right: 10,
-              top: 50,
+              top: 60,
             ),
             child: Column(
               children: [

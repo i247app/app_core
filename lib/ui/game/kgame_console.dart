@@ -19,6 +19,7 @@ import 'package:app_core/ui/game/games/kgame_speech_letter_tap.dart';
 import 'package:app_core/ui/game/games/kgame_speech_moving_tap.dart';
 import 'package:app_core/ui/game/games/kgame_speech_tap.dart';
 import 'package:app_core/ui/game/games/kgame_tap.dart';
+import 'package:app_core/ui/game/games/kgame_word.dart';
 import 'package:app_core/ui/game/service/kgame_controller.dart';
 import 'package:app_core/ui/game/service/kgame_data.dart';
 import 'package:app_core/ui/hero/widget/kegg_hero_intro.dart';
@@ -764,6 +765,12 @@ class _KGameConsoleState extends State<KGameConsole>
         );
       case KGameTap.GAME_ID:
         return KGameTap(
+          controller: widget.controller,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
+      case KGameWord.GAME_ID:
+        return KGameWord(
           controller: widget.controller,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
