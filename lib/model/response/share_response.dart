@@ -1,10 +1,18 @@
+import 'package:app_core/app_core.dart';
+import 'package:app_core/model/share.dart';
 import 'package:json_annotation/json_annotation.dart';
-import '../share.dart';
+import 'base_response.dart';
 
 part 'share_response.g.dart';
 
 @JsonSerializable()
-class ShareResponse {
+class ShareResponse extends BaseResponse {
+  static const String SHARES = "shares";
+  static const String SSID = "ssID";
+
+  @JsonKey(name: SSID)
+  String? ssID;
+
   @JsonKey(name: "shares")
   List<Share>? shares;
 

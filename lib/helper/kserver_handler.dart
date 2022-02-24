@@ -12,7 +12,7 @@ import 'package:app_core/model/kquestion.dart';
 import 'package:app_core/model/lop_schedule.dart';
 import 'package:app_core/model/response/chat_add_members_response.dart';
 import 'package:app_core/model/response/chat_remove_members_response.dart';
-import 'package:app_core/model/response/share_doc_response.dart';
+import 'package:app_core/model/response/share_doc_old_response.dart';
 import 'package:app_core/model/response/credit_transfer_response.dart';
 import 'package:app_core/model/response/get_balances_response.dart';
 import 'package:app_core/model/response/get_business_response.dart';
@@ -39,6 +39,8 @@ import 'package:app_core/model/xfr_proxy.dart';
 import 'package:app_core/model/xfr_ticket.dart';
 import 'package:app_core/ui/school/kdoc_picker.dart';
 import 'package:app_core/model/response/save_score_response.dart';
+
+import '../model/response/share_response.dart';
 
 abstract class KServerHandler {
   static Future<SimpleResponse> logToServer(String key, value) async {
@@ -716,28 +718,30 @@ abstract class KServerHandler {
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }
 
-  static Future<ShareDocResponse> shareDoc({
+  // requires shareID or (refID, refApp)
+  static Future<ShareResponse> shareAction({
+    String? shareID,
     required String refID,
     required String refApp,
     String? refPUID,
-    String? role,
     String? textbookID,
     String? chapterID,
+    String? role,
+    String? action,
   }) async {
-    final share = Share()
-      ..action = "add"
-      ..refID = refID
-      ..refApp = refApp
-      ..refPUID = refPUID
-      ..role = role ?? "RO"
-      ..textbookID = textbookID
-      ..chapterID = chapterID;
     final params = {
       "svc": "share",
-      "req": "doc.share",
-      "share": share,
+      "req": "share.action",
+      "share": Share()
+        ..shareID = shareID
+        ..refID = refID
+        ..refApp = refApp
+        ..refPUID = refPUID
+        ..textbookID = textbookID
+        ..chapterID = chapterID
+        ..role = role
+        ..action = action,
     };
-    return TLSHelper.send(params)
-        .then((data) => ShareDocResponse.fromJson(data));
+    return TLSHelper.send(params).then((data) => ShareResponse.fromJson(data));
   }
 }

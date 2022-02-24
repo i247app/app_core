@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'share_doc_response.dart';
+part of 'share_doc_old_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-ShareDocResponse _$ShareDocResponseFromJson(Map<String, dynamic> json) =>
-    ShareDocResponse()
+ShareDocOldResponse _$ShareDocOldResponseFromJson(Map<String, dynamic> json) =>
+    ShareDocOldResponse()
       ..kstatus = zzz_parseInt(json['kstatus'] as String?)
       ..kmessage = json['kmessage'] as String?
       ..ktoken = json['ktoken'] as String?
@@ -16,7 +16,7 @@ ShareDocResponse _$ShareDocResponseFromJson(Map<String, dynamic> json) =>
           ?.map((e) => Share.fromJson(e as Map<String, dynamic>))
           .toList();
 
-Map<String, dynamic> _$ShareDocResponseToJson(ShareDocResponse instance) {
+Map<String, dynamic> _$ShareDocOldResponseToJson(ShareDocOldResponse instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {
