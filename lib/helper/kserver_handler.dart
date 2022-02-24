@@ -725,8 +725,6 @@ abstract class KServerHandler {
     String? chapterID,
   }) async {
     final share = Share()
-      ..svc = "share"
-      ..req = "doc.share"
       ..action = "add"
       ..refID = refID
       ..refApp = refApp
@@ -734,8 +732,12 @@ abstract class KServerHandler {
       ..role = role ?? "RO"
       ..textbookID = textbookID
       ..chapterID = chapterID;
-
-    return TLSHelper.send(share.toJson())
+    final params = {
+      "svc": "share",
+      "req": "doc.share",
+      "share": share,
+    };
+    return TLSHelper.send(params)
         .then((data) => CreatePushPageResponse.fromJson(data));
   }
 }
