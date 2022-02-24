@@ -1,3 +1,4 @@
+import 'package:app_core/app_core.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'share.g.dart';
@@ -6,15 +7,6 @@ part 'share.g.dart';
 class Share {
   @JsonKey(name: "shareID")
   String? shareID;
-
-  @JsonKey(name: "chapterID")
-  String? chapterID;
-
-  @JsonKey(name: "textbookID")
-  String? textbookID;
-
-  @JsonKey(name: "role")
-  String? role;
 
   @JsonKey(name: "refPUID")
   String? refPUID;
@@ -25,14 +17,23 @@ class Share {
   @JsonKey(name: "refID")
   String? refID;
 
+  @JsonKey(name: "chapterID")
+  String? chapterID;
+
+  @JsonKey(name: "textbookID")
+  String? textbookID;
+
+  @JsonKey(name: "mime")
+  String? mime;
+
+  @JsonKey(name: "role")
+  String? role;
+
   @JsonKey(name: "action")
   String? action;
 
-  @JsonKey(name: "req")
-  String? req;
-
-  @JsonKey(name: "svc")
-  String? svc;
+  @JsonKey(name: "shareDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
+  DateTime? shareDate;
 
   // JSON
   Share();
