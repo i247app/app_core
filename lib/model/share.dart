@@ -4,6 +4,9 @@ part 'share.g.dart';
 
 @JsonSerializable()
 class Share {
+  @JsonKey(name: "shareID")
+  String? shareID;
+
   @JsonKey(name: "chapterID")
   String? chapterID;
 

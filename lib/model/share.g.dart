@@ -7,6 +7,7 @@ part of 'share.dart';
 // **************************************************************************
 
 Share _$ShareFromJson(Map<String, dynamic> json) => Share()
+  ..shareID = json['shareID'] as String?
   ..chapterID = json['chapterID'] as String?
   ..textbookID = json['textbookID'] as String?
   ..role = json['role'] as String?
@@ -26,6 +27,7 @@ Map<String, dynamic> _$ShareToJson(Share instance) {
     }
   }
 
+  writeNotNull('shareID', instance.shareID);
   writeNotNull('chapterID', instance.chapterID);
   writeNotNull('textbookID', instance.textbookID);
   writeNotNull('role', instance.role);
