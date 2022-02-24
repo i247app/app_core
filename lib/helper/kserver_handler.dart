@@ -33,6 +33,7 @@ import 'package:app_core/model/response/resume_session_response.dart';
 import 'package:app_core/model/response/search_users_response.dart';
 import 'package:app_core/model/response/send_2fa_response.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
+import 'package:app_core/model/share.dart';
 import 'package:app_core/model/textbook.dart';
 import 'package:app_core/model/xfr_proxy.dart';
 import 'package:app_core/model/xfr_ticket.dart';
@@ -338,7 +339,8 @@ abstract class KServerHandler {
         ..language = language
         ..topic = topic,
     };
-    return TLSHelper.send(params).then((data) => KSaveScoreResponse.fromJson(data));
+    return TLSHelper.send(params)
+        .then((data) => KSaveScoreResponse.fromJson(data));
   }
 
   static Future<CreditTransferResponse> bankDeposit({
@@ -722,17 +724,18 @@ abstract class KServerHandler {
     String? textbookID,
     String? chapterID,
   }) async {
-    final params = {
-      "svc": "bird",
-      "req": "push.page.create",
-      "refID": refID,
-      "refApp": refApp,
-      "refPUID": refPUID,
-      "role": role ?? "RO",
-      "textbookID": textbookID,
-      "chapterID": chapterID,
-    };
-    return TLSHelper.send(params)
+    final share = Share()
+      ..svc = "share"
+      ..req = "doc.share"
+      ..action = "add"
+      ..refID = refID
+      ..refApp = refApp
+      ..refPUID = refPUID
+      ..role = role ?? "RO"
+      ..textbookID = textbookID
+      ..chapterID = chapterID;
+
+    return TLSHelper.send(share.toJson())
         .then((data) => CreatePushPageResponse.fromJson(data));
   }
 }
