@@ -16,12 +16,14 @@ class KDocPicker extends StatefulWidget {
   final KDocType type;
   final String? subject;
   final String? grade;
+  final bool isTutoringChat;
 
   const KDocPicker({
     Key? key,
     required this.type,
     this.subject,
     this.grade,
+    this.isTutoringChat = false,
   }) : super(key: key);
 
   @override
@@ -119,8 +121,13 @@ class _KDocPickerState extends State<KDocPicker> {
           .firstWhere((c) => selectedChapter.chapterID == c.chapterID);
       // Navigator.of(context).pop(fullChapter);
       Navigator.of(context).push(MaterialPageRoute(
-          builder: (ctx) => KDocScreen(chapter: fullChapter, mode: KDocViewMode.movable)));
+          builder: (ctx) =>
+              KDocScreen(chapter: fullChapter, mode: KDocViewMode.movable)));
     }
+  }
+
+  void onTapShare(Chapter selectedChapter) async {
+    Navigator.pop(context, selectedChapter);
   }
 
   @override
@@ -158,6 +165,8 @@ class _KDocPickerState extends State<KDocPicker> {
                 return _ChapterItem(
                   chapter: chapter,
                   onTap: onChapterClick,
+                  isTutoringChat: widget.isTutoringChat,
+                  onTapShare: onTapShare,
                 );
               },
             ),
@@ -168,11 +177,15 @@ class _KDocPickerState extends State<KDocPicker> {
 class _ChapterItem extends StatelessWidget {
   final Chapter chapter;
   final Function(Chapter) onTap;
+  final Function(Chapter) onTapShare;
+  final bool isTutoringChat;
 
   const _ChapterItem({
     Key? key,
     required this.onTap,
     required this.chapter,
+    required this.isTutoringChat,
+    required this.onTapShare,
   }) : super(key: key);
 
   @override
@@ -235,7 +248,11 @@ class _ChapterItem extends StatelessWidget {
                       ],
                     ),
                   ),
-                )
+                ),
+                if (isTutoringChat)
+                  IconButton(
+                      onPressed: () => onTapShare.call(chapter),
+                      icon: Icon(Icons.share_outlined)),
               ],
             ),
           ),
