@@ -589,28 +589,21 @@ abstract class KServerHandler {
     });
   }
 
-  static Future<GetLopSchedulesResponse> getLopSchedules() async {
-    final params = {
-      "svc": "bird",
-      "req": "lop.schedule.list",
-    };
-    return TLSHelper.send(params)
-        .then((data) => GetLopSchedulesResponse.fromJson(data));
-  }
-
-  static Future<GetLopSchedulesResponse> getSchedule({
-    required String lopID,
-    required String scheduleID,
+  static Future<SimpleResponse> sharePushPage({
+    required String? shareID,
+    required String? pageIndex,
+    String? refID,
+    String? refApp
   }) async {
     final params = {
-      "svc": "bird",
-      "req": "lop.schedule.get",
-      "lopSchedule": LopSchedule()
-        ..lopID = lopID
-        ..lopScheduleID = scheduleID,
+      "svc": "share",
+      "req": "share.page.push",
+      "share": Share()
+      ..shareID = shareID
+      ..refID = refID
+      ..refApp = refApp,
     };
-    return TLSHelper.send(params)
-        .then((data) => GetLopSchedulesResponse.fromJson(data));
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }
 
   static Future<SimpleResponse> pushCurrentPage({
@@ -652,6 +645,30 @@ abstract class KServerHandler {
       "flashValue": flashValue,
     };
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<GetLopSchedulesResponse> getLopSchedules() async {
+    final params = {
+      "svc": "bird",
+      "req": "lop.schedule.list",
+    };
+    return TLSHelper.send(params)
+        .then((data) => GetLopSchedulesResponse.fromJson(data));
+  }
+
+  static Future<GetLopSchedulesResponse> getSchedule({
+    required String lopID,
+    required String scheduleID,
+  }) async {
+    final params = {
+      "svc": "bird",
+      "req": "lop.schedule.get",
+      "lopSchedule": LopSchedule()
+        ..lopID = lopID
+        ..lopScheduleID = scheduleID,
+    };
+    return TLSHelper.send(params)
+        .then((data) => GetLopSchedulesResponse.fromJson(data));
   }
 
   static Future<OldSchedulesResponse> getCourses() async {
