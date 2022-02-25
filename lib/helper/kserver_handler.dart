@@ -589,19 +589,42 @@ abstract class KServerHandler {
     });
   }
 
-  static Future<SimpleResponse> sharePushPage({
+  // requires puid or (refID/RefApp)
+  static Future<SimpleResponse> pushFlash({
+    String? puid,
+    String? refID,
+    String? refApp,
+    required String flashType,
+    required String mediaType,
+    required String flashValue,
+  }) async {
+    final params = {
+      "svc": "share",
+      "req": "flash.notify",
+      "puid": puid,
+      "refID": refID,
+      "refApp": refApp,
+      "flashType": flashType,
+      "mediaType": mediaType,
+      "flashValue": flashValue,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> pushPage({
     required String? shareID,
-    required String? pageIndex,
+    required String? index,
     String? refID,
     String? refApp
   }) async {
     final params = {
       "svc": "share",
       "req": "share.page.push",
-      "share": Share()
-      ..shareID = shareID
-      ..refID = refID
-      ..refApp = refApp,
+      "shareID": shareID,
+      "refID": refID,
+      "refApp": refApp,
+      "index": index,
+      "id": index,
     };
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }
