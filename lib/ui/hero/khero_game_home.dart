@@ -25,6 +25,7 @@ import 'package:app_core/ui/hero/widget/kegg_hatch_new_short_intro.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
 
+import '../../header/kassets.dart';
 import 'khero_speech_tap_game.dart';
 
 class KHeroGameHome extends StatefulWidget {
@@ -591,11 +592,22 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                         ),
                       ),
                     )),
-                    style: KStyles.squaredButton(
-                      Theme.of(context).colorScheme.primary,
-                      textColor: Colors.white,
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                      primary: Colors.transparent,
+                      onPrimary: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        side: BorderSide(color: Colors.transparent),
+                      ),
                     ),
-                    child: Text("🔫"),
+                    child: Image.asset(
+                        KAssets.IMG_CANNON_BARREL,
+                        height: 30,
+                        width: 30,
+                        package: 'app_core',
+                    ),
                   ),
                   SizedBox(width: 5),
                   FittedBox(
