@@ -591,7 +591,7 @@ abstract class KServerHandler {
 
   // requires puid or (refID/RefApp)
   static Future<SimpleResponse> pushFlash({
-    String? puid,
+    String? refPUID,
     String? refID,
     String? refApp,
     required String flashType,
@@ -601,7 +601,7 @@ abstract class KServerHandler {
     final params = {
       "svc": "share",
       "req": "flash.notify",
-      "puid": puid,
+      "refPUID": refPUID,
       "refID": refID,
       "refApp": refApp,
       "flashType": flashType,
@@ -612,20 +612,22 @@ abstract class KServerHandler {
   }
 
   static Future<SimpleResponse> pushPage({
-    required String? shareID,
+    required String? ssID,
     required String? index,
     String? refID,
-    String? refApp
+    String? refApp,
+    String? refPUID,
   }) async {
     final params = {
       "svc": "share",
-      "req": "share.page.push",
-      "shareID": shareID,
+      "req": "page.push",
+      "ssID": ssID,
+      "refPUID": refPUID,
       "refID": refID,
       "refApp": refApp,
       "index": index,
-      "id": index,
     };
+
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }
 
@@ -760,7 +762,7 @@ abstract class KServerHandler {
 
   // requires shareID or (refID, refApp)
   static Future<ShareResponse> shareAction({
-    String? shareID,
+    String? ssID,
     required String refID,
     required String refApp,
     String? refPUID,
@@ -773,7 +775,7 @@ abstract class KServerHandler {
       "svc": "share",
       "req": "share.action",
       "share": Share()
-        ..shareID = shareID
+        ..ssID = ssID
         ..refID = refID
         ..refApp = refApp
         ..refPUID = refPUID

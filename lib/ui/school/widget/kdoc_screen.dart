@@ -41,19 +41,23 @@ class _KDocScreenState extends State<KDocScreen> {
   }
 
   void pushDataListener(KPushData pushData) {
-    switch (pushData.app) {
-      case "page.push":
-        print("###### SETTING THE PAGE TO ${pushData.id} ######");
-        final page = KMathHelper.parseInt(pushData.id);
-        pageController.jumpToPage(page);
-        break;
+    try {
+      switch (pushData.app) {
+        case "page.push":
+          print("###### SETTING THE PAGE TO ${pushData.index} ######");
+          final page = KMathHelper.parseInt(pushData.index);
+          pageController.jumpToPage(page);
+          break;
+      }
     }
+    catch(e) { print("KDocScreen.pushDataListener exception"); print(e); }
   }
 
+  // push to ssID or refID/refApp or refPUID
   void onPushClick() async {
-    await KServerHandler.docPushPage(
+    await KServerHandler.pushPage(
       ssID: widget.ssID ?? "?",
-      pageIndex: pageController.page.toString(),
+      index: pageController.page.toString(),
     );
   }
 

@@ -10,6 +10,7 @@ KPushData _$KPushDataFromJson(Map<String, dynamic> json) => KPushData()
   ..pushType = json['pushType'] as String?
   ..app = json['app'] as String?
   ..id = json['id'] as String?
+  ..index = json['index'] as String?
   ..refApp = json['refApp'] as String?
   ..refID = json['refID'] as String?
   ..rem = json['rem'] as String?
@@ -31,6 +32,7 @@ Map<String, dynamic> _$KPushDataToJson(KPushData instance) {
   writeNotNull('pushType', instance.pushType);
   writeNotNull('app', instance.app);
   writeNotNull('id', instance.id);
+  writeNotNull('index', instance.index);
   writeNotNull('refApp', instance.refApp);
   writeNotNull('refID', instance.refID);
   writeNotNull('rem', instance.rem);
