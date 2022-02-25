@@ -49,15 +49,17 @@ class _KDocScreenState extends State<KDocScreen> {
           pageController.jumpToPage(page);
           break;
       }
+    } catch (e) {
+      print("KDocScreen.pushDataListener exception");
+      print(e);
     }
-    catch(e) { print("KDocScreen.pushDataListener exception"); print(e); }
   }
 
   // push to ssID or refID/refApp or refPUID
   void onPushClick() async {
     await KServerHandler.pushPage(
       ssID: widget.ssID ?? "?",
-      index: pageController.page.toString(),
+      index: (pageController.page ?? 0).toInt().toString(),
     );
   }
 

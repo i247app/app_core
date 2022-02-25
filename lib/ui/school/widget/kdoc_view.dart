@@ -55,6 +55,7 @@ class _KDocViewState extends State<KDocView> {
       return _TextbookPageView(page);
     }).toList();
     return PageView(
+      controller: widget.controller,
       physics: widget.isDisableSwipe ? NeverScrollableScrollPhysics() : null,
       children: pages,
     );
