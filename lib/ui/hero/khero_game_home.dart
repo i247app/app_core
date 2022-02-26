@@ -352,7 +352,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ),
                   SizedBox(width: 5),
                   FittedBox(
-                    child: Text("Moving Tap"),
+                    child: Text("Moving"),
                   ),
                 ],
               ),
