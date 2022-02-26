@@ -17,7 +17,7 @@ abstract class KLocationHelper {
   static Position? get cachedPosition {
     hasPermission().then((bool yes) {
       if (yes) {
-        Geolocator.getCurrentPosition().then((pos) => _theCachedPosition = pos);
+        Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation).then((pos) => _theCachedPosition = pos);
       }
     });
     return _theCachedPosition;
@@ -67,7 +67,7 @@ abstract class KLocationHelper {
         final result = await askForPermission();
         if (result != PermissionStatus.granted) return null;
       }
-      position = await Geolocator.getCurrentPosition();
+      position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
     }
     _setCachedPosition(position);
     return position == null ? null : KLatLng.fromPosition(position);
