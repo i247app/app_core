@@ -18,7 +18,8 @@ Chapter _$ChapterFromJson(Map<String, dynamic> json) => Chapter()
   ..pages = (json['pages'] as List<dynamic>?)
       ?.map((e) => TBPage.fromJson(e as Map<String, dynamic>))
       .toList()
-  ..chapterNumber = json['chapterNumber'] as String?;
+  ..chapterNumber = json['chapterNumber'] as String?
+  ..grade = json['grade'] as String?;
 
 Map<String, dynamic> _$ChapterToJson(Chapter instance) {
   final val = <String, dynamic>{};
@@ -39,5 +40,6 @@ Map<String, dynamic> _$ChapterToJson(Chapter instance) {
   writeNotNull('chapterStatus', instance.chapterStatus);
   writeNotNull('pages', instance.pages?.map((e) => e.toJson()).toList());
   writeNotNull('chapterNumber', instance.chapterNumber);
+  writeNotNull('grade', instance.grade);
   return val;
 }
