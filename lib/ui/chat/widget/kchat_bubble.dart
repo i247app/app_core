@@ -287,7 +287,19 @@ class KChatBubble extends StatelessWidget {
                     SizedBox(width: 10),
                     Flexible(
                       child: Text(
-                        "Tap to view textbook",
+                        () {
+                          String str;
+                          try {
+                            final tokens = msg.message!.split("::");
+                            final title = tokens[3];
+                            final chapterNumber = tokens[4];
+                            final grade = tokens[5];
+                            str = "$title (Lop $grade Bai $chapterNumber)";
+                          } catch (_) {
+                            str = "textbook";
+                          }
+                          return "Tap to view $str";
+                        }.call(),
                         style: theme.textTheme.subtitle1!
                             .copyWith(color: chatForegroundColor),
                       ),

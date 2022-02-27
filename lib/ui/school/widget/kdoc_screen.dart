@@ -66,9 +66,10 @@ class _KDocScreenState extends State<KDocScreen> {
   @override
   Widget build(BuildContext context) {
     final chapterView = KDocView(
-        chapter: widget.chapter,
-        controller: pageController,
-        isDisableSwipe: widget.mode == KDocViewMode.fixed);
+      chapter: widget.chapter,
+      controller: pageController,
+      isDisableSwipe: widget.mode == KDocViewMode.fixed,
+    );
 
     final pushButton = TextButton(
       onPressed: onPushClick,
@@ -82,54 +83,52 @@ class _KDocScreenState extends State<KDocScreen> {
         if (widget.ssID != null) pushButton,
       ],
     );
+
     final isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
 
     final forceLandscape = IconButton(
-      onPressed: () {
-        KScreenHelper.landscapeOrientation(context);
-      },
-      icon: Icon(
-        Icons.screen_lock_landscape,
-        size: 32,
-      ),
+      onPressed: () => KScreenHelper.landscapeOrientation(context),
+      icon: Icon(Icons.screen_lock_landscape, size: 32),
     );
 
     final forcePortrait = IconButton(
       onPressed: () {
         KScreenHelper.resetOrientation(context);
-        Future.delayed(const Duration(milliseconds: 500), () {
-          SystemChrome.setPreferredOrientations(DeviceOrientation.values);
-        });
+        Future.delayed(
+          Duration(milliseconds: 500),
+          () => SystemChrome.setPreferredOrientations(DeviceOrientation.values),
+        );
       },
       icon: Icon(Icons.stay_current_portrait, size: 32),
     );
 
     final body = WillPopScope(
-        child: Scaffold(
-          backgroundColor: KStyles.darkGrey,
-          body: Stack(
-            fit: StackFit.expand,
-            children: [
-              chapterView,
-              Align(
-                alignment: Alignment.topLeft,
-                child: SafeArea(child: topBar),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: isPortrait ? forceLandscape : forcePortrait,
-              ),
-            ],
-          ),
+      child: Scaffold(
+        backgroundColor: KStyles.darkGrey,
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            chapterView,
+            Align(
+              alignment: Alignment.topLeft,
+              child: SafeArea(child: topBar),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: isPortrait ? forceLandscape : forcePortrait,
+            ),
+          ],
         ),
-        onWillPop: () {
-          KScreenHelper.resetOrientation(context);
-          return Future.delayed(const Duration(milliseconds: 500), () {
-            Navigator.pop(context);
-            return true;
-          });
+      ),
+      onWillPop: () {
+        KScreenHelper.resetOrientation(context);
+        return Future.delayed(Duration(milliseconds: 500), () {
+          Navigator.pop(context);
+          return true;
         });
+      },
+    );
 
     return body;
   }
