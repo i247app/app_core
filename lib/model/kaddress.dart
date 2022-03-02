@@ -22,12 +22,16 @@ class KAddress {
   static const String FULL_ADDRESS_LINE = "fullAddressLine";
   static const String NAME = "name";
   static const String WARD = "ward";
+  static const String PLACE_ID = "placeID";
 
   @JsonKey(name: ADDRESS_ID)
   String? addressID;
 
   @JsonKey(name: PUID)
   String? puid;
+
+  @JsonKey(name: PLACE_ID)
+  String? placeID;
 
   @JsonKey(name: ADDRESS_TYPE)
   String? addressType;

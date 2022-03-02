@@ -10,6 +10,7 @@ KGigAddress _$KGigAddressFromJson(Map<String, dynamic> json) => KGigAddress()
   ..addressID = json['addressID'] as String?
   ..puid = json['puid'] as String?
   ..gigID = json['gigID'] as String?
+  ..placeID = json['placeID'] as String?
   ..addressType = json['addressType'] as String?
   ..locationType = json['locationType'] as String?
   ..locationNumber = json['locationNumber'] as String?
@@ -40,6 +41,7 @@ Map<String, dynamic> _$KGigAddressToJson(KGigAddress instance) {
   writeNotNull('addressID', instance.addressID);
   writeNotNull('puid', instance.puid);
   writeNotNull('gigID', instance.gigID);
+  writeNotNull('placeID', instance.placeID);
   writeNotNull('addressType', instance.addressType);
   writeNotNull('locationType', instance.locationType);
   writeNotNull('locationNumber', instance.locationNumber);

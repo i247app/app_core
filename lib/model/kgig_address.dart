@@ -25,6 +25,7 @@ class KGigAddress {
   static const String GIGID = "gigID";
   static const String LOCATION_TYPE = "locationType";
   static const String LOCATION_NUMBER = "locationNumber";
+  static const String PLACE_ID = "placeID";
 
   @JsonKey(name: ADDRESS_ID)
   String? addressID;
@@ -34,6 +35,9 @@ class KGigAddress {
 
   @JsonKey(name: GIGID)
   String? gigID;
+
+  @JsonKey(name: PLACE_ID)
+  String? placeID;
 
   @JsonKey(name: ADDRESS_TYPE)
   String? addressType;
