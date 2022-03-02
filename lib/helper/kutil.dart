@@ -131,6 +131,16 @@ abstract class KUtil {
     }
   }
 
+  static String prettyDistance({double distanceInMeters = 0}) {
+    if (distanceInMeters < 100) {
+      return "${distanceInMeters}m";
+    }
+
+    double distanceInKiloMeters = distanceInMeters / 1000;
+    double roundDistanceInKM = double.parse((distanceInKiloMeters).toStringAsFixed(2));
+    return "${roundDistanceInKM}km";
+  }
+
   static String prettyFone({String foneCode = "", String number = ""}) {
     foneCode = foneCode.replaceAll("+", "");
     final String prefix = foneCode.isNotEmpty ? "+$foneCode " : "";
