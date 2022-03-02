@@ -137,7 +137,7 @@ abstract class KUtil {
     }
 
     double distanceInKiloMeters = distanceInMeters / 1000;
-    double roundDistanceInKM = double.parse((distanceInKiloMeters).toStringAsFixed(2));
+    double roundDistanceInKM = double.parse((distanceInKiloMeters).toStringAsFixed(1));
     return "${roundDistanceInKM}km";
   }
 
