@@ -5,7 +5,7 @@ class FadeIconButton extends StatelessWidget {
   final bool visible;
   final IconData icon;
   final double size;
-  final Color color;
+  final Color? color;
   final int rate;
 
   const FadeIconButton({
@@ -15,7 +15,7 @@ class FadeIconButton extends StatelessWidget {
     required this.icon,
     this.size = 24.0,
     this.rate = 500,
-    this.color = Colors.red,
+    this.color,
   }) : super(key: key);
 
   @override
@@ -28,7 +28,7 @@ class FadeIconButton extends StatelessWidget {
         icon: Icon(
           this.icon,
           size: this.size,
-          color: this.color,
+          color: this.color ?? Theme.of(context).iconTheme.color,
         ),
       ),
     );
