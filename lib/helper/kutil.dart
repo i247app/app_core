@@ -134,12 +134,12 @@ abstract class KUtil {
   static String prettyDistance({double distanceInMeters = 0}) {
     if (distanceInMeters < 1000) {
       int meters = distanceInMeters.ceil();
-      print("m m m m m m m m meters ${meters}");
       return "${meters}m";
     }
 
     double distanceInKiloMeters = distanceInMeters / 1000;
-    double roundDistanceInKM = double.parse((distanceInKiloMeters).toStringAsFixed(1));
+    double roundDistanceInKM =
+        double.parse((distanceInKiloMeters).toStringAsFixed(1));
     return "${roundDistanceInKM}km";
   }
 
