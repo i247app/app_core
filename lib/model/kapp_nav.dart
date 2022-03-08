@@ -22,13 +22,15 @@ class KAppNav {
   // chao
   static const String REWARD_APP_MODE = "rewardAppMode";
   static const String AMP_APP_MODE = "ampAppMode";
-  static const String SPLASH_MODE = "splashMode";  // special
+  static const String SPLASH_MODE = "splashMode"; // special
 
   // schoolbird
   static const String STUDY_APP_MODE = "studyAppMode";
   static const String CLASS_APP_MODE = "classAppMode";
   static const String UNIVERSITY_APP_MODE = "uniAppMode";
   static const String GIG_APP_MODE = "gigAppMode";
+  static const String HERO_APP_MODE = "heroAppMode";
+  static const String HEADSTART_APP_MODE = "headstartAppMode";
 
   static const int OFF = -1;
   static const int ON = 0;
@@ -64,6 +66,13 @@ class KAppNav {
 
   @JsonKey(name: GIG_APP_MODE, toJson: zzz_itoa, fromJson: zzz_appNavTryAtoi)
   int? gigAppMode;
+
+  @JsonKey(name: HERO_APP_MODE, toJson: zzz_itoa, fromJson: zzz_appNavTryAtoi)
+  int? heroAppMode;
+
+  @JsonKey(
+      name: HEADSTART_APP_MODE, toJson: zzz_itoa, fromJson: zzz_appNavTryAtoi)
+  int? headstartAppMode;
 
   // JSON
   KAppNav();
