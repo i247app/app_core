@@ -70,8 +70,8 @@ class _TextbookPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final body = GestureDetector(
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(
-          builder: (_) => KImageViewer.network(page.mediaURL ?? ""))),
+      // onTap: () => Navigator.of(context).push(MaterialPageRoute(
+      //     builder: (_) => KImageViewer.network(page.mediaURL ?? ""))),
       child: InteractiveViewer(
         panEnabled: false,
         minScale: 0.5,
