@@ -430,16 +430,26 @@ class _KGameShootingState extends State<KGameShooting>
             (bulletY * MediaQuery.of(context).size.height / 2) / 2 -
                 (heroHeight / 2);
 
-        if (!isHit && (leftBarrier < -heroWidth / 2 && rightBarrier >= heroWidth / 2 ||
-                leftBarrier <= -heroWidth / 2 &&
-                    rightBarrier >= -heroWidth / 2 ||
-                leftBarrier <= heroWidth / 2 &&
-                    rightBarrier >= heroWidth / 2) &&
-            (topBulletY <= bottomBarrier && bottomBulletY >= bottomBarrier ||
-                topBulletY >= topBarrier && bottomBulletY <= bottomBarrier ||
-                topBulletY <= topBarrier &&
-                    bottomBulletY <= bottomBarrier &&
-                    bottomBulletY >= topBarrier)) {
+        final condition1a =
+            topBulletY <= bottomBarrier && bottomBulletY >= bottomBarrier;
+        final condition1b =
+            topBulletY >= topBarrier && bottomBulletY <= bottomBarrier;
+        final condition1c = topBulletY <= topBarrier &&
+            bottomBulletY <= bottomBarrier &&
+            bottomBulletY >= topBarrier;
+
+        final condition1 = (condition1a || condition1b || condition1c);
+
+        final condition2a =
+            leftBarrier < -heroWidth / 2 && rightBarrier >= heroWidth / 2;
+        final condition2b =
+            leftBarrier <= -heroWidth / 2 && rightBarrier >= -heroWidth / 2;
+        final condition2c =
+            leftBarrier <= -heroWidth / 2 && rightBarrier >= heroWidth / 4;
+
+        final condition2 = condition2a || condition2b || condition2c;
+
+        if (!isHit && condition1 && condition2) {
           this._bouncingAnimationController.forward();
           this.setState(() {
             bulletsY.removeAt(bulletIndex);
