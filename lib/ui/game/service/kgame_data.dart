@@ -34,6 +34,12 @@ class KGameData {
         this.levelCount ?? 0,
         (index) => (baseLevelHardness ?? 0) + (index * 0.1),
       );
+
+  List<double> get levelScrollSpeeds => List.generate(
+    this.levelCount ?? 0,
+        (index) => index * 0.1,
+  );
+
   List<int> levelPlayTimes = [];
 
   List<KQuestion> get questions => this.game?.qnas?[0].questions ?? [];

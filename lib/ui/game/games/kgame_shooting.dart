@@ -111,6 +111,8 @@ class _KGameShootingState extends State<KGameShooting>
 
   List<double> get levelHardness => gameData.levelHardness;
 
+  List<double> get levelScrollSpeeds => gameData.levelScrollSpeeds;
+
   List<KAnswer> get currentQuestionAnswers => gameData.currentQuestionAnswers;
 
   List<KQuestion> get questions => gameData.questions;
@@ -364,10 +366,10 @@ class _KGameShootingState extends State<KGameShooting>
       for (int i = 0; i < barrierX.length; i++) {
         double speed = scrollSpeed;
         if (currentLevel < levelCount) {
-          speed += scrollSpeed * levelHardness[currentLevel];
+          speed += scrollSpeed * levelScrollSpeeds[currentLevel];
         }
         setState(() {
-          barrierX[i] -= scrollSpeed;
+          barrierX[i] -= speed;
         });
 
         if (barrierX[i] <= -1.5) {
