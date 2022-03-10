@@ -36,9 +36,18 @@ class KGameShooting extends StatefulWidget {
 class _KGameShootingState extends State<KGameShooting>
     with TickerProviderStateMixin {
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer audioPlayer1 = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer audioPlayer2 = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer audioPlayer3 = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer audioPlayer4 = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
   String? shootingAudioFileUri;
+  String? shootingAudioFileUri1;
+  String? shootingAudioFileUri2;
+  String? shootingAudioFileUri3;
+  String? shootingAudioFileUri4;
 
   late Animation<Offset> _bouncingAnimation;
   late Animation<double> _barrelScaleAnimation,
@@ -221,7 +230,7 @@ class _KGameShootingState extends State<KGameShooting>
     ).animate(new CurvedAnimation(
         parent: _moveUpAnimationController, curve: Curves.bounceOut));
 
-    _timer = Timer.periodic(Duration(milliseconds: 10), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 16), (timer) {
       if (isStart && !isPause) {
         for (int i = 0; i < bulletsY.length; i++) {
           double bulletY = bulletsY[i];
@@ -272,6 +281,10 @@ class _KGameShootingState extends State<KGameShooting>
     _spinAnimationController.dispose();
 
     audioPlayer.dispose();
+    audioPlayer1.dispose();
+    audioPlayer2.dispose();
+    audioPlayer3.dispose();
+    audioPlayer4.dispose();
 
     // TODO: implement dispose
     super.dispose();
@@ -310,6 +323,14 @@ class _KGameShootingState extends State<KGameShooting>
           await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
       ByteData shootingAudioFileData =
           await rootBundle.load("packages/app_core/assets/audio/gun_fire.mp3");
+      ByteData shootingAudioFileData1 =
+          await rootBundle.load("packages/app_core/assets/audio/bling_2.mp3");
+      ByteData shootingAudioFileData2 =
+          await rootBundle.load("packages/app_core/assets/audio/bling_3.mp3");
+      ByteData shootingAudioFileData3 =
+          await rootBundle.load("packages/app_core/assets/audio/bling_4.mp3");
+      ByteData shootingAudioFileData4 =
+          await rootBundle.load("packages/app_core/assets/audio/bling_5.mp3");
 
       File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
       await correctAudioTempFile
@@ -324,10 +345,32 @@ class _KGameShootingState extends State<KGameShooting>
           shootingAudioFileData.buffer.asUint8List(),
           flush: true);
 
+      File shootingAudioTempFile1 = File('${tempDir.path}/bling_2.mp3');
+      await shootingAudioTempFile1.writeAsBytes(
+          shootingAudioFileData1.buffer.asUint8List(),
+          flush: true);
+      File shootingAudioTempFile2 = File('${tempDir.path}/bling_3.mp3');
+      await shootingAudioTempFile2.writeAsBytes(
+          shootingAudioFileData2.buffer.asUint8List(),
+          flush: true);
+      File shootingAudioTempFile3 = File('${tempDir.path}/bling_4.mp3');
+      await shootingAudioTempFile3.writeAsBytes(
+          shootingAudioFileData3.buffer.asUint8List(),
+          flush: true);
+      File shootingAudioTempFile4 = File('${tempDir.path}/bling_5.mp3');
+      await shootingAudioTempFile4.writeAsBytes(
+          shootingAudioFileData4.buffer.asUint8List(),
+          flush: true);
+
       this.setState(() {
         this.correctAudioFileUri = correctAudioTempFile.uri.toString();
         this.wrongAudioFileUri = wrongAudioTempFile.uri.toString();
         this.shootingAudioFileUri = shootingAudioTempFile.uri.toString();
+        this.shootingAudioFileUri1 = shootingAudioTempFile1.uri.toString();
+        this.shootingAudioFileUri2 = shootingAudioTempFile2.uri.toString();
+        this.shootingAudioFileUri3 = shootingAudioTempFile3.uri.toString();
+        this.shootingAudioFileUri4 = shootingAudioTempFile4.uri.toString();
+        // this.shootingAudioFileUri5 = shootingAudioTempFile5.uri.toString();
       });
     } catch (e) {}
   }
@@ -336,7 +379,7 @@ class _KGameShootingState extends State<KGameShooting>
     if (!isShooting && bulletsY.length < 3) {
       if (!isMuted) {
         try {
-          await audioPlayer.play(shootingAudioFileUri ?? "", isLocal: true);
+          audioPlayer.play(shootingAudioFileUri ?? "", isLocal: true);
         } catch (e) {}
       }
       if (!_barrelScaleAnimationController.isAnimating) {
@@ -353,7 +396,7 @@ class _KGameShootingState extends State<KGameShooting>
         ];
         isShooting = true;
       });
-      Future.delayed(Duration(milliseconds: 10), () {
+      Future.delayed(Duration(milliseconds: 16), () {
         setState(() {
           isShooting = false;
         });
@@ -388,9 +431,9 @@ class _KGameShootingState extends State<KGameShooting>
     if (!isMuted) {
       try {
         if (isTrueAnswer) {
-          await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
+          audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
         } else {
-          await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
+          audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
         }
       } catch (e) {}
     }
@@ -450,6 +493,25 @@ class _KGameShootingState extends State<KGameShooting>
             leftBarrier <= -heroWidth / 2 && rightBarrier >= heroWidth / 4;
 
         final condition2 = condition2a || condition2b || condition2c;
+        if (condition1 && condition2) {
+          switch (bulletsY.length) {
+            case 1:
+              audioPlayer1.play(shootingAudioFileUri1 ?? "", isLocal: true);
+              break;
+            case 2:
+              audioPlayer1.play(shootingAudioFileUri1 ?? "", isLocal: true);
+              audioPlayer2.play(shootingAudioFileUri2 ?? "", isLocal: true);
+              break;
+            case 3:
+              audioPlayer1.play(shootingAudioFileUri1 ?? "", isLocal: true);
+              audioPlayer2.play(shootingAudioFileUri2 ?? "", isLocal: true);
+              audioPlayer3.play(shootingAudioFileUri4 ?? "", isLocal: true);
+              break;
+            default:
+              audioPlayer4.play(shootingAudioFileUri4 ?? "", isLocal: true);
+              break;
+          }
+        }
 
         if (!isHit && condition1 && condition2) {
           this._bouncingAnimationController.forward();
