@@ -375,6 +375,26 @@ class _KGameShootingState extends State<KGameShooting>
     } catch (e) {}
   }
 
+  void playHittingHero(int numberOfBullets) async {
+    switch (numberOfBullets) {
+      case 1:
+        await audioPlayer1.play(shootingAudioFileUri1 ?? "", isLocal: true);
+        break;
+      case 2:
+        await audioPlayer1.play(shootingAudioFileUri1 ?? "", isLocal: true);
+        await audioPlayer2.play(shootingAudioFileUri2 ?? "", isLocal: true);
+        break;
+      case 3:
+        await audioPlayer1.play(shootingAudioFileUri1 ?? "", isLocal: true);
+        await audioPlayer2.play(shootingAudioFileUri2 ?? "", isLocal: true);
+        await audioPlayer3.play(shootingAudioFileUri4 ?? "", isLocal: true);
+        break;
+      default:
+        await audioPlayer4.play(shootingAudioFileUri4 ?? "", isLocal: true);
+        break;
+    }
+  }
+
   void fire() async {
     if (!isShooting && bulletsY.length < 3) {
       if (!isMuted) {
@@ -494,23 +514,7 @@ class _KGameShootingState extends State<KGameShooting>
 
         final condition2 = condition2a || condition2b || condition2c;
         if (condition1 && condition2) {
-          switch (bulletsY.length) {
-            case 1:
-              audioPlayer1.play(shootingAudioFileUri1 ?? "", isLocal: true);
-              break;
-            case 2:
-              audioPlayer1.play(shootingAudioFileUri1 ?? "", isLocal: true);
-              audioPlayer2.play(shootingAudioFileUri2 ?? "", isLocal: true);
-              break;
-            case 3:
-              audioPlayer1.play(shootingAudioFileUri1 ?? "", isLocal: true);
-              audioPlayer2.play(shootingAudioFileUri2 ?? "", isLocal: true);
-              audioPlayer3.play(shootingAudioFileUri4 ?? "", isLocal: true);
-              break;
-            default:
-              audioPlayer4.play(shootingAudioFileUri4 ?? "", isLocal: true);
-              break;
-          }
+          playHittingHero(bulletsY.length);
         }
 
         if (!isHit && condition1 && condition2) {
