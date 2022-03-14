@@ -186,8 +186,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           this._shakeTheTopRightAnimationController.reverse();
-        } else if (status == AnimationStatus.dismissed) {
-        }
+        } else if (status == AnimationStatus.dismissed) {}
       });
     this._shakeTheTopRightAnimation = Tween<double>(
       begin: 0,
@@ -202,8 +201,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           this._shakeTheTopLeftAnimationController.reverse();
-        } else if (status == AnimationStatus.dismissed) {
-        }
+        } else if (status == AnimationStatus.dismissed) {}
       });
     this._shakeTheTopLeftAnimation = Tween<double>(
       begin: 0,
@@ -543,7 +541,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       return "Good";
     }
 
-    return  "";
+    return "";
   }
 
   @override
@@ -562,7 +560,9 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                       Text(
                         "GAME OVER",
                         style: TextStyle(
-                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     if (!isGameOver)
@@ -750,7 +750,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 0, vertical: 15),
                                 child: Text(
-                                  "${correctCount}/${questionCount}",
+                                  "${correctCount}",
                                   textScaleFactor: 1.0,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
@@ -771,7 +771,9 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                               padding: EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 15),
                               child: Text(
-                                isGameOver ? getRateString() : "${correctPercent}%",
+                                isGameOver
+                                    ? getRateString()
+                                    : "${correctPercent}%",
                                 textScaleFactor: 1.0,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
