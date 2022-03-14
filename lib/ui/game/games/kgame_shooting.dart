@@ -44,10 +44,10 @@ class _KGameShootingState extends State<KGameShooting>
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
   String? shootingAudioFileUri;
-  String? shootingAudioFileUri1;
-  String? shootingAudioFileUri2;
-  String? shootingAudioFileUri3;
-  String? shootingAudioFileUri4;
+  String? bling2x;
+  String? blingUp3x;
+  String? blingDown3x;
+  String? bling;
 
   late Animation<Offset> _bouncingAnimation;
   late Animation<double> _barrelScaleAnimation,
@@ -323,14 +323,14 @@ class _KGameShootingState extends State<KGameShooting>
           await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
       ByteData shootingAudioFileData =
           await rootBundle.load("packages/app_core/assets/audio/gun_fire.mp3");
-      ByteData shootingAudioFileData1 =
+      ByteData bling2xFileData =
+          await rootBundle.load("packages/app_core/assets/audio/bling_2x.mp3");
+      ByteData blingUp3xFileData = await rootBundle
+          .load("packages/app_core/assets/audio/bling_up_3x.mp3");
+      ByteData blingDown3xData = await rootBundle
+          .load("packages/app_core/assets/audio/bling_down_3x.mp3");
+      ByteData blingFileData =
           await rootBundle.load("packages/app_core/assets/audio/bling_2.mp3");
-      ByteData shootingAudioFileData2 =
-          await rootBundle.load("packages/app_core/assets/audio/bling_3.mp3");
-      ByteData shootingAudioFileData3 =
-          await rootBundle.load("packages/app_core/assets/audio/bling_4.mp3");
-      ByteData shootingAudioFileData4 =
-          await rootBundle.load("packages/app_core/assets/audio/bling_5.mp3");
 
       File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
       await correctAudioTempFile
@@ -345,58 +345,34 @@ class _KGameShootingState extends State<KGameShooting>
           shootingAudioFileData.buffer.asUint8List(),
           flush: true);
 
-      File shootingAudioTempFile1 = File('${tempDir.path}/bling_2.mp3');
-      await shootingAudioTempFile1.writeAsBytes(
-          shootingAudioFileData1.buffer.asUint8List(),
+      File bling2xTempFile = File('${tempDir.path}/bling_2x.mp3');
+      await bling2xTempFile.writeAsBytes(bling2xFileData.buffer.asUint8List(),
           flush: true);
-      File shootingAudioTempFile2 = File('${tempDir.path}/bling_3.mp3');
-      await shootingAudioTempFile2.writeAsBytes(
-          shootingAudioFileData2.buffer.asUint8List(),
-          flush: true);
-      File shootingAudioTempFile3 = File('${tempDir.path}/bling_4.mp3');
-      await shootingAudioTempFile3.writeAsBytes(
-          shootingAudioFileData3.buffer.asUint8List(),
-          flush: true);
-      File shootingAudioTempFile4 = File('${tempDir.path}/bling_5.mp3');
-      await shootingAudioTempFile4.writeAsBytes(
-          shootingAudioFileData4.buffer.asUint8List(),
+      File blingUp3xTempFile = File('${tempDir.path}/bling_up_3x.mp3');
+      await blingUp3xTempFile
+          .writeAsBytes(blingUp3xFileData.buffer.asUint8List(), flush: true);
+      File blingDown3xTempFile = File('${tempDir.path}/bling_down_3x.mp3');
+      await blingDown3xTempFile
+          .writeAsBytes(blingDown3xData.buffer.asUint8List(), flush: true);
+      File blingTempFile = File('${tempDir.path}/bling_2.mp3');
+      await blingTempFile.writeAsBytes(blingFileData.buffer.asUint8List(),
           flush: true);
 
       this.setState(() {
         this.correctAudioFileUri = correctAudioTempFile.uri.toString();
         this.wrongAudioFileUri = wrongAudioTempFile.uri.toString();
         this.shootingAudioFileUri = shootingAudioTempFile.uri.toString();
-        this.shootingAudioFileUri1 = shootingAudioTempFile1.uri.toString();
-        this.shootingAudioFileUri2 = shootingAudioTempFile2.uri.toString();
-        this.shootingAudioFileUri3 = shootingAudioTempFile3.uri.toString();
-        this.shootingAudioFileUri4 = shootingAudioTempFile4.uri.toString();
+        this.bling2x = bling2xTempFile.uri.toString();
+        this.blingUp3x = blingUp3xTempFile.uri.toString();
+        this.blingDown3x = blingDown3xTempFile.uri.toString();
+        this.bling = blingTempFile.uri.toString();
         // this.shootingAudioFileUri5 = shootingAudioTempFile5.uri.toString();
       });
     } catch (e) {}
   }
 
-  void playHittingHero(int numberOfBullets) async {
-    switch (numberOfBullets) {
-      case 1:
-        await audioPlayer1.play(shootingAudioFileUri1 ?? "", isLocal: true);
-        break;
-      case 2:
-        await audioPlayer1.play(shootingAudioFileUri1 ?? "", isLocal: true);
-        await audioPlayer2.play(shootingAudioFileUri2 ?? "", isLocal: true);
-        break;
-      case 3:
-        await audioPlayer1.play(shootingAudioFileUri1 ?? "", isLocal: true);
-        await audioPlayer2.play(shootingAudioFileUri2 ?? "", isLocal: true);
-        await audioPlayer3.play(shootingAudioFileUri4 ?? "", isLocal: true);
-        break;
-      default:
-        await audioPlayer4.play(shootingAudioFileUri4 ?? "", isLocal: true);
-        break;
-    }
-  }
-
   void fire() async {
-    if (!isShooting && bulletsY.length < 3) {
+    if (!isShooting && bulletsY.length < 4) {
       if (!isMuted) {
         try {
           audioPlayer.play(shootingAudioFileUri ?? "", isLocal: true);
@@ -447,9 +423,27 @@ class _KGameShootingState extends State<KGameShooting>
     }
   }
 
-  void playSound(bool isTrueAnswer) async {
+  void playSound(bool isTrueAnswer, int numberOfBullets) async {
     if (!isMuted) {
       try {
+        switch (numberOfBullets) {
+          case 1:
+            await audioPlayer1.play(bling ?? "", isLocal: true);
+            break;
+          case 2:
+            await audioPlayer1.play(bling2x ?? "", isLocal: true);
+            break;
+          case 3:
+            if (isTrueAnswer) {
+              await audioPlayer2.play(blingUp3x ?? "", isLocal: true);
+            } else {
+              await audioPlayer2.play(blingDown3x ?? "", isLocal: true);
+            }
+            break;
+          default:
+            await audioPlayer4.play(bling ?? "", isLocal: true);
+            break;
+        }
         if (isTrueAnswer) {
           audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
         } else {
@@ -513,9 +507,6 @@ class _KGameShootingState extends State<KGameShooting>
             leftBarrier <= -heroWidth / 2 && rightBarrier >= heroWidth / 4;
 
         final condition2 = condition2a || condition2b || condition2c;
-        if (condition1 && condition2) {
-          playHittingHero(bulletsY.length);
-        }
 
         if (!isHit && condition1 && condition2) {
           this._bouncingAnimationController.forward();
@@ -532,7 +523,7 @@ class _KGameShootingState extends State<KGameShooting>
             this.setState(() {
               isPlaySound = true;
             });
-            playSound(isTrueAnswer);
+            playSound(isTrueAnswer, bulletsY.length);
           }
 
           if (isTrueAnswer) {
