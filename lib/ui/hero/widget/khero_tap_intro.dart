@@ -317,6 +317,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
               } else {
                 Future.delayed(Duration(milliseconds: 500), () {
                   if (mounted) {
+                    final baseTime = (BASE_TIME_TO_ANSWER - 0.1*BASE_TIME_TO_ANSWER*(correctCount <= 9 ? correctCount : 9)).floor();
                     this.setState(() {
                       isShowSadTamago = false;
                       currentShowStarIndex = null;
@@ -324,8 +325,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                       currentQuestionIndex++;
                       getListAnswer();
                       isAnimating = false;
-                      BASE_TIME_TO_ANSWER = (4000 - 0.1*4000*(correctCount <= 9 ? correctCount : 9)).floor();
-                      timeToAnswer = (4000 - 0.1*4000*(correctCount <= 9 ? correctCount : 9)).floor();
+                      BASE_TIME_TO_ANSWER = baseTime;
+                      timeToAnswer = baseTime;
                     });
                     startCount();
                   }
@@ -463,6 +464,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       } else {
         Future.delayed(Duration(milliseconds: 500), () {
           if (mounted) {
+            final baseTime = (BASE_TIME_TO_ANSWER - 0.1*BASE_TIME_TO_ANSWER*(correctCount <= 9 ? correctCount : 9)).floor();
             this.setState(() {
               isShowSadTamago = false;
               currentShowStarIndex = null;
@@ -470,8 +472,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
               currentQuestionIndex++;
               getListAnswer();
               isAnimating = false;
-              BASE_TIME_TO_ANSWER = (4000 - 0.1*4000*(correctCount <= 9 ? correctCount : 9)).floor();
-              timeToAnswer = (4000 - 0.1*4000*(correctCount <= 9 ? correctCount : 9)).floor();
+              BASE_TIME_TO_ANSWER = baseTime;
+              timeToAnswer = baseTime;
             });
             startCount();
           }
