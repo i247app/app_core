@@ -148,7 +148,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
         .animate(_bouncingAnimationController);
 
     _spinAnimationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500))
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300))
           ..addListener(() => setState(() {}))
           ..addStatusListener((status) {
             if (mounted && status == AnimationStatus.completed) {
@@ -158,7 +158,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
           });
 
     _moveUpAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     )
       ..addListener(() => setState(() {}))
@@ -213,11 +213,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     ).animate(_shakeTheTopLeftAnimationController);
 
     loadGame();
-    // Future.delayed(Duration(milliseconds: 200), () {
-    //   if (mounted) {
-    //     startAnswer();
-    //   }
-    // });
   }
 
   loadGame() async {
@@ -289,10 +284,11 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
           });
         } else if (timeToAnswer == 0 && !isAnimating) {
           _timer?.cancel();
-          setState(() {
-            isAnimating = true;
-          });
 
+          this.setState(() {
+            this.isAnimating = true;
+            this.isShowSadTamago = true;
+          });
           this._bouncingAnimationController.forward();
 
           Future.delayed(Duration(milliseconds: 700), () {
@@ -306,39 +302,28 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
               playSound(false);
             }
 
-            Future.delayed(Duration(milliseconds: 500), () {
-              this.setState(() {
-                questionCount++;
-                this.isShowSadTamago = true;
-              });
-
-              if (currentQuestionIndex == 9) {
-                loadGame();
-              } else {
-                Future.delayed(Duration(milliseconds: 500), () {
-                  if (mounted) {
-                    this.setState(() {
-                      isShowSadTamago = false;
-                      currentShowStarIndex = null;
-                      spinningHeroIndex = null;
-                      currentQuestionIndex++;
-                      getListAnswer();
-                      isAnimating = false;
-                      timeToAnswer = BASE_TIME_TO_ANSWER;
-                    });
-                    startCount();
-                  }
-                });
-              }
+            this.setState(() {
+              questionCount++;
             });
+
+            if (currentQuestionIndex == 9) {
+              loadGame();
+            } else {
+              this.setState(() {
+                isShowSadTamago = false;
+                currentShowStarIndex = null;
+                spinningHeroIndex = null;
+                currentQuestionIndex++;
+                getListAnswer();
+                isAnimating = false;
+                timeToAnswer = BASE_TIME_TO_ANSWER;
+              });
+              startCount();
+            }
           });
         }
       }
     });
-  }
-
-  void startAnswer() {
-    this._bouncingAnimationController.forward();
   }
 
   void guestAnswer() {
@@ -424,7 +409,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       this._shakeTheTopRightAnimationController.forward();
     }
 
-    Future.delayed(Duration(milliseconds: 700), () {
+    Future.delayed(Duration(milliseconds: 500), () {
       this.setState(() {
         this.tamagoJumpTimes = 0;
       });
@@ -462,7 +447,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       } else {
         Future.delayed(Duration(milliseconds: 500), () {
           if (mounted) {
-            final baseTime = (BASE_TIME_TO_ANSWER - 0.1*BASE_TIME_TO_ANSWER).floor();
+            final baseTime =
+                (BASE_TIME_TO_ANSWER - 0.1 * BASE_TIME_TO_ANSWER).floor();
             this.setState(() {
               isShowSadTamago = false;
               currentShowStarIndex = null;
@@ -506,12 +492,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       this.correctCount = 0;
       getListAnswer();
     });
-
-    // Future.delayed(Duration(milliseconds: 500), () {
-    //   if (mounted) {
-    //     startAnswer();
-    //   }
-    // });
   }
 
   void togglePauseLocal() {
