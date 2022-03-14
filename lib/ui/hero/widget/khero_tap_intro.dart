@@ -317,7 +317,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
               } else {
                 Future.delayed(Duration(milliseconds: 500), () {
                   if (mounted) {
-                    final baseTime = (BASE_TIME_TO_ANSWER - 0.1*BASE_TIME_TO_ANSWER*(correctCount <= 9 ? correctCount : 9)).floor();
                     this.setState(() {
                       isShowSadTamago = false;
                       currentShowStarIndex = null;
@@ -325,10 +324,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                       currentQuestionIndex++;
                       getListAnswer();
                       isAnimating = false;
-                      if (baseTime > 0) {
-                        BASE_TIME_TO_ANSWER = baseTime;
-                        timeToAnswer = baseTime;
-                      }
+                      timeToAnswer = BASE_TIME_TO_ANSWER;
                     });
                     startCount();
                   }
@@ -466,7 +462,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       } else {
         Future.delayed(Duration(milliseconds: 500), () {
           if (mounted) {
-            final baseTime = (BASE_TIME_TO_ANSWER - 0.1*BASE_TIME_TO_ANSWER*(correctCount <= 9 ? correctCount : 9)).floor();
+            final baseTime = (BASE_TIME_TO_ANSWER - 0.1*BASE_TIME_TO_ANSWER).floor();
             this.setState(() {
               isShowSadTamago = false;
               currentShowStarIndex = null;
@@ -474,7 +470,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
               currentQuestionIndex++;
               getListAnswer();
               isAnimating = false;
-              if (baseTime > 0) {
+              if (baseTime > 0 && isTrueAnswer) {
                 BASE_TIME_TO_ANSWER = baseTime;
                 timeToAnswer = baseTime;
               }
@@ -535,6 +531,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     final body = Stack(
       fit: StackFit.expand,
       children: [
+        Text("${timeToAnswer}"),
         barrierValues.length > 1
             ? Align(
                 alignment: Alignment.center,
