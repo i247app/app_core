@@ -89,12 +89,16 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   bool get isPause => isLocalPause ?? widget.isPause ?? false;
 
   Timer? _timer;
-  int BASE_TIME_TO_ANSWER = 4000;
-  int timeToAnswer = 4000;
+  int BASE_TIME_TO_ANSWER = 3000;
+  int baseTimeToAnswer = 0;
+  int timeToAnswer = 0;
 
   @override
   void initState() {
     super.initState();
+
+    this.baseTimeToAnswer = BASE_TIME_TO_ANSWER;
+    this.timeToAnswer = BASE_TIME_TO_ANSWER;
 
     loadAudioAsset();
 
@@ -234,7 +238,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
           spinningHeroIndex = null;
           isAnimating = false;
           currentQuestionIndex = 0;
-          timeToAnswer = BASE_TIME_TO_ANSWER;
+          timeToAnswer = baseTimeToAnswer;
           this.getListAnswer();
         });
         startCount();
@@ -313,7 +317,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                 currentQuestionIndex++;
                 getListAnswer();
                 isAnimating = false;
-                timeToAnswer = BASE_TIME_TO_ANSWER;
+                timeToAnswer = baseTimeToAnswer;
               });
               startCount();
             }
@@ -456,7 +460,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
         Future.delayed(Duration(milliseconds: 500), () {
           if (mounted) {
             final baseTime =
-                (BASE_TIME_TO_ANSWER - 0.1 * BASE_TIME_TO_ANSWER).floor();
+                (baseTimeToAnswer - 0.1 * baseTimeToAnswer).floor();
             this.setState(() {
               isShowSadTamago = false;
               currentShowStarIndex = null;
@@ -465,10 +469,10 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
               getListAnswer();
               isAnimating = false;
               if (baseTime > 0 && isTrueAnswer) {
-                BASE_TIME_TO_ANSWER = baseTime;
+                baseTimeToAnswer = baseTime;
                 timeToAnswer = baseTime;
               } else {
-                timeToAnswer = BASE_TIME_TO_ANSWER;
+                timeToAnswer = baseTimeToAnswer;
               }
             });
             startCount();
@@ -512,8 +516,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       this.isShowSadTamago = false;
       this.tamagoJumpTimes = 0;
       this.isLocalPause = null;
-      this.BASE_TIME_TO_ANSWER = 4000;
-      this.timeToAnswer = 4000;
+      this.baseTimeToAnswer = BASE_TIME_TO_ANSWER;
+      this.timeToAnswer = BASE_TIME_TO_ANSWER;
       loadGame();
     });
   }
@@ -528,6 +532,18 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
         this.isLocalPause = true;
       });
     }
+  }
+
+  String getRateString() {
+    if (correctCount >= 30) {
+      return "Genius";
+    } else if (correctCount >= 20) {
+      return "Great";
+    } else if (correctCount >= 10) {
+      return "Good";
+    }
+
+    return  "";
   }
 
   @override
@@ -555,8 +571,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                         padding:
                             EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                         child: LinearProgressIndicator(
-                          value: (BASE_TIME_TO_ANSWER - timeToAnswer) /
-                              BASE_TIME_TO_ANSWER,
+                          value: (baseTimeToAnswer - timeToAnswer) /
+                              baseTimeToAnswer,
                           backgroundColor: KTheme.of(context).lightGrey,
                           minHeight: 8,
                         ),
@@ -755,7 +771,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                               padding: EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 15),
                               child: Text(
-                                "${correctPercent}%",
+                                isGameOver ? getRateString() : "${correctPercent}%",
                                 textScaleFactor: 1.0,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
