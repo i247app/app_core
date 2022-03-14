@@ -93,8 +93,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   bool get isPause => isLocalPause ?? widget.isPause ?? false;
 
   Timer? _timer;
-  int BASE_TIME_TO_ANSWER = 2000;
-  int timeToAnswer = 2000;
+  int BASE_TIME_TO_ANSWER = 4000;
+  int timeToAnswer = 4000;
 
   @override
   void initState() {
@@ -324,7 +324,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                       currentQuestionIndex++;
                       getListAnswer();
                       isAnimating = false;
-                      timeToAnswer = BASE_TIME_TO_ANSWER;
+                      BASE_TIME_TO_ANSWER = (4000 - 0.1*4000*(correctCount <= 9 ? correctCount : 9)).floor();
+                      timeToAnswer = (4000 - 0.1*4000*(correctCount <= 9 ? correctCount : 9)).floor();
                     });
                     startCount();
                   }
@@ -469,7 +470,8 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
               currentQuestionIndex++;
               getListAnswer();
               isAnimating = false;
-              timeToAnswer = BASE_TIME_TO_ANSWER;
+              BASE_TIME_TO_ANSWER = (4000 - 0.1*4000*(correctCount <= 9 ? correctCount : 9)).floor();
+              timeToAnswer = (4000 - 0.1*4000*(correctCount <= 9 ? correctCount : 9)).floor();
             });
             startCount();
           }
