@@ -531,7 +531,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     final body = Stack(
       fit: StackFit.expand,
       children: [
-        Text("${timeToAnswer}"),
         barrierValues.length > 1
             ? Align(
                 alignment: Alignment.center,
