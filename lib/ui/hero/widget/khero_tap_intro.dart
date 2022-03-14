@@ -325,8 +325,10 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                       currentQuestionIndex++;
                       getListAnswer();
                       isAnimating = false;
-                      BASE_TIME_TO_ANSWER = baseTime;
-                      timeToAnswer = baseTime;
+                      if (baseTime > 0) {
+                        BASE_TIME_TO_ANSWER = baseTime;
+                        timeToAnswer = baseTime;
+                      }
                     });
                     startCount();
                   }
@@ -472,8 +474,10 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
               currentQuestionIndex++;
               getListAnswer();
               isAnimating = false;
-              BASE_TIME_TO_ANSWER = baseTime;
-              timeToAnswer = baseTime;
+              if (baseTime > 0) {
+                BASE_TIME_TO_ANSWER = baseTime;
+                timeToAnswer = baseTime;
+              }
             });
             startCount();
           }
