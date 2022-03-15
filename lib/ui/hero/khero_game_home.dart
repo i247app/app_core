@@ -572,6 +572,64 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
             ],
           ),
         ),
+        SizedBox(
+          height: 32,
+        ),
+        Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => KGameConsole(
+                            KGameController(
+                              gameID: KGameWord.GAME_ID,
+                              gameAppID: KGameWord.GAME_APP_ID,
+                              gameName: KGameWord.GAME_NAME,
+                              levelCount: 4,
+                              currentLevel: 0,
+                              answerType: 'letter',
+                              // isCountTime: true,
+                            ),
+                          ),
+                        )),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      padding:
+                      EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                      primary: Colors.transparent,
+                      onPrimary: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        side: BorderSide(color: Colors.transparent),
+                      ),
+                    ),
+                    child: SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: FittedBox(
+                        child: Text(
+                          "👾",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 5),
+                  FittedBox(
+                    child: Text("Word"),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
         // Text(
         //   "Speech Games",
         //   style: TextStyle(

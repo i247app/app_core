@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math' as Math;
 
+import 'package:app_core/app_core.dart';
 import 'package:app_core/model/kanswer.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/kquestion.dart';
@@ -12,8 +13,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
+final GlobalKey _draggableKey = GlobalKey();
+
 class KGameWord extends StatefulWidget {
   static const GAME_ID = "513";
+  static const GAME_APP_ID = "513";
   static const GAME_NAME = "word";
 
   final KGameController controller;
@@ -85,7 +89,8 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
 
   KQuestion get currentQuestion => gameData.currentQuestion;
 
-  List<int> selectedWordIndex = [];
+  List<String> correctAnswer = ["D", "O", "G"];
+  List<int?> selectedWordIndex = [null, null, null];
 
   @override
   void initState() {
@@ -170,9 +175,59 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  void onAnswerDrop(KAnswer dragAnswer, int destIndex) {
+    print(destIndex);
+    // if (dragHero.id != hero.id && !KHeroHelper.isEgg(hero)) {
+    //   showHeroCombineOverlay(
+    //     dragHero,
+    //     hero,
+    //         () {
+    //       if (this.overlayID != null) {
+    //         KOverlayHelper.removeOverlay(this.overlayID!);
+    //         this.overlayID = null;
+    //       }
+    //
+    //       this.setState(() {
+    //         (this.heroes ?? []).removeWhere((item) => item.id == dragHero.id);
+    //         this.selectedHero = null;
+    //       });
+    //     },
+    //   );
+    // }
+  }
+
   void getListAnswer() {
     this.setState(() {
-      this.barrierValues = currentQuestionAnswers;
+      this.barrierValues = [
+        KAnswer()
+          ..answerID = "1"
+          ..text = "D"
+          ..isCorrect = true,
+        KAnswer()
+          ..answerID = "2"
+          ..text = "O"
+          ..isCorrect = true,
+        KAnswer()
+          ..answerID = "3"
+          ..text = "G"
+          ..isCorrect = true,
+        KAnswer()
+          ..answerID = "4"
+          ..text = "Q"
+          ..isCorrect = false,
+        KAnswer()
+          ..answerID = "5"
+          ..text = "W"
+          ..isCorrect = false,
+        KAnswer()
+          ..answerID = "6"
+          ..text = "P"
+          ..isCorrect = false,
+        KAnswer()
+          ..answerID = "7"
+          ..text = "C"
+          ..isCorrect = false,
+      ];
       this.barrierValues.shuffle();
     });
   }
@@ -343,28 +398,71 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
           alignment: Alignment.center,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-            child: Stack(
-              children: [
-                ...List.generate(
-                  barrierValues.length,
-                  (i) => selectedWordIndex.contains(i) ? Container() : _Barrier(
-                    onTap: (KAnswer answer) => handlePickAnswer(answer, i),
-                    barrierX: barrierX[i],
-                    barrierY: barrierY[i],
-                    answer: barrierValues[i],
-                    rotateAngle: spinningHeroIndex == i
-                        ? -this._spinAnimationController.value * 4 * Math.pi
-                        : 0,
-                    bouncingAnimation: spinningHeroIndex == i
-                        ? _bouncingAnimation.value
-                        : Offset(0, 0),
-                    scaleAnimation:
-                        spinningHeroIndex == i ? _heroScaleAnimation : null,
-                    starY: _moveUpAnimation.value,
-                    isShowStar: currentShowStarIndex == i,
-                  ),
-                ),
-              ],
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              children: List.generate(
+                barrierValues.length,
+                (i) => selectedWordIndex.contains(i)
+                    ? Container()
+                    : Draggable(
+                        data: i,
+                        dragAnchorStrategy: pointerDragAnchorStrategy,
+                        feedback: DraggingAnswerItem(
+                          dragKey: _draggableKey,
+                          answer: barrierValues[i],
+                        ),
+                        child: Container(
+                          margin:
+                              EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: Color(0xff2c1c44),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: FittedBox(
+                            child: Text(
+                              "${barrierValues[i].text ?? ""}",
+                              textScaleFactor: 1.0,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 60,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+              ),
+              //   Stack(
+              //   children: [
+              //     ...List.generate(
+              //       barrierValues.length,
+              //       (i) => selectedWordIndex.contains(i)
+              //           ? Container()
+              //           : _Barrier(
+              //               onTap: (KAnswer answer) =>
+              //                   handlePickAnswer(answer, i),
+              //               barrierX: barrierX[i],
+              //               barrierY: barrierY[i],
+              //               answer: barrierValues[i],
+              //               rotateAngle: spinningHeroIndex == i
+              //                   ? -this._spinAnimationController.value *
+              //                       4 *
+              //                       Math.pi
+              //                   : 0,
+              //               bouncingAnimation: spinningHeroIndex == i
+              //                   ? _bouncingAnimation.value
+              //                   : Offset(0, 0),
+              //               scaleAnimation: spinningHeroIndex == i
+              //                   ? _heroScaleAnimation
+              //                   : null,
+              //               starY: _moveUpAnimation.value,
+              //               isShowStar: currentShowStarIndex == i,
+              //             ),
+              //     ),
+              //   ],
             ),
           ),
         ),
@@ -390,14 +488,75 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
                   ),
                 ],
               ),
-              child: Text(
-                List.generate(barrierValues.length, (i) => selectedWordIndex.length > i ? barrierValues[selectedWordIndex[i]].text : "_").join(" "),
-                textScaleFactor: 1.0,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 35,
-                  fontWeight: FontWeight.bold,
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                children: List.generate(
+                  selectedWordIndex.length,
+                  (i) => DragTarget(
+                    builder: (context, _, __) {
+                      final selectedWordIndexItem = selectedWordIndex[i];
+                      final selectedAnswer = selectedWordIndexItem != null
+                          ? barrierValues[selectedWordIndexItem]
+                          : null;
+                      return Container(
+                        margin: EdgeInsets.symmetric(horizontal: 5),
+                        width: 60,
+                        height: 60,
+                        decoration: selectedAnswer != null
+                            ? BoxDecoration(
+                                color: Color(0xff2c1c44),
+                                borderRadius: BorderRadius.circular(5),
+                              )
+                            : BoxDecoration(
+                                border: Border(
+                                  top: BorderSide(
+                                    width: 1,
+                                    color: Color(0xff2c1c44),
+                                  ),
+                                  bottom: BorderSide(
+                                    width: 1,
+                                    color: Color(0xff2c1c44),
+                                  ),
+                                  left: BorderSide(
+                                    width: 1,
+                                    color: Color(0xff2c1c44),
+                                  ),
+                                  right: BorderSide(
+                                    width: 1,
+                                    color: Color(0xff2c1c44),
+                                  ),
+                                ),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                        child: selectedAnswer != null ? FittedBox(
+                          child: Text(
+                            "${selectedAnswer.text ?? ""}",
+                            textScaleFactor: 1.0,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 50,
+                              decoration: TextDecoration.none,
+                            ),
+                          ),
+                        ) : Container(),
+                      );
+                    },
+                    onAccept: (int answerIndex) {
+                      print(answerIndex);
+                      if (barrierValues.length > answerIndex) {
+                        final answer = barrierValues[answerIndex];
+                        if (KStringHelper.isExist(answer.text) &&
+                            correctAnswer.contains(answer.text!) &&
+                            correctAnswer.indexOf(answer.text!) == i) {
+                          selectedWordIndex[i] = answerIndex;
+                        } else {
+                          // selectedWordIndex[correctAnswer.indexOf(answer.text!)] = null;
+                        }
+                      }
+                    },
+                  ),
                 ),
               ),
             ),
@@ -407,6 +566,53 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
     );
 
     return body;
+  }
+}
+
+class DraggingAnswerItem extends StatelessWidget {
+  const DraggingAnswerItem({
+    Key? key,
+    required this.dragKey,
+    required this.answer,
+  }) : super(key: key);
+
+  final KAnswer answer;
+  final GlobalKey dragKey;
+
+  @override
+  Widget build(BuildContext context) {
+    return FractionalTranslation(
+      translation: const Offset(-0.5, -0.5),
+      child: Container(
+        width: 65,
+        height: 65,
+        key: dragKey,
+        child: Opacity(
+          opacity: 0.85,
+          child: Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: Color(0xff2c1c44),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: FittedBox(
+              child: Text(
+                "${answer.text ?? ""}",
+                textScaleFactor: 1.0,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 50,
+                  decoration: TextDecoration.none,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
