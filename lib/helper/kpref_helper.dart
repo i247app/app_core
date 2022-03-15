@@ -11,6 +11,7 @@ abstract class KPrefHelper {
   static const String PUSH_TOKEN = 'push_token';
   static const String LAST_LOGIN = 'last_login';
   static const String LAST_PASSWORD = 'last_password';
+  static const String SOUND_CONFIG = 'sound_config';
   static const String CACHED_POSITION = 'cached_position';
   static const String HAS_SHOWN_BG_LOCATION_NOTICE =
       'has_shown_bg_location_notice';
