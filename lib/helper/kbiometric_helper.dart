@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:app_core/helper/kplugin_helper.dart';
 
@@ -12,10 +13,10 @@ abstract class KBiometricHelper {
     return canCheckBiometrics && hasAvailableMethods;
   }
 
-  static Future<bool> authenticate(String reason) async {
+  static Future<bool> authenticate(String reason, { MethodChannel? channel }) async {
     if (Platform.isAndroid) {
       try {
-        final response = await KPluginHelper.biometricAuth(reason);
+        final response = await KPluginHelper.biometricAuth(reason, channel: channel);
         if (response == null)
           return localAuth.authenticate(
             localizedReason: reason,

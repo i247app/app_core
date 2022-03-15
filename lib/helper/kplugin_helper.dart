@@ -5,10 +5,13 @@ import 'package:flutter/services.dart';
 abstract class KPluginHelper {
   static const MethodChannel _channel = MethodChannel('chaoapp.com/default');
 
-  static Future createAndroidNotificationChannel() async {
+  static Future createAndroidNotificationChannel({ MethodChannel? channel }) async {
+    if (channel == null) {
+      channel = _channel;
+    }
     // return Future.value(null);
     try {
-      return _channel.invokeMethod(
+      return channel.invokeMethod(
         'create_notif_channel',
         {
           "id": "DEFAULT_NOTIF_CHANNEL",
@@ -22,9 +25,12 @@ abstract class KPluginHelper {
     }
   }
 
-  static Future<bool?> biometricAuth(String? reason) async {
+  static Future<bool?> biometricAuth(String? reason, { MethodChannel? channel }) async {
+    if (channel == null) {
+      channel = _channel;
+    }
     try {
-      final result = await _channel.invokeMethod(
+      final result = await channel.invokeMethod(
         'biometric_auth',
         {"prompt_title": reason ?? "Chao! Login"},
       );
@@ -43,6 +49,8 @@ abstract class KPluginHelper {
         return null;
       else
         return false;
+    } catch(e) {
+      print(e);
     }
   }
 }
