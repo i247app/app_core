@@ -89,8 +89,8 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
 
   KQuestion get currentQuestion => gameData.currentQuestion;
 
-  List<String> correctAnswer = ["D", "O", "G", "C", "A", "T"];
-  List<int?> selectedWordIndex = [null, null, null, null, null, null];
+  List<String> correctAnswer = ["H", "E", "A", "R", "T"];
+  List<int?> selectedWordIndex = [null, null, null, null, null];
 
   @override
   void initState() {
@@ -201,15 +201,23 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
       this.barrierValues = [
         KAnswer()
           ..answerID = "1"
-          ..text = "D"
+          ..text = "H"
           ..isCorrect = true,
         KAnswer()
           ..answerID = "2"
-          ..text = "O"
+          ..text = "E"
           ..isCorrect = true,
         KAnswer()
           ..answerID = "3"
-          ..text = "G"
+          ..text = "A"
+          ..isCorrect = true,
+        KAnswer()
+          ..answerID = "2"
+          ..text = "R"
+          ..isCorrect = true,
+        KAnswer()
+          ..answerID = "3"
+          ..text = "T"
           ..isCorrect = true,
         KAnswer()
           ..answerID = "4"
