@@ -596,7 +596,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                                 gameName: KGameWord.GAME_NAME,
                                 levelCount: 4,
                                 currentLevel: 0,
-                                answerType: 'letter',
+                                answerType: 'word',
                                 // isCountTime: true,
                               ),
                             ),

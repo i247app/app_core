@@ -54,13 +54,12 @@ class KQuestion {
     try {
       if (answerType == 'letter') {
         final correct = correctAnswer?.text ?? "";
-        if (correct == null) {
+        if (!KStringHelper.isExist(correct)) {
           throw Exception();
         }
 
         final answerValues = [correct];
 
-        print(answerValues.length);
         // Generate unique random values
         while (answerValues.length < count) {
           final letter = KUtil.generateRandomString(1);
@@ -68,12 +67,33 @@ class KQuestion {
             answerValues.add(letter);
           }
         }
-        print(answerValues.toString());
 
         return (answerValues..shuffle())
             .map((av) => KAnswer()
-          ..text = av.toString()
-          ..isCorrect = correct == av)
+              ..text = av.toString()
+              ..isCorrect = correct == av)
+            .toList();
+      } else if (answerType == 'word') {
+        final correct = correctAnswer?.text ?? "";
+        if (!KStringHelper.isExist(correct)) {
+          throw Exception();
+        }
+
+        final answerValues = correct.split("");
+        count = (answerValues.length * 2.5).ceil();
+
+        // Generate unique random values
+        while (answerValues.length < count) {
+          final letter = KUtil.generateRandomString(1);
+          if (!answerValues.contains(letter)) {
+            answerValues.add(letter);
+          }
+        }
+
+        return answerValues
+            .map((av) => KAnswer()
+              ..text = av.toString()
+              ..isCorrect = correct.contains(av))
             .toList();
       } else {
         final correct = int.tryParse(correctAnswer?.text ?? "");
@@ -94,8 +114,8 @@ class KQuestion {
 
         return (answerValues..shuffle())
             .map((av) => KAnswer()
-          ..text = av.toString()
-          ..isCorrect = correct == av)
+              ..text = av.toString()
+              ..isCorrect = correct == av)
             .toList();
       }
     } catch (e) {

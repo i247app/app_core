@@ -52,7 +52,7 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
 
   bool isWrongAnswer = false;
   int? spinningHeroIndex;
-  int? currentShowStarIndex;
+  bool? isShowStar = false;
   bool isAnswering = false;
   bool isPlaySound = false;
   List<double> barrierX = [0, 0, 0, 0];
@@ -89,8 +89,8 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
 
   KQuestion get currentQuestion => gameData.currentQuestion;
 
-  List<String> correctAnswer = ["H", "E", "A", "R", "T"];
-  List<int?> selectedWordIndex = [null, null, null, null, null];
+  List<String> correctAnswer = [];
+  List<int?> selectedWordIndex = [];
 
   @override
   void initState() {
@@ -158,7 +158,6 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
     ).animate(new CurvedAnimation(
         parent: _moveUpAnimationController, curve: Curves.bounceOut));
 
-    randomBoxPosition();
     getListAnswer();
   }
 
@@ -175,90 +174,19 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  void onAnswerDrop(KAnswer dragAnswer, int destIndex) {
-    print(destIndex);
-    // if (dragHero.id != hero.id && !KHeroHelper.isEgg(hero)) {
-    //   showHeroCombineOverlay(
-    //     dragHero,
-    //     hero,
-    //         () {
-    //       if (this.overlayID != null) {
-    //         KOverlayHelper.removeOverlay(this.overlayID!);
-    //         this.overlayID = null;
-    //       }
-    //
-    //       this.setState(() {
-    //         (this.heroes ?? []).removeWhere((item) => item.id == dragHero.id);
-    //         this.selectedHero = null;
-    //       });
-    //     },
-    //   );
-    // }
-  }
-
   void getListAnswer() {
+    final answerList = currentQuestionAnswers;
+    final correctAnswer = answerList
+        .where((answer) => answer.isCorrect ?? false)
+        .map((answer) => answer.text ?? "")
+        .toList();
     this.setState(() {
-      this.barrierValues = [
-        KAnswer()
-          ..answerID = "1"
-          ..text = "H"
-          ..isCorrect = true,
-        KAnswer()
-          ..answerID = "2"
-          ..text = "E"
-          ..isCorrect = true,
-        KAnswer()
-          ..answerID = "3"
-          ..text = "A"
-          ..isCorrect = true,
-        KAnswer()
-          ..answerID = "2"
-          ..text = "R"
-          ..isCorrect = true,
-        KAnswer()
-          ..answerID = "3"
-          ..text = "T"
-          ..isCorrect = true,
-        KAnswer()
-          ..answerID = "4"
-          ..text = "Q"
-          ..isCorrect = false,
-        KAnswer()
-          ..answerID = "5"
-          ..text = "W"
-          ..isCorrect = false,
-        KAnswer()
-          ..answerID = "6"
-          ..text = "P"
-          ..isCorrect = false,
-        KAnswer()
-          ..answerID = "7"
-          ..text = "C"
-          ..isCorrect = false,
-      ];
+      this.barrierValues = answerList;
+      this.correctAnswer = correctAnswer;
+      this.selectedWordIndex =
+          List.generate(correctAnswer.length, (index) => null);
       this.barrierValues.shuffle();
     });
-  }
-
-  void randomBoxPosition() {
-    Math.Random rand = new Math.Random();
-    //rand.nextDouble() * (max - min) + min
-    double topLeftX = rand.nextDouble() * (-0.3 - -1) + -1;
-    double topLeftY = rand.nextDouble() * (0.1 - -0.4) - 0.4;
-    double topRightX = rand.nextDouble() * (1 - 0.3) + 0.3;
-    double topRightY = rand.nextDouble() * (0.1 - -0.4) - 0.4;
-    double bottomLeftX = rand.nextDouble() * (-0.3 - -1) + -1;
-    double bottomLeftY = rand.nextDouble() * (0.8 - 0.3) + 0.3;
-    double bottomRightX = rand.nextDouble() * (1 - 0.3) + 0.3;
-    double bottomRightY = rand.nextDouble() * (0.8 - 0.3) + 0.3;
-    barrierX[0] = topLeftX;
-    barrierY[0] = topLeftY;
-    barrierX[1] = topRightX;
-    barrierY[1] = topRightY;
-    barrierX[2] = bottomLeftX;
-    barrierY[2] = bottomLeftY;
-    barrierX[3] = bottomRightX;
-    barrierY[3] = bottomRightY;
   }
 
   void loadAudioAsset() async {
@@ -301,105 +229,108 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
   }
 
   void handlePickAnswer(KAnswer answer, int answerIndex, int boxIndex) {
+    if (isAnswering) {
+      return;
+    }
+
+    this.setState(() {
+      isAnswering = true;
+    });
+
     if (KStringHelper.isExist(answer.text) &&
         correctAnswer.contains(answer.text!) &&
         correctAnswer.indexOf(answer.text!) == boxIndex) {
-      selectedWordIndex[boxIndex] = answerIndex;
+      this.setState(() {
+        selectedWordIndex[boxIndex] = answerIndex;
+        this.isPlaySound = true;
+      });
       playSound(true);
+
+      if (selectedWordIndex.where((index) => index != null).length < correctAnswer.length) {
+        this.setState(() {
+          isAnswering = false;
+        });
+        return;
+      }
     } else {
+      this.setState(() {
+        this.isPlaySound = true;
+      });
       playSound(false);
+
+      widget.controller.value.result = false;
+      widget.controller.value.point = point > 0 ? point - 1 : 0;
+      if (!isWrongAnswer) {
+        widget.controller.value.wrongAnswerCount = wrongAnswerCount + 1;
+        this.setState(() {
+          isWrongAnswer = true;
+        });
+      }
+      Future.delayed(Duration(milliseconds: 250), () {
+        if (mounted) {
+          this.setState(() {
+            isAnswering = false;
+          });
+        }
+      });
+      widget.controller.notify();
+      return;
     }
-    // if (isAnswering) {
-    //   return;
-    // }
-    // bool isTrueAnswer = answer.isCorrect ?? false;
-    //
-    // if (!isPlaySound) {
-    //   this.setState(() {
-    //     this.isPlaySound = true;
-    //   });
-    //   playSound(isTrueAnswer);
-    // }
-    //
-    // this.setState(() {
-    //   isAnswering = true;
-    //   spinningHeroIndex = answerIndex;
-    // });
-    // this._spinAnimationController.reset();
-    // this._spinAnimationController.forward();
-    //
-    // if (isTrueAnswer) {
-    //   widget.controller.value.result = true;
-    //   widget.controller.value.point = point + 5;
-    //   if (!isWrongAnswer) {
-    //     widget.controller.value.rightAnswerCount = rightAnswerCount + 1;
-    //     this.setState(() {
-    //       currentShowStarIndex = answerIndex;
-    //     });
-    //     if (!_moveUpAnimationController.isAnimating) {
-    //       this._moveUpAnimationController.reset();
-    //       this._moveUpAnimationController.forward();
-    //     }
-    //   }
-    //   this.setState(() {
-    //     isWrongAnswer = false;
-    //   });
-    //
-    //   Future.delayed(Duration(milliseconds: 500), () {
-    //     if (mounted) {
-    //       this.setState(() {
-    //         currentShowStarIndex = null;
-    //       });
-    //       Future.delayed(Duration(milliseconds: 500), () {
-    //         if (mounted) {
-    //           this._moveUpAnimationController.reset();
-    //
-    //           if (currentQuestionIndex + 1 < questions.length) {
-    //             widget.controller.value.currentQuestionIndex =
-    //                 currentQuestionIndex + 1;
-    //             randomBoxPosition();
-    //             getListAnswer();
-    //           } else {
-    //             if (questions.length > 0 &&
-    //                 (rightAnswerCount / questions.length) >=
-    //                     levelHardness[currentLevel]) {
-    //               if (currentLevel == eggReceive)
-    //                 widget.controller.value.eggReceive = eggReceive + 1;
-    //               widget.controller.value.canAdvance = true;
-    //             }
-    //             widget.controller.value.isStart = false;
-    //             widget.controller.notify();
-    //
-    //             if (widget.onFinishLevel != null) {
-    //               widget.onFinishLevel!();
-    //             }
-    //           }
-    //
-    //           this.setState(() {
-    //             isAnswering = false;
-    //           });
-    //         }
-    //       });
-    //     }
-    //   });
-    // } else {
-    //   widget.controller.value.result = false;
-    //   widget.controller.value.point = point > 0 ? point - 1 : 0;
-    //   if (!isWrongAnswer) {
-    //     widget.controller.value.wrongAnswerCount = wrongAnswerCount + 1;
-    //     this.setState(() {
-    //       isWrongAnswer = true;
-    //     });
-    //   }
-    //   Future.delayed(Duration(milliseconds: 250), () {
-    //     if (mounted) {
-    //       this.setState(() {
-    //         isAnswering = false;
-    //       });
-    //     }
-    //   });
-    // }
-    // widget.controller.notify();
+
+    widget.controller.value.result = true;
+    widget.controller.value.point = point + 5;
+    if (!isWrongAnswer) {
+      widget.controller.value.rightAnswerCount = rightAnswerCount + 1;
+      this.setState(() {
+        isShowStar = true;
+      });
+      if (!_moveUpAnimationController.isAnimating) {
+        this._moveUpAnimationController.reset();
+        this._moveUpAnimationController.forward();
+      }
+    }
+    this.setState(() {
+      isWrongAnswer = false;
+    });
+
+    Future.delayed(Duration(milliseconds: 500), () {
+      if (mounted) {
+        this.setState(() {
+          isShowStar = false;
+        });
+        Future.delayed(Duration(milliseconds: 500), () {
+          if (mounted) {
+            this._moveUpAnimationController.reset();
+
+            if (currentQuestionIndex + 1 < questions.length) {
+              widget.controller.value.currentQuestionIndex =
+                  currentQuestionIndex + 1;
+              getListAnswer();
+            } else {
+              if (questions.length > 0 &&
+                  (rightAnswerCount / questions.length) >=
+                      levelHardness[currentLevel]) {
+                if (currentLevel == eggReceive)
+                  widget.controller.value.eggReceive = eggReceive + 1;
+                widget.controller.value.canAdvance = true;
+              }
+              widget.controller.value.isStart = false;
+              widget.controller.notify();
+
+              if (widget.onFinishLevel != null) {
+                widget.onFinishLevel!();
+              }
+            }
+
+            this.setState(() {
+              isAnswering = false;
+            });
+          }
+        });
+      }
+    });
+
+    widget.controller.notify();
   }
 
   @override
@@ -463,76 +394,137 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
               right: 10,
               top: 80,
             ),
+            child: Transform.translate(
+              offset: Offset(0, 0),
+              child: Transform.translate(
+                offset: Offset(0, -60 * _moveUpAnimation.value),
+                child: AnimatedOpacity(
+                  duration: Duration(milliseconds: 500),
+                  opacity: (isShowStar ?? false)
+                      ? 1
+                      : 0,
+                  child: Icon(
+                    Icons.star,
+                    color: Colors.amberAccent,
+                    size: 50,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.topCenter,
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: 10,
+              right: 10,
+              top: 80,
+            ),
             child: Container(
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.symmetric(horizontal: 0, vertical: 15),
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                children: List.generate(
-                  selectedWordIndex.length,
-                  (i) => DragTarget(
-                    builder: (context, _, __) {
-                      final selectedWordIndexItem = selectedWordIndex[i];
-                      final selectedAnswer = selectedWordIndexItem != null
-                          ? barrierValues[selectedWordIndexItem]
-                          : null;
-                      return Container(
-                        margin: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                        width: 60,
-                        height: 60,
-                        decoration: selectedAnswer != null
-                            ? BoxDecoration(
-                                color: Color(0xff2c1c44),
-                                borderRadius: BorderRadius.circular(5),
-                              )
-                            : BoxDecoration(
-                                color: Colors.white,
-                                border: Border(
-                                  top: BorderSide(
-                                    width: 2,
-                                    color: Color(0xff2c1c44),
-                                  ),
-                                  bottom: BorderSide(
-                                    width: 2,
-                                    color: Color(0xff2c1c44),
-                                  ),
-                                  left: BorderSide(
-                                    width: 2,
-                                    color: Color(0xff2c1c44),
-                                  ),
-                                  right: BorderSide(
-                                    width: 2,
-                                    color: Color(0xff2c1c44),
-                                  ),
-                                ),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                        child: selectedAnswer != null
-                            ? FittedBox(
-                                child: Text(
-                                  "${selectedAnswer.text ?? ""}",
-                                  textScaleFactor: 1.0,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 50,
-                                    decoration: TextDecoration.none,
-                                  ),
-                                ),
-                              )
-                            : SizedBox(),
-                      );
-                    },
-                    onAccept: (int answerIndex) {
-                      print(answerIndex);
-                      if (barrierValues.length > answerIndex) {
-                        final answer = barrierValues[answerIndex];
-                        handlePickAnswer(answer, answerIndex, i);
-                      }
-                    },
+              child: Column(
+                children: [
+                  Text(
+                    "${currentQuestion.text ?? ""}",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                      color: Colors.white,
+                        shadows: [
+                          Shadow( // bottomLeft
+                              offset: Offset(-1, -1),
+                              color: Colors.black
+                          ),
+                          Shadow( // bottomRight
+                              offset: Offset(1, -1),
+                              color: Colors.black
+                          ),
+                          Shadow( // topRight
+                              offset: Offset(1, 1),
+                              color: Colors.black
+                          ),
+                          Shadow( // topLeft
+                              offset: Offset(-1, 1),
+                              color: Colors.black
+                          ),
+                        ]
+                    ),
                   ),
-                ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    children: List.generate(
+                      selectedWordIndex.length,
+                      (i) => DragTarget(
+                        builder: (context, _, __) {
+                          final selectedWordIndexItem = selectedWordIndex[i];
+                          final selectedAnswer = selectedWordIndexItem != null
+                              ? barrierValues[selectedWordIndexItem]
+                              : null;
+                          return Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 5),
+                            width: 60,
+                            height: 60,
+                            decoration: selectedAnswer != null
+                                ? BoxDecoration(
+                                    color: Color(0xff2c1c44),
+                                    borderRadius: BorderRadius.circular(5),
+                                  )
+                                : BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border(
+                                      top: BorderSide(
+                                        width: 2,
+                                        color: Color(0xff2c1c44),
+                                      ),
+                                      bottom: BorderSide(
+                                        width: 2,
+                                        color: Color(0xff2c1c44),
+                                      ),
+                                      left: BorderSide(
+                                        width: 2,
+                                        color: Color(0xff2c1c44),
+                                      ),
+                                      right: BorderSide(
+                                        width: 2,
+                                        color: Color(0xff2c1c44),
+                                      ),
+                                    ),
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                            child: selectedAnswer != null
+                                ? FittedBox(
+                                    child: Text(
+                                      "${selectedAnswer.text ?? ""}",
+                                      textScaleFactor: 1.0,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 50,
+                                        decoration: TextDecoration.none,
+                                      ),
+                                    ),
+                                  )
+                                : SizedBox(),
+                          );
+                        },
+                        onAccept: (int answerIndex) {
+                          print(answerIndex);
+                          if (barrierValues.length > answerIndex) {
+                            final answer = barrierValues[answerIndex];
+                            handlePickAnswer(answer, answerIndex, i);
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -585,105 +577,6 @@ class DraggingAnswerItem extends StatelessWidget {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Barrier extends StatelessWidget {
-  final double barrierX;
-  final double barrierY;
-  final double rotateAngle;
-  final Animation<double>? scaleAnimation;
-  final KAnswer answer;
-  final Offset bouncingAnimation;
-  final double? starY;
-  final bool? isShowStar;
-  final Function(KAnswer value) onTap;
-
-  _Barrier({
-    required this.barrierX,
-    required this.barrierY,
-    required this.rotateAngle,
-    this.scaleAnimation,
-    required this.answer,
-    required this.bouncingAnimation,
-    this.starY,
-    this.isShowStar,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(context) {
-    final box = InkWell(
-      onTap: () {
-        onTap(answer);
-      },
-      child: Container(
-        width: 80,
-        height: 80,
-        decoration: BoxDecoration(
-          color: Color(0xff2c1c44),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: FittedBox(
-          child: Text(
-            "${this.answer.text}",
-            textScaleFactor: 1.0,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 60,
-            ),
-          ),
-        ),
-      ),
-    );
-
-    return Container(
-      alignment: Alignment(barrierX, barrierY),
-      child: Container(
-        width: 80,
-        height: 80,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            Align(
-              alignment: Alignment.topCenter,
-              child: Transform.translate(
-                offset: Offset(0, 0),
-                child: Transform.translate(
-                  offset: Offset(0, -60 * (starY ?? 0)),
-                  child: AnimatedOpacity(
-                    duration: Duration(milliseconds: 500),
-                    opacity:
-                        (isShowStar ?? false) && (answer.isCorrect ?? false)
-                            ? 1
-                            : 0,
-                    child: Icon(
-                      Icons.star,
-                      color: Colors.amberAccent,
-                      size: 50,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Transform.translate(
-              offset: bouncingAnimation,
-              child: Transform.rotate(
-                angle: rotateAngle,
-                child: scaleAnimation != null
-                    ? (ScaleTransition(
-                        scale: scaleAnimation!,
-                        child: box,
-                      ))
-                    : box,
-              ),
-            ),
-          ],
         ),
       ),
     );
