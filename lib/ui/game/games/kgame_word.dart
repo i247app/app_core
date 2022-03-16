@@ -89,8 +89,8 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
 
   KQuestion get currentQuestion => gameData.currentQuestion;
 
-  List<String> correctAnswer = ["D", "O", "G"];
-  List<int?> selectedWordIndex = [null, null, null];
+  List<String> correctAnswer = ["D", "O", "G", "C", "A", "T"];
+  List<int?> selectedWordIndex = [null, null, null, null, null, null];
 
   @override
   void initState() {
@@ -292,10 +292,15 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
     });
   }
 
-  void handlePickAnswer(KAnswer answer, int answerIndex) {
-    this.setState(() {
-      selectedWordIndex.add(answerIndex);
-    });
+  void handlePickAnswer(KAnswer answer, int answerIndex, int boxIndex) {
+    if (KStringHelper.isExist(answer.text) &&
+        correctAnswer.contains(answer.text!) &&
+        correctAnswer.indexOf(answer.text!) == boxIndex) {
+      selectedWordIndex[boxIndex] = answerIndex;
+      playSound(true);
+    } else {
+      playSound(false);
+    }
     // if (isAnswering) {
     //   return;
     // }
@@ -395,15 +400,19 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
       fit: StackFit.expand,
       children: [
         Align(
-          alignment: Alignment.center,
+          alignment: Alignment.bottomCenter,
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+            padding: EdgeInsets.only(
+              left: 10,
+              right: 10,
+              bottom: 80,
+            ),
             child: Wrap(
               alignment: WrapAlignment.center,
               children: List.generate(
                 barrierValues.length,
                 (i) => selectedWordIndex.contains(i)
-                    ? Container()
+                    ? SizedBox()
                     : Draggable(
                         data: i,
                         dragAnchorStrategy: pointerDragAnchorStrategy,
@@ -435,34 +444,6 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
                         ),
                       ),
               ),
-              //   Stack(
-              //   children: [
-              //     ...List.generate(
-              //       barrierValues.length,
-              //       (i) => selectedWordIndex.contains(i)
-              //           ? Container()
-              //           : _Barrier(
-              //               onTap: (KAnswer answer) =>
-              //                   handlePickAnswer(answer, i),
-              //               barrierX: barrierX[i],
-              //               barrierY: barrierY[i],
-              //               answer: barrierValues[i],
-              //               rotateAngle: spinningHeroIndex == i
-              //                   ? -this._spinAnimationController.value *
-              //                       4 *
-              //                       Math.pi
-              //                   : 0,
-              //               bouncingAnimation: spinningHeroIndex == i
-              //                   ? _bouncingAnimation.value
-              //                   : Offset(0, 0),
-              //               scaleAnimation: spinningHeroIndex == i
-              //                   ? _heroScaleAnimation
-              //                   : null,
-              //               starY: _moveUpAnimation.value,
-              //               isShowStar: currentShowStarIndex == i,
-              //             ),
-              //     ),
-              //   ],
             ),
           ),
         ),
@@ -472,22 +453,11 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
             padding: EdgeInsets.only(
               left: 10,
               right: 10,
-              top: 60,
+              top: 80,
             ),
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.75,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(40),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.5),
-                    blurRadius: 8,
-                    offset: Offset(2, 6),
-                  ),
-                ],
-              ),
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(horizontal: 0, vertical: 15),
               child: Wrap(
                 alignment: WrapAlignment.center,
                 children: List.generate(
@@ -499,7 +469,7 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
                           ? barrierValues[selectedWordIndexItem]
                           : null;
                       return Container(
-                        margin: EdgeInsets.symmetric(horizontal: 5),
+                        margin: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                         width: 60,
                         height: 60,
                         decoration: selectedAnswer != null
@@ -508,52 +478,49 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
                                 borderRadius: BorderRadius.circular(5),
                               )
                             : BoxDecoration(
+                                color: Colors.white,
                                 border: Border(
                                   top: BorderSide(
-                                    width: 1,
+                                    width: 2,
                                     color: Color(0xff2c1c44),
                                   ),
                                   bottom: BorderSide(
-                                    width: 1,
+                                    width: 2,
                                     color: Color(0xff2c1c44),
                                   ),
                                   left: BorderSide(
-                                    width: 1,
+                                    width: 2,
                                     color: Color(0xff2c1c44),
                                   ),
                                   right: BorderSide(
-                                    width: 1,
+                                    width: 2,
                                     color: Color(0xff2c1c44),
                                   ),
                                 ),
                                 borderRadius: BorderRadius.circular(5),
                               ),
-                        child: selectedAnswer != null ? FittedBox(
-                          child: Text(
-                            "${selectedAnswer.text ?? ""}",
-                            textScaleFactor: 1.0,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 50,
-                              decoration: TextDecoration.none,
-                            ),
-                          ),
-                        ) : Container(),
+                        child: selectedAnswer != null
+                            ? FittedBox(
+                                child: Text(
+                                  "${selectedAnswer.text ?? ""}",
+                                  textScaleFactor: 1.0,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 50,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                              )
+                            : SizedBox(),
                       );
                     },
                     onAccept: (int answerIndex) {
                       print(answerIndex);
                       if (barrierValues.length > answerIndex) {
                         final answer = barrierValues[answerIndex];
-                        if (KStringHelper.isExist(answer.text) &&
-                            correctAnswer.contains(answer.text!) &&
-                            correctAnswer.indexOf(answer.text!) == i) {
-                          selectedWordIndex[i] = answerIndex;
-                        } else {
-                          // selectedWordIndex[correctAnswer.indexOf(answer.text!)] = null;
-                        }
+                        handlePickAnswer(answer, answerIndex, i);
                       }
                     },
                   ),
