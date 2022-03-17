@@ -225,6 +225,7 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
   void getListAnswer() {
     final answerList = currentQuestionAnswers;
     final correctAnswer = currentQuestion.correctAnswer?.text?.split("") ?? [];
+
     this.setState(() {
       this.barrierValues = answerList;
       this.correctAnswer = correctAnswer;
@@ -284,7 +285,7 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
 
     if (KStringHelper.isExist(answer.text) &&
         correctAnswer.contains(answer.text!) &&
-        correctAnswer.indexOf(answer.text!) == boxIndex) {
+        correctAnswer[boxIndex] == answer.text!) {
       this.setState(() {
         selectedWordIndex[boxIndex] = answerIndex;
         this.isPlaySound = true;
