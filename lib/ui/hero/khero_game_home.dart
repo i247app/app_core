@@ -210,7 +210,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       child: FittedBox(
                         child: Icon(
                           Icons.quiz_outlined,
-                          color: Colors.black,
+                          color: Theme.of(context).primaryColor,
                         ),
                         // Text(
                         //   "👾",
@@ -314,7 +314,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       child: FittedBox(
                         child: Icon(
                           Icons.filter_5_outlined,
-                          color: Colors.black,
+                          color: Theme.of(context).primaryColor,
                         ),
                         // child: Text(
                         //   "👾",
@@ -367,7 +367,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       child: FittedBox(
                         child: Icon(
                           Icons.filter_7_outlined,
-                          color: Colors.black,
+                          color: Theme.of(context).primaryColor,
                         ),
                         // child: Text(
                         //   "👾",
@@ -426,7 +426,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       child: FittedBox(
                         child: Icon(
                           Icons.upgrade,
-                          color: Colors.black,
+                          color: Theme.of(context).primaryColor,
                         ),
                         // child: Text(
                         //   "👾",
@@ -478,7 +478,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       child: FittedBox(
                         child: Icon(
                           Icons.u_turn_right,
-                          color: Colors.black,
+                          color: Theme.of(context).primaryColor,
                         ),
                         // child: Text(
                         //   "👾",
