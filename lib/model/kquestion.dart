@@ -80,7 +80,7 @@ class KQuestion {
           throw Exception();
         }
 
-        final answerValues = KGameHelper.generateRandomCharacters(correct, count);
+        final answerValues = KGameHelper.generateRandomCharacters(correct, correct.length < 4 ? 12 : 18);
 
         return answerValues
             .map((av) => KAnswer()
