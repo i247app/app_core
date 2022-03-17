@@ -401,44 +401,79 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
               right: 10,
               bottom: 80,
             ),
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              children: List.generate(
-                barrierValues.length,
-                (i) => selectedWordIndex.contains(i)
-                    ? SizedBox()
-                    : Draggable(
-                        data: i,
-                        dragAnchorStrategy: pointerDragAnchorStrategy,
-                        feedback: DraggingAnswerItem(
-                          dragKey: _draggableKey,
-                          answer: barrierValues[i],
-                          boxSize: boxSize,
-                        ),
-                        child: Container(
-                          margin:
-                              EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                          width: boxSize,
-                          height: boxSize,
-                          decoration: BoxDecoration(
-                            color: Color(0xff2c1c44),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: FittedBox(
-                            child: Text(
-                              "${barrierValues[i].text ?? ""}",
-                              textScaleFactor: 1.0,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 60,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                FittedBox(
+                  child: Text(
+                    "${currentQuestion.text ?? ""}",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                        color: Colors.white,
+                        shadows: [
+                          Shadow(
+                            // bottomLeft
+                              offset: Offset(-1, -1),
+                              color: Colors.black),
+                          Shadow(
+                            // bottomRight
+                              offset: Offset(1, -1),
+                              color: Colors.black),
+                          Shadow(
+                            // topRight
+                              offset: Offset(1, 1),
+                              color: Colors.black),
+                          Shadow(
+                            // topLeft
+                              offset: Offset(-1, 1),
+                              color: Colors.black),
+                        ]),
+                  ),
+                ),
+                SizedBox(
+                  height: 18,
+                ),
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  children: List.generate(
+                    barrierValues.length,
+                    (i) => selectedWordIndex.contains(i)
+                        ? SizedBox()
+                        : Draggable(
+                            data: i,
+                            dragAnchorStrategy: pointerDragAnchorStrategy,
+                            feedback: DraggingAnswerItem(
+                              dragKey: _draggableKey,
+                              answer: barrierValues[i],
+                              boxSize: boxSize,
+                            ),
+                            child: Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 5, vertical: 5),
+                              width: boxSize,
+                              height: boxSize,
+                              decoration: BoxDecoration(
+                                color: Color(0xff2c1c44),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: FittedBox(
+                                child: Text(
+                                  "${barrierValues[i].text ?? ""}",
+                                  textScaleFactor: 1.0,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 60,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-              ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -478,119 +513,87 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
             child: Container(
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.symmetric(horizontal: 0, vertical: 15),
-              child: Column(
-                children: [
-                  Text(
-                    "${currentQuestion.text ?? ""}",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                              // bottomLeft
-                              offset: Offset(-1, -1),
-                              color: Colors.black),
-                          Shadow(
-                              // bottomRight
-                              offset: Offset(1, -1),
-                              color: Colors.black),
-                          Shadow(
-                              // topRight
-                              offset: Offset(1, 1),
-                              color: Colors.black),
-                          Shadow(
-                              // topLeft
-                              offset: Offset(-1, 1),
-                              color: Colors.black),
-                        ]),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    children: List.generate(
-                      selectedWordIndex.length,
-                      (i) => DragTarget(
-                        builder: (context, _, __) {
-                          final selectedWordIndexItem = selectedWordIndex[i];
-                          final selectedAnswer = selectedWordIndexItem != null
-                              ? barrierValues[selectedWordIndexItem]
-                              : null;
+              child: Wrap(
+                alignment: WrapAlignment.center,
+                children: List.generate(
+                  selectedWordIndex.length,
+                  (i) => DragTarget(
+                    builder: (context, _, __) {
+                      final selectedWordIndexItem = selectedWordIndex[i];
+                      final selectedAnswer = selectedWordIndexItem != null
+                          ? barrierValues[selectedWordIndexItem]
+                          : null;
 
-                          final boxColor = selectedAnswer != null
-                              ? Color(0xff2c1c44)
-                              : Colors.white;
-                          final boxBorderColor = (selectedAnswer != null &&
-                                      twinkleBoxIndex != i) ||
+                      final boxColor = selectedAnswer != null
+                          ? Color(0xff2c1c44)
+                          : Colors.white;
+                      final boxBorderColor =
+                          (selectedAnswer != null && twinkleBoxIndex != i) ||
                                   (twinkleBoxIndex == i &&
                                       _correctTwinkleAnimation.value == 1.0)
                               ? Color(0xffFFD700)
                               : Color(0xff2c1c44);
 
-                          final box = Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 5),
-                            width: boxSize,
-                            height: boxSize,
-                            decoration: BoxDecoration(
-                              color: boxColor,
-                              border: Border(
-                                top: BorderSide(
-                                  width: 2,
-                                  color: boxBorderColor,
-                                ),
-                                bottom: BorderSide(
-                                  width: 2,
-                                  color: boxBorderColor,
-                                ),
-                                left: BorderSide(
-                                  width: 2,
-                                  color: boxBorderColor,
-                                ),
-                                right: BorderSide(
-                                  width: 2,
-                                  color: boxBorderColor,
-                                ),
-                              ),
-                              borderRadius: BorderRadius.circular(5),
+                      final box = Container(
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                        width: boxSize,
+                        height: boxSize,
+                        decoration: BoxDecoration(
+                          color: boxColor,
+                          border: Border(
+                            top: BorderSide(
+                              width: 2,
+                              color: boxBorderColor,
                             ),
-                            child: selectedAnswer != null
-                                ? FittedBox(
-                                    child: Text(
-                                      "${selectedAnswer.text ?? ""}",
-                                      textScaleFactor: 1.0,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 50,
-                                        decoration: TextDecoration.none,
-                                      ),
-                                    ),
-                                  )
-                                : SizedBox(),
-                          );
+                            bottom: BorderSide(
+                              width: 2,
+                              color: boxBorderColor,
+                            ),
+                            left: BorderSide(
+                              width: 2,
+                              color: boxBorderColor,
+                            ),
+                            right: BorderSide(
+                              width: 2,
+                              color: boxBorderColor,
+                            ),
+                          ),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: selectedAnswer != null
+                            ? FittedBox(
+                                child: Text(
+                                  "${selectedAnswer.text ?? ""}",
+                                  textScaleFactor: 1.0,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 50,
+                                    decoration: TextDecoration.none,
+                                  ),
+                                ),
+                              )
+                            : SizedBox(),
+                      );
 
-                          return scaleBoxIndex != null && scaleBoxIndex! == i
-                              ? ScaleTransition(
-                                  scale: _boxScaleAnimation,
-                                  child: box,
-                                )
-                              : box;
-                        },
-                        onAccept: (int answerIndex) {
-                          print(answerIndex);
-                          if (barrierValues.length > answerIndex) {
-                            final answer = barrierValues[answerIndex];
-                            handlePickAnswer(answer, answerIndex, i);
-                          }
-                        },
-                      ),
-                    ),
+                      return scaleBoxIndex != null && scaleBoxIndex! == i
+                          ? ScaleTransition(
+                              scale: _boxScaleAnimation,
+                              child: box,
+                            )
+                          : box;
+                    },
+                    onAccept: (int answerIndex) {
+                      print(answerIndex);
+                      if (barrierValues.length > answerIndex) {
+                        final answer = barrierValues[answerIndex];
+                        handlePickAnswer(answer, answerIndex, i);
+                      }
+                    },
                   ),
-                ],
+                ),
               ),
             ),
           ),
