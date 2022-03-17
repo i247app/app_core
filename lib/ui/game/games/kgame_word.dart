@@ -409,30 +409,30 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
                     "${currentQuestion.text ?? ""}",
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 24,
+                        fontSize: 42,
                         color: Colors.white,
                         shadows: [
                           Shadow(
                             // bottomLeft
                               offset: Offset(-1, -1),
-                              color: Colors.black),
+                              color: Colors.brown),
                           Shadow(
                             // bottomRight
                               offset: Offset(1, -1),
-                              color: Colors.black),
+                              color: Colors.brown),
                           Shadow(
                             // topRight
                               offset: Offset(1, 1),
-                              color: Colors.black),
+                              color: Colors.brown),
                           Shadow(
                             // topLeft
                               offset: Offset(-1, 1),
-                              color: Colors.black),
+                              color: Colors.brown),
                         ]),
                   ),
                 ),
                 SizedBox(
-                  height: 18,
+                  height: 32,
                 ),
                 Wrap(
                   alignment: WrapAlignment.center,
@@ -483,7 +483,7 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
             padding: EdgeInsets.only(
               left: 10,
               right: 10,
-              top: 80,
+              top: 100,
             ),
             child: Transform.translate(
               offset: Offset(0, 0),
@@ -508,7 +508,7 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
             padding: EdgeInsets.only(
               left: 10,
               right: 10,
-              top: 80,
+              top: 100,
             ),
             child: Container(
               width: MediaQuery.of(context).size.width,
