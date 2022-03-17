@@ -92,6 +92,8 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
   List<String> correctAnswer = [];
   List<int?> selectedWordIndex = [];
 
+  double get boxSize => ((MediaQuery.of(context).size.width - 20)/6) - 10;
+
   @override
   void initState() {
     super.initState();
@@ -358,12 +360,13 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
                         feedback: DraggingAnswerItem(
                           dragKey: _draggableKey,
                           answer: barrierValues[i],
+                            boxSize: boxSize,
                         ),
                         child: Container(
                           margin:
                               EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                          width: 60,
-                          height: 60,
+                          width: boxSize,
+                          height: boxSize,
                           decoration: BoxDecoration(
                             color: Color(0xff2c1c44),
                             borderRadius: BorderRadius.circular(5),
@@ -468,8 +471,8 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
                           return Container(
                             margin: EdgeInsets.symmetric(
                                 horizontal: 5, vertical: 5),
-                            width: 60,
-                            height: 60,
+                            width: boxSize,
+                            height: boxSize,
                             decoration: selectedAnswer != null
                                 ? BoxDecoration(
                                     color: Color(0xff2c1c44),
@@ -541,24 +544,26 @@ class DraggingAnswerItem extends StatelessWidget {
     Key? key,
     required this.dragKey,
     required this.answer,
+    required this.boxSize,
   }) : super(key: key);
 
   final KAnswer answer;
   final GlobalKey dragKey;
+  final double boxSize;
 
   @override
   Widget build(BuildContext context) {
     return FractionalTranslation(
       translation: const Offset(-0.5, -0.5),
       child: Container(
-        width: 65,
-        height: 65,
+        width: boxSize + 5,
+        height: boxSize + 5,
         key: dragKey,
         child: Opacity(
           opacity: 0.85,
           child: Container(
-            width: 60,
-            height: 60,
+            width: boxSize,
+            height: boxSize,
             decoration: BoxDecoration(
               color: Color(0xff2c1c44),
               borderRadius: BorderRadius.circular(5),

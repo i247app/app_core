@@ -80,7 +80,7 @@ class KQuestion {
         }
 
         final answerValues = correct.split("");
-        count = (answerValues.length * 2.5).ceil();
+        count = 18;
 
         // Generate unique random values
         while (answerValues.length < count) {
