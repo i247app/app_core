@@ -82,11 +82,11 @@ class _KWordGameIntroState extends State<KWordGameIntro>
               //   ap.stop();
               //   ap.release();
               // });
-              try {
-                final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
-                ap.play(correctAudioFileUri ?? "", isLocal: true);
-                cAudioPlayer.complete(ap);
-              } catch (e) {}
+              // try {
+              //   final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+              //   ap.play(correctAudioFileUri ?? "", isLocal: true);
+              //   cAudioPlayer.complete(ap);
+              // } catch (e) {}
             }
             _shakeTheTopAnimationController.reverse();
           } else if (status == AnimationStatus.dismissed) {
@@ -174,14 +174,14 @@ class _KWordGameIntroState extends State<KWordGameIntro>
 
   @override
   void dispose() {
-    cAudioPlayer.future.then((ap) {
-      ap.stop();
-      ap.dispose();
-    });
-    cBackgroundAudioPlayer.future.then((ap) {
-      ap.stop();
-      ap.dispose();
-    });
+    // cAudioPlayer.future.then((ap) {
+    //   ap.stop();
+    //   ap.dispose();
+    // });
+    // cBackgroundAudioPlayer.future.then((ap) {
+    //   ap.stop();
+    //   ap.dispose();
+    // });
     _shakeTheTopAnimationController.dispose();
     _barrelMovingAnimationController.dispose();
     _barrelHeroMovingAnimationController.dispose();
