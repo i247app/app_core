@@ -424,10 +424,14 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       width: 60,
                       height: 60,
                       child: FittedBox(
-                        child: Text(
-                          "👾",
-                          style: TextStyle(color: Colors.white),
+                        child: Icon(
+                          Icons.upgrade,
+                          color: Colors.black,
                         ),
+                        // child: Text(
+                        //   "👾",
+                        //   style: TextStyle(color: Colors.white),
+                        // ),
                       ),
                     ),
                   ),
@@ -472,10 +476,14 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       width: 60,
                       height: 60,
                       child: FittedBox(
-                        child: Text(
-                          "👾",
-                          style: TextStyle(color: Colors.white),
+                        child: Icon(
+                          Icons.u_turn_right,
+                          color: Colors.black,
                         ),
+                        // child: Text(
+                        //   "👾",
+                        //   style: TextStyle(color: Colors.white),
+                        // ),
                       ),
                     ),
                   ),
