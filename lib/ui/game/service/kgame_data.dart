@@ -51,7 +51,7 @@ class KGameData {
       : KQuestion();
 
   List<KAnswer> get currentQuestionAnswers => (this.currentQuestion.isGenAnswer ?? true) || (this.currentQuestion.answers ?? []).length == 1 ?
-      this.currentQuestion.generateAnswers(4, answerType ?? 'number') : this.currentQuestion.answers!;
+      this.currentQuestion.generateAnswers(answerType == "word" ? ((currentLevel ?? 0) < 2 ? 12 : 18) : 4, answerType ?? 'number') : this.currentQuestion.answers!;
 
   bool get canRestartGame =>
       (currentLevel ?? 0) + 1 < levelHardness.length ||
