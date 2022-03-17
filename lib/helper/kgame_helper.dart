@@ -26,10 +26,10 @@ abstract class KGameHelper {
       'Y',
       'Z'
     ];
-    final randomCharacters = <String>['A', 'E', 'I', 'O', 'U'];
+    final vowelCharacters = <String>['A', 'E', 'I', 'O', 'U'];
+    final randomCharacters = wordInclueded.toUpperCase().split('').toList();
     final random = Random();
-    final wordIncluededSet = Set.from(wordInclueded.toUpperCase().split(''));
-    wordIncluededSet.forEach((element) {
+    vowelCharacters.forEach((element) {
       if (!randomCharacters.contains(element)) {
         randomCharacters.add(element);
       }

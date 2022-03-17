@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/helper/kgame_helper.dart';
 import 'package:app_core/model/kanswer.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -79,16 +80,7 @@ class KQuestion {
           throw Exception();
         }
 
-        final answerValues = correct.split("");
-        count = 18;
-
-        // Generate unique random values
-        while (answerValues.length < count) {
-          final letter = KUtil.generateRandomString(1);
-          if (!answerValues.contains(letter)) {
-            answerValues.add(letter);
-          }
-        }
+        final answerValues = KGameHelper.generateRandomCharacters(correct, 18);
 
         return answerValues
             .map((av) => KAnswer()

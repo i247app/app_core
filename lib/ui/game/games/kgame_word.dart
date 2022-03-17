@@ -41,16 +41,21 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
   String? wrongAudioFileUri;
 
   late Animation<Offset> _bouncingAnimation;
-  late Animation<double> _moveUpAnimation, _heroScaleAnimation;
+  late Animation<double> _moveUpAnimation,
+      _boxScaleAnimation,
+      _correctTwinkleAnimation;
 
-  late AnimationController _heroScaleAnimationController,
+  late AnimationController _boxScaleAnimationController,
       _bouncingAnimationController,
       _moveUpAnimationController,
-      _spinAnimationController;
+      _spinAnimationController,
+      _correctTwinkleAnimationController;
 
   KGameData get gameData => widget.controller.value;
 
   bool isWrongAnswer = false;
+  int? twinkleBoxIndex;
+  int? scaleBoxIndex;
   int? spinningHeroIndex;
   bool? isShowStar = false;
   bool isAnswering = false;
@@ -92,7 +97,9 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
   List<String> correctAnswer = [];
   List<int?> selectedWordIndex = [];
 
-  double get boxSize => ((MediaQuery.of(context).size.width - 20)/6) - 10;
+  double get boxSize => ((MediaQuery.of(context).size.width - 20) / 6) - 10;
+
+  int correctTwinkleTime = 2;
 
   @override
   void initState() {
@@ -100,27 +107,65 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
 
     loadAudioAsset();
 
-    _heroScaleAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 0),
+    _correctTwinkleAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 50),
       vsync: this,
     )
       ..addListener(() => setState(() {}))
       ..addStatusListener((status) {
         if (mounted && status == AnimationStatus.completed) {
-          this._spinAnimationController.forward();
+          Future.delayed(Duration(milliseconds: 50), () {
+            if (mounted) {
+              this._correctTwinkleAnimationController.reverse();
+            }
+          });
+        } else if (mounted && status == AnimationStatus.dismissed) {
+          Future.delayed(Duration(milliseconds: 50), () {
+            if (mounted) {
+              if (correctTwinkleTime - 1 > 0) {
+                this.setState(() {
+                  correctTwinkleTime = correctTwinkleTime - 1;
+                });
+                this._correctTwinkleAnimationController.forward();
+              } else {
+                this.setState(() {
+                  correctTwinkleTime = 2;
+                  twinkleBoxIndex = null;
+                });
+              }
+            }
+          });
+        }
+      });
+    _correctTwinkleAnimation = new Tween(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(new CurvedAnimation(
+        parent: _correctTwinkleAnimationController, curve: Curves.linear));
+
+    _boxScaleAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 50),
+      vsync: this,
+    )
+      ..addListener(() => setState(() {}))
+      ..addStatusListener((status) {
+        if (mounted && status == AnimationStatus.completed) {
+          Future.delayed(Duration(milliseconds: 50), () {
+            this._boxScaleAnimationController.reverse();
+          });
         } else if (mounted && status == AnimationStatus.dismissed) {
           Future.delayed(Duration(milliseconds: 50), () {
             this.setState(() {
-              spinningHeroIndex = null;
+              scaleBoxIndex = null;
             });
           });
         }
       });
-    _heroScaleAnimation = new Tween(
+    _boxScaleAnimation = new Tween(
       begin: 1.0,
       end: 1.2,
     ).animate(new CurvedAnimation(
-        parent: _heroScaleAnimationController, curve: Curves.bounceOut));
+        parent: _boxScaleAnimationController, curve: Curves.bounceOut));
 
     _bouncingAnimationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 100))
@@ -130,7 +175,7 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
               _bouncingAnimationController.reverse();
             } else if (status == AnimationStatus.dismissed) {
               // _bouncingAnimationController.forward(from: 0.0);
-              this._heroScaleAnimationController.forward();
+              // this._heroScaleAnimationController.forward();
             }
           });
     _bouncingAnimation = Tween(begin: Offset(0, 0), end: Offset(0, -10.0))
@@ -142,7 +187,7 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
           ..addStatusListener((status) {
             if (mounted && status == AnimationStatus.completed) {
               this._spinAnimationController.reset();
-              this._heroScaleAnimationController.reverse();
+              // this._heroScaleAnimationController.reverse();
             } else if (status == AnimationStatus.dismissed) {}
           });
 
@@ -165,10 +210,11 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _heroScaleAnimationController.dispose();
+    _boxScaleAnimationController.dispose();
     _bouncingAnimationController.dispose();
     _moveUpAnimationController.dispose();
     _spinAnimationController.dispose();
+    _correctTwinkleAnimationController.dispose();
 
     audioPlayer.dispose();
 
@@ -178,10 +224,7 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
 
   void getListAnswer() {
     final answerList = currentQuestionAnswers;
-    final correctAnswer = answerList
-        .where((answer) => answer.isCorrect ?? false)
-        .map((answer) => answer.text ?? "")
-        .toList();
+    final correctAnswer = currentQuestion.correctAnswer?.text?.split("") ?? [];
     this.setState(() {
       this.barrierValues = answerList;
       this.correctAnswer = correctAnswer;
@@ -245,10 +288,13 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
       this.setState(() {
         selectedWordIndex[boxIndex] = answerIndex;
         this.isPlaySound = true;
+        this.twinkleBoxIndex = boxIndex;
       });
       playSound(true);
+      this._correctTwinkleAnimationController.forward();
 
-      if (selectedWordIndex.where((index) => index != null).length < correctAnswer.length) {
+      if (selectedWordIndex.where((index) => index != null).length <
+          correctAnswer.length) {
         this.setState(() {
           isAnswering = false;
         });
@@ -257,82 +303,88 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
     } else {
       this.setState(() {
         this.isPlaySound = true;
+        this.scaleBoxIndex = boxIndex;
       });
       playSound(false);
+      this._boxScaleAnimationController.forward();
 
-      widget.controller.value.result = false;
-      widget.controller.value.point = point > 0 ? point - 1 : 0;
-      if (!isWrongAnswer) {
-        widget.controller.value.wrongAnswerCount = wrongAnswerCount + 1;
-        this.setState(() {
-          isWrongAnswer = true;
-        });
-      }
-      Future.delayed(Duration(milliseconds: 250), () {
-        if (mounted) {
+      if (mounted) {
+        widget.controller.value.result = false;
+        widget.controller.value.point = point > 0 ? point - 1 : 0;
+        if (!isWrongAnswer) {
+          widget.controller.value.wrongAnswerCount = wrongAnswerCount + 1;
           this.setState(() {
-            isAnswering = false;
+            isWrongAnswer = true;
           });
         }
-      });
-      widget.controller.notify();
-      return;
-    }
-
-    widget.controller.value.result = true;
-    widget.controller.value.point = point + 5;
-    if (!isWrongAnswer) {
-      widget.controller.value.rightAnswerCount = rightAnswerCount + 1;
-      this.setState(() {
-        isShowStar = true;
-      });
-      if (!_moveUpAnimationController.isAnimating) {
-        this._moveUpAnimationController.reset();
-        this._moveUpAnimationController.forward();
-      }
-    }
-    this.setState(() {
-      isWrongAnswer = false;
-    });
-
-    Future.delayed(Duration(milliseconds: 500), () {
-      if (mounted) {
-        this.setState(() {
-          isShowStar = false;
-        });
-        Future.delayed(Duration(milliseconds: 500), () {
+        Future.delayed(Duration(milliseconds: 250), () {
           if (mounted) {
-            this._moveUpAnimationController.reset();
-
-            if (currentQuestionIndex + 1 < questions.length) {
-              widget.controller.value.currentQuestionIndex =
-                  currentQuestionIndex + 1;
-              getListAnswer();
-            } else {
-              if (questions.length > 0 &&
-                  (rightAnswerCount / questions.length) >=
-                      levelHardness[currentLevel]) {
-                if (currentLevel == eggReceive)
-                  widget.controller.value.eggReceive = eggReceive + 1;
-                widget.controller.value.canAdvance = true;
-              }
-              widget.controller.value.isStart = false;
-              widget.controller.notify();
-
-              if (widget.onFinishLevel != null) {
-                widget.onFinishLevel!();
-              }
-            }
-
             this.setState(() {
               isAnswering = false;
             });
           }
         });
+        widget.controller.notify();
       }
-    });
+      return;
+    }
 
-    widget.controller.notify();
+    Future.delayed(Duration(milliseconds: 250), () {
+      widget.controller.value.result = true;
+      widget.controller.value.point = point + 5;
+      if (!isWrongAnswer) {
+        widget.controller.value.rightAnswerCount = rightAnswerCount + 1;
+        this.setState(() {
+          isShowStar = true;
+        });
+        if (!_moveUpAnimationController.isAnimating) {
+          this._moveUpAnimationController.reset();
+          this._moveUpAnimationController.forward();
+        }
+      }
+      this.setState(() {
+        isWrongAnswer = false;
+      });
+
+      Future.delayed(Duration(milliseconds: 500), () {
+        if (mounted) {
+          this.setState(() {
+            isShowStar = false;
+          });
+          Future.delayed(Duration(milliseconds: 500), () {
+            if (mounted) {
+              this._moveUpAnimationController.reset();
+
+              if (currentQuestionIndex + 1 < questions.length) {
+                widget.controller.value.currentQuestionIndex =
+                    currentQuestionIndex + 1;
+                getListAnswer();
+              } else {
+                if (questions.length > 0 &&
+                    (rightAnswerCount / questions.length) >=
+                        levelHardness[currentLevel]) {
+                  if (currentLevel == eggReceive)
+                    widget.controller.value.eggReceive = eggReceive + 1;
+                  widget.controller.value.canAdvance = true;
+                }
+                widget.controller.value.isStart = false;
+                widget.controller.notify();
+
+                if (widget.onFinishLevel != null) {
+                  widget.onFinishLevel!();
+                }
+              }
+
+              this.setState(() {
+                isAnswering = false;
+              });
+            }
+          });
+        }
+      });
+
+      widget.controller.notify();
+    });
   }
 
   @override
@@ -360,7 +412,7 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
                         feedback: DraggingAnswerItem(
                           dragKey: _draggableKey,
                           answer: barrierValues[i],
-                            boxSize: boxSize,
+                          boxSize: boxSize,
                         ),
                         child: Container(
                           margin:
@@ -403,9 +455,7 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
                 offset: Offset(0, -60 * _moveUpAnimation.value),
                 child: AnimatedOpacity(
                   duration: Duration(milliseconds: 500),
-                  opacity: (isShowStar ?? false)
-                      ? 1
-                      : 0,
+                  opacity: (isShowStar ?? false) ? 1 : 0,
                   child: Icon(
                     Icons.star,
                     color: Colors.amberAccent,
@@ -432,28 +482,27 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
                   Text(
                     "${currentQuestion.text ?? ""}",
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                        color: Colors.white,
                         shadows: [
-                          Shadow( // bottomLeft
+                          Shadow(
+                              // bottomLeft
                               offset: Offset(-1, -1),
-                              color: Colors.black
-                          ),
-                          Shadow( // bottomRight
+                              color: Colors.black),
+                          Shadow(
+                              // bottomRight
                               offset: Offset(1, -1),
-                              color: Colors.black
-                          ),
-                          Shadow( // topRight
+                              color: Colors.black),
+                          Shadow(
+                              // topRight
                               offset: Offset(1, 1),
-                              color: Colors.black
-                          ),
-                          Shadow( // topLeft
+                              color: Colors.black),
+                          Shadow(
+                              // topLeft
                               offset: Offset(-1, 1),
-                              color: Colors.black
-                          ),
-                        ]
-                    ),
+                              color: Colors.black),
+                        ]),
                   ),
                   SizedBox(
                     height: 10,
@@ -468,38 +517,44 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
                           final selectedAnswer = selectedWordIndexItem != null
                               ? barrierValues[selectedWordIndexItem]
                               : null;
-                          return Container(
+
+                          final boxColor = selectedAnswer != null
+                              ? Color(0xff2c1c44)
+                              : Colors.white;
+                          final boxBorderColor = (selectedAnswer != null &&
+                                      twinkleBoxIndex != i) ||
+                                  (twinkleBoxIndex == i &&
+                                      _correctTwinkleAnimation.value == 1.0)
+                              ? Color(0xffFFD700)
+                              : Color(0xff2c1c44);
+
+                          final box = Container(
                             margin: EdgeInsets.symmetric(
                                 horizontal: 5, vertical: 5),
                             width: boxSize,
                             height: boxSize,
-                            decoration: selectedAnswer != null
-                                ? BoxDecoration(
-                                    color: Color(0xff2c1c44),
-                                    borderRadius: BorderRadius.circular(5),
-                                  )
-                                : BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border(
-                                      top: BorderSide(
-                                        width: 2,
-                                        color: Color(0xff2c1c44),
-                                      ),
-                                      bottom: BorderSide(
-                                        width: 2,
-                                        color: Color(0xff2c1c44),
-                                      ),
-                                      left: BorderSide(
-                                        width: 2,
-                                        color: Color(0xff2c1c44),
-                                      ),
-                                      right: BorderSide(
-                                        width: 2,
-                                        color: Color(0xff2c1c44),
-                                      ),
-                                    ),
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
+                            decoration: BoxDecoration(
+                              color: boxColor,
+                              border: Border(
+                                top: BorderSide(
+                                  width: 2,
+                                  color: boxBorderColor,
+                                ),
+                                bottom: BorderSide(
+                                  width: 2,
+                                  color: boxBorderColor,
+                                ),
+                                left: BorderSide(
+                                  width: 2,
+                                  color: boxBorderColor,
+                                ),
+                                right: BorderSide(
+                                  width: 2,
+                                  color: boxBorderColor,
+                                ),
+                              ),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
                             child: selectedAnswer != null
                                 ? FittedBox(
                                     child: Text(
@@ -516,6 +571,13 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
                                   )
                                 : SizedBox(),
                           );
+
+                          return scaleBoxIndex != null && scaleBoxIndex! == i
+                              ? ScaleTransition(
+                                  scale: _boxScaleAnimation,
+                                  child: box,
+                                )
+                              : box;
                         },
                         onAccept: (int answerIndex) {
                           print(answerIndex);
