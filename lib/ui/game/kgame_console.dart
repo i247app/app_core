@@ -29,6 +29,7 @@ import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
 import 'package:app_core/ui/hero/widget/khero_game_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
 import 'package:app_core/ui/hero/widget/ktamago_chan_jumping.dart';
+import 'package:app_core/ui/hero/widget/kword_game_intro.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -853,12 +854,42 @@ class _KGameConsoleState extends State<KGameConsole>
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final gameIntro = gameID == KGameShooting.GAME_ID
-        ? GestureDetector(
-            onTap: () {
-              this.setState(() => this.isShowIntro = false);
+  Widget getGameIntro() {
+    switch (gameID) {
+      case KGameShooting.GAME_ID:
+        return GestureDetector(
+          onTap: () {
+            this.setState(() => this.isShowIntro = false);
+            if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+              this.setState(() {
+                this.isBackgroundSoundPlaying = true;
+              });
+              backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
+                  isLocal: true);
+            }
+          },
+          child: Container(
+            child: KGameIntro(
+              hero: widget.hero,
+              onFinish: () {
+                this.setState(() => this.isShowIntro = false);
+                if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+                  this.setState(() {
+                    this.isBackgroundSoundPlaying = true;
+                  });
+                  backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
+                      isLocal: true);
+                }
+              },
+            ),
+          ),
+        );
+      case KGameWord.GAME_ID:
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            KWordGameIntro(onFinish: () {
+              setState(() => this.isShowIntro = false);
               if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
                 this.setState(() {
                   this.isBackgroundSoundPlaying = true;
@@ -866,27 +897,9 @@ class _KGameConsoleState extends State<KGameConsole>
                 backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
                     isLocal: true);
               }
-            },
-            child: Container(
-              child: KGameIntro(
-                hero: widget.hero,
-                onFinish: () {
-                  this.setState(() => this.isShowIntro = false);
-                  if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
-                    this.setState(() {
-                      this.isBackgroundSoundPlaying = true;
-                    });
-                    backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
-                        isLocal: true);
-                  }
-                },
-              ),
-            ),
-          )
-        : Stack(
-            fit: StackFit.expand,
-            children: [
-              KEggHeroIntro(onFinish: () {
+            }),
+            GestureDetector(
+              onTap: () {
                 setState(() => this.isShowIntro = false);
                 if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
                   this.setState(() {
@@ -895,21 +908,44 @@ class _KGameConsoleState extends State<KGameConsole>
                   backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
                       isLocal: true);
                 }
-              }),
-              GestureDetector(
-                onTap: () {
-                  setState(() => this.isShowIntro = false);
-                  if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
-                    this.setState(() {
-                      this.isBackgroundSoundPlaying = true;
-                    });
-                    backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
-                        isLocal: true);
-                  }
-                },
-              ),
-            ],
-          );
+              },
+            ),
+          ],
+        );
+      default:
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            KEggHeroIntro(onFinish: () {
+              setState(() => this.isShowIntro = false);
+              if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+                this.setState(() {
+                  this.isBackgroundSoundPlaying = true;
+                });
+                backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
+                    isLocal: true);
+              }
+            }),
+            GestureDetector(
+              onTap: () {
+                setState(() => this.isShowIntro = false);
+                if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+                  this.setState(() {
+                    this.isBackgroundSoundPlaying = true;
+                  });
+                  backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
+                      isLocal: true);
+                }
+              },
+            ),
+          ],
+        );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final gameIntro = getGameIntro();
 
     final timeCounter = Align(
       alignment: Alignment(-1, -1),
