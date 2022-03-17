@@ -179,11 +179,24 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: () => onTraining(null),
+                    onPressed: () =>
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (ctx) => KGameConsole(
+                            KGameController(
+                              gameID: KGameWord.GAME_ID,
+                              gameAppID: KGameWord.GAME_APP_ID,
+                              gameName: KGameWord.GAME_NAME,
+                              levelCount: 4,
+                              currentLevel: 0,
+                              answerType: 'word',
+                              // isCountTime: true,
+                            ),
+                          ),
+                        )),
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
                       padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                      EdgeInsets.symmetric(vertical: 10, horizontal: 6),
                       primary: Colors.transparent,
                       onPrimary: Colors.transparent,
                       shape: RoundedRectangleBorder(
@@ -195,16 +208,20 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       width: 60,
                       height: 60,
                       child: FittedBox(
-                        child: Text(
-                          "🕹",
-                          style: TextStyle(color: Colors.white),
+                        child: Icon(
+                          Icons.quiz_outlined,
+                          color: Colors.black,
                         ),
+                        // Text(
+                        //   "👾",
+                        //   style: TextStyle(color: Colors.white),
+                        // ),
                       ),
                     ),
                   ),
                   SizedBox(width: 5),
                   FittedBox(
-                    child: Text("Training"),
+                    child: Text("Word"),
                   ),
                 ],
               ),
@@ -295,10 +312,14 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       width: 60,
                       height: 60,
                       child: FittedBox(
-                        child: Text(
-                          "👾",
-                          style: TextStyle(color: Colors.white),
+                        child: Icon(
+                          Icons.filter_5_outlined,
+                          color: Colors.black,
                         ),
+                        // child: Text(
+                        //   "👾",
+                        //   style: TextStyle(color: Colors.white),
+                        // ),
                       ),
                     ),
                   ),
@@ -344,10 +365,14 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       width: 60,
                       height: 60,
                       child: FittedBox(
-                        child: Text(
-                          "👾",
-                          style: TextStyle(color: Colors.white),
+                        child: Icon(
+                          Icons.filter_7_outlined,
+                          color: Colors.black,
                         ),
+                        // child: Text(
+                        //   "👾",
+                        //   style: TextStyle(color: Colors.white),
+                        // ),
                       ),
                     ),
                   ),
@@ -587,24 +612,11 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: () =>
-                        Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => KGameConsole(
-                        KGameController(
-                          gameID: KGameWord.GAME_ID,
-                          gameAppID: KGameWord.GAME_APP_ID,
-                          gameName: KGameWord.GAME_NAME,
-                          levelCount: 4,
-                          currentLevel: 0,
-                          answerType: 'word',
-                          // isCountTime: true,
-                        ),
-                      ),
-                    )),
+                    onPressed: () => onTraining(null),
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
                       padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                      EdgeInsets.symmetric(vertical: 10, horizontal: 6),
                       primary: Colors.transparent,
                       onPrimary: Colors.transparent,
                       shape: RoundedRectangleBorder(
@@ -617,7 +629,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       height: 60,
                       child: FittedBox(
                         child: Text(
-                          "👾",
+                          "🕹",
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -625,7 +637,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ),
                   SizedBox(width: 5),
                   FittedBox(
-                    child: Text("Word"),
+                    child: Text("Training"),
                   ),
                 ],
               ),
