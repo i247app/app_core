@@ -5,7 +5,8 @@ import 'package:flutter/services.dart';
 abstract class KPluginHelper {
   static const MethodChannel _channel = MethodChannel('chaoapp.com/default');
 
-  static Future createAndroidNotificationChannel({ MethodChannel? channel }) async {
+  static Future createAndroidNotificationChannel(
+      {MethodChannel? channel}) async {
     if (channel == null) {
       channel = _channel;
     }
@@ -25,7 +26,8 @@ abstract class KPluginHelper {
     }
   }
 
-  static Future<bool?> biometricAuth(String? reason, { MethodChannel? channel }) async {
+  static Future<bool?> biometricAuth(String? reason,
+      {MethodChannel? channel}) async {
     if (channel == null) {
       channel = _channel;
     }
@@ -44,13 +46,14 @@ abstract class KPluginHelper {
         return false;
       }
     } on PlatformException catch (e) {
-      print("PluginHelper.biometricAuth EXCEPTION - $e");
+      print("handled - PluginHelper.biometricAuth EXCEPTION - $e");
       if (e.code == "2")
-        return null;
+        return false; // was return null;
       else
         return false;
-    } catch(e) {
+    } catch (e) {
       print(e);
+      return false;
     }
   }
 }
