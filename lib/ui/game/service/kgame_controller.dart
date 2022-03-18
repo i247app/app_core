@@ -13,6 +13,7 @@ class KGameController extends ValueNotifier<KGameData> {
     int? currentLevel,
     bool? isSpeechGame,
     bool? isCountTime,
+    bool? isUniqueAnswer,
   }) : super(KGameData(
           gameID: gameID,
           gameAppID: gameAppID,
@@ -22,6 +23,7 @@ class KGameController extends ValueNotifier<KGameData> {
           isSpeechGame: isSpeechGame,
           answerType: answerType,
           isCountTime: isCountTime,
+          isUniqueAnswer: isUniqueAnswer,
         ));
 
   void notify() {

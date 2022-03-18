@@ -20,6 +20,7 @@ import 'package:app_core/ui/game/games/kgame_speech_moving_tap.dart';
 import 'package:app_core/ui/game/games/kgame_speech_tap.dart';
 import 'package:app_core/ui/game/games/kgame_tap.dart';
 import 'package:app_core/ui/game/games/kgame_word.dart';
+import 'package:app_core/ui/game/games/kgame_word_fortune.dart';
 import 'package:app_core/ui/game/service/kgame_controller.dart';
 import 'package:app_core/ui/game/service/kgame_data.dart';
 import 'package:app_core/ui/hero/widget/kegg_hero_intro.dart';
@@ -622,8 +623,8 @@ class _KGameConsoleState extends State<KGameConsole>
                       Container(
                         width: MediaQuery.of(context).size.width * 0.25,
                         height: 50,
-                        padding:
-                        EdgeInsets.only(top: 5, bottom: 5, left: 30, right: 10),
+                        padding: EdgeInsets.only(
+                            top: 5, bottom: 5, left: 30, right: 10),
                         decoration: BoxDecoration(
                           color: Color(0xff2c1c44),
                           borderRadius: BorderRadius.circular(40),
@@ -632,11 +633,12 @@ class _KGameConsoleState extends State<KGameConsole>
                           "${(currentQuestionIndex ?? 0)}",
                           textScaleFactor: 1.0,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                            color: Color(0xfffdcd3a),
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyText1!.copyWith(
+                                    color: Color(0xfffdcd3a),
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                       ),
                       if (currentLevel < levelIconAssets.length &&
@@ -675,8 +677,8 @@ class _KGameConsoleState extends State<KGameConsole>
                       Container(
                         width: MediaQuery.of(context).size.width * 0.25,
                         height: 50,
-                        padding:
-                        EdgeInsets.only(top: 5, bottom: 5, left: 30, right: 10),
+                        padding: EdgeInsets.only(
+                            top: 5, bottom: 5, left: 30, right: 10),
                         decoration: BoxDecoration(
                           color: Color(0xff2c1c44),
                           borderRadius: BorderRadius.circular(40),
@@ -685,11 +687,12 @@ class _KGameConsoleState extends State<KGameConsole>
                           "${rightAnswerCount}",
                           textScaleFactor: 1.0,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                            color: Color(0xfffdcd3a),
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyText1!.copyWith(
+                                    color: Color(0xfffdcd3a),
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                       ),
                       if (currentLevel < levelIconAssets.length &&
@@ -772,6 +775,12 @@ class _KGameConsoleState extends State<KGameConsole>
         );
       case KGameWord.GAME_ID:
         return KGameWord(
+          controller: widget.controller,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
+      case KGameWordFortune.GAME_ID:
+        return KGameWordFortune(
           controller: widget.controller,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
@@ -885,6 +894,7 @@ class _KGameConsoleState extends State<KGameConsole>
           ),
         );
       case KGameWord.GAME_ID:
+      case KGameWordFortune.GAME_ID:
         return Stack(
           fit: StackFit.expand,
           children: [
@@ -1081,7 +1091,8 @@ class _KGameConsoleState extends State<KGameConsole>
           });
           widget.controller.toggleStart(true);
 
-          if (!(widget.controller.value.isMuted ?? false) && backgroundAudioPlayer.state != PlayerState.PLAYING) {
+          if (!(widget.controller.value.isMuted ?? false) &&
+              backgroundAudioPlayer.state != PlayerState.PLAYING) {
             this.setState(() {
               this.isBackgroundSoundPlaying = true;
             });
@@ -1477,12 +1488,10 @@ class _KGameConsoleState extends State<KGameConsole>
                                 SizedBox(
                                   width: 10,
                                 ),
-                                if (isStart || result != null) ...[
-                                  soundButton,
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                ],
+                                soundButton,
+                                SizedBox(
+                                  width: 10,
+                                ),
                                 pauseButton,
                               ],
                             ),

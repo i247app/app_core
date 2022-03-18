@@ -2,7 +2,7 @@ import 'dart:math';
 
 abstract class KGameHelper {
   static List<String> generateRandomCharacters(
-      String wordInclueded, int maxNumber) {
+      String wordInclueded, int maxNumber, bool isUnique) {
     const alphabet = [
       'B',
       'C',
@@ -27,7 +27,7 @@ abstract class KGameHelper {
       'Z'
     ];
     final vowelCharacters = <String>['A', 'E', 'I', 'O', 'U'];
-    final randomCharacters = wordInclueded.toUpperCase().split('').toList();
+    final randomCharacters = isUnique ? Set<String>.from(wordInclueded.toUpperCase().split('')).toList() : wordInclueded.toUpperCase().split('').toList();
     final random = Random();
     vowelCharacters.forEach((element) {
       if (!randomCharacters.contains(element)) {

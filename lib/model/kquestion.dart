@@ -51,7 +51,7 @@ class KQuestion {
   KAnswer? get correctAnswer =>
       (this.answers ?? []).firstWhere((a) => a.isCorrect ?? false);
 
-  List<KAnswer> generateAnswers([int count = 4, String? answerType]) {
+  List<KAnswer> generateAnswers([int count = 4, String? answerType, bool? isUniqueAnswer]) {
     try {
       if (answerType == 'letter') {
         final correct = correctAnswer?.text ?? "";
@@ -80,7 +80,7 @@ class KQuestion {
           throw Exception();
         }
 
-        final answerValues = KGameHelper.generateRandomCharacters(correct, correct.length < 4 ? 12 : 18);
+        final answerValues = KGameHelper.generateRandomCharacters(correct, correct.length < 4 ? 12 : 18, isUniqueAnswer ?? false);
 
         return answerValues
             .map((av) => KAnswer()
