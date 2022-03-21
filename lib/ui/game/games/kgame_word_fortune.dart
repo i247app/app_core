@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as Math;
+import 'dart:ui';
 
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/kanswer.dart';
@@ -286,7 +287,6 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
   void handleShowHint() {
     KAnswer? answer;
     int? answerIndex;
-    bool isAnswer = false;
 
     this.setState(() {
       wrongCount = 0;
@@ -301,8 +301,7 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
       }
     }
     for (int i = 0; i < correctAnswer.length; i++) {
-      if (correctAnswer[i] == answer?.text && !isAnswer) {
-        isAnswer = true;
+      if (correctAnswer[i] == answer?.text) {
         this.setState(() {
           this.selectedWordIndex[i] = answerIndex;
           if (this.twinkleBoxIndex == null) this.twinkleBoxIndex = [];
@@ -454,7 +453,8 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 15),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(40),
@@ -465,17 +465,26 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
                         offset: Offset(2, 6),
                       ),
                     ],
-                  ),
-                  child: FittedBox(
-                    child: Text(
-                      "${currentQuestion.text ?? ""}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 42,
-                        color: Colors.black,
-                      ),
+                    border: Border(
+                      top: BorderSide(),
+                      left: BorderSide(),
+                      bottom: BorderSide(),
+                      right: BorderSide(),
                     ),
                   ),
+                  // child: FittedBox(
+                  //   fit: BoxFit.scaleDown,
+                    child: Text(
+                      "${currentQuestion.text ?? ""}",
+                      maxLines: 2,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                        color: Colors.black,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  // ),
                 ),
                 SizedBox(
                   height: 32,
@@ -531,7 +540,7 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
             padding: EdgeInsets.only(
               left: 10,
               right: 10,
-              top: 100,
+              top: 70,
             ),
             child: Transform.translate(
               offset: Offset(0, 0),
@@ -556,7 +565,7 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
             padding: EdgeInsets.only(
               left: 10,
               right: 10,
-              top: 100,
+              top: 70,
             ),
             child: Container(
               width: MediaQuery.of(context).size.width,
