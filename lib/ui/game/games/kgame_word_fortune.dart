@@ -284,10 +284,6 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
   }
 
   void handleShowHint() {
-    this.setState(() {
-      isAnswering = true;
-    });
-
     KAnswer? answer;
     int? answerIndex;
     bool isAnswer = false;
@@ -315,10 +311,6 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
       }
     }
     this._correctTwinkleAnimationController.forward();
-
-    this.setState(() {
-      isAnswering = false;
-    });
   }
 
   void handlePickAnswer(KAnswer answer, int answerIndex) {
@@ -367,8 +359,7 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
       widget.controller.value.point = point > 0 ? point - 1 : 0;
       if (this.selectedWordIndex.where((item) => item != null).length + 1 <
               this.correctAnswer.length &&
-          wrongCount >= wrongCountShowHint &&
-          Math.Random().nextDouble() >= 0.5) {
+          wrongCount >= wrongCountShowHint) {
         this.handleShowHint();
       }
       if (!isWrongAnswer && wrongCount >= maxWrongCountAccept) {
