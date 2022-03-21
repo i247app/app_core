@@ -79,6 +79,7 @@ class _KGameConsoleState extends State<KGameConsole>
   bool isShowIntro = true;
   bool isLoaded = false;
   bool isCurrentHighest = false;
+  bool isLocalMute = false;
 
   KGameData get gameData => widget.controller.value;
 
@@ -426,7 +427,7 @@ class _KGameConsoleState extends State<KGameConsole>
       KOverlayHelper.removeOverlay(this.overlayID!);
       this.overlayID = null;
     }
-    if (isStart && !this.isBackgroundSoundPlaying) {
+    if (isStart && !this.isBackgroundSoundPlaying && !isLocalMute) {
       toggleBackgroundSound();
     }
     widget.controller.togglePause(false);
@@ -434,7 +435,7 @@ class _KGameConsoleState extends State<KGameConsole>
 
   void showPauseDialog() {
     if (this.isPause) return;
-    if (this.isBackgroundSoundPlaying) {
+    if (this.isBackgroundSoundPlaying && !isLocalMute) {
       toggleBackgroundSound();
     }
     widget.controller.togglePause(true);
@@ -1062,7 +1063,12 @@ class _KGameConsoleState extends State<KGameConsole>
           size: 30,
         ),
       ),
-      onTap: () => this.toggleBackgroundSound(),
+      onTap: () {
+        this.toggleBackgroundSound();
+        this.setState(() {
+          this.isLocalMute = !this.isBackgroundSoundPlaying;
+        });
+      },
     );
 
     final pauseButton = InkWell(
