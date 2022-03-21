@@ -62,6 +62,9 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
   List<double> barrierX = [0, 0, 0, 0];
   List<double> barrierY = [0, 0, 0, 0];
   List<KAnswer> barrierValues = [];
+  int wrongCount = 0;
+  int maxWrongCountAccept = 3;
+  int wrongCountShowHint = 2;
 
   bool get isStart => gameData.isStart ?? false;
 
@@ -280,6 +283,44 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
     });
   }
 
+  void handleShowHint() {
+    this.setState(() {
+      isAnswering = true;
+    });
+
+    KAnswer? answer;
+    int? answerIndex;
+    bool isAnswer = false;
+
+    this.setState(() {
+      wrongCount = 0;
+    });
+    for (int i = 0; i < barrierValues.length; i++) {
+      if (correctAnswer.contains(barrierValues[i].text ?? "") &&
+          !this.selectedWordIndex.contains(i) &&
+          answer == null &&
+          answerIndex == null) {
+        answer = barrierValues[i];
+        answerIndex = i;
+      }
+    }
+    for (int i = 0; i < correctAnswer.length; i++) {
+      if (correctAnswer[i] == answer?.text && !isAnswer) {
+        isAnswer = true;
+        this.setState(() {
+          this.selectedWordIndex[i] = answerIndex;
+          if (this.twinkleBoxIndex == null) this.twinkleBoxIndex = [];
+          this.twinkleBoxIndex!.add(i);
+        });
+      }
+    }
+    this._correctTwinkleAnimationController.forward();
+
+    this.setState(() {
+      isAnswering = false;
+    });
+  }
+
   void handlePickAnswer(KAnswer answer, int answerIndex) {
     if (isAnswering) {
       return;
@@ -293,6 +334,7 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
         correctAnswer.contains(answer.text!)) {
       this.setState(() {
         this.isPlaySound = true;
+        wrongCount = 0;
         for (int i = 0; i < correctAnswer.length; i++) {
           if (correctAnswer[i] == answer.text) {
             this.selectedWordIndex[i] = answerIndex;
@@ -315,29 +357,34 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
       this.setState(() {
         this.isPlaySound = true;
         spinningAnswerIndex = answerIndex;
+        wrongCount = wrongCount + 1;
       });
       playSound(false);
       this._spinAnimationController.reset();
       this._spinAnimationController.forward();
 
-      if (mounted) {
-        widget.controller.value.result = false;
-        widget.controller.value.point = point > 0 ? point - 1 : 0;
-        if (!isWrongAnswer) {
-          widget.controller.value.wrongAnswerCount = wrongAnswerCount + 1;
+      widget.controller.value.result = false;
+      widget.controller.value.point = point > 0 ? point - 1 : 0;
+      if (this.selectedWordIndex.where((item) => item != null).length + 1 <
+              this.correctAnswer.length &&
+          wrongCount >= wrongCountShowHint &&
+          Math.Random().nextDouble() >= 0.5) {
+        this.handleShowHint();
+      }
+      if (!isWrongAnswer && wrongCount >= maxWrongCountAccept) {
+        widget.controller.value.wrongAnswerCount = wrongAnswerCount + 1;
+        this.setState(() {
+          isWrongAnswer = true;
+        });
+      }
+      Future.delayed(Duration(milliseconds: 250), () {
+        if (mounted) {
           this.setState(() {
-            isWrongAnswer = true;
+            isAnswering = false;
           });
         }
-        Future.delayed(Duration(milliseconds: 250), () {
-          if (mounted) {
-            this.setState(() {
-              isAnswering = false;
-            });
-          }
-        });
-        widget.controller.notify();
-      }
+      });
+      widget.controller.notify();
       return;
     }
 
@@ -415,31 +462,28 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                FittedBox(
-                  child: Text(
-                    "${currentQuestion.text ?? ""}",
-                    style: TextStyle(
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(40),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        blurRadius: 8,
+                        offset: Offset(2, 6),
+                      ),
+                    ],
+                  ),
+                  child: FittedBox(
+                    child: Text(
+                      "${currentQuestion.text ?? ""}",
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 42,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                              // bottomLeft
-                              offset: Offset(-1, -1),
-                              color: Colors.brown),
-                          Shadow(
-                              // bottomRight
-                              offset: Offset(1, -1),
-                              color: Colors.brown),
-                          Shadow(
-                              // topRight
-                              offset: Offset(1, 1),
-                              color: Colors.brown),
-                          Shadow(
-                              // topLeft
-                              offset: Offset(-1, 1),
-                              color: Colors.brown),
-                        ]),
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
                 ),
                 SizedBox(
