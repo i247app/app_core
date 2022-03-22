@@ -99,6 +99,7 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
 
   List<String> correctAnswer = [];
   List<int?> selectedWordIndex = [];
+  List<int?> wrongSelectedWordIndex = [];
 
   double get boxSize => ((MediaQuery.of(context).size.width - 20) / 6) - 10;
 
@@ -193,6 +194,7 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
               Future.delayed(Duration(milliseconds: 50), () {
                 if (mounted) {
                   this.setState(() {
+                    wrongSelectedWordIndex.add(spinningAnswerIndex);
                     spinningAnswerIndex = null;
                   });
                 }
@@ -241,6 +243,7 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
       this.correctAnswer = correctAnswer;
       this.selectedWordIndex =
           List.generate(correctAnswer.length, (index) => null);
+      this.wrongSelectedWordIndex = [];
       this.barrierValues.shuffle();
     });
   }
@@ -370,7 +373,7 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
       Future.delayed(Duration(milliseconds: 250), () {
         if (mounted) {
           this.setState(() {
-            isAnswering = false;
+            this.isAnswering = false;
           });
         }
       });
@@ -493,7 +496,7 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
                   alignment: WrapAlignment.center,
                   children: List.generate(
                     barrierValues.length,
-                    (i) => selectedWordIndex.contains(i)
+                    (i) => selectedWordIndex.contains(i) || wrongSelectedWordIndex.contains(i)
                         ? SizedBox()
                         : GestureDetector(
                             onTap: () =>
