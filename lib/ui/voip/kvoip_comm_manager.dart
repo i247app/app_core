@@ -116,7 +116,18 @@ class KVOIPCommManager {
   Map<String, dynamic> iceServers = {
     "iceServers": [
       {
-        "urls": ["stun:138.197.180.29:3478"]
+        "urls": [
+          "stun:138.197.180.29:3478",
+          "stun:stun.l.google.com:19302",
+          "stun:stun1.l.google.com:19302",
+          "stun:stun2.l.google.com:19302",
+          "stun:stun3.l.google.com:19302",
+          "stun:stun4.l.google.com:19302",
+          "stun:stun.ekiga.net:3478",
+          "stun:stun.ideasip.com:3478",
+          "stun:stun.iptel.org:3478",
+          "stun:stun.rixtelecom.se:3478",
+        ]
       },
       {
         "username": "bala",
