@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as Math;
+import 'dart:ui';
 
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/kanswer.dart';
@@ -13,18 +14,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
-final GlobalKey _draggableKey = GlobalKey();
-
-class KGameWord extends StatefulWidget {
-  static const GAME_ID = "513";
-  static const GAME_APP_ID = "513";
-  static const GAME_NAME = "word";
+class KGameWordFortune extends StatefulWidget {
+  static const GAME_ID = "516";
+  static const GAME_APP_ID = "516";
+  static const GAME_NAME = "word_fortune";
 
   final KGameController controller;
   final KHero? hero;
   final Function? onFinishLevel;
 
-  const KGameWord({
+  const KGameWordFortune({
     Key? key,
     this.hero,
     this.onFinishLevel,
@@ -32,10 +31,11 @@ class KGameWord extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _KGameWordState createState() => _KGameWordState();
+  _KGameWordFortuneState createState() => _KGameWordFortuneState();
 }
 
-class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
+class _KGameWordFortuneState extends State<KGameWordFortune>
+    with TickerProviderStateMixin {
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
@@ -54,15 +54,18 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
   KGameData get gameData => widget.controller.value;
 
   bool isWrongAnswer = false;
-  int? twinkleBoxIndex;
+  List<int>? twinkleBoxIndex;
   int? scaleBoxIndex;
-  int? spinningHeroIndex;
+  int? spinningAnswerIndex;
   bool? isShowStar = false;
   bool isAnswering = false;
   bool isPlaySound = false;
   List<double> barrierX = [0, 0, 0, 0];
   List<double> barrierY = [0, 0, 0, 0];
   List<KAnswer> barrierValues = [];
+  int wrongCount = 0;
+  int maxWrongCountAccept = 3;
+  int wrongCountShowHint = 2;
 
   bool get isStart => gameData.isStart ?? false;
 
@@ -96,6 +99,7 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
 
   List<String> correctAnswer = [];
   List<int?> selectedWordIndex = [];
+  List<int?> wrongSelectedWordIndex = [];
 
   double get boxSize => ((MediaQuery.of(context).size.width - 20) / 6) - 10;
 
@@ -187,6 +191,14 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
           ..addStatusListener((status) {
             if (mounted && status == AnimationStatus.completed) {
               this._spinAnimationController.reset();
+              Future.delayed(Duration(milliseconds: 50), () {
+                if (mounted) {
+                  this.setState(() {
+                    wrongSelectedWordIndex.add(spinningAnswerIndex);
+                    spinningAnswerIndex = null;
+                  });
+                }
+              });
               // this._heroScaleAnimationController.reverse();
             } else if (status == AnimationStatus.dismissed) {}
           });
@@ -231,6 +243,7 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
       this.correctAnswer = correctAnswer;
       this.selectedWordIndex =
           List.generate(correctAnswer.length, (index) => null);
+      this.wrongSelectedWordIndex = [];
       this.barrierValues.shuffle();
     });
   }
@@ -274,7 +287,35 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
     });
   }
 
-  void handlePickAnswer(KAnswer answer, int answerIndex, int boxIndex) {
+  void handleShowHint() {
+    KAnswer? answer;
+    int? answerIndex;
+
+    this.setState(() {
+      wrongCount = 0;
+    });
+    for (int i = 0; i < barrierValues.length; i++) {
+      if (correctAnswer.contains(barrierValues[i].text ?? "") &&
+          !this.selectedWordIndex.contains(i) &&
+          answer == null &&
+          answerIndex == null) {
+        answer = barrierValues[i];
+        answerIndex = i;
+      }
+    }
+    for (int i = 0; i < correctAnswer.length; i++) {
+      if (correctAnswer[i] == answer?.text) {
+        this.setState(() {
+          this.selectedWordIndex[i] = answerIndex;
+          if (this.twinkleBoxIndex == null) this.twinkleBoxIndex = [];
+          this.twinkleBoxIndex!.add(i);
+        });
+      }
+    }
+    this._correctTwinkleAnimationController.forward();
+  }
+
+  void handlePickAnswer(KAnswer answer, int answerIndex) {
     if (isAnswering) {
       return;
     }
@@ -284,12 +325,17 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
     });
 
     if (KStringHelper.isExist(answer.text) &&
-        correctAnswer.contains(answer.text!) &&
-        correctAnswer[boxIndex] == answer.text!) {
+        correctAnswer.contains(answer.text!)) {
       this.setState(() {
-        selectedWordIndex[boxIndex] = answerIndex;
         this.isPlaySound = true;
-        this.twinkleBoxIndex = boxIndex;
+        wrongCount = 0;
+        for (int i = 0; i < correctAnswer.length; i++) {
+          if (correctAnswer[i] == answer.text) {
+            this.selectedWordIndex[i] = answerIndex;
+            if (this.twinkleBoxIndex == null) this.twinkleBoxIndex = [];
+            this.twinkleBoxIndex!.add(i);
+          }
+        }
       });
       playSound(true);
       this._correctTwinkleAnimationController.forward();
@@ -304,29 +350,34 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
     } else {
       this.setState(() {
         this.isPlaySound = true;
-        this.scaleBoxIndex = boxIndex;
+        spinningAnswerIndex = answerIndex;
+        wrongCount = wrongCount + 1;
       });
       playSound(false);
-      this._boxScaleAnimationController.forward();
+      this._spinAnimationController.reset();
+      this._spinAnimationController.forward();
 
-      if (mounted) {
-        widget.controller.value.result = false;
-        widget.controller.value.point = point > 0 ? point - 1 : 0;
-        if (!isWrongAnswer) {
-          widget.controller.value.wrongAnswerCount = wrongAnswerCount + 1;
+      widget.controller.value.result = false;
+      widget.controller.value.point = point > 0 ? point - 1 : 0;
+      if (this.selectedWordIndex.where((item) => item != null).length + 1 <
+              this.correctAnswer.length &&
+          wrongCount >= wrongCountShowHint) {
+        this.handleShowHint();
+      }
+      if (!isWrongAnswer && wrongCount >= maxWrongCountAccept) {
+        widget.controller.value.wrongAnswerCount = wrongAnswerCount + 1;
+        this.setState(() {
+          isWrongAnswer = true;
+        });
+      }
+      Future.delayed(Duration(milliseconds: 250), () {
+        if (mounted) {
           this.setState(() {
-            isWrongAnswer = true;
+            this.isAnswering = false;
           });
         }
-        Future.delayed(Duration(milliseconds: 250), () {
-          if (mounted) {
-            this.setState(() {
-              isAnswering = false;
-            });
-          }
-        });
-        widget.controller.notify();
-      }
+      });
+      widget.controller.notify();
       return;
     }
 
@@ -404,32 +455,39 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                FittedBox(
-                  child: Text(
-                    "${currentQuestion.text ?? ""}",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 42,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            // bottomLeft
-                              offset: Offset(-1, -1),
-                              color: Colors.brown),
-                          Shadow(
-                            // bottomRight
-                              offset: Offset(1, -1),
-                              color: Colors.brown),
-                          Shadow(
-                            // topRight
-                              offset: Offset(1, 1),
-                              color: Colors.brown),
-                          Shadow(
-                            // topLeft
-                              offset: Offset(-1, 1),
-                              color: Colors.brown),
-                        ]),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(40),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        blurRadius: 8,
+                        offset: Offset(2, 6),
+                      ),
+                    ],
+                    border: Border(
+                      top: BorderSide(),
+                      left: BorderSide(),
+                      bottom: BorderSide(),
+                      right: BorderSide(),
+                    ),
                   ),
+                  // child: FittedBox(
+                  //   fit: BoxFit.scaleDown,
+                    child: Text(
+                      "${currentQuestion.text ?? ""}",
+                      maxLines: 2,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                        color: Colors.black,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  // ),
                 ),
                 SizedBox(
                   height: 32,
@@ -438,34 +496,36 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
                   alignment: WrapAlignment.center,
                   children: List.generate(
                     barrierValues.length,
-                    (i) => selectedWordIndex.contains(i)
+                    (i) => selectedWordIndex.contains(i) || wrongSelectedWordIndex.contains(i)
                         ? SizedBox()
-                        : Draggable(
-                            data: i,
-                            dragAnchorStrategy: pointerDragAnchorStrategy,
-                            feedback: DraggingAnswerItem(
-                              dragKey: _draggableKey,
-                              answer: barrierValues[i],
-                              boxSize: boxSize,
-                            ),
-                            child: Container(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 5),
-                              width: boxSize,
-                              height: boxSize,
-                              decoration: BoxDecoration(
-                                color: Color(0xff2c1c44),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: FittedBox(
-                                child: Text(
-                                  "${barrierValues[i].text ?? ""}",
-                                  textScaleFactor: 1.0,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 60,
+                        : GestureDetector(
+                            onTap: () =>
+                                this.handlePickAnswer(barrierValues[i], i),
+                            child: Transform.rotate(
+                              angle: spinningAnswerIndex == i
+                                  ? -this._spinAnimationController.value *
+                                      4 *
+                                      Math.pi
+                                  : 0,
+                              child: Container(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 5, vertical: 5),
+                                width: boxSize,
+                                height: boxSize,
+                                decoration: BoxDecoration(
+                                  color: Color(0xff2c1c44),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: FittedBox(
+                                  child: Text(
+                                    "${barrierValues[i].text ?? ""}",
+                                    textScaleFactor: 1.0,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 60,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -483,7 +543,7 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
             padding: EdgeInsets.only(
               left: 10,
               right: 10,
-              top: 100,
+              top: 70,
             ),
             child: Transform.translate(
               offset: Offset(0, 0),
@@ -508,7 +568,7 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
             padding: EdgeInsets.only(
               left: 10,
               right: 10,
-              top: 100,
+              top: 70,
             ),
             child: Container(
               width: MediaQuery.of(context).size.width,
@@ -517,82 +577,74 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
                 alignment: WrapAlignment.center,
                 children: List.generate(
                   selectedWordIndex.length,
-                  (i) => DragTarget(
-                    builder: (context, _, __) {
-                      final selectedWordIndexItem = selectedWordIndex[i];
-                      final selectedAnswer = selectedWordIndexItem != null
-                          ? barrierValues[selectedWordIndexItem]
-                          : null;
+                  (i) {
+                    final selectedWordIndexItem = selectedWordIndex[i];
+                    final selectedAnswer = selectedWordIndexItem != null
+                        ? barrierValues[selectedWordIndexItem]
+                        : null;
 
-                      final boxColor = selectedAnswer != null
-                          ? Color(0xff2c1c44)
-                          : Colors.white;
-                      final boxBorderColor =
-                          (selectedAnswer != null && twinkleBoxIndex != i) ||
-                                  (twinkleBoxIndex == i &&
-                                      _correctTwinkleAnimation.value == 1.0)
-                              ? Color(0xffFFD700)
-                              : Color(0xff2c1c44);
+                    final boxColor = selectedAnswer != null
+                        ? Color(0xff2c1c44)
+                        : Colors.white;
+                    final boxBorderColor = (selectedAnswer != null &&
+                                (twinkleBoxIndex == null ||
+                                    !twinkleBoxIndex!.contains(i))) ||
+                            (twinkleBoxIndex != null &&
+                                twinkleBoxIndex!.contains(i) &&
+                                _correctTwinkleAnimation.value == 1.0)
+                        ? Color(0xffFFD700)
+                        : Color(0xff2c1c44);
 
-                      final box = Container(
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                        width: boxSize,
-                        height: boxSize,
-                        decoration: BoxDecoration(
-                          color: boxColor,
-                          border: Border(
-                            top: BorderSide(
-                              width: 2,
-                              color: boxBorderColor,
-                            ),
-                            bottom: BorderSide(
-                              width: 2,
-                              color: boxBorderColor,
-                            ),
-                            left: BorderSide(
-                              width: 2,
-                              color: boxBorderColor,
-                            ),
-                            right: BorderSide(
-                              width: 2,
-                              color: boxBorderColor,
-                            ),
+                    final box = Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                      width: boxSize,
+                      height: boxSize,
+                      decoration: BoxDecoration(
+                        color: boxColor,
+                        border: Border(
+                          top: BorderSide(
+                            width: 2,
+                            color: boxBorderColor,
                           ),
-                          borderRadius: BorderRadius.circular(5),
+                          bottom: BorderSide(
+                            width: 2,
+                            color: boxBorderColor,
+                          ),
+                          left: BorderSide(
+                            width: 2,
+                            color: boxBorderColor,
+                          ),
+                          right: BorderSide(
+                            width: 2,
+                            color: boxBorderColor,
+                          ),
                         ),
-                        child: selectedAnswer != null
-                            ? FittedBox(
-                                child: Text(
-                                  "${selectedAnswer.text ?? ""}",
-                                  textScaleFactor: 1.0,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 50,
-                                    decoration: TextDecoration.none,
-                                  ),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: selectedAnswer != null
+                          ? FittedBox(
+                              child: Text(
+                                "${selectedAnswer.text ?? ""}",
+                                textScaleFactor: 1.0,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 50,
+                                  decoration: TextDecoration.none,
                                 ),
-                              )
-                            : SizedBox(),
-                      );
-
-                      return scaleBoxIndex != null && scaleBoxIndex! == i
-                          ? ScaleTransition(
-                              scale: _boxScaleAnimation,
-                              child: box,
+                              ),
                             )
-                          : box;
-                    },
-                    onAccept: (int answerIndex) {
-                      print(answerIndex);
-                      if (barrierValues.length > answerIndex) {
-                        final answer = barrierValues[answerIndex];
-                        handlePickAnswer(answer, answerIndex, i);
-                      }
-                    },
-                  ),
+                          : SizedBox(),
+                    );
+
+                    return scaleBoxIndex != null && scaleBoxIndex! == i
+                        ? ScaleTransition(
+                            scale: _boxScaleAnimation,
+                            child: box,
+                          )
+                        : box;
+                  },
                 ),
               ),
             ),
@@ -602,54 +654,5 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
     );
 
     return body;
-  }
-}
-
-class DraggingAnswerItem extends StatelessWidget {
-  const DraggingAnswerItem({
-    Key? key,
-    required this.dragKey,
-    required this.answer,
-    required this.boxSize,
-  }) : super(key: key);
-
-  final KAnswer answer;
-  final GlobalKey dragKey;
-  final double boxSize;
-
-  @override
-  Widget build(BuildContext context) {
-    return FractionalTranslation(
-      translation: const Offset(-0.5, -0.5),
-      child: Container(
-        width: boxSize + 5,
-        height: boxSize + 5,
-        key: dragKey,
-        child: Opacity(
-          opacity: 0.85,
-          child: Container(
-            width: boxSize,
-            height: boxSize,
-            decoration: BoxDecoration(
-              color: Color(0xff2c1c44),
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: FittedBox(
-              child: Text(
-                "${answer.text ?? ""}",
-                textScaleFactor: 1.0,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 50,
-                  decoration: TextDecoration.none,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }

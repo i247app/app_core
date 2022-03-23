@@ -1,3 +1,4 @@
+import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/ui/game/games/kgame_jump_over.dart';
@@ -9,6 +10,7 @@ import 'package:app_core/ui/game/games/kgame_multi_letter.dart';
 import 'package:app_core/ui/game/games/kgame_shooting.dart';
 import 'package:app_core/ui/game/games/kgame_tap.dart';
 import 'package:app_core/ui/game/games/kgame_word.dart';
+import 'package:app_core/ui/game/games/kgame_word_fortune.dart';
 import 'package:app_core/ui/game/kgame_console.dart';
 import 'package:app_core/ui/game/service/kgame_controller.dart';
 import 'package:app_core/ui/hero/khero_jump_game.dart';
@@ -178,7 +180,20 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: () => onTraining(null),
+                    onPressed: () =>
+                        Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) => KGameConsole(
+                        KGameController(
+                          gameID: KGameWord.GAME_ID,
+                          gameAppID: KGameWord.GAME_APP_ID,
+                          gameName: KGameWord.GAME_NAME,
+                          levelCount: 4,
+                          currentLevel: 0,
+                          answerType: 'word',
+                          // isCountTime: true,
+                        ),
+                      ),
+                    )),
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
                       padding:
@@ -194,16 +209,20 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       width: 60,
                       height: 60,
                       child: FittedBox(
-                        child: Text(
-                          "🕹",
-                          style: TextStyle(color: Colors.white),
+                        child: Icon(
+                          Icons.quiz_outlined,
+                          color: Theme.of(context).primaryColor,
                         ),
+                        // Text(
+                        //   "👾",
+                        //   style: TextStyle(color: Colors.white),
+                        // ),
                       ),
                     ),
                   ),
                   SizedBox(width: 5),
                   FittedBox(
-                    child: Text("Training"),
+                    child: Text("Word"),
                   ),
                 ],
               ),
@@ -294,10 +313,14 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       width: 60,
                       height: 60,
                       child: FittedBox(
-                        child: Text(
-                          "👾",
-                          style: TextStyle(color: Colors.white),
+                        child: Icon(
+                          Icons.filter_5_outlined,
+                          color: Theme.of(context).primaryColor,
                         ),
+                        // child: Text(
+                        //   "👾",
+                        //   style: TextStyle(color: Colors.white),
+                        // ),
                       ),
                     ),
                   ),
@@ -343,10 +366,14 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       width: 60,
                       height: 60,
                       child: FittedBox(
-                        child: Text(
-                          "👾",
-                          style: TextStyle(color: Colors.white),
+                        child: Icon(
+                          Icons.filter_7_outlined,
+                          color: Theme.of(context).primaryColor,
                         ),
+                        // child: Text(
+                        //   "👾",
+                        //   style: TextStyle(color: Colors.white),
+                        // ),
                       ),
                     ),
                   ),
@@ -398,10 +425,14 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       width: 60,
                       height: 60,
                       child: FittedBox(
-                        child: Text(
-                          "👾",
-                          style: TextStyle(color: Colors.white),
+                        child: Icon(
+                          Icons.upgrade,
+                          color: Theme.of(context).primaryColor,
                         ),
+                        // child: Text(
+                        //   "👾",
+                        //   style: TextStyle(color: Colors.white),
+                        // ),
                       ),
                     ),
                   ),
@@ -446,10 +477,14 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       width: 60,
                       height: 60,
                       child: FittedBox(
-                        child: Text(
-                          "👾",
-                          style: TextStyle(color: Colors.white),
+                        child: Icon(
+                          Icons.u_turn_right,
+                          color: Theme.of(context).primaryColor,
                         ),
+                        // child: Text(
+                        //   "👾",
+                        //   style: TextStyle(color: Colors.white),
+                        // ),
                       ),
                     ),
                   ),
@@ -566,6 +601,108 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   SizedBox(width: 5),
                   FittedBox(
                     child: Text("Number"),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 32,
+        ),
+        // if (!KHostConfig.isReleaseMode)
+        Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) => KGameConsole(
+                        KGameController(
+                          gameID: KGameWordFortune.GAME_ID,
+                          gameAppID: KGameWordFortune.GAME_APP_ID,
+                          gameName: KGameWordFortune.GAME_NAME,
+                          levelCount: 4,
+                          currentLevel: 0,
+                          answerType: 'word',
+                          isUniqueAnswer: true,
+                          // isCountTime: true,
+                        ),
+                      ),
+                    )),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      padding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                      primary: Colors.transparent,
+                      onPrimary: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        side: BorderSide(color: Colors.transparent),
+                      ),
+                    ),
+                    child: SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: FittedBox(
+                        child: Icon(
+                          Icons.quiz_outlined,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        // Text(
+                        //   "👾",
+                        //   style: TextStyle(color: Colors.white),
+                        // ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 5),
+                  FittedBox(
+                    child: Text("Word Fortune"),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: 64,
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () => onTraining(null),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      padding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                      primary: Colors.transparent,
+                      onPrimary: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        side: BorderSide(color: Colors.transparent),
+                      ),
+                    ),
+                    child: SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: FittedBox(
+                        child: Text(
+                          "🕹",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 5),
+                  FittedBox(
+                    child: Text("Training"),
                   ),
                 ],
               ),

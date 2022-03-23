@@ -32,30 +32,41 @@ class KDocPicker extends StatefulWidget {
 
 class _KDocPickerState extends State<KDocPicker> {
   Timer? searchOnStoppedTyping;
-
+  String? selectedSubject;
   String? selectedGrade;
   bool isLoading = false;
   List<Chapter> chapters = [];
-  List<Textbook> textbooks = [];
-  List<String> grades = [];
+  Map<String, List<Textbook>> textbookMap = {
+    KPhrases.math: [],
+    KPhrases.english: []
+  };
+
+  Map<String, List<String>> gradeMap = {
+    KPhrases.math: [],
+    KPhrases.english: []
+  };
+
   Widget? pickerView;
 
   @override
   void initState() {
     super.initState();
+    this.selectedSubject = widget.subject;
 
-    loadTextBook(widget.type);
+    loadTextBook(widget.type, KPhrases.math);
   }
 
-  void _onChangeHandler(String grade) {
-    final chapters = textbooks.firstWhere((t) => t.grade == grade).chapters;
+  void _onChangeHandler(String grade, String subject) {
+    final textbook = textbookMap[subject]!
+        .firstWhere((t) => t.grade == grade, orElse: () => Textbook());
     setState(() {
       this.selectedGrade = grade;
-      this.chapters = chapters ?? [];
+      this.selectedSubject = subject;
+      this.chapters = textbook.chapters ?? [];
     });
   }
 
-  void loadTextBook(KDocType type) async {
+  void loadTextBook(KDocType type, String subject) async {
     setState(() {
       this.isLoading = true;
     });
@@ -64,7 +75,7 @@ class _KDocPickerState extends State<KDocPicker> {
     if (response.isSuccess && response.textbooks != null) {
       final textbooks = response.textbooks!;
       final grades = textbooks.map((t) => t.grade ?? "").toList();
-      dynamic subjects = [
+      List<Map<String, List<String>>> subjects = [
         {KPhrases.math: grades},
         {KPhrases.english: grades},
       ];
@@ -90,18 +101,18 @@ class _KDocPickerState extends State<KDocPicker> {
           selectedTextStyle:
               TextStyle(color: Theme.of(context).colorScheme.primary),
           onSelect: (Picker picker, int index, List<int> values) {
+            final subject = picker.getSelectedValues()[0];
             final grade = picker.getSelectedValues()[1];
-            _onChangeHandler(grade);
+            _onChangeHandler(grade, subject);
           });
 
       setState(() {
-        this.textbooks.addAll(response.textbooks!);
+        this.textbookMap[subject] = response.textbooks!;
+        this.gradeMap[subject] = grades;
         this.isLoading = false;
-        this.grades.addAll(grades);
         this.pickerView = picker.makePicker();
+        _onChangeHandler(grades.first, subjects.first.keys.first);
       });
-
-      _onChangeHandler(grades.first);
     } else {
       setState(() {
         this.chapters = [];

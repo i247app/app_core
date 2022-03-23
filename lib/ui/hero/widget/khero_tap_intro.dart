@@ -55,15 +55,15 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   int currentQuestionIndex = 0;
   int? spinningHeroIndex;
   int? currentShowStarIndex;
+  int consecutiveWrongAnswerCount = 0;
   int correctCount = 0;
   int questionCount = 0;
   int level = 0;
   bool isPlaySound = false;
 
-  List<double> barrierX = [0, 0, 0, 0];
-  List<double> barrierY = [0, 0, 0, 0];
-
   Math.Random rand = new Math.Random();
+
+  List<int> barrierValues = [];
 
   List<int> get listAnswers => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
       .where((item) => item != (rightAnswers[currentQuestionIndex]))
@@ -71,13 +71,9 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
 
   int get getRandomAnswer => listAnswers[rand.nextInt(listAnswers.length)];
 
-  List<int> barrierValues = [];
-  double topBoundary = -2.1;
-
-  int? overlayID;
-  bool isBackgroundSoundPlaying = false;
   bool isMuted = true;
   bool isShowSadTamago = false;
+  bool isGameOver = false;
   bool isAnimating = false;
 
   int tamagoJumpTimes = 0;
@@ -93,12 +89,16 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   bool get isPause => isLocalPause ?? widget.isPause ?? false;
 
   Timer? _timer;
-  int BASE_TIME_TO_ANSWER = 2000;
-  int timeToAnswer = 2000;
+  int BASE_TIME_TO_ANSWER = 3000;
+  int baseTimeToAnswer = 0;
+  int timeToAnswer = 0;
 
   @override
   void initState() {
     super.initState();
+
+    this.baseTimeToAnswer = BASE_TIME_TO_ANSWER;
+    this.timeToAnswer = BASE_TIME_TO_ANSWER;
 
     loadAudioAsset();
 
@@ -148,7 +148,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
         .animate(_bouncingAnimationController);
 
     _spinAnimationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500))
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300))
           ..addListener(() => setState(() {}))
           ..addStatusListener((status) {
             if (mounted && status == AnimationStatus.completed) {
@@ -158,7 +158,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
           });
 
     _moveUpAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     )
       ..addListener(() => setState(() {}))
@@ -186,9 +186,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           this._shakeTheTopRightAnimationController.reverse();
-        } else if (status == AnimationStatus.dismissed) {
-          // this.handlePickAnswer(barrierValues[1], 1);
-        }
+        } else if (status == AnimationStatus.dismissed) {}
       });
     this._shakeTheTopRightAnimation = Tween<double>(
       begin: 0,
@@ -203,9 +201,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           this._shakeTheTopLeftAnimationController.reverse();
-        } else if (status == AnimationStatus.dismissed) {
-          // this.handlePickAnswer(barrierValues[0], 0);
-        }
+        } else if (status == AnimationStatus.dismissed) {}
       });
     this._shakeTheTopLeftAnimation = Tween<double>(
       begin: 0,
@@ -213,11 +209,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     ).animate(_shakeTheTopLeftAnimationController);
 
     loadGame();
-    // Future.delayed(Duration(milliseconds: 200), () {
-    //   if (mounted) {
-    //     startAnswer();
-    //   }
-    // });
   }
 
   loadGame() async {
@@ -245,7 +236,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
           spinningHeroIndex = null;
           isAnimating = false;
           currentQuestionIndex = 0;
-          timeToAnswer = BASE_TIME_TO_ANSWER;
+          timeToAnswer = baseTimeToAnswer;
           this.getListAnswer();
         });
         startCount();
@@ -266,11 +257,6 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     _shakeTheTopLeftAnimationController.dispose();
     _shakeTheTopRightAnimationController.dispose();
 
-    if (this.overlayID != null) {
-      KOverlayHelper.removeOverlay(this.overlayID!);
-      this.overlayID = null;
-    }
-
     audioPlayer.dispose();
 
     // TODO: implement dispose
@@ -282,17 +268,26 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       _timer!.cancel();
     }
     _timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
-      if (!isPause) {
+      if (!isPause && !isGameOver) {
         if (timeToAnswer > 0) {
           setState(() {
             timeToAnswer = timeToAnswer - 1;
           });
         } else if (timeToAnswer == 0 && !isAnimating) {
           _timer?.cancel();
-          setState(() {
-            isAnimating = true;
+          if (consecutiveWrongAnswerCount + 1 >= 3) {
+            this.setState(() {
+              this.isShowSadTamago = true;
+              this.isGameOver = true;
+              this.isAnimating = false;
+            });
+            return;
+          }
+          this.setState(() {
+            this.isAnimating = true;
+            this.isShowSadTamago = true;
+            this.consecutiveWrongAnswerCount++;
           });
-
           this._bouncingAnimationController.forward();
 
           Future.delayed(Duration(milliseconds: 700), () {
@@ -306,39 +301,28 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
               playSound(false);
             }
 
-            Future.delayed(Duration(milliseconds: 500), () {
-              this.setState(() {
-                questionCount++;
-                this.isShowSadTamago = true;
-              });
-
-              if (currentQuestionIndex == 9) {
-                loadGame();
-              } else {
-                Future.delayed(Duration(milliseconds: 500), () {
-                  if (mounted) {
-                    this.setState(() {
-                      isShowSadTamago = false;
-                      currentShowStarIndex = null;
-                      spinningHeroIndex = null;
-                      currentQuestionIndex++;
-                      getListAnswer();
-                      isAnimating = false;
-                      timeToAnswer = BASE_TIME_TO_ANSWER;
-                    });
-                    startCount();
-                  }
-                });
-              }
+            this.setState(() {
+              questionCount++;
             });
+
+            if (currentQuestionIndex == 9) {
+              loadGame();
+            } else {
+              this.setState(() {
+                isShowSadTamago = false;
+                currentShowStarIndex = null;
+                spinningHeroIndex = null;
+                currentQuestionIndex++;
+                getListAnswer();
+                isAnimating = false;
+                timeToAnswer = baseTimeToAnswer;
+              });
+              startCount();
+            }
           });
         }
       }
     });
-  }
-
-  void startAnswer() {
-    this._bouncingAnimationController.forward();
   }
 
   void guestAnswer() {
@@ -402,7 +386,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   }
 
   void handlePickAnswer(int answer, int answerIndex) {
-    if (isAnimating || isPause) {
+    if (isAnimating || isPause || isGameOver) {
       return;
     }
 
@@ -424,7 +408,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
       this._shakeTheTopRightAnimationController.forward();
     }
 
-    Future.delayed(Duration(milliseconds: 700), () {
+    Future.delayed(Duration(milliseconds: 500), () {
       this.setState(() {
         this.tamagoJumpTimes = 0;
       });
@@ -445,6 +429,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
         this.setState(() {
           questionCount++;
           correctCount++;
+          consecutiveWrongAnswerCount = 0;
           currentShowStarIndex = answerIndex;
           if (!_moveUpAnimationController.isAnimating) {
             this._moveUpAnimationController.reset();
@@ -452,16 +437,28 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
           }
         });
       } else {
-        this.setState(() {
-          questionCount++;
-          this.isShowSadTamago = true;
-        });
+        if (consecutiveWrongAnswerCount + 1 >= 3) {
+          this.setState(() {
+            this.isShowSadTamago = true;
+            this.isGameOver = true;
+            this.isAnimating = false;
+          });
+          return;
+        } else {
+          this.setState(() {
+            questionCount++;
+            consecutiveWrongAnswerCount++;
+            this.isShowSadTamago = true;
+          });
+        }
       }
       if (currentQuestionIndex == 9) {
         loadGame();
       } else {
         Future.delayed(Duration(milliseconds: 500), () {
           if (mounted) {
+            final baseTime =
+                (baseTimeToAnswer - 0.1 * baseTimeToAnswer).floor();
             this.setState(() {
               isShowSadTamago = false;
               currentShowStarIndex = null;
@@ -469,7 +466,12 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
               currentQuestionIndex++;
               getListAnswer();
               isAnimating = false;
-              timeToAnswer = BASE_TIME_TO_ANSWER;
+              if (baseTime > 0 && isTrueAnswer) {
+                baseTimeToAnswer = baseTime;
+                timeToAnswer = baseTime;
+              } else {
+                timeToAnswer = baseTimeToAnswer;
+              }
             });
             startCount();
           }
@@ -495,19 +497,27 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     this.setState(() {
       this.isAnimating = false;
       this.isPlaySound = false;
+      this.isGameOver = false;
       this.currentQuestionIndex = 0;
       this.currentShowStarIndex = null;
       this.spinningHeroIndex = null;
+      this.consecutiveWrongAnswerCount = 0;
       this.questionCount = 0;
       this.correctCount = 0;
-      getListAnswer();
+      this.level = 0;
+      this.isPlaySound = false;
+      this.isShowPlusPoint = false;
+      this.questionContents = [];
+      this.rightAnswers = [];
+      this.barrierValues = [];
+      this.isMuted = true;
+      this.isShowSadTamago = false;
+      this.tamagoJumpTimes = 0;
+      this.isLocalPause = null;
+      this.baseTimeToAnswer = BASE_TIME_TO_ANSWER;
+      this.timeToAnswer = BASE_TIME_TO_ANSWER;
+      loadGame();
     });
-
-    // Future.delayed(Duration(milliseconds: 500), () {
-    //   if (mounted) {
-    //     startAnswer();
-    //   }
-    // });
   }
 
   void togglePauseLocal() {
@@ -522,6 +532,18 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
     }
   }
 
+  String getRateString() {
+    if (correctCount >= 30) {
+      return "Genius";
+    } else if (correctCount >= 20) {
+      return "Great";
+    } else if (correctCount >= 10) {
+      return "Good";
+    }
+
+    return "";
+  }
+
   @override
   Widget build(BuildContext context) {
     final body = Stack(
@@ -534,17 +556,27 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      child: LinearProgressIndicator(
-                        value: (BASE_TIME_TO_ANSWER - timeToAnswer) /
-                            BASE_TIME_TO_ANSWER,
-                        backgroundColor: KTheme.of(context).lightGrey,
-                        minHeight: 8,
+                    if (isGameOver)
+                      Text(
+                        "GAME OVER",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
+                    if (!isGameOver)
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.5,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        child: LinearProgressIndicator(
+                          value: (baseTimeToAnswer - timeToAnswer) /
+                              baseTimeToAnswer,
+                          backgroundColor: KTheme.of(context).lightGrey,
+                          minHeight: 8,
+                        ),
+                      ),
                     // Text(
                     //   "${timeToAnswer}",
                     //   textScaleFactor: 1.0,
@@ -583,26 +615,46 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                             ),
                           ),
                         ),
-                        InkWell(
-                          child: Container(
-                            width: 50,
-                            height: 50,
-                            padding: EdgeInsets.only(
-                                top: 5, bottom: 5, left: 5, right: 5),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(40),
+                        if (!isGameOver)
+                          InkWell(
+                            child: Container(
+                              width: 50,
+                              height: 50,
+                              padding: EdgeInsets.only(
+                                  top: 5, bottom: 5, left: 5, right: 5),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                              child: Icon(
+                                (this.isLocalPause ?? false)
+                                    ? Icons.play_arrow
+                                    : Icons.pause,
+                                color: Color(0xff2c1c44),
+                                size: 30,
+                              ),
                             ),
-                            child: Icon(
-                              (this.isLocalPause ?? false)
-                                  ? Icons.play_arrow
-                                  : Icons.pause,
-                              color: Color(0xff2c1c44),
-                              size: 30,
-                            ),
+                            onTap: () => this.togglePauseLocal(),
                           ),
-                          onTap: () => this.togglePauseLocal(),
-                        ),
+                        if (isGameOver)
+                          InkWell(
+                            child: Container(
+                              width: 50,
+                              height: 50,
+                              padding: EdgeInsets.only(
+                                  top: 5, bottom: 5, left: 5, right: 5),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(40),
+                              ),
+                              child: Icon(
+                                Icons.refresh,
+                                color: Color(0xff2c1c44),
+                                size: 30,
+                              ),
+                            ),
+                            onTap: () => this.restartGame(),
+                          ),
                       ],
                     ),
                     Row(
@@ -698,7 +750,7 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                                 padding: EdgeInsets.symmetric(
                                     horizontal: 0, vertical: 15),
                                 child: Text(
-                                  "${correctCount}/${questionCount}",
+                                  "${correctCount}",
                                   textScaleFactor: 1.0,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
@@ -719,7 +771,9 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
                               padding: EdgeInsets.symmetric(
                                   horizontal: 20, vertical: 15),
                               child: Text(
-                                "${correctPercent}%",
+                                isGameOver
+                                    ? getRateString()
+                                    : "${correctPercent}%",
                                 textScaleFactor: 1.0,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(

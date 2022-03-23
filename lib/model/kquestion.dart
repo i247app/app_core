@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/helper/kgame_helper.dart';
 import 'package:app_core/model/kanswer.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -50,17 +51,16 @@ class KQuestion {
   KAnswer? get correctAnswer =>
       (this.answers ?? []).firstWhere((a) => a.isCorrect ?? false);
 
-  List<KAnswer> generateAnswers([int count = 4, String? answerType]) {
+  List<KAnswer> generateAnswers([int count = 4, String? answerType, bool? isUniqueAnswer]) {
     try {
       if (answerType == 'letter') {
         final correct = correctAnswer?.text ?? "";
-        if (correct == null) {
+        if (!KStringHelper.isExist(correct)) {
           throw Exception();
         }
 
         final answerValues = [correct];
 
-        print(answerValues.length);
         // Generate unique random values
         while (answerValues.length < count) {
           final letter = KUtil.generateRandomString(1);
@@ -68,12 +68,24 @@ class KQuestion {
             answerValues.add(letter);
           }
         }
-        print(answerValues.toString());
 
         return (answerValues..shuffle())
             .map((av) => KAnswer()
-          ..text = av.toString()
-          ..isCorrect = correct == av)
+              ..text = av.toString()
+              ..isCorrect = correct == av)
+            .toList();
+      } else if (answerType == 'word') {
+        final correct = correctAnswer?.text ?? "";
+        if (!KStringHelper.isExist(correct)) {
+          throw Exception();
+        }
+
+        final answerValues = KGameHelper.generateRandomCharacters(correct, correct.length < 4 ? 12 : 18, isUniqueAnswer ?? false);
+
+        return answerValues
+            .map((av) => KAnswer()
+              ..text = av.toString()
+              ..isCorrect = correct.contains(av))
             .toList();
       } else {
         final correct = int.tryParse(correctAnswer?.text ?? "");
@@ -94,8 +106,8 @@ class KQuestion {
 
         return (answerValues..shuffle())
             .map((av) => KAnswer()
-          ..text = av.toString()
-          ..isCorrect = correct == av)
+              ..text = av.toString()
+              ..isCorrect = correct == av)
             .toList();
       }
     } catch (e) {

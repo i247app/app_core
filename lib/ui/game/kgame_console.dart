@@ -20,6 +20,7 @@ import 'package:app_core/ui/game/games/kgame_speech_moving_tap.dart';
 import 'package:app_core/ui/game/games/kgame_speech_tap.dart';
 import 'package:app_core/ui/game/games/kgame_tap.dart';
 import 'package:app_core/ui/game/games/kgame_word.dart';
+import 'package:app_core/ui/game/games/kgame_word_fortune.dart';
 import 'package:app_core/ui/game/service/kgame_controller.dart';
 import 'package:app_core/ui/game/service/kgame_data.dart';
 import 'package:app_core/ui/hero/widget/kegg_hero_intro.dart';
@@ -29,6 +30,7 @@ import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
 import 'package:app_core/ui/hero/widget/khero_game_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
 import 'package:app_core/ui/hero/widget/ktamago_chan_jumping.dart';
+import 'package:app_core/ui/hero/widget/kword_game_intro.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -77,6 +79,7 @@ class _KGameConsoleState extends State<KGameConsole>
   bool isShowIntro = true;
   bool isLoaded = false;
   bool isCurrentHighest = false;
+  bool isLocalMute = false;
 
   KGameData get gameData => widget.controller.value;
 
@@ -424,7 +427,7 @@ class _KGameConsoleState extends State<KGameConsole>
       KOverlayHelper.removeOverlay(this.overlayID!);
       this.overlayID = null;
     }
-    if (isStart && !this.isBackgroundSoundPlaying) {
+    if (isStart && !this.isBackgroundSoundPlaying && !isLocalMute) {
       toggleBackgroundSound();
     }
     widget.controller.togglePause(false);
@@ -432,7 +435,7 @@ class _KGameConsoleState extends State<KGameConsole>
 
   void showPauseDialog() {
     if (this.isPause) return;
-    if (this.isBackgroundSoundPlaying) {
+    if (this.isBackgroundSoundPlaying && !isLocalMute) {
       toggleBackgroundSound();
     }
     widget.controller.togglePause(true);
@@ -621,8 +624,8 @@ class _KGameConsoleState extends State<KGameConsole>
                       Container(
                         width: MediaQuery.of(context).size.width * 0.25,
                         height: 50,
-                        padding:
-                        EdgeInsets.only(top: 5, bottom: 5, left: 30, right: 10),
+                        padding: EdgeInsets.only(
+                            top: 5, bottom: 5, left: 30, right: 10),
                         decoration: BoxDecoration(
                           color: Color(0xff2c1c44),
                           borderRadius: BorderRadius.circular(40),
@@ -631,11 +634,12 @@ class _KGameConsoleState extends State<KGameConsole>
                           "${(currentQuestionIndex ?? 0)}",
                           textScaleFactor: 1.0,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                            color: Color(0xfffdcd3a),
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyText1!.copyWith(
+                                    color: Color(0xfffdcd3a),
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                       ),
                       if (currentLevel < levelIconAssets.length &&
@@ -674,8 +678,8 @@ class _KGameConsoleState extends State<KGameConsole>
                       Container(
                         width: MediaQuery.of(context).size.width * 0.25,
                         height: 50,
-                        padding:
-                        EdgeInsets.only(top: 5, bottom: 5, left: 30, right: 10),
+                        padding: EdgeInsets.only(
+                            top: 5, bottom: 5, left: 30, right: 10),
                         decoration: BoxDecoration(
                           color: Color(0xff2c1c44),
                           borderRadius: BorderRadius.circular(40),
@@ -684,11 +688,12 @@ class _KGameConsoleState extends State<KGameConsole>
                           "${rightAnswerCount}",
                           textScaleFactor: 1.0,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                            color: Color(0xfffdcd3a),
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyText1!.copyWith(
+                                    color: Color(0xfffdcd3a),
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                       ),
                       if (currentLevel < levelIconAssets.length &&
@@ -775,6 +780,12 @@ class _KGameConsoleState extends State<KGameConsole>
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
         );
+      case KGameWordFortune.GAME_ID:
+        return KGameWordFortune(
+          controller: widget.controller,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
       case KGameMovingTap.GAME_ID:
         return KGameMovingTap(
           controller: widget.controller,
@@ -853,12 +864,43 @@ class _KGameConsoleState extends State<KGameConsole>
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final gameIntro = gameID == KGameShooting.GAME_ID
-        ? GestureDetector(
-            onTap: () {
-              this.setState(() => this.isShowIntro = false);
+  Widget getGameIntro() {
+    switch (gameID) {
+      case KGameShooting.GAME_ID:
+        return GestureDetector(
+          onTap: () {
+            this.setState(() => this.isShowIntro = false);
+            if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+              this.setState(() {
+                this.isBackgroundSoundPlaying = true;
+              });
+              backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
+                  isLocal: true);
+            }
+          },
+          child: Container(
+            child: KGameIntro(
+              hero: widget.hero,
+              onFinish: () {
+                this.setState(() => this.isShowIntro = false);
+                if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+                  this.setState(() {
+                    this.isBackgroundSoundPlaying = true;
+                  });
+                  backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
+                      isLocal: true);
+                }
+              },
+            ),
+          ),
+        );
+      case KGameWord.GAME_ID:
+      case KGameWordFortune.GAME_ID:
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            KWordGameIntro(onFinish: () {
+              setState(() => this.isShowIntro = false);
               if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
                 this.setState(() {
                   this.isBackgroundSoundPlaying = true;
@@ -866,27 +908,9 @@ class _KGameConsoleState extends State<KGameConsole>
                 backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
                     isLocal: true);
               }
-            },
-            child: Container(
-              child: KGameIntro(
-                hero: widget.hero,
-                onFinish: () {
-                  this.setState(() => this.isShowIntro = false);
-                  if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
-                    this.setState(() {
-                      this.isBackgroundSoundPlaying = true;
-                    });
-                    backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
-                        isLocal: true);
-                  }
-                },
-              ),
-            ),
-          )
-        : Stack(
-            fit: StackFit.expand,
-            children: [
-              KEggHeroIntro(onFinish: () {
+            }),
+            GestureDetector(
+              onTap: () {
                 setState(() => this.isShowIntro = false);
                 if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
                   this.setState(() {
@@ -895,21 +919,44 @@ class _KGameConsoleState extends State<KGameConsole>
                   backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
                       isLocal: true);
                 }
-              }),
-              GestureDetector(
-                onTap: () {
-                  setState(() => this.isShowIntro = false);
-                  if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
-                    this.setState(() {
-                      this.isBackgroundSoundPlaying = true;
-                    });
-                    backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
-                        isLocal: true);
-                  }
-                },
-              ),
-            ],
-          );
+              },
+            ),
+          ],
+        );
+      default:
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            KEggHeroIntro(onFinish: () {
+              setState(() => this.isShowIntro = false);
+              if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+                this.setState(() {
+                  this.isBackgroundSoundPlaying = true;
+                });
+                backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
+                    isLocal: true);
+              }
+            }),
+            GestureDetector(
+              onTap: () {
+                setState(() => this.isShowIntro = false);
+                if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+                  this.setState(() {
+                    this.isBackgroundSoundPlaying = true;
+                  });
+                  backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
+                      isLocal: true);
+                }
+              },
+            ),
+          ],
+        );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final gameIntro = getGameIntro();
 
     final timeCounter = Align(
       alignment: Alignment(-1, -1),
@@ -1016,7 +1063,12 @@ class _KGameConsoleState extends State<KGameConsole>
           size: 30,
         ),
       ),
-      onTap: () => this.toggleBackgroundSound(),
+      onTap: () {
+        this.toggleBackgroundSound();
+        this.setState(() {
+          this.isLocalMute = !this.isBackgroundSoundPlaying;
+        });
+      },
     );
 
     final pauseButton = InkWell(
@@ -1045,7 +1097,8 @@ class _KGameConsoleState extends State<KGameConsole>
           });
           widget.controller.toggleStart(true);
 
-          if (!(widget.controller.value.isMuted ?? false) && backgroundAudioPlayer.state != PlayerState.PLAYING) {
+          if (!(widget.controller.value.isMuted ?? false) &&
+              backgroundAudioPlayer.state != PlayerState.PLAYING) {
             this.setState(() {
               this.isBackgroundSoundPlaying = true;
             });
@@ -1441,12 +1494,10 @@ class _KGameConsoleState extends State<KGameConsole>
                                 SizedBox(
                                   width: 10,
                                 ),
-                                if (isStart || result != null) ...[
-                                  soundButton,
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                ],
+                                soundButton,
+                                SizedBox(
+                                  width: 10,
+                                ),
                                 pauseButton,
                               ],
                             ),
