@@ -3,7 +3,7 @@ import 'package:app_core/model/kcountry_data.dart';
 
 abstract class KConstants {
   /// Project
-  static const String appName = "Schoolbird";
+  // static const String appName = "Schoolbird";
   static const String googleMapsApiKey =
       "AIzaSyDGIjAz96Y0gLNUz6Sv-4RUmEmn4iyI9rU";
 
