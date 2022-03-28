@@ -59,6 +59,9 @@ abstract class KAssets {
   static const String IMG_QR_CODE = "$IMG_BASE/qr_code_small.png";
   static const String IMG_QR_SCAN = "$IMG_BASE/scan_qr.png";
   static const String IMG_RANKING_BLUE = "$IMG_BASE/ranking_blue.png";
+  static const String GAME_MAP_VERTICAL = "$IMG_BASE/map_vertical.png";
+  static const String GAME_MAP_VERTICAL_PATH = "$IMG_BASE/map_vertical.svg";
+  static const String GAME_MAP_VERTICAL_POINT = "$IMG_BASE/map_vertical_point.png";
 
   // Sounds
   static const String SOUND_CORRECT = "$SOUND_BASE/correct.mp3";

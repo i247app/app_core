@@ -23,6 +23,7 @@ import 'package:app_core/ui/game/games/kgame_word.dart';
 import 'package:app_core/ui/game/games/kgame_word_fortune.dart';
 import 'package:app_core/ui/game/service/kgame_controller.dart';
 import 'package:app_core/ui/game/service/kgame_data.dart';
+import 'package:app_core/ui/game/widget/kgame_level_map.dart';
 import 'package:app_core/ui/hero/widget/kegg_hero_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
@@ -513,23 +514,42 @@ class _KGameConsoleState extends State<KGameConsole>
     }
   }
 
-  void advanceGame() async {
+  void advanceGame(int? level) async {
     try {
-      if (currentLevel + 1 < levelCount &&
-          (rightAnswerCount / questions.length) >=
-              levelHardness[currentLevel]) {
-        widget.controller.value.currentLevel = currentLevel + 1;
-        await widget.controller.loadGame();
+      if (level != null) {
+        if (level < levelCount &&
+            (rightAnswerCount / questions.length) >=
+                levelHardness[currentLevel]) {
+          widget.controller.value.currentLevel = level;
+          await widget.controller.loadGame();
 
-        widget.controller.value.isStart = true;
-        widget.controller.value.result = null;
-        widget.controller.value.point = 0;
-        widget.controller.value.currentQuestionIndex = 0;
-        widget.controller.value.rightAnswerCount = 0;
-        widget.controller.value.wrongAnswerCount = 0;
-        widget.controller.value.canAdvance = false;
+          widget.controller.value.isStart = true;
+          widget.controller.value.result = null;
+          widget.controller.value.point = 0;
+          widget.controller.value.currentQuestionIndex = 0;
+          widget.controller.value.rightAnswerCount = 0;
+          widget.controller.value.wrongAnswerCount = 0;
+          widget.controller.value.canAdvance = false;
 
-        widget.controller.notify();
+          widget.controller.notify();
+        }
+      } else {
+        if (currentLevel + 1 < levelCount &&
+            (rightAnswerCount / questions.length) >=
+                levelHardness[currentLevel]) {
+          widget.controller.value.currentLevel = currentLevel + 1;
+          await widget.controller.loadGame();
+
+          widget.controller.value.isStart = true;
+          widget.controller.value.result = null;
+          widget.controller.value.point = 0;
+          widget.controller.value.currentQuestionIndex = 0;
+          widget.controller.value.rightAnswerCount = 0;
+          widget.controller.value.wrongAnswerCount = 0;
+          widget.controller.value.canAdvance = false;
+
+          widget.controller.notify();
+        }
       }
       this.setState(() {
         gameScores = null;
@@ -588,6 +608,9 @@ class _KGameConsoleState extends State<KGameConsole>
       ..point = "${point}"
       ..time = "${levelPlayTimes[currentLevel]}"
       ..score = "${isShowTimer() ? levelPlayTimes[currentLevel] : point}";
+    widget.controller.value.rates[currentLevel] = ((rightAnswerCount / questions.length)*3).floor();
+    print(currentLevel);
+    print(widget.controller.value.rates);
     widget.controller.notify();
 
     if (!canAdvance) {
@@ -1234,6 +1257,31 @@ class _KGameConsoleState extends State<KGameConsole>
       ),
     );
 
+    final levelMapScreen = Align(
+      alignment: Alignment.center,
+      child: KGameLevelMap(
+        widget.controller,
+        onTapLevel: (int? level) {
+          if (result == null)
+            start();
+          else {
+            if (result != null && canRestartGame) {
+              if (level == currentLevel) {
+                restartGame();
+              } else {
+                advanceGame(level);
+              }
+            }
+          }
+          // if (result == null) startScreen,
+          // if (result != null && canRestartGame) advanceScreen,
+          // if (!canRestartGame) gameOverScreen,
+          print(level);
+        },
+        isEmbedded: true,
+      ),
+    );
+
     final advanceScreen = Align(
       alignment: Alignment.center,
       child: Padding(
@@ -1250,7 +1298,7 @@ class _KGameConsoleState extends State<KGameConsole>
             ),
             if (canAdvance) ...[
               GestureDetector(
-                onTap: () => advanceGame(),
+                onTap: () => advanceGame(null),
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.75,
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
@@ -1454,39 +1502,57 @@ class _KGameConsoleState extends State<KGameConsole>
                 fit: BoxFit.cover,
               ),
             ),
-            padding: EdgeInsets.symmetric(vertical: 20),
             child: isShowIntro
                 ? gameIntro
                 : Stack(
                     fit: StackFit.expand,
                     children: [
                       if (isShowTimer() && (isStart || result != null))
-                        timeCounter,
+                        Padding(
+                          padding: EdgeInsets.only(top: 20),
+                          child: timeCounter,
+                        ),
                       if (!isShowTimer() && (isStart || result != null))
-                        scoreCounter,
-                      if (isStart) eggReceiveBox,
-                      getBottomBox(),
+                        Padding(
+                          padding: EdgeInsets.only(top: 20),
+                          child: scoreCounter,
+                        ),
+                      if (isStart)
+                        Padding(
+                          padding: EdgeInsets.only(bottom: 20),
+                          child: eggReceiveBox,
+                        ),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 20),
+                        child: getBottomBox(),
+                      ),
                       if (!isStart && isSpeechGame && currentLanguage == null)
                         languageSelect,
                       if (isStart && gameData.game != null && !isLoading)
                         Align(
                           alignment: Alignment.center,
-                          child: currentGame,
+                          child:
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 20),
+                            child: currentGame,
+                          ),
                         ),
                       if ((!isSpeechGame || currentLanguage != null) &&
                           !isLoading &&
                           !isStart &&
                           !isShowCountDown &&
                           !isShowEndLevel) ...[
-                        if (result == null) startScreen,
-                        if (result != null && canRestartGame) advanceScreen,
-                        if (!canRestartGame) gameOverScreen,
+                        levelMapScreen,
+                        // if (result == null) startScreen,
+                        // if (result != null && canRestartGame) advanceScreen,
+                        // if (!canRestartGame) gameOverScreen,
                       ],
                       if (!isPause)
                         Align(
                           alignment: Alignment.topRight,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            padding:
+                                EdgeInsets.only(left: 10, right: 10, top: 20),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
