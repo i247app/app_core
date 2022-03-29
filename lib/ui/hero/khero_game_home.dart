@@ -171,6 +171,212 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
     final gameListing = ListView(
       shrinkWrap: true,
       children: [
+        Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) => KGameConsole(
+                        KGameController(
+                          gameID: KGameWordFortune.GAME_ID,
+                          gameAppID: KGameWordFortune.GAME_APP_ID,
+                          gameName: KGameWordFortune.GAME_NAME,
+                          levelCount: 4,
+                          currentLevel: 0,
+                          answerType: 'word',
+                          isUniqueAnswer: true,
+                          // isCountTime: true,
+                        ),
+                      ),
+                    )),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      padding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                      primary: Colors.transparent,
+                      onPrimary: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        side: BorderSide(color: Colors.transparent),
+                      ),
+                    ),
+                    child: SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: Image.asset(
+                        KAssets.IMG_GAME_WORD_FORTUNE,
+                        fit: BoxFit.contain,
+                        package: 'app_core',
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 5),
+                  FittedBox(
+                    child: Text("Word Fortune"),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: 64,
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) => KGameConsole(
+                        KGameController(
+                          gameID: KGameShooting.GAME_ID,
+                          gameName: KGameShooting.GAME_NAME,
+                          levelCount: 4,
+                          currentLevel: 0,
+                        ),
+                      ),
+                    )),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      padding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                      primary: Colors.transparent,
+                      onPrimary: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        side: BorderSide(color: Colors.transparent),
+                      ),
+                    ),
+                    child: SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: Image.asset(
+                        KAssets.IMG_GAME_SHOOTING,
+                        fit: BoxFit.contain,
+                        package: 'app_core',
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 5),
+                  FittedBox(
+                    child: Text("Shooting"),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          height: 32,
+        ),
+        Container(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) => KGameConsole(
+                        KGameController(
+                          gameID: KGameTap.GAME_ID,
+                          gameName: KGameTap.GAME_NAME,
+                          levelCount: 4,
+                          currentLevel: 0,
+                          isCountTime: true,
+                        ),
+                      ),
+                    )),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      padding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                      primary: Colors.transparent,
+                      onPrimary: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        side: BorderSide(color: Colors.transparent),
+                      ),
+                    ),
+                    child: SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: Image.asset(
+                        KAssets.IMG_GAME_TAP,
+                        fit: BoxFit.contain,
+                        package: 'app_core',
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 5),
+                  FittedBox(
+                    child: Text("Tap"),
+                  ),
+                ],
+              ),
+              SizedBox(
+                width: 64,
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        Navigator.of(context).push(MaterialPageRoute(
+                      builder: (ctx) => KGameConsole(
+                        KGameController(
+                          gameID: KGameMovingTap.GAME_ID,
+                          gameName: KGameMovingTap.GAME_NAME,
+                          levelCount: 4,
+                          currentLevel: 0,
+                          isCountTime: true,
+                        ),
+                      ),
+                    )),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      padding:
+                          EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                      primary: Colors.transparent,
+                      onPrimary: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        side: BorderSide(color: Colors.transparent),
+                      ),
+                    ),
+                    child: SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: Image.asset(
+                        KAssets.IMG_GAME_TAP_MOVING,
+                        fit: BoxFit.contain,
+                        package: 'app_core',
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 5),
+                  FittedBox(
+                    child: Text("Moving"),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 32),
         if (!KHostConfig.isReleaseMode) ...[
           Container(
             child: Row(
@@ -715,212 +921,6 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
         SizedBox(
           height: 32,
         ),
-        Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () =>
-                        Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => KGameConsole(
-                        KGameController(
-                          gameID: KGameWordFortune.GAME_ID,
-                          gameAppID: KGameWordFortune.GAME_APP_ID,
-                          gameName: KGameWordFortune.GAME_NAME,
-                          levelCount: 4,
-                          currentLevel: 0,
-                          answerType: 'word',
-                          isUniqueAnswer: true,
-                          // isCountTime: true,
-                        ),
-                      ),
-                    )),
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                      primary: Colors.transparent,
-                      onPrimary: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        side: BorderSide(color: Colors.transparent),
-                      ),
-                    ),
-                    child: SizedBox(
-                      width: 60,
-                      height: 60,
-                      child: Image.asset(
-                        KAssets.IMG_GAME_WORD_FORTUNE,
-                        fit: BoxFit.contain,
-                        package: 'app_core',
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 5),
-                  FittedBox(
-                    child: Text("Word Fortune"),
-                  ),
-                ],
-              ),
-              SizedBox(
-                width: 64,
-              ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () =>
-                        Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => KGameConsole(
-                        KGameController(
-                          gameID: KGameShooting.GAME_ID,
-                          gameName: KGameShooting.GAME_NAME,
-                          levelCount: 4,
-                          currentLevel: 0,
-                        ),
-                      ),
-                    )),
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                      primary: Colors.transparent,
-                      onPrimary: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        side: BorderSide(color: Colors.transparent),
-                      ),
-                    ),
-                    child: SizedBox(
-                      width: 60,
-                      height: 60,
-                      child: Image.asset(
-                        KAssets.IMG_GAME_SHOOTING,
-                        fit: BoxFit.contain,
-                        package: 'app_core',
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 5),
-                  FittedBox(
-                    child: Text("Shooting"),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 32,
-        ),
-        Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () =>
-                        Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => KGameConsole(
-                        KGameController(
-                          gameID: KGameTap.GAME_ID,
-                          gameName: KGameTap.GAME_NAME,
-                          levelCount: 4,
-                          currentLevel: 0,
-                          isCountTime: true,
-                        ),
-                      ),
-                    )),
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                      primary: Colors.transparent,
-                      onPrimary: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        side: BorderSide(color: Colors.transparent),
-                      ),
-                    ),
-                    child: SizedBox(
-                      width: 60,
-                      height: 60,
-                      child: Image.asset(
-                        KAssets.IMG_GAME_TAP,
-                        fit: BoxFit.contain,
-                        package: 'app_core',
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 5),
-                  FittedBox(
-                    child: Text("Tap"),
-                  ),
-                ],
-              ),
-              SizedBox(
-                width: 64,
-              ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () =>
-                        Navigator.of(context).push(MaterialPageRoute(
-                      builder: (ctx) => KGameConsole(
-                        KGameController(
-                          gameID: KGameMovingTap.GAME_ID,
-                          gameName: KGameMovingTap.GAME_NAME,
-                          levelCount: 4,
-                          currentLevel: 0,
-                          isCountTime: true,
-                        ),
-                      ),
-                    )),
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      padding:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                      primary: Colors.transparent,
-                      onPrimary: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        side: BorderSide(color: Colors.transparent),
-                      ),
-                    ),
-                    child: SizedBox(
-                      width: 60,
-                      height: 60,
-                      child: Image.asset(
-                        KAssets.IMG_GAME_TAP_MOVING,
-                        fit: BoxFit.contain,
-                        package: 'app_core',
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 5),
-                  FittedBox(
-                    child: Text("Moving"),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 35),
         // Text(
         //   "Speech Games",
         //   style: TextStyle(
