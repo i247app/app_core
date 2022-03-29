@@ -168,6 +168,9 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
 
   @override
   Widget build(BuildContext context) {
+    final double ICON_WIDTH = 90;
+    final double ICON_HEIGHT = 90;
+
     final gameListing = ListView(
       shrinkWrap: true,
       children: [
@@ -208,8 +211,8 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       ),
                     ),
                     child: SizedBox(
-                      width: 60,
-                      height: 60,
+                      width: ICON_WIDTH,
+                      height: ICON_HEIGHT,
                       child: Image.asset(
                         KAssets.IMG_GAME_WORD_FORTUNE,
                         fit: BoxFit.contain,
@@ -219,7 +222,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ),
                   SizedBox(width: 5),
                   FittedBox(
-                    child: Text("Word Fortune"),
+                    child: Text("Word"),
                   ),
                 ],
               ),
@@ -255,8 +258,8 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       ),
                     ),
                     child: SizedBox(
-                      width: 60,
-                      height: 60,
+                      width: ICON_WIDTH,
+                      height: ICON_HEIGHT,
                       child: Image.asset(
                         KAssets.IMG_GAME_SHOOTING,
                         fit: BoxFit.contain,
@@ -266,7 +269,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ),
                   SizedBox(width: 5),
                   FittedBox(
-                    child: Text("Shooting"),
+                    child: Text("+Shooting"),
                   ),
                 ],
               ),
@@ -310,8 +313,8 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       ),
                     ),
                     child: SizedBox(
-                      width: 60,
-                      height: 60,
+                      width: ICON_WIDTH,
+                      height: ICON_HEIGHT,
                       child: Image.asset(
                         KAssets.IMG_GAME_TAP,
                         fit: BoxFit.contain,
@@ -321,7 +324,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ),
                   SizedBox(width: 5),
                   FittedBox(
-                    child: Text("Tap"),
+                    child: Text("+Tap"),
                   ),
                 ],
               ),
@@ -358,8 +361,8 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       ),
                     ),
                     child: SizedBox(
-                      width: 60,
-                      height: 60,
+                      width: ICON_WIDTH,
+                      height: ICON_HEIGHT,
                       child: Image.asset(
                         KAssets.IMG_GAME_TAP_MOVING,
                         fit: BoxFit.contain,
@@ -369,7 +372,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                   ),
                   SizedBox(width: 5),
                   FittedBox(
-                    child: Text("Moving"),
+                    child: Text("+Moving"),
                   ),
                 ],
               ),
@@ -414,8 +417,8 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                         ),
                       ),
                       child: SizedBox(
-                        width: 60,
-                        height: 60,
+                        width: ICON_WIDTH,
+                        height: ICON_HEIGHT,
                         child: FittedBox(
                           child: Icon(
                             Icons.quiz_outlined,
@@ -467,8 +470,8 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       ),
                       child: Image.asset(
                         KAssets.IMG_CANNON_BARREL,
-                        height: 60,
-                        width: 60,
+                        width: ICON_WIDTH,
+                        height: ICON_HEIGHT,
                         package: 'app_core',
                       ),
                     ),
@@ -518,8 +521,8 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                         ),
                       ),
                       child: SizedBox(
-                        width: 60,
-                        height: 60,
+                        width: ICON_WIDTH,
+                        height: ICON_HEIGHT,
                         child: FittedBox(
                           child: Icon(
                             Icons.filter_5_outlined,
@@ -571,8 +574,8 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                         ),
                       ),
                       child: SizedBox(
-                        width: 60,
-                        height: 60,
+                        width: ICON_WIDTH,
+                        height: ICON_HEIGHT,
                         child: FittedBox(
                           child: Icon(
                             Icons.filter_7_outlined,
@@ -630,8 +633,8 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                         ),
                       ),
                       child: SizedBox(
-                        width: 60,
-                        height: 60,
+                        width: ICON_WIDTH,
+                        height: ICON_HEIGHT,
                         child: FittedBox(
                           child: Icon(
                             Icons.upgrade,
@@ -682,8 +685,8 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                         ),
                       ),
                       child: SizedBox(
-                        width: 60,
-                        height: 60,
+                        width: ICON_WIDTH,
+                        height: ICON_HEIGHT,
                         child: FittedBox(
                           child: Icon(
                             Icons.u_turn_right,
@@ -745,8 +748,8 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                         ),
                       ),
                       child: SizedBox(
-                        width: 60,
-                        height: 60,
+                        width: ICON_WIDTH,
+                        height: ICON_HEIGHT,
                         child: FittedBox(
                           child: Text(
                             "🔈",
@@ -796,8 +799,8 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                         ),
                       ),
                       child: SizedBox(
-                        width: 60,
-                        height: 60,
+                        width: ICON_WIDTH,
+                        height: ICON_HEIGHT,
                         child: FittedBox(
                           child: Text(
                             "🔈",
@@ -856,8 +859,8 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                         ),
                       ),
                       child: SizedBox(
-                        width: 60,
-                        height: 60,
+                        width: ICON_WIDTH,
+                        height: ICON_HEIGHT,
                         child: FittedBox(
                           child: Icon(
                             Icons.quiz_outlined,
@@ -898,8 +901,8 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                         ),
                       ),
                       child: SizedBox(
-                        width: 60,
-                        height: 60,
+                        width: ICON_WIDTH,
+                        height: ICON_HEIGHT,
                         child: FittedBox(
                           child: Text(
                             "🕹",
