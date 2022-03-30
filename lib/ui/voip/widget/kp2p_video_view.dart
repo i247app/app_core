@@ -1,3 +1,6 @@
+import 'package:app_core/helper/kwebrtc_helper.dart';
+import 'package:app_core/model/kuser.dart';
+import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -9,10 +12,16 @@ class KP2PVideoView extends StatefulWidget {
   final bool isRemoteMicEnabled;
   final Function? onLocalVideoTap;
   final Function? onRemoteVideoTap;
+  final String refAvatarUrl;
+  final String refName;
+  final KWebRTCCallType type;
 
   const KP2PVideoView({
     required this.localRenderer,
     required this.remoteRenderers,
+    required this.refName,
+    required this.refAvatarUrl,
+    this.type = KWebRTCCallType.video,
     this.isRemoteCameraEnabled = false,
     this.isRemoteMicEnabled = false,
     this.onLocalVideoTap,
@@ -24,6 +33,8 @@ class KP2PVideoView extends StatefulWidget {
 }
 
 class _P2PVideoViewState extends State<KP2PVideoView> {
+  KWebRTCCallType get type => widget.type;
+
   void _onLocalVideoTap() => this.widget.onLocalVideoTap?.call();
 
   void _onRemoteVideoTap() => this.widget.onRemoteVideoTap?.call();
@@ -136,16 +147,34 @@ class _P2PVideoViewState extends State<KP2PVideoView> {
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          remote,
-          Align(
-            alignment: Alignment.topRight,
-            child: SafeArea(
-              child: Container(
-                margin: EdgeInsets.all(14),
-                child: local,
+          if (type == KWebRTCCallType.video) ...[
+            remote,
+            Align(
+              alignment: Alignment.topRight,
+              child: SafeArea(
+                child: Container(
+                  margin: EdgeInsets.all(14),
+                  child: local,
+                ),
               ),
+            )
+          ] else ...[
+            InkWell(
+              child: Container(
+                color: KStyles.black,
+                child: Center(
+                  child: Container(
+                    width: 100,
+                    child: KUserAvatar(
+                      imageURL: widget.refAvatarUrl,
+                      initial: widget.refName,
+                    ),
+                  ),
+                ),
+              ),
+              onTap: _onRemoteVideoTap,
             ),
-          ),
+          ],
         ],
       ),
     );

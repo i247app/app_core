@@ -36,6 +36,7 @@ typedef void InfoMessage(String msg, int code);
 typedef void ErrorMessage(String msg, int code);
 typedef void CameraToggled(bool isEnabled);
 typedef void MicToggled(bool isEnabled);
+typedef void MediaTypeChanged(bool isAudio);
 
 class KVOIPCommManager {
   static const int CODE_MISSING = -1;
@@ -78,6 +79,7 @@ class KVOIPCommManager {
   final String deviceID;
   final String nickname;
   bool isDisposed = false;
+  final String media;
 
   String get myClientID => KWebRTCHelper.buildWebRTCClientID(
         puid: this.puid,
@@ -111,6 +113,7 @@ class KVOIPCommManager {
   ErrorMessage? onCallError;
   CameraToggled? onCameraToggled;
   MicToggled? onMicToggled;
+  MediaTypeChanged? mediaTypeChanged;
 
   P2PPeerType peerType = P2PPeerType.not_connected;
   Map<String, dynamic> iceServers = {
@@ -153,6 +156,7 @@ class KVOIPCommManager {
   KVOIPCommManager({
     required this.puid,
     required this.deviceID,
+    required this.media,
     this.nickname = "Anonymous",
   });
 
@@ -210,7 +214,7 @@ class KVOIPCommManager {
   //     this._sessionID = "${this._selfPUID}_$peerID";
   //     this._offerID = peerID;
   //     this.onStateChange?.call(SignalingState.CallStateNew);
-  //
+
   //     _createPeerConnection(peerID, media: media, isUserScreen: isUserScreen)
   //         .then((pc) => _createOffer(peerID, pc, media));
   //   });
@@ -259,13 +263,13 @@ class KVOIPCommManager {
       case 'room.new_participant':
         {
           final peerID = message['newPeerID'];
-          final media = 'video';
+
           final isUserScreen = false;
 
           if (this.peerType == P2PPeerType.joined) {
             _createPeerConnection(
               peerID,
-              media: media,
+              media: this.media,
               isUserScreen: isUserScreen,
             )
                 .then(
@@ -303,6 +307,8 @@ class KVOIPCommManager {
           print("p2p_comm_manager.onMessage [offer] getting a -------- call");
           this._offerID = data["myClientID"];
           this._offerMedia = data['media'];
+
+          this.mediaTypeChanged?.call(data['media'] == 'audio');
 
           // this.onStateChange?.call(SignalingState.CallStateNew);
 

@@ -62,6 +62,10 @@ abstract class KAssets {
   static const String GAME_MAP_VERTICAL = "$IMG_BASE/map_vertical.png";
   static const String GAME_MAP_VERTICAL_PATH = "$IMG_BASE/map_vertical.svg";
   static const String GAME_MAP_VERTICAL_POINT = "$IMG_BASE/map_vertical_point.png";
+  static const String IMG_GAME_WORD_FORTUNE = "$IMG_BASE/game_word_fortune.png";
+  static const String IMG_GAME_SHOOTING = "$IMG_BASE/game_shooting.png";
+  static const String IMG_GAME_TAP = "$IMG_BASE/game_tap.png";
+  static const String IMG_GAME_TAP_MOVING = "$IMG_BASE/game_tap_moving.png";
 
   // Sounds
   static const String SOUND_CORRECT = "$SOUND_BASE/correct.mp3";
