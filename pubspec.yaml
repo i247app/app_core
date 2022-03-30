@@ -39,6 +39,8 @@ dependencies:
   google_maps_webservice: ^0.0.20-nullsafety.5
   flutter_google_places: ^0.3.0
 
+  lottie: ^1.2.2
+
   # Photo picker
   image_picker: ^0.8.1
 
