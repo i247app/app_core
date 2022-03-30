@@ -194,7 +194,7 @@ class KGameLevelMapItem extends StatelessWidget {
           ],
         ),
       ),
-      onTap: () => onTap != null ? onTap!() : null,
+      onTap: () => onTap != null && (level ?? 0) <= (currentLevel ?? 0) ? onTap!() : null,
     );
   }
 }
