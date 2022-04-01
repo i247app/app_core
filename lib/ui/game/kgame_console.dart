@@ -187,11 +187,9 @@ class _KGameConsoleState extends State<KGameConsole>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (isStart) {
-      if (state == AppLifecycleState.paused && !this.isPause)
-        showPauseDialog();
-      else if (state == AppLifecycleState.resumed && this.isPause) resumeGame();
-    }
+    if (state == AppLifecycleState.paused && !this.isPause)
+      showPauseDialog();
+    else if (state == AppLifecycleState.resumed && this.isPause) resumeGame();
   }
 
   void checkInstalledLanguage() async {
@@ -428,7 +426,7 @@ class _KGameConsoleState extends State<KGameConsole>
       KOverlayHelper.removeOverlay(this.overlayID!);
       this.overlayID = null;
     }
-    if (isStart && !this.isBackgroundSoundPlaying && !isLocalMute) {
+    if (!this.isBackgroundSoundPlaying && !isLocalMute) {
       toggleBackgroundSound();
     }
     widget.controller.togglePause(false);
@@ -608,7 +606,8 @@ class _KGameConsoleState extends State<KGameConsole>
       ..point = "${point}"
       ..time = "${levelPlayTimes[currentLevel]}"
       ..score = "${isShowTimer() ? levelPlayTimes[currentLevel] : point}";
-    widget.controller.value.rates[currentLevel] = ((rightAnswerCount / questions.length)*3).floor();
+    widget.controller.value.rates[currentLevel] =
+        ((rightAnswerCount / questions.length) * 3).floor();
     print(currentLevel);
     print(widget.controller.value.rates);
     widget.controller.notify();
@@ -1531,8 +1530,7 @@ class _KGameConsoleState extends State<KGameConsole>
                       if (isStart && gameData.game != null && !isLoading)
                         Align(
                           alignment: Alignment.center,
-                          child:
-                          Padding(
+                          child: Padding(
                             padding: EdgeInsets.symmetric(vertical: 20),
                             child: currentGame,
                           ),
