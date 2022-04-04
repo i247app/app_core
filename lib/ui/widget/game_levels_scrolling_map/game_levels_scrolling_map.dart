@@ -28,6 +28,9 @@ class GameLevelsScrollingMap extends StatefulWidget {
   double? pointsPositionDeltaX = 0;
   double? pointsPositionDeltaY = 0;
 
+  int? pointsPerImage = 1;
+  int? imageCount = 0;
+
   bool isScrollable = false;
   Axis? direction = Axis.horizontal;
   bool? reverseScrolling = false;
@@ -48,6 +51,8 @@ class GameLevelsScrollingMap extends StatefulWidget {
     this.pointsPositionDeltaY,
     this.currentPointDeltaY,
     this.backgroundImageWidget,
+    this.pointsPerImage,
+    this.imageCount,
     Key? key,
   }) : super(key: key);
 
@@ -67,6 +72,8 @@ class GameLevelsScrollingMap extends StatefulWidget {
     this.pointsPositionDeltaY,
     this.reverseScrolling,
     this.backgroundImageWidget,
+    this.pointsPerImage,
+    this.imageCount,
     Key? key,
   }) : super(key: key) {
     isScrollable = true;
@@ -298,20 +305,20 @@ class _GameLevelsScrollingMapState extends State<GameLevelsScrollingMap> {
     return Positioned(child: child ?? Container(), left: x, top: y);
   }
 
-  String? _pathSVG;
-
   Future _getPathFromSVG() async {
     await getPointsPathFromXML().then((value) {
-      _pathSVG = value.replaceAll(",", " ");
-      print("pathSVG : $_pathSVG");
-      List<String> arrayOfPoints = _pathSVG!.split(" ");
-      for (int i = 0; i < arrayOfPoints.length; i++) {
-        if (i % 2 == 0) {
-          widget.x_values!.add(double.parse(arrayOfPoints[i]));
-        } else {
-          widget.y_values!.add(double.parse(arrayOfPoints[i]));
-        }
+      if (widget.points == null || widget.pointsPerImage == null || widget.imageCount == null || widget.imageHeight == null) return;
+
+      List<List<String>>? svgPoints = value.split(" ").map((String item) => item.split(",")).toList();
+      print("arrayOfPoints : ${widget.points} | ${svgPoints.length}");
+      for (int i = 0; i < widget.points!.length; i++) {
+        int currentImageIndex = widget.pointsPerImage! > 0 ? (i/widget.pointsPerImage!).floor() : i;
+        List<String> originPoint = svgPoints[i%svgPoints.length];
+        widget.x_values!.add(double.parse(originPoint[0]));
+        widget.y_values!.add(double.parse(originPoint[1]) + (widget.imageHeight!/widget.imageCount!)*currentImageIndex);
       }
+      print(widget.y_values);
+      print(widget.x_values);
     });
   }
 
