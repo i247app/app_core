@@ -145,8 +145,10 @@ abstract class KUtil {
 
   static String prettyFone({String foneCode = "", String number = ""}) {
     foneCode = foneCode.replaceAll("+", "");
-    final String prefix = foneCode.isNotEmpty ? "+$foneCode " : "";
-    return prefix.isEmpty ? number : "$prefix$number";
+    final String prefix = foneCode.isNotEmpty ? "+$foneCode" : "";
+    final String numberWithoutLeadingZero =
+        number.replaceAll(RegExp(r'^0+'), '');
+    return prefix.isEmpty ? number : "$prefix$numberWithoutLeadingZero";
   }
 
   // TODO VN - last, middle first else first middle last
