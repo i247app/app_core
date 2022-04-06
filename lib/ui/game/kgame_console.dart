@@ -1540,10 +1540,10 @@ class _KGameConsoleState extends State<KGameConsole>
                           !isStart &&
                           !isShowCountDown &&
                           !isShowEndLevel) ...[
-                        levelMapScreen,
                         // if (result == null) startScreen,
                         // if (result != null && canRestartGame) advanceScreen,
-                        // if (!canRestartGame) gameOverScreen,
+                        if (!canRestartGame) gameOverScreen,
+                        if (result == null || canRestartGame) levelMapScreen,
                       ],
                       if (!isPause)
                         Align(

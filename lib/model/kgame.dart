@@ -1,3 +1,4 @@
+import 'package:app_core/app_core.dart';
 import 'package:app_core/model/kqna.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -6,6 +7,7 @@ part 'kgame.g.dart';
 @JsonSerializable()
 class KGame {
   static const String GAME_ID = "gameID";
+  static const String MAX_LEVEL = "maxLevel";
   static const String GAME_CODE = "gameCode";
   static const String TITLE = "title"; // MULT | WRITTEN
   static const String SUBTITLE = "subtitle";
@@ -20,6 +22,9 @@ class KGame {
 
   @JsonKey(name: GAME_ID)
   String? gameID;
+
+  @JsonKey(name: MAX_LEVEL, toJson: zzz_itoa, fromJson: zzz_atoi)
+  int? maxLevel;
 
   @JsonKey(name: GAME_APP_ID)
   String? gameAppID;

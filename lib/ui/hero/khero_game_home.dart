@@ -191,7 +191,6 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                           gameID: KGameWordFortune.GAME_ID,
                           gameAppID: KGameWordFortune.GAME_APP_ID,
                           gameName: KGameWordFortune.GAME_NAME,
-                          levelCount: 4,
                           currentLevel: 0,
                           answerType: 'word',
                           isUniqueAnswer: true,
@@ -241,7 +240,6 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                         KGameController(
                           gameID: KGameShooting.GAME_ID,
                           gameName: KGameShooting.GAME_NAME,
-                          levelCount: 4,
                           currentLevel: 0,
                         ),
                       ),
@@ -295,7 +293,6 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                         KGameController(
                           gameID: KGameTap.GAME_ID,
                           gameName: KGameTap.GAME_NAME,
-                          levelCount: 4,
                           currentLevel: 0,
                           isCountTime: true,
                         ),
@@ -343,7 +340,6 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                         KGameController(
                           gameID: KGameMovingTap.GAME_ID,
                           gameName: KGameMovingTap.GAME_NAME,
-                          levelCount: 4,
                           currentLevel: 0,
                           isCountTime: true,
                         ),
@@ -398,7 +394,6 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                             gameID: KGameWord.GAME_ID,
                             gameAppID: KGameWord.GAME_APP_ID,
                             gameName: KGameWord.GAME_NAME,
-                            levelCount: 4,
                             currentLevel: 0,
                             answerType: 'word',
                             // isCountTime: true,
@@ -452,7 +447,6 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                           KGameController(
                             gameID: KGameShooting.GAME_ID,
                             gameName: KGameShooting.GAME_NAME,
-                            levelCount: 4,
                             currentLevel: 0,
                           ),
                         ),
@@ -503,7 +497,6 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                           KGameController(
                             gameID: KGameTap.GAME_ID,
                             gameName: KGameTap.GAME_NAME,
-                            levelCount: 4,
                             currentLevel: 0,
                             isCountTime: true,
                           ),
@@ -556,7 +549,6 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                           KGameController(
                             gameID: KGameMovingTap.GAME_ID,
                             gameName: KGameMovingTap.GAME_NAME,
-                            levelCount: 4,
                             currentLevel: 0,
                             isCountTime: true,
                           ),
@@ -616,7 +608,6 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                           KGameController(
                             gameID: KGameJumpUp.GAME_ID,
                             gameName: KGameJumpUp.GAME_NAME,
-                            levelCount: 4,
                             currentLevel: 0,
                           ),
                         ),
@@ -668,7 +659,6 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                           KGameController(
                             gameID: KGameJumpOver.GAME_ID,
                             gameName: KGameJumpOver.GAME_NAME,
-                            levelCount: 4,
                             currentLevel: 0,
                           ),
                         ),
@@ -728,7 +718,6 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                             gameID: KGameMultiLetter.GAME_ID,
                             gameAppID: KGameMultiLetter.GAME_APP_ID,
                             gameName: KGameMultiLetter.GAME_NAME,
-                            levelCount: 4,
                             currentLevel: 0,
                             answerType: 'letter',
                             isSpeechGame: true,
@@ -780,7 +769,6 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                             gameID: KGameMulti.GAME_ID,
                             gameAppID: KGameMulti.GAME_APP_ID,
                             gameName: KGameMulti.GAME_NAME,
-                            levelCount: 4,
                             currentLevel: 0,
                             isSpeechGame: true,
                             // isCountTime: true,
@@ -839,7 +827,6 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                             gameID: KGameWordFortune.GAME_ID,
                             gameAppID: KGameWordFortune.GAME_APP_ID,
                             gameName: KGameWordFortune.GAME_NAME,
-                            levelCount: 4,
                             currentLevel: 0,
                             answerType: 'word',
                             isUniqueAnswer: true,

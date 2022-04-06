@@ -34,7 +34,7 @@ class _KGameLevelMapState extends State<KGameLevelMap> {
       ? (gameData.currentLevel ?? 0)
       : ((gameData.currentLevel ?? 0) + 1);
 
-  List<int?> get rates => [3, 2, 3, 2, 3]; // ?? gameData.rates;
+  List<int?> get rates => gameData.rates;
 
   List<String> levelIconAssets = [];
 
