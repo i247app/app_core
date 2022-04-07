@@ -28,6 +28,7 @@ class KVOIPCall extends StatefulWidget {
   final String? uuid;
   final KChatroomController? chatroomCtrl;
   final String? videoLogo;
+  final bool isAudioCall;
 
   KVOIPCall({
     required this.perspective,
@@ -38,6 +39,7 @@ class KVOIPCall extends StatefulWidget {
     this.autoPickup = false,
     this.chatroomCtrl,
     this.videoLogo,
+    this.isAudioCall = false,
   });
 
   KVOIPCall.asSender(
@@ -45,13 +47,15 @@ class KVOIPCall extends StatefulWidget {
     List<String>? invitePUIDs,
     this.chatroomCtrl,
     String? videoLogo,
+    bool isAudioCall = false,
   })  : this.refUser = refUser,
         this.invitePUIDs = invitePUIDs,
         this.perspective = _CallPerspective.sender,
         this.autoPickup = false,
         this.uuid = Uuid().v4(),
         this.callID = null,
-        this.videoLogo = videoLogo;
+        this.videoLogo = videoLogo,
+        this.isAudioCall = isAudioCall;
 
   KVOIPCall.asReceiver(String callID, String uuid,
       {this.autoPickup = false, this.videoLogo, this.chatroomCtrl})
@@ -59,7 +63,8 @@ class KVOIPCall extends StatefulWidget {
         this.invitePUIDs = null,
         this.perspective = _CallPerspective.receiver,
         this.callID = callID,
-        this.uuid = uuid;
+        this.uuid = uuid,
+        this.isAudioCall = false;
 
   @override
   _KVOIPCallState createState() => _KVOIPCallState();
@@ -103,7 +108,7 @@ class _KVOIPCallState extends State<KVOIPCall>
 
   String get _uuid => widget.uuid ?? Uuid().v4();
 
-  bool get isAudioCall => false;
+  bool isAudioCall = false;
 
   bool get isChatEnabled => this.chatCtrl != null;
 
@@ -151,6 +156,7 @@ class _KVOIPCallState extends State<KVOIPCall>
   @override
   void initState() {
     super.initState();
+    isAudioCall = widget.isAudioCall;
     FocusManager.instance.primaryFocus?.unfocus();
 
     Wakelock.enable();
@@ -300,21 +306,23 @@ class _KVOIPCallState extends State<KVOIPCall>
   }
 
   void callControlListener(KCallType type) {
-    if (type == KCallType.foreground) {
-      if (this.isBringMyCamBack) {
-        this.onCameraToggled(true);
-        setState(() {
-          this.isBringMyCamBack = false;
-        });
+    if (!this.isAudioCall) {
+      if (type == KCallType.foreground) {
+        if (this.isBringMyCamBack) {
+          this.onCameraToggled(true);
+          setState(() {
+            this.isBringMyCamBack = false;
+          });
+        }
       }
-    }
-    if (type == KCallType.background) {
-      if (this.isMyCameraEnabled) {
-        setState(() {
-          this.isBringMyCamBack = true;
-        });
+      if (type == KCallType.background) {
+        if (this.isMyCameraEnabled) {
+          setState(() {
+            this.isBringMyCamBack = true;
+          });
+        }
+        this.onCameraToggled(false);
       }
-      this.onCameraToggled(false);
     }
   }
 
@@ -373,12 +381,18 @@ class _KVOIPCallState extends State<KVOIPCall>
         puid: puid,
         deviceID: await KUtil.getDeviceID(),
         nickname: name,
+        media: this.isAudioCall ? "audio" : "video",
       );
     } catch (e) {
       KSnackBarHelper.error("Websocket connection failed");
       safePop();
       return null;
     }
+    this.commManager?.mediaTypeChanged = ((isAudio) {
+      setState(() {
+        this.isAudioCall = isAudio;
+      });
+    });
 
     this.commManager?.onStateChange = (SignalingState ss) {
       genericSignalListener(ss);
@@ -749,6 +763,11 @@ class _KVOIPCallState extends State<KVOIPCall>
             isRemoteMicEnabled: this.isOtherSoundEnabled,
             onLocalVideoTap: this.switchCamera,
             onRemoteVideoTap: this.videoTap,
+            type: this.isAudioCall
+                ? KWebRTCCallType.audio
+                : KWebRTCCallType.video,
+            refAvatarUrl: this.refAvatarURL ?? "",
+            refName: this.refName ?? "",
           ),
           Positioned(
             child: IconButton(
@@ -1046,7 +1065,9 @@ class _KVOIPCallState extends State<KVOIPCall>
                 KP2PButtonView(
                   isMicEnabled: this.isMySoundEnabled,
                   isCameraEnabled: this.isMyCameraEnabled,
-                  type: KWebRTCCallType.video,
+                  type: isAudioCall
+                      ? KWebRTCCallType.audio
+                      : KWebRTCCallType.video,
                   onMicToggled: onMicToggled,
                   onCameraToggled: onCameraToggled,
                   isSpeakerEnabled: this.isMySpeakerEnabled,

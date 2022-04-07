@@ -4,12 +4,14 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kcall_control_stream_helper.dart';
 import 'package:app_core/helper/kcall_stream_helper.dart';
 import 'package:app_core/helper/service/ktheme_service.dart';
+import 'package:app_core/provider/kmessage_notifier.dart';
 import 'package:app_core/style/kpalette_group.dart';
 import 'package:app_core/style/ktheme.dart';
 import 'package:app_core/ui/kicon/kicon_manager.dart';
 import 'package:app_core/ui/widget/kerror_view.dart';
 import 'package:draggable_widget/draggable_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class KApp extends StatefulWidget {
   final Widget home;
@@ -204,6 +206,11 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
       themeMode: themeMode,
     );
 
-    return masterApp;
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => KMessageNotifer()),
+      ],
+      child: masterApp,
+    );
   }
 }

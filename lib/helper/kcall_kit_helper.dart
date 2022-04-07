@@ -35,10 +35,10 @@ class KCallKitHelper {
 
     final KUser user = KUser.fromJson(userJson);
     this.commManager = KVOIPCommManager(
-      puid: user.puid!,
-      deviceID: deviceID,
-      nickname: user.firstName!,
-    );
+        puid: user.puid!,
+        deviceID: deviceID,
+        nickname: user.firstName!,
+        media: "video");
 
     this.commManager?.onStateChange = (SignalingState state) {
       if (state == SignalingState.CallStateBye ||

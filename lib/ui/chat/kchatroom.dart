@@ -18,12 +18,14 @@ import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/value/kphrases.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class KChatroom extends StatefulWidget {
   final KChatroomController controller;
   final bool isReadOnly;
   final bool isSupport;
   final bool isEnableTakePhoto;
+  final List<String>? preTexts;
   final Function()? onSelectDoc;
 
   const KChatroom(
@@ -32,6 +34,7 @@ class KChatroom extends StatefulWidget {
     this.isSupport = false,
     this.isEnableTakePhoto = true,
     this.onSelectDoc,
+    this.preTexts,
   });
 
   @override
@@ -196,6 +199,24 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
       },
     );
 
+    final preTextView = widget.preTexts == null
+        ? null
+        : widget.preTexts!
+            .map<Widget>(
+              (text) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: InkWell(
+                  onTap: () {
+                    widget.controller.sendText(text);
+                  },
+                  child: Chip(
+                    label: Text(text),
+                  ),
+                ),
+              ),
+            )
+            .toList();
+
     final chatBody = SingleChildScrollView(
       controller: scrollCtrl,
       reverse: true,
@@ -205,6 +226,13 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
         mainAxisSize: MainAxisSize.min,
         children: [
           chatListing,
+          if (preTextView != null)
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: preTextView,
+              ),
+            ),
           if (widget.isReadOnly)
             Container(
               padding: EdgeInsets.all(10),

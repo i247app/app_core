@@ -9,7 +9,6 @@ class KGameController extends ValueNotifier<KGameData> {
     String? gameAppID,
     String? gameName,
     String? answerType,
-    int? levelCount,
     int? currentLevel,
     bool? isSpeechGame,
     bool? isCountTime,
@@ -18,7 +17,6 @@ class KGameController extends ValueNotifier<KGameData> {
           gameID: gameID,
           gameAppID: gameAppID,
           gameName: gameName,
-          levelCount: levelCount,
           currentLevel: currentLevel,
           isSpeechGame: isSpeechGame,
           answerType: answerType,
@@ -67,7 +65,9 @@ class KGameController extends ValueNotifier<KGameData> {
         response.games != null &&
         response.games!.length > 0) {
       this.value.game = response.games![0];
-      this.value.levelPlayTimes = List.filled(this.value.levelCount ?? 0, 0);
+      this.value.levelCount = this.value.game?.maxLevel ?? 0;
+      if (this.value.levelPlayTimes.length != (this.value.levelCount ?? 0)) this.value.levelPlayTimes = List.filled(this.value.levelCount ?? 0, 0);
+      if (this.value.rates.length != (this.value.levelCount ?? 0)) this.value.rates = List.filled(this.value.levelCount ?? 0, null);
       this.value.currentQuestionIndex = 0;
     } else {
       KSnackBarHelper.error("Can not get game data");

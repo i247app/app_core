@@ -267,8 +267,9 @@ abstract class KStyles {
         backgroundColor: palette.contrasting,
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: palette.primary,
-          foregroundColor: palette.contrasting),
+        backgroundColor: palette.schemePrimary,
+        foregroundColor: palette.contrasting,
+      ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           primary: palette.active,

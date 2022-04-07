@@ -36,6 +36,8 @@ class KGameData {
         (index) => (baseLevelHardness ?? 0) + (index * 0.1),
       );
 
+  List<int?> rates = [];
+
   List<double> get levelScrollSpeeds => List.generate(
     this.levelCount ?? 0,
         (index) => index * 0.1,

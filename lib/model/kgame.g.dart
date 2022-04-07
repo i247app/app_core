@@ -8,6 +8,7 @@ part of 'kgame.dart';
 
 KGame _$KGameFromJson(Map<String, dynamic> json) => KGame()
   ..gameID = json['gameID'] as String?
+  ..maxLevel = zzz_atoi(json['maxLevel'] as String?)
   ..gameAppID = json['gameAppID'] as String?
   ..gameCode = json['gameCode'] as String?
   ..title = json['title'] as String?
@@ -32,6 +33,7 @@ Map<String, dynamic> _$KGameToJson(KGame instance) {
   }
 
   writeNotNull('gameID', instance.gameID);
+  writeNotNull('maxLevel', zzz_itoa(instance.maxLevel));
   writeNotNull('gameAppID', instance.gameAppID);
   writeNotNull('gameCode', instance.gameCode);
   writeNotNull('title', instance.title);
