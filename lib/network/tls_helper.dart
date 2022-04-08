@@ -175,6 +175,7 @@ abstract class TLSHelper {
       "deviceNumber": () async => await KUtil.getDeviceID(),
       "locale": () async => KUtil.localeName(),
       "domain": () async => await KUtil.getPackageName(),
+      "countryCode": () async => await KSessionData.getCountryCode(),
     };
 
     // Build the _cachedDefaultReqData
@@ -190,6 +191,7 @@ abstract class TLSHelper {
       ..._cachedDefaultReqData,
       "reqID": "$reqID",
       "ktoken": KSessionData.getSessionToken(),
+      "countryCode": await KSessionData.getCountryCode(),
       "pushToken": await KSessionData.getFCMToken(),
       "voipToken": await KSessionData.getVoipToken(),
       "tokenMode": KUtil.getPushTokenMode(),

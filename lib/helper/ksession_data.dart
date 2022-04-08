@@ -2,6 +2,7 @@ import 'package:app_core/header/ksession_init_data.dart';
 import 'package:app_core/helper/kcall_kit_helper.dart';
 import 'package:app_core/helper/kfcm_helper.dart';
 import 'package:app_core/helper/khost_config.dart';
+import 'package:app_core/helper/klocation_helper.dart';
 import 'package:app_core/helper/kpref_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/helper/kstring_helper.dart';
@@ -14,9 +15,12 @@ import 'package:app_core/model/kuser.dart';
 import 'package:app_core/model/kuser_session.dart';
 import 'package:app_core/model/store.dart';
 import 'package:app_core/model/tutor.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 
 abstract class KSessionData {
   static String? kSessionToken;
+  static String? kCountryCode;
   static String? _fcmToken;
   static String? _voipToken;
   static KUserSession? kUserSession;
@@ -32,6 +36,29 @@ abstract class KSessionData {
       KSessionData.kSessionToken = sessionToken;
       KPrefHelper.put(KPrefHelper.KTOKEN, sessionToken);
     }
+  }
+
+  static void setCountryCode(String? countryCode) {
+    KSessionData.kCountryCode = countryCode;
+  }
+
+  static Future<String?> getCountryCode() async {
+    if (KStringHelper.isExist(kCountryCode)) {
+      return kCountryCode;
+    }
+    String? countryCode;
+    try {
+      Position? position = KLocationHelper.cachedPosition;
+      if (position != null) {
+        List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+        countryCode = placemarks.first.isoCountryCode;
+      }
+    } catch(ex) {}
+
+    if (KStringHelper.isExist(countryCode)) {
+      setCountryCode(countryCode);
+    }
+    return countryCode;
   }
 
   static Future<void> clearSessionToken() async {
@@ -64,6 +91,9 @@ abstract class KSessionData {
 
   /// Setup the session data
   static void setup(KSessionInitData data) {
+    try {
+      getCountryCode();
+    } catch(ex) {}
     if (data.initSessionToken != null) {
       KSessionData.setSessionToken(data.initSessionToken);
       KSessionData.setUserSession(data.initUserSession);
