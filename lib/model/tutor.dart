@@ -11,6 +11,11 @@ part 'tutor.g.dart';
 class Tutor extends KUser {
   static const String TUTOR_ID = "tutorID";
   static const String IS_ONLINE = "isOnline";
+
+  static const String IS_IN_PERSON = "isInPerson";
+  static const String IS_HEADSTART = "isHeadstart";
+  static const String IS_ENGLISH = "isEnglish";
+
   static const String GIG_COUNT = "gigCount";
 
   static const String STATUS_PENDING = "P";
@@ -23,6 +28,9 @@ class Tutor extends KUser {
   static const String ACTION_ACTIVATE = "ACTIVATE";
   static const String ACTION_ALERT = "ALERT";
   static const String ACTION_OFFLINE = "OFFLINE";
+  static const String ACTION_IN_PERSON = "IN_PERSON";
+  static const String ACTION_HEADSTART = "HEADSTART";
+  static const String ACTION_ENGLISH = "ENGLISH";
 
   @JsonKey(name: "rating")
   Review? review;
@@ -35,6 +43,15 @@ class Tutor extends KUser {
 
   @JsonKey(name: IS_ONLINE)
   bool? isOnline;
+
+  @JsonKey(name: IS_IN_PERSON)
+  bool? isInPerson;
+
+  @JsonKey(name: IS_HEADSTART)
+  bool? isHeadstart;
+
+  @JsonKey(name: IS_ENGLISH)
+  bool? isEnglish;
 
   @JsonKey(name: "tutorStatus")
   String? tutorStatus;
