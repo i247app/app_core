@@ -97,6 +97,12 @@ abstract class KPhrases {
 
   static String get hi => _klingo.yak("hi");
 
+  static String get locationPermissionDialogTitle =>
+      _klingo.yak("loc_perm_title");
+
+  static String get locationPermissionDialogBody =>
+      _klingo.yak("loc_perm_body");
+
   static String get emailAlreadyUsed => _klingo.yak("email_already_used");
 
   static String get phoneAlreadyUsed => _klingo.yak("phone_already_used");
