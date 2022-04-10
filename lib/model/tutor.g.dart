@@ -76,6 +76,9 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..tutorID = json['tutorID'] as String?
   ..gigCount = json['gigCount'] as String?
   ..isOnline = json['isOnline'] as bool?
+  ..isInPerson = json['isInPerson'] as bool?
+  ..isHeadstart = json['isHeadstart'] as bool?
+  ..isEnglish = json['isEnglish'] as bool?
   ..tutorStatus = json['tutorStatus'] as String?
   ..userType = json['userType'] as String?
   ..userTags = (json['userTags'] as List<dynamic>?)
@@ -156,6 +159,9 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('tutorID', instance.tutorID);
   writeNotNull('gigCount', instance.gigCount);
   writeNotNull('isOnline', instance.isOnline);
+  writeNotNull('isInPerson', instance.isInPerson);
+  writeNotNull('isHeadstart', instance.isHeadstart);
+  writeNotNull('isEnglish', instance.isEnglish);
   writeNotNull('tutorStatus', instance.tutorStatus);
   writeNotNull('userType', instance.userType);
   writeNotNull('userTags', instance.userTags?.map((e) => e.toJson()).toList());
