@@ -114,6 +114,8 @@ class _KGameConsoleState extends State<KGameConsole>
 
   int get levelCount => gameData.levelCount ?? 0;
 
+  int get maxLevel => gameData.maxLevel ?? 0;
+
   int get rightAnswerCount => gameData.rightAnswerCount ?? 0;
 
   int get eggReceive => gameData.eggReceive ?? 0;
@@ -608,8 +610,22 @@ class _KGameConsoleState extends State<KGameConsole>
       ..score = "${isShowTimer() ? levelPlayTimes[currentLevel] : point}";
     widget.controller.value.rates[currentLevel] =
         ((rightAnswerCount / questions.length) * 3).floor();
-    print(currentLevel);
-    print(widget.controller.value.rates);
+
+    if (maxLevel == 0 && currentLevel + 1 == levelCount) {
+      widget.controller.value.levelCount =
+          (widget.controller.value.levelCount ?? 0) + 1;
+      widget.controller.value.levelPlayTimes.add(0);
+      widget.controller.value.rates.add(null);
+      this.setState(() {
+        levelIconAssets.add([
+          KAssets.BULLET_BALL_GREEN,
+          KAssets.BULLET_BALL_BLUE,
+          KAssets.BULLET_BALL_ORANGE,
+          KAssets.BULLET_BALL_RED,
+        ][Math.Random().nextInt(4)]);
+      });
+    }
+
     widget.controller.notify();
 
     if (!canAdvance) {
@@ -876,6 +892,8 @@ class _KGameConsoleState extends State<KGameConsole>
   bool isShowTimer() {
     switch (gameID) {
       case KGameShooting.GAME_ID:
+      case KGameWordFortune.GAME_ID:
+      case KGameWord.GAME_ID:
         return false;
       case KGameMovingTap.GAME_ID:
       case KGameLetterTap.GAME_ID:

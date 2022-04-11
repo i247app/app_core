@@ -64,10 +64,14 @@ class KGameController extends ValueNotifier<KGameData> {
     if (response.isSuccess &&
         response.games != null &&
         response.games!.length > 0) {
+
       this.value.game = response.games![0];
-      this.value.levelCount = this.value.game?.maxLevel ?? 0;
-      if (this.value.levelPlayTimes.length != (this.value.levelCount ?? 0)) this.value.levelPlayTimes = List.filled(this.value.levelCount ?? 0, 0);
-      if (this.value.rates.length != (this.value.levelCount ?? 0)) this.value.rates = List.filled(this.value.levelCount ?? 0, null);
+      if (this.value.currentLevel == 0) {
+        this.value.maxLevel = this.value.game?.maxLevel ?? 0;
+        this.value.levelCount = (this.value.maxLevel ?? 0) > 0 ? this.value.maxLevel : 1;
+        if (this.value.levelPlayTimes.length != (this.value.levelCount ?? 0)) this.value.levelPlayTimes = List.generate(this.value.levelCount ?? 0, (_) => 0);
+        if (this.value.rates.length != (this.value.levelCount ?? 0)) this.value.rates = List.generate(this.value.levelCount ?? 0, (_) => null);
+      }
       this.value.currentQuestionIndex = 0;
     } else {
       KSnackBarHelper.error("Can not get game data");

@@ -194,7 +194,6 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                           currentLevel: 0,
                           answerType: 'word',
                           isUniqueAnswer: true,
-                          // isCountTime: true,
                         ),
                       ),
                     )),

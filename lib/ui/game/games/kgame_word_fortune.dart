@@ -358,7 +358,7 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
       this._spinAnimationController.forward();
 
       widget.controller.value.result = false;
-      widget.controller.value.point = point > 0 ? point - 1 : 0;
+      // widget.controller.value.point = point > 0 ? point - 1 : 0;
       if (this.selectedWordIndex.where((item) => item != null).length + 1 <
               this.correctAnswer.length &&
           wrongCount >= wrongCountShowHint) {
@@ -383,8 +383,8 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
 
     Future.delayed(Duration(milliseconds: 250), () {
       widget.controller.value.result = true;
-      widget.controller.value.point = point + 5;
       if (!isWrongAnswer) {
+        widget.controller.value.point = point + correctAnswer.length;
         widget.controller.value.rightAnswerCount = rightAnswerCount + 1;
         this.setState(() {
           isShowStar = true;
