@@ -201,7 +201,7 @@ abstract class TLSHelper {
 
     if (KLocationHelper.cachedPosition != null) {
       data["latLng"] = KLatLng.fromPosition(KLocationHelper.cachedPosition!);
-      data["coutryCode"] = await KSessionData.getCountryCode();
+      data["countryCode"] = await KSessionData.getCountryCode();
     }
 
     return {...data, "metadata": data};
