@@ -1419,25 +1419,43 @@ class _KGameConsoleState extends State<KGameConsole>
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4),
-                child: GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 3,
-                  reverse: true,
-                  children: List.generate(eggReceive, (index) {
-                    return Padding(
-                      padding: EdgeInsets.only(top: 4),
-                      child: Image.asset(
-                        KAssets.IMG_EGG,
-                        width: 32,
-                        height: 32,
-                        package: 'app_core',
+              if (eggReceive > 0)
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 4),
+                        child: Image.asset(
+                          KAssets.IMG_EGG,
+                          width: 32,
+                          height: 32,
+                          package: 'app_core',
+                        ),
                       ),
-                    );
-                  }),
+                      SizedBox(width: 4,),
+                      Text(
+                        "x",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(width: 4,),
+                      Text(
+                        "${eggReceive}",
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
               Image.asset(
                 KAssets.IMG_NEST,
                 fit: BoxFit.fitWidth,
@@ -1448,6 +1466,46 @@ class _KGameConsoleState extends State<KGameConsole>
         ),
       ),
     );
+    // final eggReceiveBox = Align(
+    //   alignment: Alignment(-1, 1),
+    //   child: Container(
+    //     width: MediaQuery.of(context).size.width * 0.3,
+    //     height: MediaQuery.of(context).size.height * 0.5,
+    //     child: Padding(
+    //       padding: EdgeInsets.symmetric(horizontal: 10),
+    //       child: Column(
+    //         crossAxisAlignment: CrossAxisAlignment.end,
+    //         mainAxisAlignment: MainAxisAlignment.end,
+    //         children: [
+    //           Padding(
+    //             padding: EdgeInsets.symmetric(horizontal: 4),
+    //             child: GridView.count(
+    //               shrinkWrap: true,
+    //               crossAxisCount: 3,
+    //               reverse: true,
+    //               children: List.generate(eggReceive, (index) {
+    //                 return Padding(
+    //                   padding: EdgeInsets.only(top: 4),
+    //                   child: Image.asset(
+    //                     KAssets.IMG_EGG,
+    //                     width: 32,
+    //                     height: 32,
+    //                     package: 'app_core',
+    //                   ),
+    //                 );
+    //               }),
+    //             ),
+    //           ),
+    //           Image.asset(
+    //             KAssets.IMG_NEST,
+    //             fit: BoxFit.fitWidth,
+    //             package: 'app_core',
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    // );
 
     final languageSelect = Align(
       alignment: Alignment.center,
