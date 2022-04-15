@@ -60,7 +60,7 @@
   "invalid_security_code": "Invalid Security Code",
   "security_code_expired": "Security Code Expired",
   "loc_perm_title": "Location Access",
-  "loc_perm_body": "This app collects location data to enable finding nearby promotion even when the app is closed or not in use or in background. Without this core feature, the app is broken or rendered unusable.",
+  "loc_perm_body": "Location data collected for matching nearby providers with customers. Without this core feature, the app is rendered unusable.",
   "min_6_chars": "Must be at least 6 chars",
   "sign_up_country": "What country do you live in?",
   "phone_for_verify": "For account verification and recovery",

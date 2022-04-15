@@ -10,6 +10,7 @@ class KGameData {
   String? answerType;
   String? language;
   int? levelCount;
+  int? maxLevel;
   int? currentLevel;
   KGame? game;
   KGameScore? score;

@@ -22,7 +22,9 @@ abstract class KPrefHelper {
 
   static late final _PrefAdapter _instance = _PrefAdapter();
 
-  static bool get isDebugMode => !KHostConfig.isReleaseMode;
+  // static bool get isDebugMode => !KHostConfig.isReleaseMode;
+
+  static bool get isDebugMode => KHostConfig.isReleaseMode;
 
   static Future<void> put(String key, dynamic value) async {
     await _instance.put(key, jsonEncode(value));

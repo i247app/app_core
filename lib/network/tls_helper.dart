@@ -39,10 +39,11 @@ abstract class TLSHelper {
     Map<String, dynamic> inputData, {
     KHostInfo? hostInfo,
     bool isAuthed = true,
+    bool isDebug = false,
   }) async {
     final int reqID = _reqCount++;
     final String apiName = "${inputData['svc']}:${inputData['req']}";
-
+    print(apiName);
     hostInfo ??= KHostConfig.hostInfo;
 
     KSocketResource? socketResource;
@@ -64,14 +65,15 @@ abstract class TLSHelper {
       final List<int> raw =
           await writeToSocket(socketResource, utf8.encode(json));
       answer = utf8.decode(raw, allowMalformed: false);
-
-      _log(
-        reqID,
-        "CLIENT [${hostInfo.nickname}]",
-        apiName,
-        json,
-        ignoreBlacklist: true,
-      );
+      if (isDebug) {
+        _log(
+          reqID,
+          "CLIENT [${hostInfo.nickname}]",
+          apiName,
+          json,
+          ignoreBlacklist: true,
+        );
+      }
 
       // Test JSON for validity
       decodedAnswer = jsonDecode(answer);
@@ -105,14 +107,15 @@ abstract class TLSHelper {
           KSocketManager.releaseSocket(socketResource);
       } catch (e) {}
     }
-
-    _log(
-      reqID,
-      "SERVER [${hostInfo.nickname}]",
-      apiName,
-      answer,
-      ignoreBlacklist: false,
-    );
+    if (isDebug) {
+      _log(
+        reqID,
+        "SERVER [${hostInfo.nickname}]",
+        apiName,
+        answer,
+        ignoreBlacklist: false,
+      );
+    }
 
     // Store response token if local one is different
     final result = decodedAnswer ?? jsonDecode(answer);
@@ -191,14 +194,15 @@ abstract class TLSHelper {
       ..._cachedDefaultReqData,
       "reqID": "$reqID",
       "ktoken": KSessionData.getSessionToken(),
-      "countryCode": await KSessionData.getCountryCode(),
       "pushToken": await KSessionData.getFCMToken(),
       "voipToken": await KSessionData.getVoipToken(),
       "tokenMode": KUtil.getPushTokenMode(),
-      "latLng": (KLocationHelper.cachedPosition == null
-          ? null
-          : KLatLng.fromPosition(KLocationHelper.cachedPosition!)),
     };
+
+    if (KLocationHelper.cachedPosition != null) {
+      data["latLng"] = KLatLng.fromPosition(KLocationHelper.cachedPosition!);
+      data["countryCode"] = await KSessionData.getCountryCode();
+    }
 
     return {...data, "metadata": data};
   }
@@ -218,12 +222,10 @@ abstract class TLSHelper {
 
   static void _log(int reqID, String tag, String apiName, String message,
       {bool ignoreBlacklist = false}) {
-    if (!KHostConfig.isReleaseMode) {
-      String displayMessage = logBlacklist.contains(apiName) && !ignoreBlacklist
-          ? compactLog(message)
-          : KUtil.prettyJSON(message);
-      debugPrint('[$reqID] $tag $apiName - $displayMessage');
-    }
+    String displayMessage = logBlacklist.contains(apiName) && !ignoreBlacklist
+        ? compactLog(message)
+        : KUtil.prettyJSON(message);
+    debugPrint('[$reqID] $tag $apiName - $displayMessage');
   }
 
   static Future<List<int>> writeToSocket(

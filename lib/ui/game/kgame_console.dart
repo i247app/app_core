@@ -114,6 +114,8 @@ class _KGameConsoleState extends State<KGameConsole>
 
   int get levelCount => gameData.levelCount ?? 0;
 
+  int get maxLevel => gameData.maxLevel ?? 0;
+
   int get rightAnswerCount => gameData.rightAnswerCount ?? 0;
 
   int get eggReceive => gameData.eggReceive ?? 0;
@@ -608,8 +610,22 @@ class _KGameConsoleState extends State<KGameConsole>
       ..score = "${isShowTimer() ? levelPlayTimes[currentLevel] : point}";
     widget.controller.value.rates[currentLevel] =
         ((rightAnswerCount / questions.length) * 3).floor();
-    print(currentLevel);
-    print(widget.controller.value.rates);
+
+    if (maxLevel == 0 && currentLevel + 1 == levelCount) {
+      widget.controller.value.levelCount =
+          (widget.controller.value.levelCount ?? 0) + 1;
+      widget.controller.value.levelPlayTimes.add(0);
+      widget.controller.value.rates.add(null);
+      this.setState(() {
+        levelIconAssets.add([
+          KAssets.BULLET_BALL_GREEN,
+          KAssets.BULLET_BALL_BLUE,
+          KAssets.BULLET_BALL_ORANGE,
+          KAssets.BULLET_BALL_RED,
+        ][Math.Random().nextInt(4)]);
+      });
+    }
+
     widget.controller.notify();
 
     if (!canAdvance) {
@@ -876,6 +892,8 @@ class _KGameConsoleState extends State<KGameConsole>
   bool isShowTimer() {
     switch (gameID) {
       case KGameShooting.GAME_ID:
+      case KGameWordFortune.GAME_ID:
+      case KGameWord.GAME_ID:
         return false;
       case KGameMovingTap.GAME_ID:
       case KGameLetterTap.GAME_ID:
@@ -1401,25 +1419,43 @@ class _KGameConsoleState extends State<KGameConsole>
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 4),
-                child: GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 3,
-                  reverse: true,
-                  children: List.generate(eggReceive, (index) {
-                    return Padding(
-                      padding: EdgeInsets.only(top: 4),
-                      child: Image.asset(
-                        KAssets.IMG_EGG,
-                        width: 32,
-                        height: 32,
-                        package: 'app_core',
+              if (eggReceive > 0)
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(top: 4),
+                        child: Image.asset(
+                          KAssets.IMG_EGG,
+                          width: 32,
+                          height: 32,
+                          package: 'app_core',
+                        ),
                       ),
-                    );
-                  }),
+                      SizedBox(width: 4,),
+                      Text(
+                        "x",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(width: 4,),
+                      Text(
+                        "${eggReceive}",
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
               Image.asset(
                 KAssets.IMG_NEST,
                 fit: BoxFit.fitWidth,
@@ -1430,6 +1466,46 @@ class _KGameConsoleState extends State<KGameConsole>
         ),
       ),
     );
+    // final eggReceiveBox = Align(
+    //   alignment: Alignment(-1, 1),
+    //   child: Container(
+    //     width: MediaQuery.of(context).size.width * 0.3,
+    //     height: MediaQuery.of(context).size.height * 0.5,
+    //     child: Padding(
+    //       padding: EdgeInsets.symmetric(horizontal: 10),
+    //       child: Column(
+    //         crossAxisAlignment: CrossAxisAlignment.end,
+    //         mainAxisAlignment: MainAxisAlignment.end,
+    //         children: [
+    //           Padding(
+    //             padding: EdgeInsets.symmetric(horizontal: 4),
+    //             child: GridView.count(
+    //               shrinkWrap: true,
+    //               crossAxisCount: 3,
+    //               reverse: true,
+    //               children: List.generate(eggReceive, (index) {
+    //                 return Padding(
+    //                   padding: EdgeInsets.only(top: 4),
+    //                   child: Image.asset(
+    //                     KAssets.IMG_EGG,
+    //                     width: 32,
+    //                     height: 32,
+    //                     package: 'app_core',
+    //                   ),
+    //                 );
+    //               }),
+    //             ),
+    //           ),
+    //           Image.asset(
+    //             KAssets.IMG_NEST,
+    //             fit: BoxFit.fitWidth,
+    //             package: 'app_core',
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    // );
 
     final languageSelect = Align(
       alignment: Alignment.center,

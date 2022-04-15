@@ -170,5 +170,7 @@
   "math": "Toán",
   "english": "Tiếng anh",
   "headstart_documents": "Tài liệu học trước",
-  "class_documents": "Tài liệu học"
+  "class_documents": "Tài liệu học",
+  "loc_perm_title": "Cài đặt vị trí",
+  "loc_perm_body": "Ứng dụng thu thập vị trí để nhằn mục đích tìm xung quanh."
 }
