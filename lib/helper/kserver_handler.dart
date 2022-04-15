@@ -12,7 +12,6 @@ import 'package:app_core/model/kquestion.dart';
 import 'package:app_core/model/lop_schedule.dart';
 import 'package:app_core/model/response/chat_add_members_response.dart';
 import 'package:app_core/model/response/chat_remove_members_response.dart';
-import 'package:app_core/model/response/share_doc_old_response.dart';
 import 'package:app_core/model/response/credit_transfer_response.dart';
 import 'package:app_core/model/response/get_balances_response.dart';
 import 'package:app_core/model/response/get_business_response.dart';
