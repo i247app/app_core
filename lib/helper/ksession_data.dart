@@ -178,7 +178,7 @@ abstract class KSessionData {
 
   static String get activeStoreID => activeStore?.storeID ?? "";
 
-  static bool get isAdmin => userSession?.isAdminReady ?? false;
+  static bool get isAdmin => userSession?.isDomainAdminReady ?? false;
 
   static bool get isBizAdmin =>
       isBusinessMode && activeMember?.role == BusinessMember.ROLE_ADMIN;
