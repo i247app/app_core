@@ -25,10 +25,11 @@ KUserSession _$KUserSessionFromJson(Map<String, dynamic> json) => KUserSession()
   ..hostData = json['hostData'] == null
       ? null
       : KSystemHostData.fromJson(json['hostData'] as Map<String, dynamic>)
-  ..isAdminReady = json['isAdminReady'] as bool?
   ..isTutorReady = json['isTutorReady'] as bool?
   ..isBizReady = json['isBizReady'] as bool?
   ..isCusupReady = json['isCUSUPReady'] as bool?
+  ..isDomainAdminReady = json['isDomainAdminReady'] as bool?
+  ..isAdminReady = json['isAdminReady'] as bool?
   ..isSuperAdmin = json['isSuperAdmin'] as bool?
   ..business = json['business'] == null
       ? null
@@ -54,10 +55,11 @@ Map<String, dynamic> _$KUserSessionToJson(KUserSession instance) {
   writeNotNull('user', instance.user?.toJson());
   writeNotNull('tutor', instance.tutor?.toJson());
   writeNotNull('hostData', instance.hostData?.toJson());
-  writeNotNull('isAdminReady', instance.isAdminReady);
   writeNotNull('isTutorReady', instance.isTutorReady);
   writeNotNull('isBizReady', instance.isBizReady);
   writeNotNull('isCUSUPReady', instance.isCusupReady);
+  writeNotNull('isDomainAdminReady', instance.isDomainAdminReady);
+  writeNotNull('isAdminReady', instance.isAdminReady);
   writeNotNull('isSuperAdmin', instance.isSuperAdmin);
   writeNotNull('business', instance.business?.toJson());
   writeNotNull('businessMembers',
