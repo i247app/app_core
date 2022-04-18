@@ -105,6 +105,7 @@ class _KTwoFactorState extends State<KTwoFactor> {
       Navigator.of(context).pop(kpin);
     } else if (response.kstatus == 415) {
       setState(() {
+        keyboardMode = KNumberPadMode.NUMBER;
         pinController.clear();
         responseKpin = null;
         notice =
@@ -112,6 +113,7 @@ class _KTwoFactorState extends State<KTwoFactor> {
       });
     } else {
       setState(() {
+        keyboardMode = KNumberPadMode.NUMBER;
         pinController.clear();
         responseKpin = null;
         notice =
@@ -206,6 +208,9 @@ class _KTwoFactorState extends State<KTwoFactor> {
       onTextChange: (pin) {
         if (pin.length == KTwoFactor.PIN_LENGTH &&
             ModalRoute.of(context)!.isCurrent) {
+          setState(() {
+            keyboardMode = KNumberPadMode.NONE;
+          });
           submit(pin);
         }
       },
