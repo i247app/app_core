@@ -122,7 +122,9 @@ class _WalletHomeState extends State<WalletHome> {
   }
 
   void xfrProxiesListener() async {
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void balanceTokenListener() async {
@@ -132,23 +134,29 @@ class _WalletHomeState extends State<WalletHome> {
   Future loadTransactions() async {
     KBalance? bal = currentBalance;
     if (bal == null) {
-      setState(() => _transactionsResponse = null);
+      if (mounted) {
+        setState(() => _transactionsResponse = null);
+      }
     } else {
       final response = await KServerHandler.getCreditTransactions(
         tokenName: bal.tokenName ?? "",
         proxyPUID: xfrRoleCtrl.value?.buid,
       );
-      setState(() => _transactionsResponse = response);
+      if (mounted) {
+        setState(() => _transactionsResponse = response);
+      }
     }
   }
 
   Future loadBalances() async {
     final response = await KServerHandler.getCreditBalances(
         proxyPUID: xfrRoleCtrl.value?.buid);
+
     if (mounted) {
       setState(() => _balancesResponse = response);
 
       setState(() => isLoaded = false);
+
       try {
         final hasInitialToken = proxyFilteredBalances
             .where((b) => b.tokenName == tokenToLookFor)
@@ -161,8 +169,8 @@ class _WalletHomeState extends State<WalletHome> {
       } catch (e) {
         print(e.toString());
       }
+      setState(() => isLoaded = true);
     }
-    setState(() => isLoaded = true);
   }
 
   void onTransactionClick(KCreditTransaction transaction) async =>
