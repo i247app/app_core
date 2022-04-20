@@ -27,6 +27,7 @@ BusinessMember _$BusinessMemberFromJson(Map<String, dynamic> json) =>
       ..kunm = json['kunm'] as String?
       ..phone = json['fone'] as String?
       ..phoneCode = json['foneCode'] as String?
+      ..fullAddress = json['fullAddressLine'] as String?
       ..email = json['email'] as String?
       ..dob = zzz_str2Date(json['dob'] as String?)
       ..parentName = json['parentName'] as String?
@@ -108,6 +109,7 @@ Map<String, dynamic> _$BusinessMemberToJson(BusinessMember instance) {
   writeNotNull('kunm', instance.kunm);
   writeNotNull('fone', instance.phone);
   writeNotNull('foneCode', instance.phoneCode);
+  writeNotNull('fullAddressLine', instance.fullAddress);
   writeNotNull('email', instance.email);
   writeNotNull('dob', zzz_date2Str(instance.dob));
   writeNotNull('parentName', instance.parentName);
