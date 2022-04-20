@@ -20,6 +20,9 @@ class KUser extends KObject {
   @JsonKey(name: "foneCode")
   String? phoneCode;
 
+  @JsonKey(name: "fullAddressLine")
+  String? fullAddress;
+
   @JsonKey(name: "email")
   String? email;
 
