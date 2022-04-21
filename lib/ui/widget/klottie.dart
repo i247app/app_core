@@ -1,3 +1,4 @@
+import 'package:app_core/helper/klottie_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -19,17 +20,33 @@ class KLottie extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Lottie.network(
-      this.url,
-      width: width,
-      height: height,
-      fit: fit,
-      errorBuilder: (context, error, stackTrace) => Lottie.asset(
-        this.errorAsset,
+    final cachedBytes = KLottieCache.get(url);
+    if (cachedBytes != null) {
+      return Lottie.memory(
+        cachedBytes,
         width: width,
         height: height,
         fit: fit,
-      ),
-    );
+        errorBuilder: (context, error, stackTrace) => Lottie.asset(
+          this.errorAsset,
+          width: width,
+          height: height,
+          fit: fit,
+        ),
+      );
+    } else {
+      return Lottie.network(
+        this.url,
+        width: width,
+        height: height,
+        fit: fit,
+        errorBuilder: (context, error, stackTrace) => Lottie.asset(
+          this.errorAsset,
+          width: width,
+          height: height,
+          fit: fit,
+        ),
+      );
+    }
   }
 }
