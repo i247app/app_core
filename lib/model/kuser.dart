@@ -162,6 +162,17 @@ class KUser extends KObject {
           fnm: firstName ?? "", mnm: middleName ?? "", lnm: lastName ?? "") ??
       phone;
 
+  String? get prettyAddress {
+    final address = [
+      address1,
+      address2,
+      city,
+      state,
+      zip,
+    ].where((e) => e != null).join(", ");
+    return address.isEmpty ? null : address;
+  }
+
   String get prettyFone =>
       KUtil.prettyFone(foneCode: phoneCode ?? "", number: phone ?? "");
 
