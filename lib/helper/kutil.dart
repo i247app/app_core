@@ -17,6 +17,9 @@ import 'package:intl/intl.dart';
 import 'package:package_info/package_info.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
+import '../model/kaddress.dart';
+import '../model/kgig_address.dart';
+
 abstract class KUtil {
   static Random? _random = Random();
   static String? _buildVersion;
@@ -119,6 +122,29 @@ abstract class KUtil {
         z = "";
         break;
     }
+    return z;
+  }
+
+  // static String? prettyAddressLine(String addressLine1, String addressLine2, String ward, String district) {
+  static String? prettyGigAddressLine(KGigAddress address) {
+    String? z;
+
+    if (!KStringHelper.isEmpty(address.addressLine1)) {
+      z = (z ?? "") + address.addressLine1!;
+    }
+
+    if (!KStringHelper.isEmpty(address.addressLine2)) {
+      z = (z ?? "") + ", ${address.addressLine2}";
+    }
+
+    if (!KStringHelper.isEmpty(address.ward)) {
+      z = (z ?? "") + ", ${address.ward}";
+    }
+
+    if (!KStringHelper.isEmpty(address.district)) {
+      z = (z ?? "") + ", ${address.district}";
+    }
+
     return z;
   }
 
