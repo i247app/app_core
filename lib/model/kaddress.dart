@@ -69,6 +69,24 @@ class KAddress {
   @JsonKey(name: ADDRESS_STATUS)
   String? addressStatus;
 
+  String get area {
+    final address = [
+      ward,
+      district,
+      city,
+    ].where((e) => e != null).join(", ");
+    return address;
+  }
+
+  String get prettyAddress {
+    final area = this.area;
+    if (area.contains(this.addressLine1 ?? "")) {
+      return area;
+    } else {
+      return "${this.addressLine1}, $area";
+    }
+  }
+
   @JsonKey(name: LAT_LNG)
   KLatLng? latLng;
 

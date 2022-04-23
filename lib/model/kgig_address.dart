@@ -1,10 +1,11 @@
 import 'package:app_core/app_core.dart';
+import 'package:app_core/model/kaddress.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'kgig_address.g.dart';
 
 @JsonSerializable()
-class KGigAddress {
+class KGigAddress extends KAddress {
   static const String TYPE_HOME = "HOME";
   static const String KEY = "address";
   static const String ADDRESS_ID = "addressID";
@@ -26,12 +27,6 @@ class KGigAddress {
   static const String LOCATION_TYPE = "locationType";
   static const String LOCATION_NUMBER = "locationNumber";
   static const String PLACE_ID = "placeID";
-
-  @JsonKey(name: ADDRESS_ID)
-  String? addressID;
-
-  @JsonKey(name: PUID)
-  String? puid;
 
   @JsonKey(name: GIGID)
   String? gigID;
