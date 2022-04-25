@@ -66,6 +66,12 @@ class KUser extends KObject {
   @JsonKey(name: "zipCode")
   String? zip;
 
+  @JsonKey(name: "ward")
+  String? ward;
+
+  @JsonKey(name: "district")
+  String? district;
+
   @JsonKey(name: "countryCode")
   String? countryCode;
 
@@ -162,15 +168,22 @@ class KUser extends KObject {
           fnm: firstName ?? "", mnm: middleName ?? "", lnm: lastName ?? "") ??
       phone;
 
-  String? get prettyAddress {
+  String get area {
     final address = [
-      address1,
-      address2,
+      ward,
+      district,
       city,
-      state,
-      zip,
     ].where((e) => e != null).join(", ");
-    return address.isEmpty ? null : address;
+    return address;
+  }
+
+  String get prettyAddress {
+    final area = this.area;
+    if (area.contains(this.address1 ?? "")) {
+      return area;
+    } else {
+      return "${this.address1}, $area";
+    }
   }
 
   String get prettyFone =>
