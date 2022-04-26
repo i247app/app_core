@@ -124,4 +124,6 @@ abstract class KPhrases {
   static String get math => _klingo.yak("math");
 
   static String get english => _klingo.yak("english");
+
+  static String get vietnamese => _klingo.yak("vietnamese");
 }

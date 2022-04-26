@@ -38,12 +38,14 @@ class _KDocPickerState extends State<KDocPicker> {
   List<Chapter> chapters = [];
   Map<String, List<Textbook>> textbookMap = {
     KPhrases.math: [],
-    KPhrases.english: []
+    KPhrases.english: [],
+    KPhrases.vietnamese: []
   };
 
   Map<String, List<String>> gradeMap = {
     KPhrases.math: [],
-    KPhrases.english: []
+    KPhrases.english: [],
+    KPhrases.vietnamese: []
   };
 
   Widget? pickerView;
@@ -78,6 +80,7 @@ class _KDocPickerState extends State<KDocPicker> {
       List<Map<String, List<String>>> subjects = [
         {KPhrases.math: grades},
         {KPhrases.english: grades},
+        {KPhrases.vietnamese: grades},
       ];
 
       var selected = [0, 0];
