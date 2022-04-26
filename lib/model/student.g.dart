@@ -41,6 +41,8 @@ Student _$StudentFromJson(Map<String, dynamic> json) => Student()
   ..city = json['city'] as String?
   ..state = json['stateCode'] as String?
   ..zip = json['zipCode'] as String?
+  ..ward = json['ward'] as String?
+  ..district = json['district'] as String?
   ..countryCode = json['countryCode'] as String?
   ..displayImg = json['displayImg'] as String?
   ..avatarURL = json['avatar'] as String?
@@ -121,6 +123,8 @@ Map<String, dynamic> _$StudentToJson(Student instance) {
   writeNotNull('city', instance.city);
   writeNotNull('stateCode', instance.state);
   writeNotNull('zipCode', instance.zip);
+  writeNotNull('ward', instance.ward);
+  writeNotNull('district', instance.district);
   writeNotNull('countryCode', instance.countryCode);
   writeNotNull('displayImg', instance.displayImg);
   writeNotNull('avatar', instance.avatarURL);
