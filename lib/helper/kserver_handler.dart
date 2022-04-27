@@ -399,7 +399,7 @@ abstract class KServerHandler {
       "ktoken": ktoken,
       "tag": tag,
     };
-    return TLSHelper.send(params, isDebug: true)
+    return TLSHelper.send(params)
         .then((data) => ResumeSessionResponse.fromJson(data));
   }
 
