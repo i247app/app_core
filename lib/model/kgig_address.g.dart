@@ -9,11 +9,8 @@ part of 'kgig_address.dart';
 KGigAddress _$KGigAddressFromJson(Map<String, dynamic> json) => KGigAddress()
   ..addressID = json['addressID'] as String?
   ..puid = json['puid'] as String?
-  ..gigID = json['gigID'] as String?
   ..placeID = json['placeID'] as String?
   ..addressType = json['addressType'] as String?
-  ..locationType = json['locationType'] as String?
-  ..locationNumber = json['locationNumber'] as String?
   ..addressLine1 = json['addressLine1'] as String?
   ..addressLine2 = json['addressLine2'] as String?
   ..fullAddressLine = json['fullAddressLine'] as String?
@@ -27,7 +24,10 @@ KGigAddress _$KGigAddressFromJson(Map<String, dynamic> json) => KGigAddress()
   ..addressStatus = json['addressStatus'] as String?
   ..latLng = json['latLng'] == null
       ? null
-      : KLatLng.fromJson(json['latLng'] as Map<String, dynamic>);
+      : KLatLng.fromJson(json['latLng'] as Map<String, dynamic>)
+  ..gigID = json['gigID'] as String?
+  ..locationType = json['locationType'] as String?
+  ..locationNumber = json['locationNumber'] as String?;
 
 Map<String, dynamic> _$KGigAddressToJson(KGigAddress instance) {
   final val = <String, dynamic>{};
@@ -40,11 +40,8 @@ Map<String, dynamic> _$KGigAddressToJson(KGigAddress instance) {
 
   writeNotNull('addressID', instance.addressID);
   writeNotNull('puid', instance.puid);
-  writeNotNull('gigID', instance.gigID);
   writeNotNull('placeID', instance.placeID);
   writeNotNull('addressType', instance.addressType);
-  writeNotNull('locationType', instance.locationType);
-  writeNotNull('locationNumber', instance.locationNumber);
   writeNotNull('addressLine1', instance.addressLine1);
   writeNotNull('addressLine2', instance.addressLine2);
   writeNotNull('fullAddressLine', instance.fullAddressLine);
@@ -57,5 +54,8 @@ Map<String, dynamic> _$KGigAddressToJson(KGigAddress instance) {
   writeNotNull('countryCode', instance.countryCode);
   writeNotNull('addressStatus', instance.addressStatus);
   writeNotNull('latLng', instance.latLng?.toJson());
+  writeNotNull('gigID', instance.gigID);
+  writeNotNull('locationType', instance.locationType);
+  writeNotNull('locationNumber', instance.locationNumber);
   return val;
 }

@@ -178,6 +178,9 @@ class KUser extends KObject {
   }
 
   String get prettyAddress {
+    if ((this.addresses?.length ?? 0) > 0) {
+      return this.addresses!.first.prettyAddress;
+    }
     final area = this.area;
     if (area.contains(this.address1 ?? "")) {
       return area;
