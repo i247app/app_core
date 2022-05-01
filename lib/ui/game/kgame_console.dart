@@ -23,6 +23,7 @@ import 'package:app_core/ui/game/games/kgame_word.dart';
 import 'package:app_core/ui/game/games/kgame_word_fortune.dart';
 import 'package:app_core/ui/game/service/kgame_controller.dart';
 import 'package:app_core/ui/game/service/kgame_data.dart';
+import 'package:app_core/ui/game/widget/kgame_level_end_dialog.dart';
 import 'package:app_core/ui/game/widget/kgame_level_map.dart';
 import 'package:app_core/ui/hero/widget/kegg_hero_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
@@ -392,7 +393,7 @@ class _KGameConsoleState extends State<KGameConsole>
     showCustomOverlay(heroGameLevel);
   }
 
-  void showHeroGameHighscoreOverlay() async {
+  void showGameLevelEndOverlay() async {
     this.setState(() {
       this.isShowEndLevel = true;
     });
@@ -400,7 +401,7 @@ class _KGameConsoleState extends State<KGameConsole>
       children: [
         Align(
           alignment: Alignment.center,
-          child: KGameHighscoreDialog(
+          child: KGameLevelEndDialog(
             onClose: () {
               this.setState(() {
                 this.isShowEndLevel = false;
@@ -411,11 +412,20 @@ class _KGameConsoleState extends State<KGameConsole>
               }
             },
             game: gameID,
-            score: score,
-            canSaveHighScore: rightAnswerCount == questions.length,
             currentLevel: currentLevel,
             isTime: isShowTimer(),
             gameScores: gameScores,
+            gameData: gameData,
+            onPlay: () {
+              this.setState(() {
+                this.isShowEndLevel = false;
+              });
+              if (this.overlayID != null) {
+                KOverlayHelper.removeOverlay(this.overlayID!);
+                this.overlayID = null;
+              }
+              advanceGame(currentLevel);
+            },
           ),
         ),
       ],
@@ -608,8 +618,17 @@ class _KGameConsoleState extends State<KGameConsole>
       ..point = "${point}"
       ..time = "${levelPlayTimes[currentLevel]}"
       ..score = "${isShowTimer() ? levelPlayTimes[currentLevel] : point}";
-    widget.controller.value.rates[currentLevel] =
-        ((rightAnswerCount / questions.length) * 3).floor();
+    widget.controller.value.rates[currentLevel] = canAdvance
+        ? (levelHardness[currentLevel] == 1
+            ? ((rightAnswerCount / questions.length) * 3).floor()
+            : ((((rightAnswerCount / questions.length) -
+                            levelHardness[currentLevel]) /
+                        (1 - levelHardness[currentLevel])) *
+                    3)
+                .floor())
+        : 0;
+    print(
+        "abc ${widget.controller.value.rates[currentLevel]}");
 
     if (maxLevel == 0 && currentLevel + 1 == levelCount) {
       widget.controller.value.levelCount =
@@ -635,11 +654,11 @@ class _KGameConsoleState extends State<KGameConsole>
 
     if (currentLevel + 1 < levelCount) {
       this.showHeroGameLevelOverlay(() {
-        this.showHeroGameHighscoreOverlay();
+        this.showGameLevelEndOverlay();
       });
     } else {
       this.showHeroGameEndOverlay(() {
-        this.showHeroGameHighscoreOverlay();
+        this.showGameLevelEndOverlay();
       });
     }
   }
@@ -1435,7 +1454,9 @@ class _KGameConsoleState extends State<KGameConsole>
                           package: 'app_core',
                         ),
                       ),
-                      SizedBox(width: 4,),
+                      SizedBox(
+                        width: 4,
+                      ),
                       Text(
                         "x",
                         style: TextStyle(
@@ -1444,7 +1465,9 @@ class _KGameConsoleState extends State<KGameConsole>
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      SizedBox(width: 4,),
+                      SizedBox(
+                        width: 4,
+                      ),
                       Text(
                         "${eggReceive}",
                         style: TextStyle(

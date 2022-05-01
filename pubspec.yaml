@@ -104,6 +104,8 @@ dependencies:
 
   xml: ^5.1.2
 
+  avatar_glow: ^2.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
