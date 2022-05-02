@@ -32,7 +32,9 @@ class _KRolePickerState extends State<KRolePicker> {
   void loadRoles() async {
     final response = await KServerHandler.listXFRRoles();
     if (response.isSuccess) {
-      setState(() => roles = response.roles ?? []);
+      if (mounted) {
+        setState(() => roles = response.roles ?? []);
+      }
     }
   }
 
@@ -59,12 +61,12 @@ class _KRolePickerState extends State<KRolePicker> {
   @override
   Widget build(BuildContext context) {
     final loadingView = Container(
-      // padding: EdgeInsets.all(6),
-      // child: AspectRatio(
-      //   aspectRatio: 1,
-      //   child: `CircularProgressIndicator`(),
-      // ),
-    );
+        // padding: EdgeInsets.all(6),
+        // child: AspectRatio(
+        //   aspectRatio: 1,
+        //   child: `CircularProgressIndicator`(),
+        // ),
+        );
 
     final content = () {
       final role = selectedRole ?? buildSelfPlaceholderRole();

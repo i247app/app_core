@@ -31,4 +31,5 @@ export 'kfcm_helper.dart';
 export 'kglobals.dart';
 export 'kflash_helper.dart';
 export 'koverlay_helper.dart';
+export 'klottie_cache.dart';
 export 'kimage_animation_helper.dart';

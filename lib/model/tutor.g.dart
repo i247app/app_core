@@ -27,6 +27,7 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..kunm = json['kunm'] as String?
   ..phone = json['fone'] as String?
   ..phoneCode = json['foneCode'] as String?
+  ..fullAddress = json['fullAddressLine'] as String?
   ..email = json['email'] as String?
   ..firstName = json['firstName'] as String?
   ..middleName = json['middleName'] as String?
@@ -40,6 +41,8 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..city = json['city'] as String?
   ..state = json['stateCode'] as String?
   ..zip = json['zipCode'] as String?
+  ..ward = json['ward'] as String?
+  ..district = json['district'] as String?
   ..countryCode = json['countryCode'] as String?
   ..displayImg = json['displayImg'] as String?
   ..avatarURL = json['avatar'] as String?
@@ -116,6 +119,7 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('kunm', instance.kunm);
   writeNotNull('fone', instance.phone);
   writeNotNull('foneCode', instance.phoneCode);
+  writeNotNull('fullAddressLine', instance.fullAddress);
   writeNotNull('email', instance.email);
   writeNotNull('firstName', instance.firstName);
   writeNotNull('middleName', instance.middleName);
@@ -129,6 +133,8 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('city', instance.city);
   writeNotNull('stateCode', instance.state);
   writeNotNull('zipCode', instance.zip);
+  writeNotNull('ward', instance.ward);
+  writeNotNull('district', instance.district);
   writeNotNull('countryCode', instance.countryCode);
   writeNotNull('displayImg', instance.displayImg);
   writeNotNull('avatar', instance.avatarURL);

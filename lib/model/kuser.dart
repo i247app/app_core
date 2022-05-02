@@ -20,6 +20,9 @@ class KUser extends KObject {
   @JsonKey(name: "foneCode")
   String? phoneCode;
 
+  @JsonKey(name: "fullAddressLine")
+  String? fullAddress;
+
   @JsonKey(name: "email")
   String? email;
 
@@ -62,6 +65,12 @@ class KUser extends KObject {
   @deprecated
   @JsonKey(name: "zipCode")
   String? zip;
+
+  @JsonKey(name: "ward")
+  String? ward;
+
+  @JsonKey(name: "district")
+  String? district;
 
   @JsonKey(name: "countryCode")
   String? countryCode;
@@ -158,6 +167,27 @@ class KUser extends KObject {
       KUtil.prettyName(
           fnm: firstName ?? "", mnm: middleName ?? "", lnm: lastName ?? "") ??
       phone;
+
+  String get area {
+    final address = [
+      ward,
+      district,
+      city,
+    ].where((e) => e != null).join(", ");
+    return address;
+  }
+
+  String get prettyAddress {
+    if ((this.addresses?.length ?? 0) > 0) {
+      return this.addresses!.first.prettyAddress;
+    }
+    final area = this.area;
+    if (area.contains(this.address1 ?? "")) {
+      return area;
+    } else {
+      return "${this.address1}, $area";
+    }
+  }
 
   String get prettyFone =>
       KUtil.prettyFone(foneCode: phoneCode ?? "", number: phone ?? "");

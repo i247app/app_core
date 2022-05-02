@@ -2,7 +2,7 @@ name: app_core
 
 description: App core package
 
-version: 1.1.58
+version: 1.1.70
 
 homepage: none
 
@@ -43,7 +43,7 @@ dependencies:
   lottie: ^1.2.2
 
   # Photo picker
-  image_picker: ^0.8.1
+  image_picker: ^0.8.5
 
   # QR code scan
   flutter_barcode_scanner: ^2.0.0
@@ -103,6 +103,8 @@ dependencies:
   flutter_picker: ^2.0.2
 
   xml: ^5.1.2
+
+  avatar_glow: ^2.0.2
 
 dev_dependencies:
   flutter_test:
