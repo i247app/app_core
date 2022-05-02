@@ -43,7 +43,7 @@ dependencies:
   lottie: ^1.2.2
 
   # Photo picker
-  image_picker: ^0.8.1
+  image_picker: ^0.8.5
 
   # QR code scan
   flutter_barcode_scanner: ^2.0.0
