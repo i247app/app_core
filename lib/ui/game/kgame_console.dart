@@ -648,7 +648,9 @@ class _KGameConsoleState extends State<KGameConsole>
     widget.controller.notify();
 
     if (!canAdvance) {
-      this.showHeroGameLevelOverlay(() {});
+      this.showHeroGameLevelOverlay(() {
+        this.showGameLevelEndOverlay();
+      });
       return;
     }
 

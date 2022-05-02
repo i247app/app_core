@@ -58,7 +58,11 @@ class _KGameLevelEndDialogState extends State<KGameLevelEndDialog>
 
   List<int?> get rates => widget.gameData?.rates ?? [];
 
-  int get rate => rates.length > widget.currentLevel ? (rates[widget.currentLevel] ?? 0) : 0;
+  int get rate => rates.length > widget.currentLevel
+      ? (rates[widget.currentLevel] ?? 0)
+      : 0;
+
+  bool get canAdvance => widget.gameData?.canAdvance ?? false;
 
   @override
   void initState() {
@@ -360,43 +364,45 @@ class _KGameLevelEndDialogState extends State<KGameLevelEndDialog>
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              width: 15,
-                            ),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () => widget.onClose(),
-                                child: Container(
-                                  height: 50,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red,
-                                    borderRadius: BorderRadius.circular(40),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.5),
-                                        blurRadius: 8,
-                                        offset: Offset(2, 6),
-                                      ),
-                                    ],
-                                  ),
-                                  child: FittedBox(
-                                    fit: BoxFit.scaleDown,
-                                    child: Text(
-                                      "NEXT LEVEL",
-                                      textScaleFactor: 1.0,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
+                            if (canAdvance) ...[
+                              SizedBox(
+                                width: 15,
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                  onTap: () => widget.onClose(),
+                                  child: Container(
+                                    height: 50,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius: BorderRadius.circular(40),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.5),
+                                          blurRadius: 8,
+                                          offset: Offset(2, 6),
+                                        ),
+                                      ],
+                                    ),
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        "NEXT LEVEL",
+                                        textScaleFactor: 1.0,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
+                            ],
                           ],
                         ),
                       ],

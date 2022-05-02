@@ -24,10 +24,11 @@ class KGameLevelMapItem extends StatelessWidget {
 
   bool get isReached => (level ?? 0) <= (currentLevel ?? 0);
 
-  bool get isPassed => isReached && rate != null;
+  bool get isPassed => isReached && rate != null && rate! > 0;
 
   @override
   Widget build(BuildContext context) {
+    print(currentLevel);
     final levelItem = Container(
       height: 70,
       width: 70,
@@ -94,7 +95,7 @@ class KGameLevelMapItem extends StatelessWidget {
               ),
             ),
           ),
-          if (isPassed)
+          if (isReached && rate != null)
             Align(
               alignment: Alignment.topCenter,
               child: FittedBox(

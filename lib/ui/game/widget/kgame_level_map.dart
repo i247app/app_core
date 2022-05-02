@@ -34,8 +34,10 @@ class _KGameLevelMapState extends State<KGameLevelMap> {
 
   bool? get result => gameData.result;
 
+  bool get canAdvance => gameData.canAdvance ?? false;
+
   int get currentLevel =>
-      result == null
+      result == null || !canAdvance
           ? (gameData.currentLevel ?? 0)
           : ((gameData.currentLevel ?? 0) + 1);
 
@@ -165,7 +167,6 @@ class _KGameLevelMapState extends State<KGameLevelMap> {
 
   @override
   Widget build(BuildContext context) {
-    print(levelCount);
     final body = Container(
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
