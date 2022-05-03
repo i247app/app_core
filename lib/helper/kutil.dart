@@ -488,6 +488,7 @@ abstract class KUtil {
     bool showTime = false,
     bool abbreviate = false,
     bool is24H = true,
+    String format = "yyyy-MM-dd",
   }) {
     String pretty = "";
 
@@ -512,12 +513,9 @@ abstract class KUtil {
 
       // Build pretty string
       try {
-        String format = "";
-
         if (abbreviate) {
           format = "E, MMM dd";
         } else {
-          format = "yyyy-MM-dd";
           if (showTime) {
             if (is24H)
               format = format + " HH:mm:ss";
