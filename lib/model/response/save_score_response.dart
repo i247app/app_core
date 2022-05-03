@@ -1,4 +1,3 @@
-import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/model/response/base_response.dart';
 import 'package:json_annotation/json_annotation.dart';
