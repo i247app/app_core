@@ -1,9 +1,7 @@
 import 'package:app_core/app_core.dart';
-import 'package:app_core/helper/koverlay_helper.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/ui/game/games/kgame_jump_over.dart';
 import 'package:app_core/ui/game/games/kgame_jump_up.dart';
-import 'package:app_core/ui/game/games/kgame_letter_tap.dart';
 import 'package:app_core/ui/game/games/kgame_moving_tap.dart';
 import 'package:app_core/ui/game/games/kgame_multi.dart';
 import 'package:app_core/ui/game/games/kgame_multi_letter.dart';
@@ -19,17 +17,11 @@ import 'package:app_core/ui/hero/khero_jump_over_game.dart';
 import 'package:app_core/ui/hero/khero_letter_tap_game.dart';
 import 'package:app_core/ui/hero/khero_moving_tap_game.dart';
 import 'package:app_core/ui/hero/khero_multi_game.dart';
-import 'package:app_core/ui/hero/khero_shooting_game.dart';
 import 'package:app_core/ui/hero/khero_speech_letter_tap_game.dart';
+import 'package:app_core/ui/hero/khero_speech_tap_game.dart';
 import 'package:app_core/ui/hero/khero_tap_game.dart';
-import 'package:app_core/ui/hero/khero_training.dart';
 import 'package:app_core/ui/hero/widget/kegg_hatch_new_short_intro.dart';
-import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
-import '../../header/kassets.dart';
-import 'khero_speech_tap_game.dart';
 
 class KHeroGameHome extends StatefulWidget {
   final KHero? hero;
