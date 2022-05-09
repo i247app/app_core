@@ -8,6 +8,7 @@ import 'package:app_core/helper/khost_config.dart';
 import 'package:app_core/helper/klocale_helper.dart';
 import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/helper/ktablet_detector.dart';
+import 'package:app_core/model/kgig_address.dart';
 import 'package:app_core/model/krole.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/ui/wallet/wallet_transfer.dart';
@@ -16,9 +17,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info/package_info.dart';
 import 'package:timeago/timeago.dart' as timeago;
-
-import '../model/kaddress.dart';
-import '../model/kgig_address.dart';
 
 abstract class KUtil {
   static Random? _random = Random();
