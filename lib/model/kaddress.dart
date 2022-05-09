@@ -96,5 +96,19 @@ class KAddress {
   factory KAddress.fromJson(Map<String, dynamic> json) =>
       _$KAddressFromJson(json);
 
+  factory KAddress.fromKUser(KUser user) {
+    return KAddress()
+      ..addressLine1 = user.address1
+      ..addressLine2 = user.address2
+      ..fullAddressLine = user.fullAddress
+      ..ward = user.ward
+      ..district = user.district
+      ..city = user.city
+      ..state = user.state
+      ..zipCode = user.zip
+      ..countryCode = user.countryCode
+      ..latLng = user.currentLatLng;
+  }
+
   Map<String, dynamic> toJson() => _$KAddressToJson(this);
 }
