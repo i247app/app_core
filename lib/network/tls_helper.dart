@@ -39,7 +39,7 @@ abstract class TLSHelper {
     Map<String, dynamic> inputData, {
     KHostInfo? hostInfo,
     bool isAuthed = true,
-    bool isDebug = false,
+    bool isDebug = true,
   }) async {
     final int reqID = _reqCount++;
     final String apiName = "${inputData['svc']}:${inputData['req']}";
@@ -222,7 +222,7 @@ abstract class TLSHelper {
 
   static void _log(int reqID, String tag, String apiName, String message,
       {bool ignoreBlacklist = false}) {
-    String displayMessage = logBlacklist.contains(apiName) && !ignoreBlacklist
+    final displayMessage = logBlacklist.contains(apiName) && !ignoreBlacklist
         ? compactLog(message)
         : KUtil.prettyJSON(message);
     debugPrint('[$reqID] $tag $apiName - $displayMessage');
