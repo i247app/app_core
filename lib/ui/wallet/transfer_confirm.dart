@@ -7,7 +7,7 @@ import 'package:app_core/model/krole.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/model/response/credit_transfer_response.dart';
 import 'package:app_core/model/xfr_ticket.dart';
-import 'package:app_core/ui/chat/widget/kuser_profile_view.dart';
+import 'package:app_core/ui/chat/widget/kuser_view.dart';
 import 'package:app_core/ui/wallet/transfer_receipt.dart';
 import 'package:app_core/ui/wallet/wallet_transfer.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
@@ -94,7 +94,7 @@ class _TransferConfirmState extends State<TransferConfirm> {
       children: [
         GestureDetector(
           onTap: () => Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) => KUserProfileView.fromUser(user))),
+              builder: (_) => KUserView.fromUser(user))),
           child: Container(
             height: 32,
             child: KUserAvatar.fromUser(user, size: 32),

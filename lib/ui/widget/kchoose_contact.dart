@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/model/kuser.dart';
-import 'package:app_core/ui/chat/widget/kuser_profile_view.dart';
+import 'package:app_core/ui/chat/widget/kuser_view.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:app_core/value/kphrases.dart';
@@ -293,7 +293,7 @@ class _ResultItem extends StatelessWidget {
   });
 
   void onMoreInfoClick(ctx) => Navigator.of(ctx)
-      .push(MaterialPageRoute(builder: (_) => KUserProfileView.fromUser(user)));
+      .push(MaterialPageRoute(builder: (_) => KUserView.fromUser(user)));
 
   @override
   Widget build(BuildContext context) {

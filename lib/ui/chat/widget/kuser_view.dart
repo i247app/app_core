@@ -9,19 +9,19 @@ import 'package:app_core/ui/widget/kdetail_view.dart';
 import 'package:app_core/ui/widget/kimage_viewer.dart';
 import 'package:flutter/material.dart';
 
-class KUserProfileView extends StatefulWidget {
+class KUserView extends StatefulWidget {
   final KUser? user;
   final String? puid;
 
-  KUserProfileView.fromUser(this.user) : puid = null;
+  KUserView.fromUser(this.user) : puid = null;
 
-  KUserProfileView.fromPUID(this.puid) : user = null;
+  KUserView.fromPUID(this.puid) : user = null;
 
   @override
-  State<StatefulWidget> createState() => _KUserProfileViewState();
+  State<StatefulWidget> createState() => _KUserViewState();
 }
 
-class _KUserProfileViewState extends State<KUserProfileView> {
+class _KUserViewState extends State<KUserView> {
   final Completer<KUser> completer = Completer<KUser>();
 
   @override
