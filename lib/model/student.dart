@@ -23,6 +23,27 @@ class Student extends KUser {
   // JSON
   Student();
 
+  factory Student.fromKUser(KUser user) {
+    return Student()
+      ..puid = user.puid
+      ..kunm = user.kunm
+      ..phone = user.phone
+      ..phoneCode = user.phoneCode
+      ..fullAddress = user.fullAddress
+      ..email = user.email
+      ..firstName = user.firstName
+      ..middleName = user.middleName
+      ..lastName = user.lastName
+      ..dob = user.dob
+      ..parentName = user.parentName
+      ..parentEmail = user.parentEmail
+      ..parentPhone = user.parentPhone
+      ..address1 = user.address1
+      ..address2 = user.address2
+      ..city = user.city
+      ..studentID = user.puid;
+  }
+
   factory Student.fromJson(Map<String, dynamic> json) =>
       _$StudentFromJson(json);
 
