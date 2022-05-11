@@ -8,6 +8,23 @@ part 'student.g.dart';
 
 @JsonSerializable()
 class Student extends KUser {
+  static const List<List> GRADE_LEVELS = [
+    [00, 'Mẫu Giáo'],
+    [01, 'Lớp 1'],
+    [02, 'Lớp 2'],
+    [03, 'Lớp 3'],
+    [04, 'Lớp 4'],
+    [05, 'Lớp 5'],
+    [06, 'Lớp 6'],
+    [07, 'Lớp 7'],
+    [08, 'Lớp 8'],
+    [09, 'Lớp 9'],
+    [10, 'Lớp 10'],
+    [11, 'Lớp 11'],
+    [12, 'Lớp 12'],
+    [13, 'Đại Học'],
+  ];
+
   @JsonKey(name: "startDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
   DateTime? startDate;
 
@@ -19,6 +36,13 @@ class Student extends KUser {
 
   @JsonKey(name: "studentID")
   String? studentID;
+
+  /// Methods
+  static String gradeLevelToWord(int gradeLevel) =>
+      GRADE_LEVELS[gradeLevel][1] as String;
+
+  @JsonKey(ignore: true)
+  String get prettyGradeLevel => gradeLevelToWord(int.parse(gradeLevel ?? "0"));
 
   // JSON
   Student();
