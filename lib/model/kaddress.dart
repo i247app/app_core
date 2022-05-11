@@ -69,6 +69,11 @@ class KAddress {
   @JsonKey(name: ADDRESS_STATUS)
   String? addressStatus;
 
+  @JsonKey(name: LAT_LNG)
+  KLatLng? latLng;
+
+  /// Methods
+  @JsonKey(ignore: true)
   String get area {
     final address = [
       ward,
@@ -78,6 +83,7 @@ class KAddress {
     return address;
   }
 
+  @JsonKey(ignore: true)
   String get prettyAddress {
     final area = this.area;
     if (area.contains(this.addressLine1 ?? "")) {
@@ -86,9 +92,6 @@ class KAddress {
       return "${this.addressLine1}, $area";
     }
   }
-
-  @JsonKey(name: LAT_LNG)
-  KLatLng? latLng;
 
   // JSON
   KAddress();

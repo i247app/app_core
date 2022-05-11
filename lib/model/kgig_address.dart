@@ -6,11 +6,11 @@ part 'kgig_address.g.dart';
 
 @JsonSerializable()
 class KGigAddress extends KAddress {
-  static const String GIGID = "gigID";
+  static const String GIG_ID = "gigID";
   static const String LOCATION_TYPE = "locationType";
   static const String LOCATION_NUMBER = "locationNumber";
 
-  @JsonKey(name: GIGID)
+  @JsonKey(name: GIG_ID)
   String? gigID;
 
   @JsonKey(name: LOCATION_TYPE)
