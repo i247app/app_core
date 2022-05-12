@@ -63,7 +63,7 @@ dependencies:
   connectycube_flutter_call_kit:
     git:
       url: https://github.com/KashinApp/flutter_voip_android.git
-    # path: ../flutter_voip_android_local
+#    path: ../flutter_voip_android
   flutter_ios_voip_kit:
     git:
       url: https://github.com/KashinApp/flutter_voip_ios.git
