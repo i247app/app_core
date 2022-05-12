@@ -442,7 +442,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     this.currentLevel = widget.level ?? 0;
     this.totalLevel = widget.totalLevel ?? 1;
     this.levelHardness = List.generate(
@@ -669,7 +669,7 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
     _heroScaleAnimationController.dispose();
     _playerScaleAnimationController.dispose();

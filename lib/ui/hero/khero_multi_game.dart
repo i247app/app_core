@@ -65,7 +65,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
 
     loadGame();
   }
@@ -89,7 +89,7 @@ class _KHeroMultiGameState extends State<KHeroMultiGame>
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
 
     super.dispose();
     if (this.overlayID != null) {

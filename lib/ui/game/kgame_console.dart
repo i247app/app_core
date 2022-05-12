@@ -156,7 +156,7 @@ class _KGameConsoleState extends State<KGameConsole>
     this.gameBackground = ([...BACKGROUND_IMAGES]..shuffle()).first;
 
     widget.controller.addListener(basicSetStateListener);
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
 
     if (!isSpeechGame) {
       loadGame();
@@ -181,7 +181,7 @@ class _KGameConsoleState extends State<KGameConsole>
       this.overlayID = null;
     }
     widget.controller.removeListener(basicSetStateListener);
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
 
     backgroundAudioPlayer.dispose();
 

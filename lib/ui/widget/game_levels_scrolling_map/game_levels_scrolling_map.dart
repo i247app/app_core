@@ -91,7 +91,7 @@ class _GameLevelsScrollingMapState extends State<GameLevelsScrollingMap> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance!.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       initDeviceDimensions();
       initDefaults();
 

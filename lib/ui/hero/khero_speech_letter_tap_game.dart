@@ -459,7 +459,7 @@ class KSpeechLetterTapGameScreenState extends State<KSpeechLetterTapGameScreen>
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     initTts();
     this.currentLevel = widget.level ?? 0;
     this.totalLevel = widget.totalLevel ?? 1;
@@ -599,7 +599,7 @@ class KSpeechLetterTapGameScreenState extends State<KSpeechLetterTapGameScreen>
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
     _heroScaleAnimationController.dispose();
     _bouncingAnimationController.dispose();
