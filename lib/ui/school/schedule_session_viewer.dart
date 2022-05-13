@@ -76,8 +76,8 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
     // ["📄", KFlash.VALUE_PAPER],
     // ["🍜", KFlash.VALUE_PHO],
   ];
-  final pageController = PageController();
 
+  final pageCtrl = PageController();
   final panelCtrl = PanelController();
   late final chatroomCtrl = KChatroomController(
     refApp: "LOP_SCHEDULE",
@@ -92,7 +92,7 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
 
   _ScheduleKSessionData get data => _ScheduleKSessionData(
         schedule: widget.schedule,
-        index: pageController.page?.toInt() ?? 0,
+        index: (pageCtrl.positions.isEmpty) ? 0 : pageCtrl.page?.toInt() ?? 0,
         mode: widget.mode,
       );
 
@@ -134,11 +134,11 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
   void setPage(int newIndex) async {
     if (newIndex < 0 || newIndex >= (this.data.chapter.pages ?? []).length)
       return;
-    pageController.jumpToPage(newIndex);
+    pageCtrl.jumpToPage(newIndex);
   }
 
   void movePage(int offset) async =>
-      setPage(pageController.page?.toInt() ?? 0 + offset);
+      setPage(pageCtrl.page?.toInt() ?? 0 + offset);
 
   void onLessonChoiceClick(TBPage page, KAnswer choice) {
     final theCorrectAnswer = page.theQuestion!.correctAnswer!;
@@ -174,7 +174,7 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
   @override
   Widget build(BuildContext context) {
     final lessonView = KDocView(
-      controller: pageController,
+      controller: pageCtrl,
       chapter: data.chapter,
     );
 
