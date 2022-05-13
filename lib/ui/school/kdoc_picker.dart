@@ -34,6 +34,8 @@ class _KDocPickerState extends State<KDocPicker> {
   Timer? searchOnStoppedTyping;
   String? selectedSubject;
   String? selectedGrade;
+  Widget? pickerView;
+
   bool isLoading = false;
   List<Chapter> chapters = [];
   Map<String, List<Textbook>> textbookMap = {
@@ -41,19 +43,17 @@ class _KDocPickerState extends State<KDocPicker> {
     KPhrases.english: [],
     KPhrases.vietnamese: []
   };
-
   Map<String, List<String>> gradeMap = {
     KPhrases.math: [],
     KPhrases.english: [],
     KPhrases.vietnamese: []
   };
 
-  Widget? pickerView;
-
   @override
   void initState() {
     super.initState();
-    this.selectedSubject = widget.subject;
+
+    selectedSubject = widget.subject;
 
     loadTextBook(widget.type, KPhrases.math);
   }
@@ -92,30 +92,31 @@ class _KDocPickerState extends State<KDocPicker> {
       }
 
       final picker = Picker(
-          adapter: PickerDataAdapter<String>(pickerdata: subjects),
-          hideHeader: true,
-          itemExtent: 60,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          selecteds: selected,
-          height: 120,
-          title: Text(KPhrases.grade),
-          textStyle:
-              Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 32),
-          selectedTextStyle:
-              TextStyle(color: Theme.of(context).colorScheme.primary),
-          onSelect: (Picker picker, int index, List<int> values) {
-            final subject = picker.getSelectedValues()[0];
-            final grade = picker.getSelectedValues()[1];
-            _onChangeHandler(grade, subject);
-          });
+        adapter: PickerDataAdapter<String>(pickerdata: subjects),
+        hideHeader: true,
+        itemExtent: 60,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        selecteds: selected,
+        height: 120,
+        title: Text(KPhrases.grade),
+        textStyle:
+            Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 32),
+        selectedTextStyle:
+            TextStyle(color: Theme.of(context).colorScheme.primary),
+        onSelect: (Picker picker, int index, List<int> values) {
+          final subject = picker.getSelectedValues()[0];
+          final grade = picker.getSelectedValues()[1];
+          _onChangeHandler(grade, subject);
+        },
+      );
 
       setState(() {
         this.textbookMap[subject] = response.textbooks!;
         this.gradeMap[subject] = grades;
         this.isLoading = false;
         this.pickerView = picker.makePicker();
-        _onChangeHandler(grades.first, subjects.first.keys.first);
       });
+      _onChangeHandler(grades.first, subjects.first.keys.first);
     } else {
       setState(() {
         this.chapters = [];
@@ -146,44 +147,40 @@ class _KDocPickerState extends State<KDocPicker> {
 
   @override
   Widget build(BuildContext context) {
+    final listing = ListView.builder(
+      padding: const EdgeInsets.all(8),
+      itemCount: chapters.length + 1,
+      itemBuilder: (BuildContext context, int index) {
+        if (index == 0) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (pickerView != null) pickerView!,
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                child: Divider(color: Theme.of(context).colorScheme.primary),
+              )
+            ],
+          );
+        } else {
+          final chapter = chapters[index - 1];
+          return _ChapterItem(
+            chapter: chapter,
+            onTap: onChapterClick,
+            isTutoringChat: widget.isTutoringChat,
+            onTapShare: onTapShare,
+          );
+        }
+      },
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.type == KDocType.headstart
             ? KPhrases.headstartDoc
             : KPhrases.classDoc),
       ),
-      body: isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(8),
-              itemCount: chapters.length + 1,
-              itemBuilder: (BuildContext context, int index) {
-                if (index == 0) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      if (pickerView != null) pickerView!,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 12),
-                        child: Divider(
-                            color: Theme.of(context).colorScheme.primary),
-                      )
-                    ],
-                  );
-                }
-
-                final chapter = chapters[index - 1];
-                return _ChapterItem(
-                  chapter: chapter,
-                  onTap: onChapterClick,
-                  isTutoringChat: widget.isTutoringChat,
-                  onTapShare: onTapShare,
-                );
-              },
-            ),
+      body: isLoading ? Center(child: CircularProgressIndicator()) : listing,
     );
   }
 }
