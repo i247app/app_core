@@ -77,7 +77,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
     messageCtrl.addListener(basicSetStateListener);
     widget.controller.addListener(basicSetStateListener);
 
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
 
     widget.controller.loadChat();
   }
@@ -88,7 +88,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
     widget.controller.removeListener(basicSetStateListener);
     KLocalNotifHelper.unblockBanner(KPushData.APP_CHAT_NOTIFY);
     this.pushDataStreamSub.cancel();
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -142,8 +142,8 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
   }
 
   void onOtherPersonClick(KUser user) {
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (ctx) => KUserView.fromUser(user)));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (ctx) => KUserView.fromUser(user)));
   }
 
   @override

@@ -361,7 +361,8 @@ class KTapGameScreen extends StatefulWidget {
 class KTapGameScreenState extends State<KTapGameScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   static const GAME_NAME = "shooting_game";
-  AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+  AudioPlayer backgroundAudioPlayer =
+      AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
@@ -433,7 +434,7 @@ class KTapGameScreenState extends State<KTapGameScreen>
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     this.currentLevel = widget.level ?? 0;
     this.totalLevel = widget.totalLevel ?? 1;
     this.levelHardness = List.generate(
@@ -501,8 +502,7 @@ class KTapGameScreenState extends State<KTapGameScreen>
     )
       ..addListener(() => setState(() {}))
       ..addStatusListener((status) {
-        if (mounted && status == AnimationStatus.completed) {
-        }
+        if (mounted && status == AnimationStatus.completed) {}
       });
     _moveUpAnimation = new Tween(
       begin: 0.0,
@@ -533,7 +533,7 @@ class KTapGameScreenState extends State<KTapGameScreen>
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
     _heroScaleAnimationController.dispose();
     _bouncingAnimationController.dispose();
@@ -738,7 +738,8 @@ class KTapGameScreenState extends State<KTapGameScreen>
       await wrongAudioTempFile
           .writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
 
-      File backgroundAudioTempFile = File('${tempDir.path}/music_background_1.mp3');
+      File backgroundAudioTempFile =
+          File('${tempDir.path}/music_background_1.mp3');
       await backgroundAudioTempFile.writeAsBytes(
           backgroundAudioFileData.buffer.asUint8List(),
           flush: true);
@@ -956,7 +957,8 @@ class KTapGameScreenState extends State<KTapGameScreen>
                         shrinkWrap: true,
                         crossAxisCount: 3,
                         reverse: true,
-                        children: List.generate(widget.eggReceive ?? 0, (index) {
+                        children:
+                            List.generate(widget.eggReceive ?? 0, (index) {
                           return Padding(
                             padding: EdgeInsets.only(top: 4),
                             child: Image.asset(
@@ -1272,8 +1274,8 @@ class KTapGameScreenState extends State<KTapGameScreen>
                     child: Container(
                       width: 50,
                       height: 50,
-                      padding: EdgeInsets.only(
-                          top: 5, bottom: 5, left: 5, right: 5),
+                      padding:
+                          EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(40),

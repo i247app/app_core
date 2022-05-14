@@ -156,7 +156,7 @@ class _KGameConsoleState extends State<KGameConsole>
     this.gameBackground = ([...BACKGROUND_IMAGES]..shuffle()).first;
 
     widget.controller.addListener(basicSetStateListener);
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
 
     if (!isSpeechGame) {
       loadGame();
@@ -181,7 +181,7 @@ class _KGameConsoleState extends State<KGameConsole>
       this.overlayID = null;
     }
     widget.controller.removeListener(basicSetStateListener);
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
 
     backgroundAudioPlayer.dispose();
 
@@ -627,8 +627,7 @@ class _KGameConsoleState extends State<KGameConsole>
                     3)
                 .floor())
         : 0;
-    print(
-        "abc ${widget.controller.value.rates[currentLevel]}");
+    print("abc ${widget.controller.value.rates[currentLevel]}");
 
     if (maxLevel == 0 && currentLevel + 1 == levelCount) {
       widget.controller.value.levelCount =
