@@ -73,19 +73,20 @@ class KCallKitHelper {
   void showNotificationCallAndroid(String callID, String callName) {
     startListenSocket("", callID);
     // if (KWebRTCHelper.autoDisplayCallScreen) {
-    final callEvent = CallEvent(
-      sessionId: callID,
-      callType: 1,
-      callerId: 0,
-      callerName: callName,
-      opponentsIds: [0].toSet(),
-    );
-    ConnectycubeFlutterCallKit.showCallNotification(callEvent
-        // sessionId: callID,
-        // callType: 1,
-        // callerId: 0,
-        // callerName: callName,
-        // opponentsIds: [0].toSet(),
+    // final callEvent = CallEvent(
+    //   sessionId: callID,
+    //   callType: 1,
+    //   callerId: 0,
+    //   callerName: callName,
+    //   opponentsIds: [0].toSet(),
+    // );
+    ConnectycubeFlutterCallKit.showCallNotification(
+      // callEvent
+        sessionId: callID,
+        callType: 1,
+        callerId: 0,
+        callerName: callName,
+        opponentsIds: [0].toSet(),
         );
     // }
   }
@@ -173,29 +174,31 @@ class KCallKitHelper {
     // send to rebroadcast helper
     if (data != null && data.app == KPushData.APP_P2P_CALL_NOTIFY) {
       ConnectycubeFlutterCallKit.onCallRejectedWhenTerminated =
-          (CallEvent callEvent
-              // sessionId,
-              // callType,
-              // callerId,
-              // callerName,
-              // opponentsIds,
+          (
+          // CallEvent callEvent
+              sessionId,
+              callType,
+              callerId,
+              callerName,
+              opponentsIds,
               ) {
-        return onCallEnded("", callEvent.sessionId);
+        return onCallEnded("", sessionId);
       };
 
       ConnectycubeFlutterCallKit.onCallAcceptedWhenTerminated =
-          (CallEvent callEvent
-              // sessionId,
-              // callType,
-              // callerId,
-              // callerName,
-              // opponentsIds,
+          (
+          // CallEvent callEvent
+              sessionId,
+              callType,
+              callerId,
+              callerName,
+              opponentsIds,
               ) {
-        return saveCallInfo("", callEvent.sessionId);
+        return saveCallInfo("", sessionId);
       };
 
-      // ConnectycubeFlutterCallKit.initMessagesHandler();
-      ConnectycubeFlutterCallKit.initEventsHandler();
+      ConnectycubeFlutterCallKit.initMessagesHandler();
+      // ConnectycubeFlutterCallKit.initEventsHandler();
       showNotificationCallAndroid(data.id ?? "", data.callerName ?? "");
     }
   }
@@ -280,21 +283,23 @@ class KCallKitHelper {
   }
 
   /// Event Listener Callbacks for 'connectycube_flutter_call_kit'
-  Future _onCallAccepted(CallEvent callEvent
-          // String sessionId,
-          // int callType,
-          // int callerId,
-          // String? callerName,
-          // Set<int>? opponentsIds,
+  Future _onCallAccepted(
+      // CallEvent callEvent
+          String sessionId,
+          int callType,
+          int callerId,
+          String? callerName,
+          Set<int>? opponentsIds,
           ) =>
-      onCallAccepted("", callEvent.sessionId);
+      onCallAccepted("", sessionId);
 
-  Future _onCallRejected(CallEvent callEvent
-          // String sessionId,
-          // int callType,
-          // int callerId,
-          // String? callerName,
-          // Set<int>? opponentsIds,
+  Future _onCallRejected(
+      // CallEvent callEvent
+          String sessionId,
+          int callType,
+          int callerId,
+          String? callerName,
+          Set<int>? opponentsIds,
           ) =>
-      onCallEnded("", callEvent.sessionId);
+      onCallEnded("", sessionId);
 }

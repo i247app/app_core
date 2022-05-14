@@ -1,7 +1,7 @@
 import 'package:app_core/model/menu_subitem.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'menu_item.g.dart';
+part 'kmenu_item.g.dart';
 
 @JsonSerializable()
 class KMenuItem {
@@ -75,7 +75,7 @@ class KMenuItem {
   KMenuItem();
 
   factory KMenuItem.fromJson(Map<String, dynamic> json) =>
-      _$MenuItemFromJson(json);
+      _$KMenuItemFromJson(json);
 
-  Map<String, dynamic> toJson() => _$MenuItemToJson(this);
+  Map<String, dynamic> toJson() => _$KMenuItemToJson(this);
 }
