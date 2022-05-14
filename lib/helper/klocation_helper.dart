@@ -16,6 +16,7 @@ abstract class KLocationHelper {
   static Position? _theCachedPosition;
   static Completer<bool>? _dialogCompleter;
   static bool _isAsking = false;
+  static bool _firstAsk = true;
 
   static Position? get cachedPosition {
     hasPermission().then((bool yes) {
@@ -96,7 +97,7 @@ abstract class KLocationHelper {
 
     if (_isAsking) return null;
     _isAsking = true;
-    if (result == LocationPermission.deniedForever) {
+    if (result == LocationPermission.deniedForever && !_firstAsk) {
       // Show dialog ask user enable location service in settings
       showDialog(
         context: kNavigatorKey.currentContext!,
@@ -111,8 +112,9 @@ abstract class KLocationHelper {
 
     if (result == LocationPermission.denied) {
       final requestResult = await Geolocator.requestPermission();
-      if (requestResult == LocationPermission.denied ||
-          requestResult == LocationPermission.deniedForever) {
+      if ((requestResult == LocationPermission.denied ||
+              requestResult == LocationPermission.deniedForever) &&
+          !_firstAsk) {
         showDialog(
           context: kNavigatorKey.currentContext!,
           builder: (ctx) => KSettingsDialog(
@@ -123,9 +125,11 @@ abstract class KLocationHelper {
         _isAsking = false;
         return PermissionStatus.permanentlyDenied;
       }
+      _firstAsk = false;
       _isAsking = false;
       return PermissionStatus.granted;
     }
+    _firstAsk = false;
     _isAsking = false;
     return PermissionStatus.granted;
   }
