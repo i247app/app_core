@@ -6,7 +6,7 @@ part of 'kmenu_item.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-KMenuItem _$MenuItemFromJson(Map<String, dynamic> json) => KMenuItem()
+KMenuItem _$KMenuItemFromJson(Map<String, dynamic> json) => KMenuItem()
   ..menuID = json['menuID'] as String?
   ..menuItemID = json['menuItemID'] as String?
   ..name = json['name'] as String?
@@ -25,7 +25,7 @@ KMenuItem _$MenuItemFromJson(Map<String, dynamic> json) => KMenuItem()
       ?.map((e) => MenuSubitem.fromJson(e as Map<String, dynamic>))
       .toList();
 
-Map<String, dynamic> _$MenuItemToJson(KMenuItem instance) {
+Map<String, dynamic> _$KMenuItemToJson(KMenuItem instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {
