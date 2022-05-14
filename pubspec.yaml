@@ -63,13 +63,12 @@ dependencies:
   connectycube_flutter_call_kit:
     git:
       url: https://github.com/KashinApp/flutter_voip_android.git
-      ref: 0.1.1bf2
+      # ref: 0.1.1bf2
     # path: ../flutter_voip_android_local
   flutter_ios_voip_kit:
     git:
       url: https://github.com/KashinApp/flutter_voip_ios.git
-      ref: 0.1.1bf2
-    #  ref: 0.0.6
+      # ref: 0.1.1bf2
     # path: ../flutter_voip_ios_local
 
   # Flutter WebRTC
