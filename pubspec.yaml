@@ -91,7 +91,7 @@ dependencies:
 
   confetti: ^0.6.0-nullsafety
 
-  get: ^4.3.8
+  get: 4.3.8 # ^4.3.8
   get_storage: ^2.0.3
 
   audioplayers: 0.20.1
