@@ -334,7 +334,8 @@ class KShootingGameScreen extends StatefulWidget {
 
 class KShootingGameScreenState extends State<KShootingGameScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
-  AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+  AudioPlayer backgroundAudioPlayer =
+      AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
@@ -762,7 +763,8 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
       await wrongAudioTempFile
           .writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
 
-      File backgroundAudioTempFile = File('${tempDir.path}/music_background_1.mp3');
+      File backgroundAudioTempFile =
+          File('${tempDir.path}/music_background_1.mp3');
       await backgroundAudioTempFile.writeAsBytes(
           backgroundAudioFileData.buffer.asUint8List(),
           flush: true);

@@ -162,7 +162,7 @@ class _GameLevelsScrollingMapState extends State<GameLevelsScrollingMap> {
         height: maxHeight,
         child: widget.isScrollable
             ? SingleChildScrollView(
-          physics: ClampingScrollPhysics(),
+                physics: ClampingScrollPhysics(),
                 controller: _scrollController,
                 scrollDirection: widget.direction ?? Axis.horizontal,
                 reverse: widget.reverseScrolling ?? false,
@@ -245,7 +245,7 @@ class _GameLevelsScrollingMapState extends State<GameLevelsScrollingMap> {
     } else {
       maxWidth = widget.width!;
       maxHeight = widget.height!;
-      aspectRatio = widget.width!/widget.height!;
+      aspectRatio = widget.width! / widget.height!;
     }
 
     print(
@@ -319,15 +319,23 @@ class _GameLevelsScrollingMapState extends State<GameLevelsScrollingMap> {
 
   Future _getPathFromSVG() async {
     await getPointsPathFromXML().then((value) {
-      if (widget.points == null || widget.pointsPerImage == null || widget.imageCount == null || widget.imageHeight == null) return;
+      if (widget.points == null ||
+          widget.pointsPerImage == null ||
+          widget.imageCount == null ||
+          widget.imageHeight == null) return;
 
-      List<List<String>>? svgPoints = value.split(" ").map((String item) => item.split(",")).toList();
+      List<List<String>>? svgPoints =
+          value.split(" ").map((String item) => item.split(",")).toList();
       print("arrayOfPoints : ${widget.points} | ${svgPoints.length}");
       for (int i = 0; i < widget.points!.length; i++) {
-        int currentImageIndex = widget.pointsPerImage! > 0 ? (i/widget.pointsPerImage!).floor() : i;
-        List<String> originPoint = svgPoints[i%svgPoints.length];
+        int currentImageIndex = widget.pointsPerImage! > 0
+            ? (i / widget.pointsPerImage!).floor()
+            : i;
+        List<String> originPoint = svgPoints[i % svgPoints.length];
         widget.x_values!.add(double.parse(originPoint[0]));
-        widget.y_values!.add(double.parse(originPoint[1]) + (widget.imageHeight!/widget.imageCount!)*(widget.imageCount! - currentImageIndex - 1));
+        widget.y_values!.add(double.parse(originPoint[1]) +
+            (widget.imageHeight! / widget.imageCount!) *
+                (widget.imageCount! - currentImageIndex - 1));
       }
       print(widget.y_values);
       print(widget.x_values);

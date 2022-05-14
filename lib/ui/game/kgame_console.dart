@@ -627,8 +627,7 @@ class _KGameConsoleState extends State<KGameConsole>
                     3)
                 .floor())
         : 0;
-    print(
-        "abc ${widget.controller.value.rates[currentLevel]}");
+    print("abc ${widget.controller.value.rates[currentLevel]}");
 
     if (maxLevel == 0 && currentLevel + 1 == levelCount) {
       widget.controller.value.levelCount =

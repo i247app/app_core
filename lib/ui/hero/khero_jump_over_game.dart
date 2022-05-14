@@ -334,7 +334,8 @@ class KJumpGameScreen extends StatefulWidget {
 
 class KJumpGameScreenState extends State<KJumpGameScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
-  AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+  AudioPlayer backgroundAudioPlayer =
+      AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
@@ -786,7 +787,8 @@ class KJumpGameScreenState extends State<KJumpGameScreen>
       await wrongAudioTempFile
           .writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
 
-      File backgroundAudioTempFile = File('${tempDir.path}/music_background_1.mp3');
+      File backgroundAudioTempFile =
+          File('${tempDir.path}/music_background_1.mp3');
       await backgroundAudioTempFile.writeAsBytes(
           backgroundAudioFileData.buffer.asUint8List(),
           flush: true);

@@ -1,5 +1,5 @@
 import 'package:app_core/model/business.dart';
-import 'package:app_core/model/menu_item.dart';
+import 'package:app_core/model/kmenu_item.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'menu.g.dart';
@@ -39,10 +39,10 @@ class Menu {
   String? currencyCode;
 
   @JsonKey(name: MENU_ITEMS)
-  List<MenuItem>? items;
+  List<KMenuItem>? items;
 
   @JsonKey(name: FEATURED_ITEMS)
-  List<MenuItem>? featured;
+  List<KMenuItem>? featured;
 
   @JsonKey(name: BUSINESS)
   Business? business;

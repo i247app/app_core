@@ -343,7 +343,8 @@ class KSpeechLetterTapGameScreen extends StatefulWidget {
 class KSpeechLetterTapGameScreenState extends State<KSpeechLetterTapGameScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   static const GAME_NAME = "shooting_game";
-  AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+  AudioPlayer backgroundAudioPlayer =
+      AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
@@ -883,7 +884,8 @@ class KSpeechLetterTapGameScreenState extends State<KSpeechLetterTapGameScreen>
       await wrongAudioTempFile
           .writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
 
-      File backgroundAudioTempFile = File('${tempDir.path}/music_background_1.mp3');
+      File backgroundAudioTempFile =
+          File('${tempDir.path}/music_background_1.mp3');
       await backgroundAudioTempFile.writeAsBytes(
           backgroundAudioFileData.buffer.asUint8List(),
           flush: true);

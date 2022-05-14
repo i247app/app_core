@@ -4,7 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'menu_item.g.dart';
 
 @JsonSerializable()
-class MenuItem {
+class KMenuItem {
   static const String MENU_ID = "menuID";
   static const String MENU_ITEM_ID = "menuItemID";
   static const String CODE = "code";
@@ -72,9 +72,9 @@ class MenuItem {
   List<MenuSubitem>? subitems;
 
   // JSON
-  MenuItem();
+  KMenuItem();
 
-  factory MenuItem.fromJson(Map<String, dynamic> json) =>
+  factory KMenuItem.fromJson(Map<String, dynamic> json) =>
       _$MenuItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$MenuItemToJson(this);
