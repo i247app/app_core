@@ -61,7 +61,7 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
 
     globalListenerSub = widget.initGlobalListener?.call();
     KRebuildHelper.notifier.addListener(rebuildListener);
@@ -86,7 +86,7 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
   void dispose() {
     globalListenerSub?.cancel();
     KRebuildHelper.notifier.removeListener(rebuildListener);
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     this.streamCall.cancel();
     this.streamCallControl.cancel();
     super.dispose();

@@ -43,7 +43,7 @@ class KNumberPad extends StatelessWidget {
   void _textChange(String string) => this.onTextChange?.call(string);
 
   double _getShortestSide() => WidgetsBinding.instance != null
-      ? MediaQueryData.fromWindow(WidgetsBinding.instance!.window)
+      ? MediaQueryData.fromWindow(WidgetsBinding.instance.window)
           .size
           .shortestSide
       : 200;

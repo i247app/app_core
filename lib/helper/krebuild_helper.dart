@@ -7,6 +7,6 @@ abstract class KRebuildHelper {
 
   static void forceRebuild() {
     notifier.notifyListeners();
-    imageCache?.clear(); // Clear the image cache
+    imageCache.clear(); // Clear the image cache
   }
 }

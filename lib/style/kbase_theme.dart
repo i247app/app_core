@@ -27,7 +27,7 @@ class KBaseTheme extends InheritedWidget {
   bool updateShouldNotify(KBaseTheme old) =>
       paletteGroup.light.primary != old.paletteGroup.light.primary;
 
-  Brightness get systemBrightness => SchedulerBinding.instance!.window
+  Brightness get systemBrightness => SchedulerBinding.instance.window
       .platformBrightness; // MediaQuery.of(this.context).platformBrightness; //
 
   KPalette get activePalette =>

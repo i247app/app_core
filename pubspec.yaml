@@ -61,9 +61,10 @@ dependencies:
 
   # VoIP
   connectycube_flutter_call_kit:
-    git:
-      url: https://github.com/KashinApp/flutter_voip_android.git
-    # path: ../flutter_voip_android_local
+    # git:
+    #   url: https://github.com/KashinApp/flutter_voip_android.git
+    #   ref: flutter2.x
+    path: ../flutter_voip_android_local
   flutter_ios_voip_kit:
     git:
       url: https://github.com/KashinApp/flutter_voip_ios.git
@@ -88,9 +89,9 @@ dependencies:
 
   sliding_up_panel: 2.0.0+1
 
-  confetti: ^0.6.0-nullsafety
+  confetti: ^0.7.0
 
-  get: ^4.3.8
+  get: ^4.6.3
   get_storage: ^2.0.3
 
   audioplayers: 0.20.1
@@ -99,7 +100,10 @@ dependencies:
 
   # Cache image
   flutter_cache_manager: ^3.3.0
-  cached_network_image: ^3.2.0
+  cached_network_image:
+    git:
+      url: https://github.com/Thanhktm/flutter_cached_network_image.git
+      ref: flutter3.0.1
   flutter_picker: ^2.0.2
 
   xml: ^5.1.2

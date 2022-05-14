@@ -161,7 +161,7 @@ class _KVOIPCallState extends State<KVOIPCall>
 
     Wakelock.enable();
     KCallKitHelper.instance.isCalling = true;
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
 
     this._slidingAnimationController = AnimationController(
       vsync: this,
@@ -210,7 +210,7 @@ class _KVOIPCallState extends State<KVOIPCall>
     }
 
     try {
-      WidgetsBinding.instance?.removeObserver(this);
+      WidgetsBinding.instance.removeObserver(this);
     } catch (e) {
       print(e.toString());
     }
@@ -1080,8 +1080,8 @@ class _KVOIPCallState extends State<KVOIPCall>
             );
 
             final viewInsets = EdgeInsets.fromWindowPadding(
-              WidgetsBinding.instance!.window.viewInsets,
-              WidgetsBinding.instance!.window.devicePixelRatio,
+              WidgetsBinding.instance.window.viewInsets,
+              WidgetsBinding.instance.window.devicePixelRatio,
             );
             final screenHeight = MediaQuery.of(context).size.height * 0.8;
             final maxHeight = screenHeight - viewInsets.bottom.toDouble();
