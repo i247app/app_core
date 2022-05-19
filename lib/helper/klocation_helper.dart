@@ -92,8 +92,10 @@ abstract class KLocationHelper {
     }
   }
 
-  static Future<PermissionStatus?> askForPermission1(
-      {askPermissionSetting: true}) async {
+  static Future<PermissionStatus?> askForPermission1({
+    bool askPermissionSetting: true,
+    String? settingMessage,
+  }) async {
     final result = await Geolocator.checkPermission();
 
     if (_isAsking) return null;
@@ -105,7 +107,7 @@ abstract class KLocationHelper {
           context: kNavigatorKey.currentContext!,
           builder: (ctx) => KSettingsDialog(
             title: KPhrases.locationPermissionDialogTitle,
-            body: KPhrases.locationPermissionDialogBody,
+            body: settingMessage ?? KPhrases.locationPermissionDialogBody,
           ),
         );
       }
