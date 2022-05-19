@@ -92,29 +92,15 @@ abstract class KLocationHelper {
     }
   }
 
-  static Future<PermissionStatus?> askForPermission1() async {
+  static Future<PermissionStatus?> askForPermission1(
+      {askPermissionSetting: true}) async {
     final result = await Geolocator.checkPermission();
 
     if (_isAsking) return null;
     _isAsking = true;
-    if (result == LocationPermission.deniedForever && !_firstAsk) {
+    if (result == LocationPermission.deniedForever) {
       // Show dialog ask user enable location service in settings
-      showDialog(
-        context: kNavigatorKey.currentContext!,
-        builder: (ctx) => KSettingsDialog(
-          title: KPhrases.locationPermissionDialogTitle,
-          body: KPhrases.locationPermissionDialogBody,
-        ),
-      );
-      _isAsking = false;
-      return PermissionStatus.permanentlyDenied;
-    }
-
-    if (result == LocationPermission.denied) {
-      final requestResult = await Geolocator.requestPermission();
-      if ((requestResult == LocationPermission.denied ||
-              requestResult == LocationPermission.deniedForever) &&
-          !_firstAsk) {
+      if (askPermissionSetting) {
         showDialog(
           context: kNavigatorKey.currentContext!,
           builder: (ctx) => KSettingsDialog(
@@ -122,14 +108,32 @@ abstract class KLocationHelper {
             body: KPhrases.locationPermissionDialogBody,
           ),
         );
+      }
+      _isAsking = false;
+      return PermissionStatus.permanentlyDenied;
+    }
+
+    if (result == LocationPermission.denied) {
+      final requestResult = await Geolocator.requestPermission();
+      if (requestResult == LocationPermission.denied ||
+          requestResult == LocationPermission.deniedForever) {
+        if (askPermissionSetting) {
+          showDialog(
+            context: kNavigatorKey.currentContext!,
+            builder: (ctx) => KSettingsDialog(
+              title: KPhrases.locationPermissionDialogTitle,
+              body: KPhrases.locationPermissionDialogBody,
+            ),
+          );
+        }
         _isAsking = false;
         return PermissionStatus.permanentlyDenied;
       }
-      _firstAsk = false;
+      // _firstAsk = false;
       _isAsking = false;
       return PermissionStatus.granted;
     }
-    _firstAsk = false;
+    // _firstAsk = false;
     _isAsking = false;
     return PermissionStatus.granted;
   }

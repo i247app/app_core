@@ -2,11 +2,7 @@ name: app_core
 
 description: App core package
 
-#<<<<<<< HEAD
-#version: 1.1.83 # flutter2.x
-#=======
-version: 1.1.84  # based on flutter2.x
-#>>>>>>> dvl
+version: 1.1.87  # to flutter 3
 
 homepage: none
 
@@ -78,9 +74,9 @@ dependencies:
   # Flutter WebRTC
   flutter_webrtc: 0.6.3 # 0.5.8
   flutter_ringtone_player:
-    git:
-      url: https://github.com/huynhtuanhuy/flutter_ringtone_player.git
-    #^3.0.0
+#    git:
+#      url: https://github.com/huynhtuanhuy/flutter_ringtone_player.git
+    ^3.2.0
 
   wakelock: 0.5.6 # ^0.5.1
   uuid: ^3.0.4
