@@ -93,7 +93,7 @@ abstract class KLocationHelper {
   }
 
   static Future<PermissionStatus?> askForPermission1({
-    bool askPermissionSetting: true,
+    bool askPermissionSetting: false,
     String? settingMessage,
   }) async {
     final result = await Geolocator.checkPermission();
