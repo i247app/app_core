@@ -129,7 +129,7 @@ class _KGameConsoleState extends State<KGameConsole>
 
   int? get currentQuestionIndex => gameData.currentQuestionIndex;
 
-  List<String> levelIconAssets = [];
+  List<String> get levelIconAssets => gameData.levelIconAssets;
 
   List<String> languageLabels = [];
   List<String> languageValues = [];
@@ -139,16 +139,6 @@ class _KGameConsoleState extends State<KGameConsole>
   @override
   void initState() {
     super.initState();
-
-    levelIconAssets = List.generate(
-      gameData.levelCount ?? 0,
-      (index) => [
-        KAssets.BULLET_BALL_GREEN,
-        KAssets.BULLET_BALL_BLUE,
-        KAssets.BULLET_BALL_ORANGE,
-        KAssets.BULLET_BALL_RED,
-      ][Math.Random().nextInt(4)],
-    );
 
     loadAudioAsset();
     cacheHeroImages();
@@ -634,14 +624,12 @@ class _KGameConsoleState extends State<KGameConsole>
           (widget.controller.value.levelCount ?? 0) + 1;
       widget.controller.value.levelPlayTimes.add(0);
       widget.controller.value.rates.add(null);
-      this.setState(() {
-        levelIconAssets.add([
-          KAssets.BULLET_BALL_GREEN,
-          KAssets.BULLET_BALL_BLUE,
-          KAssets.BULLET_BALL_ORANGE,
-          KAssets.BULLET_BALL_RED,
-        ][Math.Random().nextInt(4)]);
-      });
+      widget.controller.value.levelIconAssets.add([
+        KAssets.BULLET_BALL_GREEN,
+        KAssets.BULLET_BALL_BLUE,
+        KAssets.BULLET_BALL_ORANGE,
+        KAssets.BULLET_BALL_RED,
+      ][Math.Random().nextInt(4)]);
     }
 
     widget.controller.notify();
@@ -665,6 +653,8 @@ class _KGameConsoleState extends State<KGameConsole>
   }
 
   Widget getBottomBox() {
+    print(levelIconAssets);
+    print(currentLevel < levelIconAssets.length);
     switch (gameID) {
       case KGameShooting.GAME_ID:
         return Align(

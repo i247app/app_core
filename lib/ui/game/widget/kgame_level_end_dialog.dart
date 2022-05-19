@@ -64,6 +64,10 @@ class _KGameLevelEndDialogState extends State<KGameLevelEndDialog>
 
   bool get canAdvance => widget.gameData?.canAdvance ?? false;
 
+  int get levelCount => widget.gameData?.levelCount ?? 0;
+
+  int get currentLevel => widget.gameData?.currentLevel ?? 0;
+
   @override
   void initState() {
     super.initState();
@@ -190,7 +194,7 @@ class _KGameLevelEndDialogState extends State<KGameLevelEndDialog>
     final scores = sortedScores;
     final body = Container(
       width: MediaQuery.of(context).size.width * 0.85,
-      height: MediaQuery.of(context).size.height * 0.45,
+      height: MediaQuery.of(context).size.height * 0.50,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage(
@@ -364,7 +368,7 @@ class _KGameLevelEndDialogState extends State<KGameLevelEndDialog>
                                 ),
                               ),
                             ),
-                            if (canAdvance) ...[
+                            if (canAdvance && currentLevel + 1 < levelCount) ...[
                               SizedBox(
                                 width: 15,
                               ),

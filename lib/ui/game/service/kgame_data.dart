@@ -29,6 +29,7 @@ class KGameData {
   bool? isLoading;
   bool? isSpeechGame;
   bool? isCountTime;
+  List<String> levelIconAssets = [];
 
   bool get isInitializing => this.game == null;
 
