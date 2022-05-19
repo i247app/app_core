@@ -90,7 +90,7 @@ class _KGameLevelDialogState extends State<KGameLevelDialog> {
     final scores = sortedScores;
     final body = Container(
       width: MediaQuery.of(context).size.width * 0.85,
-      height: MediaQuery.of(context).size.height * 0.45,
+      height: MediaQuery.of(context).size.height * 0.50,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage(

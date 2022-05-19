@@ -1,3 +1,5 @@
+import 'dart:math' as Math;
+
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:flutter/widgets.dart';
@@ -67,10 +69,21 @@ class KGameController extends ValueNotifier<KGameData> {
 
       this.value.game = response.games![0];
       if (this.value.currentLevel == 0) {
-        this.value.maxLevel = this.value.game?.maxLevel ?? 0;
+        this.value.maxLevel = 2;//this.value.game?.maxLevel ?? 0;
         this.value.levelCount = (this.value.maxLevel ?? 0) > 0 ? this.value.maxLevel : 1;
-        if (this.value.levelPlayTimes.length != (this.value.levelCount ?? 0)) this.value.levelPlayTimes = List.generate(this.value.levelCount ?? 0, (_) => 0);
-        if (this.value.rates.length != (this.value.levelCount ?? 0)) this.value.rates = List.generate(this.value.levelCount ?? 0, (_) => null);
+        if (this.value.maxLevel != 0 && this.value.levelIconAssets.length != (this.value.levelCount ?? 0)) {
+          this.value.levelIconAssets = List.generate(
+            this.value.levelCount ?? 0,
+                (index) => [
+              KAssets.BULLET_BALL_GREEN,
+              KAssets.BULLET_BALL_BLUE,
+              KAssets.BULLET_BALL_ORANGE,
+              KAssets.BULLET_BALL_RED,
+            ][Math.Random().nextInt(4)],
+          );
+        }
+        if (this.value.maxLevel != 0 && this.value.levelPlayTimes.length != (this.value.levelCount ?? 0)) this.value.levelPlayTimes = List.generate(this.value.levelCount ?? 0, (_) => 0);
+        if (this.value.maxLevel != 0 && this.value.rates.length != (this.value.levelCount ?? 0)) this.value.rates = List.generate(this.value.levelCount ?? 0, (_) => null);
       }
       this.value.currentQuestionIndex = 0;
     } else {
