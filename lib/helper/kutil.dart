@@ -29,6 +29,20 @@ abstract class KUtil {
 
   static Future<String> getDeviceID() async => KDeviceIDHelper.deviceID;
 
+  static String getTimezoneName() {
+    final DateTime now = DateTime.now();
+    return now.timeZoneName;
+  }
+
+  // Get timezone offet with hours and minutes format hh:mm
+  static String getTimezonOffset() {
+    final DateTime now = DateTime.now();
+    final offsetString = now.timeZoneOffset.toString();
+    final parts = offsetString.split(":");
+    parts.removeLast();
+    return parts.join(":");
+  }
+
   static Future<String> getDeviceBrand() async {
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     return Platform.isAndroid ? (await deviceInfo.androidInfo).brand : 'Apple';

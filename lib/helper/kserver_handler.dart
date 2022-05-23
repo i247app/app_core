@@ -316,7 +316,8 @@ abstract class KServerHandler {
         ..bankAccName = bankAccount
         ..bankAccNumber = bankAccNumber,
     };
-    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+    return TLSHelper.send(params, isDebug: true)
+        .then((data) => SimpleResponse.fromJson(data));
   }
 
   static Future<KSaveScoreResponse> saveGameScore({
@@ -386,7 +387,7 @@ abstract class KServerHandler {
         ..amount = amount
         ..tokenName = tokenName,
     };
-    return TLSHelper.send(params)
+    return TLSHelper.send(params, isDebug: true)
         .then((data) => CreditTransferResponse.fromJson(data));
   }
 
