@@ -22,7 +22,14 @@ abstract class KUtil {
   static Random? _random = Random();
   static String? _buildVersion;
   static String? _buildNumber;
-
+  static List<String> ignoreAddressWords = [
+    "ward",
+    "district",
+    "Ward",
+    "District",
+    "Phường",
+    "Quận"
+  ];
   static String get buildVersion => KUtil._buildVersion ?? "";
 
   static String get buildNumber => KUtil._buildNumber ?? "";
@@ -278,6 +285,14 @@ abstract class KUtil {
       z = "0";
     }
     return z;
+  }
+
+  // Remove all string match with ignoreStrings and trim it
+  static String removeIgnoreStrings(String str, List<String> ignoreStrings) {
+    for (String ignoreString in ignoreStrings) {
+      str = str.replaceAll(RegExp(ignoreString), "");
+    }
+    return str.trim();
   }
 
   // TODO - currency Name override symbol. perhaps use int instead???

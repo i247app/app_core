@@ -1,4 +1,5 @@
 import 'package:app_core/app_core.dart';
+import 'package:app_core/value/kphrases.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'kaddress.g.dart';
@@ -72,18 +73,41 @@ class KAddress {
   @JsonKey(name: LAT_LNG)
   KLatLng? latLng;
 
+  String? get prettryDistrict {
+    // Check if district not contains one of item in KUtil.ignoreAddressWords list then add Quận before it
+    if (district != null && district!.isNotEmpty) {
+      if (KUtil.ignoreAddressWords.any((word) => district!.contains(word))) {
+        return district;
+      } else {
+        return "${KPhrases.district} $district";
+      }
+    }
+    return district;
+  }
+
+  String? get prettryWard {
+    // Check if district not contains one of item in KUtil.ignoreAddressWords list then add Quận before it
+    if (ward != null && ward!.isNotEmpty) {
+      if (KUtil.ignoreAddressWords.any((word) => ward!.contains(word))) {
+        return ward;
+      } else {
+        return "${KPhrases.ward} $ward";
+      }
+    }
+    return ward;
+  }
+
   /// Methods
   @JsonKey(ignore: true)
   String get area {
     final address = [
-      ward,
-      district,
+      prettryWard,
+      prettryDistrict,
       city,
     ].where((e) => e != null).join(", ");
     return address;
   }
 
-  @JsonKey(ignore: true)
   String get prettyAddress {
     final area = this.area;
     if (area.contains(this.addressLine1 ?? "")) {

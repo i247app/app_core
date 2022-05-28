@@ -172,5 +172,7 @@
   "headstart": "Headstart",
   "headstart_documents": "Headstart documents",
   "class_documents": "Class documents",
-  "vietnamese": "Vietnamese"
+  "vietnamese": "Vietnamese",
+  "district": "District",
+  "ward": "Ward"
 }

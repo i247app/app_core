@@ -2,6 +2,7 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/model/kaddress.dart';
 import 'package:app_core/model/keducation.dart';
 import 'package:app_core/model/kobject.dart';
+import 'package:app_core/value/kphrases.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'kuser.g.dart';
@@ -168,10 +169,34 @@ class KUser extends KObject {
           fnm: firstName ?? "", mnm: middleName ?? "", lnm: lastName ?? "") ??
       phone;
 
+  String? get prettryDistrict {
+    // Check if district not contains one of item in KUtil.ignoreAddressWords list then add Quận before it
+    if (district != null && district!.isNotEmpty) {
+      if (KUtil.ignoreAddressWords.any((word) => district!.contains(word))) {
+        return district;
+      } else {
+        return "${KPhrases.district} $district";
+      }
+    }
+    return district;
+  }
+
+  String? get prettryWard {
+    // Check if district not contains one of item in KUtil.ignoreAddressWords list then add Quận before it
+    if (ward != null && ward!.isNotEmpty) {
+      if (KUtil.ignoreAddressWords.any((word) => ward!.contains(word))) {
+        return ward;
+      } else {
+        return "${KPhrases.ward} $ward";
+      }
+    }
+    return ward;
+  }
+
   String get area {
     final address = [
-      ward,
-      district,
+      prettryWard,
+      prettryDistrict,
       city,
     ].where((e) => e != null).join(", ");
     return address;
