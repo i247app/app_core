@@ -8,6 +8,8 @@ part 'student.g.dart';
 
 @JsonSerializable()
 class Student extends KUser {
+  static const String LINK_STATUS_ACTIVE = "A";
+  static const String LINK_STATUS_DISABLE = "D";
   static const List<List> GRADE_LEVELS = [
     [00, 'Mẫu Giáo'],
     [01, 'Lớp 1'],
@@ -65,6 +67,7 @@ class Student extends KUser {
       ..address1 = user.address1
       ..address2 = user.address2
       ..city = user.city
+      ..linkStatus = user.linkStatus
       ..studentID = user.puid;
   }
 
