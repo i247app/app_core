@@ -21,9 +21,13 @@ abstract class KLocationHelper {
   static Position? get cachedPosition {
     hasPermission().then((bool yes) {
       if (yes) {
-        Geolocator.getCurrentPosition(
+        hasServiceEnabled().then((bool _yes) {
+          if (_yes) {
+            Geolocator.getCurrentPosition(
                 desiredAccuracy: LocationAccuracy.bestForNavigation)
-            .then((pos) => _theCachedPosition = pos);
+                .then((pos) => _theCachedPosition = pos);
+          }
+        });
       }
     });
     return _theCachedPosition;
@@ -34,6 +38,9 @@ abstract class KLocationHelper {
             LocationPermission.always,
             LocationPermission.whileInUse
           ].contains(lp));
+
+  static Future<bool> hasServiceEnabled() async =>
+      Geolocator.isLocationServiceEnabled();
 
   static Future<PermissionStatus?> askForPermission() async {
     if (await hasPermission()) return PermissionStatus.granted;
@@ -65,7 +72,7 @@ abstract class KLocationHelper {
       return null;
   }
 
-  static Future<KLatLng?> getKLatLng({bool askForPermissions: true}) async {
+  static Future<KLatLng?> getKLatLng({bool askForPermissions: true, bool askForEnableService: false}) async {
     if (_theCachedPosition == null) {
       final positionString = await KPrefHelper.get(KPrefHelper.CACHED_POSITION);
       if (positionString != null) {
@@ -77,6 +84,9 @@ abstract class KLocationHelper {
       if (askForPermissions && !(await hasPermission())) {
         final result = await askForPermission1();
         if (result != PermissionStatus.granted) return null;
+      }
+      if (!(await hasServiceEnabled()) && !askForEnableService) {
+        return null;
       }
       position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.bestForNavigation);
