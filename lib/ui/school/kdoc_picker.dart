@@ -100,7 +100,7 @@ class _KDocPickerState extends State<KDocPicker> {
         height: 120,
         title: Text(KPhrases.grade),
         textStyle:
-            Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 32),
+            Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 24),
         selectedTextStyle:
             TextStyle(color: Theme.of(context).colorScheme.primary),
         onSelect: (Picker picker, int index, List<int> values) {
