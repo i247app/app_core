@@ -11,6 +11,7 @@ part 'tutor.g.dart';
 class Tutor extends KUser {
   static const String TUTOR_ID = "tutorID";
   static const String IS_ONLINE = "isOnline";
+  static const String IS_ONLINE_MODE = "isOnlineMode";
 
   static const String IS_IN_PERSON = "isInPerson";
   static const String IS_HEADSTART = "isHeadstart";
@@ -43,6 +44,9 @@ class Tutor extends KUser {
 
   @JsonKey(name: IS_ONLINE)
   bool? isOnline;
+
+  @JsonKey(name: IS_ONLINE_MODE)
+  bool? isOnlineMode;
 
   @JsonKey(name: IS_IN_PERSON)
   bool? isInPerson;
