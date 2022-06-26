@@ -45,7 +45,7 @@ class Tutor extends KUser {
   @JsonKey(name: IS_ONLINE)
   bool? isOnline;
 
-  @JsonKey(name: ONLINE_MODE)
+  @JsonKey(name: ONLINE_MODE, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? onlineMode;
 
   @JsonKey(name: IS_IN_PERSON)

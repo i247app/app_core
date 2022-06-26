@@ -80,7 +80,7 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..tutorID = json['tutorID'] as String?
   ..gigCount = json['gigCount'] as String?
   ..isOnline = json['isOnline'] as bool?
-  ..onlineMode = json['onlineMode'] as bool?
+  ..onlineMode = zzz_str2Bool(json['onlineMode'] as String?)
   ..isInPerson = json['isInPerson'] as bool?
   ..isHeadstart = json['isHeadstart'] as bool?
   ..isEnglish = json['isEnglish'] as bool?
@@ -168,7 +168,7 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('tutorID', instance.tutorID);
   writeNotNull('gigCount', instance.gigCount);
   writeNotNull('isOnline', instance.isOnline);
-  writeNotNull('onlineMode', instance.onlineMode);
+  writeNotNull('onlineMode', zzz_bool2Str(instance.onlineMode));
   writeNotNull('isInPerson', instance.isInPerson);
   writeNotNull('isHeadstart', instance.isHeadstart);
   writeNotNull('isEnglish', instance.isEnglish);
