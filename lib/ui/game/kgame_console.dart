@@ -83,7 +83,9 @@ class _KGameConsoleState extends State<KGameConsole>
   bool isCurrentHighest = false;
   bool isLocalMute = false;
 
-  KGameData get gameData => widget.controller.value;
+  late KGameController gameController;
+
+  KGameData get gameData => gameController.value;
 
   bool get isStart => gameData.isStart ?? false;
 
@@ -140,12 +142,14 @@ class _KGameConsoleState extends State<KGameConsole>
   void initState() {
     super.initState();
 
+    this.gameController = widget.controller;
+
     loadAudioAsset();
     cacheHeroImages();
 
     this.gameBackground = ([...BACKGROUND_IMAGES]..shuffle()).first;
 
-    widget.controller.addListener(basicSetStateListener);
+    gameController.addListener(basicSetStateListener);
     WidgetsBinding.instance.addObserver(this);
 
     if (!isSpeechGame) {
@@ -157,7 +161,7 @@ class _KGameConsoleState extends State<KGameConsole>
     _timer = Timer.periodic(Duration(milliseconds: 16), (timer) {
       if (isStart && mounted && !isPause) {
         if (currentLevel < levelPlayTimes.length) {
-          widget.controller.updatePlayTime();
+          gameController.updatePlayTime();
         }
       }
     });
@@ -170,7 +174,7 @@ class _KGameConsoleState extends State<KGameConsole>
       KOverlayHelper.removeOverlay(this.overlayID!);
       this.overlayID = null;
     }
-    widget.controller.removeListener(basicSetStateListener);
+    gameController.removeListener(basicSetStateListener);
     WidgetsBinding.instance.removeObserver(this);
 
     backgroundAudioPlayer.dispose();
@@ -180,7 +184,7 @@ class _KGameConsoleState extends State<KGameConsole>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused && !this.isPause)
+    if ((state == AppLifecycleState.inactive || state == AppLifecycleState.paused) && !this.isPause)
       showPauseDialog();
     else if (state == AppLifecycleState.resumed && this.isPause) resumeGame();
   }
@@ -197,7 +201,6 @@ class _KGameConsoleState extends State<KGameConsole>
       if (Platform.isAndroid) {
         try {
           final languages = await flutterTts.getLanguages;
-          print(languages);
           bool isInstalled = await flutterTts
               .isLanguageInstalled(KLocaleHelper.TTS_LANGUAGE_VI);
           if (isInstalled) {
@@ -241,13 +244,13 @@ class _KGameConsoleState extends State<KGameConsole>
 
   void loadGame() async {
     try {
-      await widget.controller.loadGame();
+      await gameController.loadGame();
     } catch (e) {}
   }
 
   void handleSelectLanguage(String language) {
-    widget.controller.value.language = language;
-    widget.controller.notify();
+    gameController.value.language = language;
+    gameController.notify();
 
     loadGame();
   }
@@ -295,13 +298,13 @@ class _KGameConsoleState extends State<KGameConsole>
       this.setState(() {
         this.isBackgroundSoundPlaying = false;
       });
-      this.widget.controller.toggleMuted(true);
+      this.gameController.toggleMuted(true);
       this.backgroundAudioPlayer.pause();
     } else {
       this.setState(() {
         this.isBackgroundSoundPlaying = true;
       });
-      this.widget.controller.toggleMuted(false);
+      this.gameController.toggleMuted(false);
       this.backgroundAudioPlayer.resume();
     }
   }
@@ -431,7 +434,7 @@ class _KGameConsoleState extends State<KGameConsole>
     if (!this.isBackgroundSoundPlaying && !isLocalMute) {
       toggleBackgroundSound();
     }
-    widget.controller.togglePause(false);
+    gameController.togglePause(false);
   }
 
   void showPauseDialog() {
@@ -439,7 +442,7 @@ class _KGameConsoleState extends State<KGameConsole>
     if (this.isBackgroundSoundPlaying && !isLocalMute) {
       toggleBackgroundSound();
     }
-    widget.controller.togglePause(true);
+    gameController.togglePause(true);
     final view = Align(
       alignment: Alignment.center,
       child: KGamePauseDialog(
@@ -461,7 +464,7 @@ class _KGameConsoleState extends State<KGameConsole>
     // if (this.isBackgroundSoundPlaying) {
     //   toggleBackgroundSound();
     // }
-    widget.controller.togglePause(true);
+    gameController.togglePause(true);
     final view = Align(
       alignment: Alignment.center,
       child: KGameHighscoreDialog(
@@ -509,7 +512,7 @@ class _KGameConsoleState extends State<KGameConsole>
       if (currentLevel == 0) {
         showCountDownOverlay();
       } else {
-        widget.controller.toggleStart(true);
+        gameController.toggleStart(true);
       }
     }
   }
@@ -520,35 +523,35 @@ class _KGameConsoleState extends State<KGameConsole>
         if (level < levelCount &&
             (rightAnswerCount / questions.length) >=
                 levelHardness[currentLevel]) {
-          widget.controller.value.currentLevel = level;
-          await widget.controller.loadGame();
+          gameController.value.currentLevel = level;
+          await gameController.loadGame();
 
-          widget.controller.value.isStart = true;
-          widget.controller.value.result = null;
-          widget.controller.value.point = 0;
-          widget.controller.value.currentQuestionIndex = 0;
-          widget.controller.value.rightAnswerCount = 0;
-          widget.controller.value.wrongAnswerCount = 0;
-          widget.controller.value.canAdvance = false;
+          gameController.value.isStart = true;
+          gameController.value.result = null;
+          gameController.value.point = 0;
+          gameController.value.currentQuestionIndex = 0;
+          gameController.value.rightAnswerCount = 0;
+          gameController.value.wrongAnswerCount = 0;
+          gameController.value.canAdvance = false;
 
-          widget.controller.notify();
+          gameController.notify();
         }
       } else {
         if (currentLevel + 1 < levelCount &&
             (rightAnswerCount / questions.length) >=
                 levelHardness[currentLevel]) {
-          widget.controller.value.currentLevel = currentLevel + 1;
-          await widget.controller.loadGame();
+          gameController.value.currentLevel = currentLevel + 1;
+          await gameController.loadGame();
 
-          widget.controller.value.isStart = true;
-          widget.controller.value.result = null;
-          widget.controller.value.point = 0;
-          widget.controller.value.currentQuestionIndex = 0;
-          widget.controller.value.rightAnswerCount = 0;
-          widget.controller.value.wrongAnswerCount = 0;
-          widget.controller.value.canAdvance = false;
+          gameController.value.isStart = true;
+          gameController.value.result = null;
+          gameController.value.point = 0;
+          gameController.value.currentQuestionIndex = 0;
+          gameController.value.rightAnswerCount = 0;
+          gameController.value.wrongAnswerCount = 0;
+          gameController.value.canAdvance = false;
 
-          widget.controller.notify();
+          gameController.notify();
         }
       }
       this.setState(() {
@@ -559,20 +562,20 @@ class _KGameConsoleState extends State<KGameConsole>
 
   void resetGame() async {
     try {
-      widget.controller.value.currentLevel = 0;
-      widget.controller.value.rightAnswerCount = 0;
-      widget.controller.value.wrongAnswerCount = 0;
-      widget.controller.value.point = 0;
-      widget.controller.value.currentQuestionIndex = 0;
-      widget.controller.value.eggReceive = 0;
-      widget.controller.value.result = null;
-      widget.controller.value.isStart = false;
-      widget.controller.value.isMuted = false;
-      widget.controller.value.isPause = false;
-      widget.controller.value.levelPlayTimes = [];
-      await widget.controller.loadGame();
+      gameController.value.currentLevel = 0;
+      gameController.value.rightAnswerCount = 0;
+      gameController.value.wrongAnswerCount = 0;
+      gameController.value.point = 0;
+      gameController.value.currentQuestionIndex = 0;
+      gameController.value.eggReceive = 0;
+      gameController.value.result = null;
+      gameController.value.isStart = false;
+      gameController.value.isMuted = false;
+      gameController.value.isPause = false;
+      gameController.value.levelPlayTimes = [];
+      await gameController.loadGame();
 
-      widget.controller.notify();
+      gameController.notify();
       this.setState(() {
         gameScores = null;
       });
@@ -581,18 +584,18 @@ class _KGameConsoleState extends State<KGameConsole>
 
   void restartGame() async {
     try {
-      widget.controller.value.levelPlayTimes[currentLevel] = 0;
-      await widget.controller.loadGame();
+      gameController.value.levelPlayTimes[currentLevel] = 0;
+      await gameController.loadGame();
 
-      widget.controller.value.isStart = true;
-      widget.controller.value.result = null;
-      widget.controller.value.point = 0;
-      widget.controller.value.currentQuestionIndex = 0;
-      widget.controller.value.rightAnswerCount = 0;
-      widget.controller.value.wrongAnswerCount = 0;
-      widget.controller.value.canAdvance = false;
+      gameController.value.isStart = true;
+      gameController.value.result = null;
+      gameController.value.point = 0;
+      gameController.value.currentQuestionIndex = 0;
+      gameController.value.rightAnswerCount = 0;
+      gameController.value.wrongAnswerCount = 0;
+      gameController.value.canAdvance = false;
 
-      widget.controller.notify();
+      gameController.notify();
       this.setState(() {
         gameScores = null;
       });
@@ -600,7 +603,7 @@ class _KGameConsoleState extends State<KGameConsole>
   }
 
   void onFinishLevel() {
-    widget.controller.value.score = KGameScore()
+    gameController.value.score = KGameScore()
       ..game = gameID
       ..avatarURL = KSessionData.me!.avatarURL
       ..kunm = KSessionData.me!.kunm
@@ -608,7 +611,7 @@ class _KGameConsoleState extends State<KGameConsole>
       ..point = "${point}"
       ..time = "${levelPlayTimes[currentLevel]}"
       ..score = "${isShowTimer() ? levelPlayTimes[currentLevel] : point}";
-    widget.controller.value.rates[currentLevel] = canAdvance
+    gameController.value.rates[currentLevel] = canAdvance
         ? (levelHardness[currentLevel] == 1
             ? ((rightAnswerCount / questions.length) * 3).floor()
             : ((((rightAnswerCount / questions.length) -
@@ -617,14 +620,13 @@ class _KGameConsoleState extends State<KGameConsole>
                     3)
                 .floor())
         : 0;
-    print("abc ${widget.controller.value.rates[currentLevel]}");
 
     if (maxLevel == 0 && currentLevel + 1 == levelCount) {
-      widget.controller.value.levelCount =
-          (widget.controller.value.levelCount ?? 0) + 1;
-      widget.controller.value.levelPlayTimes.add(0);
-      widget.controller.value.rates.add(null);
-      widget.controller.value.levelIconAssets.add([
+      gameController.value.levelCount =
+          (gameController.value.levelCount ?? 0) + 1;
+      gameController.value.levelPlayTimes.add(0);
+      gameController.value.rates.add(null);
+      gameController.value.levelIconAssets.add([
         KAssets.BULLET_BALL_GREEN,
         KAssets.BULLET_BALL_BLUE,
         KAssets.BULLET_BALL_ORANGE,
@@ -632,7 +634,7 @@ class _KGameConsoleState extends State<KGameConsole>
       ][Math.Random().nextInt(4)]);
     }
 
-    widget.controller.notify();
+    gameController.notify();
 
     if (!canAdvance) {
       this.showHeroGameLevelOverlay(() {
@@ -653,8 +655,6 @@ class _KGameConsoleState extends State<KGameConsole>
   }
 
   Widget getBottomBox() {
-    print(levelIconAssets);
-    print(currentLevel < levelIconAssets.length);
     switch (gameID) {
       case KGameShooting.GAME_ID:
         return Align(
@@ -794,73 +794,73 @@ class _KGameConsoleState extends State<KGameConsole>
     switch (gameID) {
       case KGameSpeechLetterTap.GAME_ID:
         return KGameSpeechLetterTap(
-          controller: widget.controller,
+          controller: gameController,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
         );
       case KGameSpeechTap.GAME_ID:
         return KGameSpeechTap(
-          controller: widget.controller,
+          controller: gameController,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
         );
       case KGameSpeechMovingTap.GAME_ID:
         return KGameSpeechMovingTap(
-          controller: widget.controller,
+          controller: gameController,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
         );
       case KGameJumpOver.GAME_ID:
         return KGameJumpOver(
-          controller: widget.controller,
+          controller: gameController,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
         );
       case KGameTap.GAME_ID:
         return KGameTap(
-          controller: widget.controller,
+          controller: gameController,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
         );
       case KGameWord.GAME_ID:
         return KGameWord(
-          controller: widget.controller,
+          controller: gameController,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
         );
       case KGameWordFortune.GAME_ID:
         return KGameWordFortune(
-          controller: widget.controller,
+          controller: gameController,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
         );
       case KGameMovingTap.GAME_ID:
         return KGameMovingTap(
-          controller: widget.controller,
+          controller: gameController,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
         );
       case KGameLetterTap.GAME_ID:
         return KGameLetterTap(
-          controller: widget.controller,
+          controller: gameController,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
         );
       case KGameJumpUp.GAME_ID:
         return KGameJumpUp(
-          controller: widget.controller,
+          controller: gameController,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
         );
       case KGameJumpMultiRow.GAME_ID:
         return KGameMovingTap(
-          controller: widget.controller,
+          controller: gameController,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
         );
       case KGameShooting.GAME_ID:
         return KGameShooting(
-          controller: widget.controller,
+          controller: gameController,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
         );
@@ -868,13 +868,13 @@ class _KGameConsoleState extends State<KGameConsole>
         {
           if (currentLevel == 0 || currentLevel == 2) {
             return KGameSpeechTap(
-              controller: widget.controller,
+              controller: gameController,
               hero: widget.hero,
               onFinishLevel: onFinishLevel,
             );
           }
           return KGameSpeechMovingTap(
-            controller: widget.controller,
+            controller: gameController,
             hero: widget.hero,
             onFinishLevel: onFinishLevel,
           );
@@ -883,13 +883,13 @@ class _KGameConsoleState extends State<KGameConsole>
         {
           if (currentLevel == 0 || currentLevel == 2) {
             return KGameSpeechLetterTap(
-              controller: widget.controller,
+              controller: gameController,
               hero: widget.hero,
               onFinishLevel: onFinishLevel,
             );
           }
           return KGameSpeechLetterMovingTap(
-            controller: widget.controller,
+            controller: gameController,
             hero: widget.hero,
             onFinishLevel: onFinishLevel,
           );
@@ -1145,9 +1145,9 @@ class _KGameConsoleState extends State<KGameConsole>
           setState(() {
             isShowCountDown = false;
           });
-          widget.controller.toggleStart(true);
+          gameController.toggleStart(true);
 
-          if (!(widget.controller.value.isMuted ?? false) &&
+          if (!(gameController.value.isMuted ?? false) &&
               backgroundAudioPlayer.state != PlayerState.PLAYING) {
             this.setState(() {
               this.isBackgroundSoundPlaying = true;
@@ -1287,7 +1287,7 @@ class _KGameConsoleState extends State<KGameConsole>
     final levelMapScreen = Align(
       alignment: Alignment.center,
       child: KGameLevelMap(
-        widget.controller,
+        gameController,
         onTapLevel: (int? level) {
           if (result == null)
             start();
