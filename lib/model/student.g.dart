@@ -79,7 +79,8 @@ Student _$StudentFromJson(Map<String, dynamic> json) => Student()
   ..review = json['rating'] == null
       ? null
       : Review.fromJson(json['rating'] as Map<String, dynamic>)
-  ..studentID = json['studentID'] as String?;
+  ..studentID = json['studentID'] as String?
+  ..shortText = json['shortText'] as String?;
 
 Map<String, dynamic> _$StudentToJson(Student instance) {
   final val = <String, dynamic>{};
@@ -157,5 +158,6 @@ Map<String, dynamic> _$StudentToJson(Student instance) {
   writeNotNull('endDate', zzz_date2Str(instance.endDate));
   writeNotNull('rating', instance.review?.toJson());
   writeNotNull('studentID', instance.studentID);
+  writeNotNull('shortText', instance.shortText);
   return val;
 }
