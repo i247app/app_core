@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/khost_config.dart';
 import 'package:app_core/header/kcore_code.dart';
 import 'package:app_core/helper/klocation_helper.dart';
@@ -129,13 +130,12 @@ abstract class TLSHelper {
 
     // Replace stack with Splash in case of BAD SESSION response
     try {
-      final condition = (result["kstatus"] == KCoreCode.BAD_SESSION) &&
-          KSessionData.hasActiveSession;
+      final condition = ((int.tryParse(result["kstatus"]) ?? 0) == KCoreCode.BAD_SESSION) && KSessionData.hasActiveSession;
       if (condition) {
         KSessionData.wipeSession();
         // TODO: Check for schoolbird
-        // KSessionHelper.hardReload();
         KToastHelper.show("Session terminated");
+        KRebuildHelper.forceHardReload();
       }
     } catch (_) {}
 
