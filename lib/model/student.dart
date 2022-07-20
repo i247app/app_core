@@ -39,6 +39,9 @@ class Student extends KUser {
   @JsonKey(name: "studentID")
   String? studentID;
 
+  @JsonKey(name: "shortText")
+  String? shortText;
+
   /// Methods
   static String gradeLevelToWord(int gradeLevel) =>
       GRADE_LEVELS[gradeLevel][1] as String;

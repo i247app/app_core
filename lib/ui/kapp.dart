@@ -65,6 +65,7 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
 
     globalListenerSub = widget.initGlobalListener?.call();
     KRebuildHelper.notifier.addListener(rebuildListener);
+    KRebuildHelper.hardReloadNotifier.addListener(hardReloadListener);
     this.streamCall = KCallStreamHelper.stream.listen(callNotifListener);
     this.streamCallControl =
         KCallControlStreamHelper.stream.listen(callControlNotifListener);
@@ -86,6 +87,7 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
   void dispose() {
     globalListenerSub?.cancel();
     KRebuildHelper.notifier.removeListener(rebuildListener);
+    KRebuildHelper.hardReloadNotifier.removeListener(hardReloadListener);
     WidgetsBinding.instance.removeObserver(this);
     this.streamCall.cancel();
     this.streamCallControl.cancel();
@@ -96,6 +98,12 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
       KTheme(paletteGroup: group, child: child);
 
   void rebuildListener() => setState(() => forceRebuild = true);
+
+  void hardReloadListener() {
+    kNavigatorKey.currentState!.popUntil((r) => r.isFirst);
+    kNavigatorKey.currentState!
+        .pushReplacement(MaterialPageRoute(builder: (ctx) => widget.home));
+  }
 
   void rebuildAllChildren(BuildContext context) {
     void rebuild(Element el) {
