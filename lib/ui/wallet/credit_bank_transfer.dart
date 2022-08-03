@@ -33,6 +33,7 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
   final bankCtrl = TextEditingController();
 
   bool isValidAmount = true;
+  bool isSubmitting = false;
 
   @override
   void initState() {
@@ -54,50 +55,61 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
     final bankName =
         banks![int.parse(this.bankCtrl.text) - 100].shortName ?? "";
 
-    if ((KSessionData.me?.bankName ?? "") != bankName ||
-        (KSessionData.me?.bankAccName ?? "") != accountNameCtrl.text ||
-        (KSessionData.me?.bankAccNumber ?? "") != bankAccountNumberCtrl.text) {
-      final response = await KServerHandler.modifyUserBank(
+    setState(() {
+      this.isSubmitting = true;
+    });
+    try {
+      if ((KSessionData.me?.bankName ?? "") != bankName ||
+          (KSessionData.me?.bankAccName ?? "") != accountNameCtrl.text ||
+          (KSessionData.me?.bankAccNumber ?? "") != bankAccountNumberCtrl.text) {
+        final response = await KServerHandler.modifyUserBank(
+          bankID: bankID,
+          bankName: bankName,
+          bankAccount: accountNameCtrl.text,
+          bankAccNumber: bankAccountNumberCtrl.text,
+        );
+        if (response.kstatus != KCoreCode.SUCCESS) {
+          KSnackBarHelper.show(
+            text: response.kmessage ?? "",
+            isSuccess: false,
+          );
+          setState(() {
+            this.isSubmitting = false;
+          });
+          return;
+        }
+        hasModifyBank = true;
+      }
+
+      final apiCall = widget.action == BankTransferAction.withdraw
+          ? KServerHandler.bankWithdrawal
+          : KServerHandler.bankDeposit;
+      final response = await apiCall.call(
         bankID: bankID,
         bankName: bankName,
         bankAccount: accountNameCtrl.text,
         bankAccNumber: bankAccountNumberCtrl.text,
+        amount: amountCtrl.text.isEmpty ? "0" : amountCtrl.text,
+        tokenName: widget.tokenName,
       );
-      if (response.kstatus != KCoreCode.SUCCESS) {
+      if (response.kstatus == KCoreCode.SUCCESS &&
+          (response.transactions?.length ?? 0) > 0) {
+        final transaction = response.transactions![0];
+
+        if (hasModifyBank) {
+          await KSessionData.reload();
+        }
+        Navigator.of(context).pop(transaction);
+      } else {
         KSnackBarHelper.show(
           text: response.kmessage ?? "",
           isSuccess: false,
         );
-        return;
       }
-      hasModifyBank = true;
-    }
-
-    final apiCall = widget.action == BankTransferAction.withdraw
-        ? KServerHandler.bankWithdrawal
-        : KServerHandler.bankDeposit;
-    final response = await apiCall.call(
-      bankID: bankID,
-      bankName: bankName,
-      bankAccount: accountNameCtrl.text,
-      bankAccNumber: bankAccountNumberCtrl.text,
-      amount: amountCtrl.text.isEmpty ? "0" : amountCtrl.text,
-      tokenName: widget.tokenName,
-    );
-    if (response.kstatus == KCoreCode.SUCCESS &&
-        (response.transactions?.length ?? 0) > 0) {
-      final transaction = response.transactions![0];
-
-      if (hasModifyBank) {
-        await KSessionData.reload();
-      }
-      Navigator.of(context).pop(transaction);
-    } else {
-      KSnackBarHelper.show(
-        text: response.kmessage ?? "",
-        isSuccess: false,
-      );
-    }
+    } catch(ex) {}
+    setState(() {
+      this.isSubmitting = false;
+    });
   }
 
   @override
@@ -105,7 +117,7 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
     final editButton = Container(
       margin: EdgeInsets.all(10),
       child: ElevatedButton(
-        onPressed: onSubmitClick,
+        onPressed: isSubmitting ? null : onSubmitClick,
         child: Text("Confirm"),
       ),
     );
