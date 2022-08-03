@@ -130,7 +130,9 @@ abstract class TLSHelper {
 
     // Replace stack with Splash in case of BAD SESSION response
     try {
-      final condition = ((int.tryParse(result["kstatus"]) ?? 0) == KCoreCode.BAD_SESSION) && KSessionData.hasActiveSession;
+      final condition =
+          ((int.tryParse(result["kstatus"]) ?? 0) == KCoreCode.BAD_SESSION) &&
+              KSessionData.hasActiveSession;
       if (condition) {
         KSessionData.wipeSession();
         // TODO: Check for schoolbird

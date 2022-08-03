@@ -1,6 +1,7 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/kaddress.dart';
 import 'package:app_core/model/keducation.dart';
+import 'package:app_core/model/knote.dart';
 import 'package:app_core/model/kobject.dart';
 import 'package:app_core/value/kphrases.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -121,6 +122,9 @@ class KUser extends KObject {
 
   @JsonKey(name: "addresses")
   List<KAddress>? addresses;
+
+  @JsonKey(name: "notes")
+  List<KNote>? notes;
 
   @JsonKey(name: "officialIDNumber")
   String? officialIDNumber;

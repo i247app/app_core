@@ -59,6 +59,9 @@ BusinessMember _$BusinessMemberFromJson(Map<String, dynamic> json) =>
       ..addresses = (json['addresses'] as List<dynamic>?)
           ?.map((e) => KAddress.fromJson(e as Map<String, dynamic>))
           .toList()
+      ..notes = (json['notes'] as List<dynamic>?)
+          ?.map((e) => KNote.fromJson(e as Map<String, dynamic>))
+          .toList()
       ..officialIDNumber = json['officialIDNumber'] as String?
       ..officialIDURL = json['officialIDURL'] as String?
       ..officialIDData = json['officialIDData'] as String?
@@ -142,6 +145,7 @@ Map<String, dynamic> _$BusinessMemberToJson(BusinessMember instance) {
       'educations', instance.educations?.map((e) => e.toJson()).toList());
   writeNotNull(
       'addresses', instance.addresses?.map((e) => e.toJson()).toList());
+  writeNotNull('notes', instance.notes?.map((e) => e.toJson()).toList());
   writeNotNull('officialIDNumber', instance.officialIDNumber);
   writeNotNull('officialIDURL', instance.officialIDURL);
   writeNotNull('officialIDData', instance.officialIDData);
