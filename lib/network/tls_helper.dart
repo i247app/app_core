@@ -16,6 +16,7 @@ import 'package:app_core/model/klat_lng.dart';
 import 'package:app_core/model/response/simple_response.dart';
 import 'package:app_core/network/kpacket_header.dart';
 import 'package:app_core/network/ksocket_manager.dart';
+import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -87,7 +88,7 @@ abstract class TLSHelper {
 
       answer = buildErrorJSON(
         kstatus: KSTATUS_SOCKET_ERROR,
-        message: "Socket connection error",
+        message: KPhrases.noWifi,
       );
     } on RangeError catch (e) {
       print(e.toString());

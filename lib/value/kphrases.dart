@@ -130,4 +130,6 @@ abstract class KPhrases {
   static String get district => _klingo.yak("district");
 
   static String get ward => _klingo.yak("ward");
+
+  static String get noWifi => _klingo.yak("no_wifi");
 }

@@ -175,5 +175,6 @@
   "loc_perm_body": "Ứng dụng thu thập vị trí để nhằn mục đích tìm xung quanh.",
   "vietnamese": "Tiếng Việt",
   "district": "Quận",
-  "ward": "Phường"
+  "ward": "Phường",
+  "no_wifi": "No WIFI Internet"
 }
