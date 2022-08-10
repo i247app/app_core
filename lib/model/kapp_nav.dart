@@ -32,6 +32,7 @@ class KAppNav {
   static const String HERO_APP_MODE = "heroAppMode";
   static const String HEADSTART_APP_MODE = "headstartAppMode";
   static const String GOOGLE_APP_MODE = "googleAppMode";
+  static const String PROFILE_APP_MODE = "profileAppMode";
 
   static const int OFF = -1;
   static const int ON = 0;
@@ -78,6 +79,10 @@ class KAppNav {
   @JsonKey(
       name: GOOGLE_APP_MODE, toJson: zzz_itoa, fromJson: zzz_appNavTryAtoi)
   int? googleAppMode;
+
+  @JsonKey(
+      name: PROFILE_APP_MODE, toJson: zzz_itoa, fromJson: zzz_appNavTryAtoi)
+  int? profileAppMode;
 
   // JSON
   KAppNav();
