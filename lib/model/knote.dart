@@ -9,13 +9,18 @@ part 'knote.g.dart';
 class KNote {
   static const String CONTENT_TYPE_TEXT = "text";
   static const String CONTENT_TYPE_IMAGE = "image";
+  static const String ACTION_ADD = "add";
+  static const String ACTION_LIST = "list";
+  static const String ACTION_MODIFY = "modify";
+  static const String ACTION_REMOVE = "remove";
 
   static const String ID = "id";
   static const String NOTE_ID = "noteID";
-  static const String DOMAIN = "domain";
+  static const String ACTION = "action";
 
   static const String PUID = "puid";
   static const String REF_APP = "refApp";
+  static const String USER = "user";
   static const String REF_ID = "refID";
   static const String MESSAGE = "message";
   static const String MESSAGE_DATE = "messageDate";
@@ -23,7 +28,6 @@ class KNote {
   static const String NOTE_STATUS = "noteStatus";
 
   static const String IMG_DATA = "imageData";
-  static const String USER = "user";
 
   @JsonKey(name: ID)
   String? id;
@@ -31,8 +35,8 @@ class KNote {
   @JsonKey(name: NOTE_ID)
   String? noteID;
 
-  @JsonKey(name: DOMAIN)
-  String? domain;
+  @JsonKey(name: ACTION)
+  String? action;
 
   @JsonKey(name: PUID)
   String? puid;

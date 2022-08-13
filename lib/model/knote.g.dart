@@ -9,7 +9,7 @@ part of 'knote.dart';
 KNote _$KNoteFromJson(Map<String, dynamic> json) => KNote()
   ..id = json['id'] as String?
   ..noteID = json['noteID'] as String?
-  ..domain = json['domain'] as String?
+  ..action = json['action'] as String?
   ..puid = json['puid'] as String?
   ..refApp = json['refApp'] as String?
   ..refID = json['refID'] as String?
@@ -33,7 +33,7 @@ Map<String, dynamic> _$KNoteToJson(KNote instance) {
 
   writeNotNull('id', instance.id);
   writeNotNull('noteID', instance.noteID);
-  writeNotNull('domain', instance.domain);
+  writeNotNull('action', instance.action);
   writeNotNull('puid', instance.puid);
   writeNotNull('refApp', instance.refApp);
   writeNotNull('refID', instance.refID);
