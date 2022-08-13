@@ -1,12 +1,12 @@
+import 'package:app_core/model/kobject.dart';
+import 'package:app_core/model/kuser.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/model/response/base_response.dart';
-
-import 'kuser.dart';
 
 part 'knote.g.dart';
 
 @JsonSerializable()
-class KNote {
+class KNote extends KObject {
   static const String CONTENT_TYPE_TEXT = "text";
   static const String CONTENT_TYPE_IMAGE = "image";
   static const String ACTION_ADD = "add";
