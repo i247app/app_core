@@ -7,13 +7,20 @@ part of 'knote.dart';
 // **************************************************************************
 
 KNote _$KNoteFromJson(Map<String, dynamic> json) => KNote()
+  ..id = json['id'] as String?
+  ..noteID = json['noteID'] as String?
+  ..domain = json['domain'] as String?
   ..puid = json['puid'] as String?
-  ..noteDate = zzz_str2Date(json['noteDate'] as String?)
-  ..messageType = json['messageType'] as String?
-  ..body = json['body'] as String?
-  ..imageData = json['imgData'] as String?
   ..refApp = json['refApp'] as String?
-  ..refID = json['refID'] as String?;
+  ..refID = json['refID'] as String?
+  ..messageDate = zzz_str2Date(json['messageDate'] as String?)
+  ..messageType = json['messageType'] as String?
+  ..message = json['message'] as String?
+  ..noteStatus = json['noteStatus'] as String?
+  ..imgData = json['imageData'] as String?
+  ..user = json['user'] == null
+      ? null
+      : KUser.fromJson(json['user'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$KNoteToJson(KNote instance) {
   final val = <String, dynamic>{};
@@ -24,12 +31,17 @@ Map<String, dynamic> _$KNoteToJson(KNote instance) {
     }
   }
 
+  writeNotNull('id', instance.id);
+  writeNotNull('noteID', instance.noteID);
+  writeNotNull('domain', instance.domain);
   writeNotNull('puid', instance.puid);
-  writeNotNull('noteDate', zzz_date2Str(instance.noteDate));
-  writeNotNull('messageType', instance.messageType);
-  writeNotNull('body', instance.body);
-  writeNotNull('imgData', instance.imageData);
   writeNotNull('refApp', instance.refApp);
   writeNotNull('refID', instance.refID);
+  writeNotNull('messageDate', zzz_date2Str(instance.messageDate));
+  writeNotNull('messageType', instance.messageType);
+  writeNotNull('message', instance.message);
+  writeNotNull('noteStatus', instance.noteStatus);
+  writeNotNull('imageData', instance.imgData);
+  writeNotNull('user', instance.user?.toJson());
   return val;
 }
