@@ -16,7 +16,6 @@ class KNote extends KObject {
 
   static const String ID = "id";
   static const String NOTE_ID = "noteID";
-  static const String ACTION = "action";
 
   static const String PUID = "puid";
   static const String REF_APP = "refApp";
@@ -34,9 +33,6 @@ class KNote extends KObject {
 
   @JsonKey(name: NOTE_ID)
   String? noteID;
-
-  @JsonKey(name: ACTION)
-  String? action;
 
   @JsonKey(name: PUID)
   String? puid;
