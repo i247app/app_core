@@ -16,13 +16,13 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..kmodifyID = json['modifyID'] as String?
   ..kmodifyDate = zzz_str2Date(json['modifyDate'] as String?)
   ..kisValid = json['isValid'] as String?
-  ..action = json['action'] as String?
   ..korderBy = json['orderBy'] as String?
   ..klimit = json['limit'] as String?
   ..koffset = json['offset'] as String?
   ..kstatus = json['kstatus'] as String?
   ..kmessage = json['kmessage'] as String?
   ..kcount = json['kcount'] as String?
+  ..action = json['action'] as String?
   ..puid = json['puid'] as String?
   ..kunm = json['kunm'] as String?
   ..phone = json['fone'] as String?
@@ -33,6 +33,7 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..middleName = json['middleName'] as String?
   ..lastName = json['lastName'] as String?
   ..dob = zzz_str2Date(json['dob'] as String?)
+  ..ppuid = json['ppuid'] as String?
   ..parentName = json['parentName'] as String?
   ..parentEmail = json['parentEmail'] as String?
   ..parentPhone = json['parentPhone'] as String?
@@ -113,13 +114,13 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('modifyID', instance.kmodifyID);
   writeNotNull('modifyDate', zzz_date2Str(instance.kmodifyDate));
   writeNotNull('isValid', instance.kisValid);
-  writeNotNull('action', instance.action);
   writeNotNull('orderBy', instance.korderBy);
   writeNotNull('limit', instance.klimit);
   writeNotNull('offset', instance.koffset);
   writeNotNull('kstatus', instance.kstatus);
   writeNotNull('kmessage', instance.kmessage);
   writeNotNull('kcount', instance.kcount);
+  writeNotNull('action', instance.action);
   writeNotNull('puid', instance.puid);
   writeNotNull('kunm', instance.kunm);
   writeNotNull('fone', instance.phone);
@@ -130,6 +131,7 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('middleName', instance.middleName);
   writeNotNull('lastName', instance.lastName);
   writeNotNull('dob', zzz_date2Str(instance.dob));
+  writeNotNull('ppuid', instance.ppuid);
   writeNotNull('parentName', instance.parentName);
   writeNotNull('parentEmail', instance.parentEmail);
   writeNotNull('parentPhone', instance.parentPhone);
