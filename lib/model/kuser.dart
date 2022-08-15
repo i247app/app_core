@@ -1,7 +1,6 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/kaddress.dart';
 import 'package:app_core/model/keducation.dart';
-import 'package:app_core/model/knote.dart';
 import 'package:app_core/model/kobject.dart';
 import 'package:app_core/value/kphrases.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -10,6 +9,14 @@ part 'kuser.g.dart';
 
 @JsonSerializable()
 class KUser extends KObject {
+  static const String ACTION_ADD = "add";
+  static const String ACTION_LIST = "list";
+  static const String ACTION_MODIFY = "modify";
+  static const String ACTION_REMOVE = "remove";
+
+  @JsonKey(name: "action")
+  String? action;
+
   @JsonKey(name: "puid")
   String? puid;
 
@@ -39,6 +46,9 @@ class KUser extends KObject {
 
   @JsonKey(name: "dob", fromJson: zzz_str2Date, toJson: zzz_date2Str)
   DateTime? dob;
+
+  @JsonKey(name: "ppuid")
+  String? ppuid;
 
   @JsonKey(name: "parentName")
   String? parentName;
