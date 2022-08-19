@@ -70,7 +70,9 @@ class _KGameConsoleState extends State<KGameConsole>
   ];
 
   String? gameBackground;
-  int? overlayID;
+  int? pauseOverlayID;
+  int? endGameOverlayID;
+  int? highscoreOverlayID;
 
   Timer? _timer;
 
@@ -170,9 +172,17 @@ class _KGameConsoleState extends State<KGameConsole>
   @override
   void dispose() {
     _timer?.cancel();
-    if (this.overlayID != null) {
-      KOverlayHelper.removeOverlay(this.overlayID!);
-      this.overlayID = null;
+    if (this.pauseOverlayID != null) {
+      KOverlayHelper.removeOverlay(this.pauseOverlayID!);
+      this.pauseOverlayID = null;
+    }
+    if (this.endGameOverlayID != null) {
+      KOverlayHelper.removeOverlay(this.endGameOverlayID!);
+      this.endGameOverlayID = null;
+    }
+    if (this.highscoreOverlayID != null) {
+      KOverlayHelper.removeOverlay(this.highscoreOverlayID!);
+      this.highscoreOverlayID = null;
     }
     gameController.removeListener(basicSetStateListener);
     WidgetsBinding.instance.removeObserver(this);
@@ -350,14 +360,14 @@ class _KGameConsoleState extends State<KGameConsole>
         this.setState(() {
           this.isShowEndLevel = false;
         });
-        if (this.overlayID != null) {
-          KOverlayHelper.removeOverlay(this.overlayID!);
-          this.overlayID = null;
+        if (this.endGameOverlayID != null) {
+          KOverlayHelper.removeOverlay(this.endGameOverlayID!);
+          this.endGameOverlayID = null;
         }
         onFinish();
       },
     );
-    showCustomOverlay(heroGameEnd);
+    showEndGameOverlay(heroGameEnd);
   }
 
   void showHeroGameLevelOverlay(onFinish) async {
@@ -375,15 +385,15 @@ class _KGameConsoleState extends State<KGameConsole>
         this.setState(() {
           this.isShowEndLevel = false;
         });
-        if (this.overlayID != null) {
-          KOverlayHelper.removeOverlay(this.overlayID!);
-          this.overlayID = null;
+        if (this.endGameOverlayID != null) {
+          KOverlayHelper.removeOverlay(this.endGameOverlayID!);
+          this.endGameOverlayID = null;
         }
         onFinish();
       },
       canAdvance: canAdvance,
     );
-    showCustomOverlay(heroGameLevel);
+    showEndGameOverlay(heroGameLevel);
   }
 
   void showGameLevelEndOverlay() async {
@@ -399,9 +409,9 @@ class _KGameConsoleState extends State<KGameConsole>
               this.setState(() {
                 this.isShowEndLevel = false;
               });
-              if (this.overlayID != null) {
-                KOverlayHelper.removeOverlay(this.overlayID!);
-                this.overlayID = null;
+              if (this.endGameOverlayID != null) {
+                KOverlayHelper.removeOverlay(this.endGameOverlayID!);
+                this.endGameOverlayID = null;
               }
             },
             game: gameID,
@@ -413,9 +423,9 @@ class _KGameConsoleState extends State<KGameConsole>
               this.setState(() {
                 this.isShowEndLevel = false;
               });
-              if (this.overlayID != null) {
-                KOverlayHelper.removeOverlay(this.overlayID!);
-                this.overlayID = null;
+              if (this.endGameOverlayID != null) {
+                KOverlayHelper.removeOverlay(this.endGameOverlayID!);
+                this.endGameOverlayID = null;
               }
               advanceGame(currentLevel);
             },
@@ -423,13 +433,13 @@ class _KGameConsoleState extends State<KGameConsole>
         ),
       ],
     );
-    showCustomOverlay(heroGameHighScore);
+    showEndGameOverlay(heroGameHighScore);
   }
 
   void resumeGame() {
-    if (this.overlayID != null) {
-      KOverlayHelper.removeOverlay(this.overlayID!);
-      this.overlayID = null;
+    if (this.pauseOverlayID != null) {
+      KOverlayHelper.removeOverlay(this.pauseOverlayID!);
+      this.pauseOverlayID = null;
     }
     if (!this.isBackgroundSoundPlaying && !isLocalMute) {
       toggleBackgroundSound();
@@ -447,16 +457,16 @@ class _KGameConsoleState extends State<KGameConsole>
       alignment: Alignment.center,
       child: KGamePauseDialog(
         onExit: () {
-          if (this.overlayID != null) {
-            KOverlayHelper.removeOverlay(this.overlayID!);
-            this.overlayID = null;
+          if (this.pauseOverlayID != null) {
+            KOverlayHelper.removeOverlay(this.pauseOverlayID!);
+            this.pauseOverlayID = null;
           }
           Navigator.of(context).pop();
         },
         onResume: resumeGame,
       ),
     );
-    showCustomOverlay(view);
+    showPauseOverlay(view);
   }
 
   void showHighscoreDialog() async {
@@ -469,9 +479,9 @@ class _KGameConsoleState extends State<KGameConsole>
       alignment: Alignment.center,
       child: KGameHighscoreDialog(
         onClose: () {
-          if (this.overlayID != null) {
-            KOverlayHelper.removeOverlay(this.overlayID!);
-            this.overlayID = null;
+          if (this.highscoreOverlayID != null) {
+            KOverlayHelper.removeOverlay(this.highscoreOverlayID!);
+            this.highscoreOverlayID = null;
           }
           this.setState(() {
             isCurrentHighest = false;
@@ -487,10 +497,14 @@ class _KGameConsoleState extends State<KGameConsole>
         gameScores: gameScores,
       ),
     );
-    showCustomOverlay(view);
+    showHighscoreOverlay(view);
   }
 
-  void showCustomOverlay(Widget view) {
+  void showEndGameOverlay(Widget view) {
+    if (this.endGameOverlayID != null) {
+      KOverlayHelper.removeOverlay(this.endGameOverlayID!);
+      this.endGameOverlayID = null;
+    }
     final overlay = Stack(
       fit: StackFit.expand,
       children: [
@@ -498,7 +512,37 @@ class _KGameConsoleState extends State<KGameConsole>
         view,
       ],
     );
-    this.overlayID = KOverlayHelper.addOverlay(overlay);
+    this.endGameOverlayID = KOverlayHelper.addOverlay(overlay);
+  }
+
+  void showHighscoreOverlay(Widget view) {
+    if (this.highscoreOverlayID != null) {
+      KOverlayHelper.removeOverlay(this.highscoreOverlayID!);
+      this.highscoreOverlayID = null;
+    }
+    final overlay = Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(color: Colors.black.withOpacity(0.6)),
+        view,
+      ],
+    );
+    this.highscoreOverlayID = KOverlayHelper.addOverlay(overlay);
+  }
+
+  void showPauseOverlay(Widget view) {
+    if (this.pauseOverlayID != null) {
+      KOverlayHelper.removeOverlay(this.pauseOverlayID!);
+      this.pauseOverlayID = null;
+    }
+    final overlay = Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(color: Colors.black.withOpacity(0.6)),
+        view,
+      ],
+    );
+    this.pauseOverlayID = KOverlayHelper.addOverlay(overlay);
   }
 
   void showCountDownOverlay() {
