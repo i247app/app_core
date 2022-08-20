@@ -4,6 +4,7 @@ import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/model/kchat.dart';
 import 'package:app_core/model/kchat_member.dart';
 import 'package:app_core/model/kuser.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class KUserAvatar extends StatelessWidget {
@@ -13,6 +14,8 @@ class KUserAvatar extends StatelessWidget {
   final Color? backgroundColor;
   final Color? foregroundColor;
   final double? size;
+  final bool? isCached;
+  final Function? onFinishLoaded;
 
   Image get placeholderImage =>
       imagePlaceHolder ?? Image.asset(KAssets.IMG_TRANSPARENCY);
@@ -24,18 +27,23 @@ class KUserAvatar extends StatelessWidget {
     this.backgroundColor,
     this.foregroundColor,
     this.size,
+    this.isCached = false,
+    this.onFinishLoaded,
   });
 
-  factory KUserAvatar.fromUser(
-    KUser? user, {
+  factory KUserAvatar.fromUser(KUser? user, {
     Image? imagePlaceHolder,
     double? size,
+    bool? isCached,
+    Function? onFinishLoaded,
   }) =>
       KUserAvatar(
         initial: user?.firstInitial,
         imageURL: user?.avatarURL,
         imagePlaceHolder: imagePlaceHolder,
         size: size,
+        isCached: isCached,
+        onFinishLoaded: onFinishLoaded,
       );
 
   factory KUserAvatar.fromChatMember(KChatMember? member, {double? size}) =>
@@ -45,15 +53,16 @@ class KUserAvatar extends StatelessWidget {
         size: size,
       );
 
-  factory KUserAvatar.fromChat(KChat? chat, {double? size}) => KUserAvatar(
+  factory KUserAvatar.fromChat(KChat? chat, {double? size}) =>
+      KUserAvatar(
         initial: chat?.chatName,
         size: size,
         imageURL: (chat?.kMembers ?? []).length < 2
             ? null
             : chat?.kMembers
-                ?.where((member) => member.puid != KSessionData.me?.puid)
-                .first
-                .avatar,
+            ?.where((member) => member.puid != KSessionData.me?.puid)
+            .first
+            .avatar,
       );
 
   factory KUserAvatar.me({Image? imagePlaceHolder}) =>
@@ -63,30 +72,46 @@ class KUserAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final raw = (imageURL ?? "").isEmpty
         ? (initial ?? "").isEmpty
-            ? placeholderImage
-            : FittedBox(
-                fit: BoxFit.cover,
-                child: CircleAvatar(
-                  backgroundColor:
-                      backgroundColor ?? Theme.of(context).colorScheme.primary,
-                  foregroundColor: foregroundColor ?? Colors.white,
-                  child: Text(
-                    KStringHelper.substring(initial!, 0, 2).toUpperCase(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: foregroundColor ?? Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              )
+        ? placeholderImage
+        : FittedBox(
+      fit: BoxFit.cover,
+      child: CircleAvatar(
+        backgroundColor:
+        backgroundColor ?? Theme
+            .of(context)
+            .colorScheme
+            .primary,
+        foregroundColor: foregroundColor ?? Colors.white,
+        child: Text(
+          KStringHelper.substring(initial!, 0, 2).toUpperCase(),
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: foregroundColor ?? Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    )
+        : ((this.isCached ?? false)
+        ? CachedNetworkImage(
+      imageUrl: imageURL!,
+      progressIndicatorBuilder: (context, url, downloadProgress) {
+        if ((downloadProgress.progress == null ||
+            downloadProgress.progress == 1) &&
+            this.onFinishLoaded != null) {
+          this.onFinishLoaded!();
+        }
+        return CircularProgressIndicator(
+            value: downloadProgress.progress);
+      },
+    )
         : FadeInImage.assetNetwork(
-            placeholder: KAssets.IMG_TRANSPARENCY,
-            image: imageURL!,
-            fit: BoxFit.cover,
-            fadeInDuration: Duration(milliseconds: 100),
-            imageErrorBuilder: (ctx, exc, stackTrace) => placeholderImage,
-          );
+      placeholder: KAssets.IMG_TRANSPARENCY,
+      image: imageURL!,
+      fit: BoxFit.cover,
+      fadeInDuration: Duration(milliseconds: 100),
+      imageErrorBuilder: (ctx, exc, stackTrace) => placeholderImage,
+    ));
 
     final body = AspectRatio(
       aspectRatio: 1,
