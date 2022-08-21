@@ -20,7 +20,8 @@ KAppNav _$KAppNavFromJson(Map<String, dynamic> json) => KAppNav()
   ..heroAppMode = zzz_appNavTryAtoi(json['heroAppMode'])
   ..headstartAppMode = zzz_appNavTryAtoi(json['headstartAppMode'])
   ..googleAppMode = zzz_appNavTryAtoi(json['googleAppMode'])
-  ..profileAppMode = zzz_appNavTryAtoi(json['profileAppMode']);
+  ..profileAppMode = zzz_appNavTryAtoi(json['profileAppMode'])
+  ..seekProducerAppMode = zzz_appNavTryAtoi(json['seekProducerAppMode']);
 
 Map<String, dynamic> _$KAppNavToJson(KAppNav instance) {
   final val = <String, dynamic>{};
@@ -45,5 +46,6 @@ Map<String, dynamic> _$KAppNavToJson(KAppNav instance) {
   writeNotNull('headstartAppMode', zzz_itoa(instance.headstartAppMode));
   writeNotNull('googleAppMode', zzz_itoa(instance.googleAppMode));
   writeNotNull('profileAppMode', zzz_itoa(instance.profileAppMode));
+  writeNotNull('seekProducerAppMode', zzz_itoa(instance.seekProducerAppMode));
   return val;
 }
