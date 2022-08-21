@@ -26,7 +26,10 @@ abstract class KAppNavHelper {
       KSessionData.appNav?.universityAppMode ?? KAppNav.OFF;
 
   static int get profile =>
-      KSessionData.appNav?.profileAppMode ?? KAppNav.OFF;
+      KSessionData.appNav?.profileAppMode ?? KAppNav.OFF;;
+
+  static int get seekProducer =>
+      KSessionData.appNav?.seekProducerAppMode ?? KAppNav.OFF;
 
   static int get hero => KSessionData.appNav?.heroAppMode ?? KAppNav.OFF;
 
