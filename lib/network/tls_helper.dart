@@ -8,6 +8,7 @@ import 'package:app_core/network/kpacket_header.dart';
 import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_webservice/geocoding.dart';
 
 abstract class TLSHelper {
   static const int KSTATUS_UNKNOWN_ERROR = -1;
@@ -195,7 +196,10 @@ abstract class TLSHelper {
     };
 
     if (KLocationHelper.cachedPosition != null) {
-      data["latLng"] = KLatLng.fromPosition(KLocationHelper.cachedPosition!);
+      final theRunningBeanLocation =
+          Location(lat: 10.7728637, lng: 106.7010775);
+      data["latLng"] = KLatLng.fromLocation(theRunningBeanLocation);
+      // data["latLng"] = KLatLng.fromPosition(KLocationHelper.cachedPosition!);
       data["countryCode"] = await KSessionData.getCountryCode();
     }
 

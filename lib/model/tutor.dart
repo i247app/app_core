@@ -33,6 +33,9 @@ class Tutor extends KUser {
   static const String ACTION_HEADSTART = "HEADSTART";
   static const String ACTION_ENGLISH = "ENGLISH";
 
+  static const String IS_PREFER = "isPrefer";
+  static const String IS_GENIUS = "isGenius";
+
   @JsonKey(name: "rating")
   Review? review;
 
@@ -56,6 +59,12 @@ class Tutor extends KUser {
 
   @JsonKey(name: IS_ENGLISH)
   bool? isEnglish;
+
+  @JsonKey(name: IS_PREFER)
+  bool? isPrefer;
+
+  @JsonKey(name: IS_GENIUS)
+  bool? isGenius;
 
   @JsonKey(name: "tutorStatus")
   String? tutorStatus;

@@ -15,6 +15,8 @@ class KUserAvatar extends StatelessWidget {
   final Color? foregroundColor;
   final double? size;
   final bool? isCached;
+  final Color highlightColor;
+  final double highlightSize;
   final Function? onFinishLoaded;
 
   Image get placeholderImage =>
@@ -28,13 +30,18 @@ class KUserAvatar extends StatelessWidget {
     this.foregroundColor,
     this.size,
     this.isCached = false,
+    this.highlightColor = Colors.black,
+    this.highlightSize = 0.1,
     this.onFinishLoaded,
   });
 
-  factory KUserAvatar.fromUser(KUser? user, {
+  factory KUserAvatar.fromUser(
+    KUser? user, {
     Image? imagePlaceHolder,
     double? size,
     bool? isCached,
+    Color highlightColor = Colors.black,
+    double highlightSize = 0.1,
     Function? onFinishLoaded,
   }) =>
       KUserAvatar(
@@ -43,6 +50,8 @@ class KUserAvatar extends StatelessWidget {
         imagePlaceHolder: imagePlaceHolder,
         size: size,
         isCached: isCached,
+        highlightSize: highlightSize,
+        highlightColor: highlightColor,
         onFinishLoaded: onFinishLoaded,
       );
 
@@ -53,16 +62,15 @@ class KUserAvatar extends StatelessWidget {
         size: size,
       );
 
-  factory KUserAvatar.fromChat(KChat? chat, {double? size}) =>
-      KUserAvatar(
+  factory KUserAvatar.fromChat(KChat? chat, {double? size}) => KUserAvatar(
         initial: chat?.chatName,
         size: size,
         imageURL: (chat?.kMembers ?? []).length < 2
             ? null
             : chat?.kMembers
-            ?.where((member) => member.puid != KSessionData.me?.puid)
-            .first
-            .avatar,
+                ?.where((member) => member.puid != KSessionData.me?.puid)
+                .first
+                .avatar,
       );
 
   factory KUserAvatar.me({Image? imagePlaceHolder}) =>
@@ -72,46 +80,43 @@ class KUserAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     final raw = (imageURL ?? "").isEmpty
         ? (initial ?? "").isEmpty
-        ? placeholderImage
-        : FittedBox(
-      fit: BoxFit.cover,
-      child: CircleAvatar(
-        backgroundColor:
-        backgroundColor ?? Theme
-            .of(context)
-            .colorScheme
-            .primary,
-        foregroundColor: foregroundColor ?? Colors.white,
-        child: Text(
-          KStringHelper.substring(initial!, 0, 2).toUpperCase(),
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: foregroundColor ?? Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    )
+            ? placeholderImage
+            : FittedBox(
+                fit: BoxFit.cover,
+                child: CircleAvatar(
+                  backgroundColor:
+                      backgroundColor ?? Theme.of(context).colorScheme.primary,
+                  foregroundColor: foregroundColor ?? Colors.white,
+                  child: Text(
+                    KStringHelper.substring(initial!, 0, 2).toUpperCase(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: foregroundColor ?? Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              )
         : ((this.isCached ?? false)
-        ? CachedNetworkImage(
-      imageUrl: imageURL!,
-      progressIndicatorBuilder: (context, url, downloadProgress) {
-        if ((downloadProgress.progress == null ||
-            downloadProgress.progress == 1) &&
-            this.onFinishLoaded != null) {
-          this.onFinishLoaded!();
-        }
-        return CircularProgressIndicator(
-            value: downloadProgress.progress);
-      },
-    )
-        : FadeInImage.assetNetwork(
-      placeholder: KAssets.IMG_TRANSPARENCY,
-      image: imageURL!,
-      fit: BoxFit.cover,
-      fadeInDuration: Duration(milliseconds: 100),
-      imageErrorBuilder: (ctx, exc, stackTrace) => placeholderImage,
-    ));
+            ? CachedNetworkImage(
+                imageUrl: imageURL!,
+                progressIndicatorBuilder: (context, url, downloadProgress) {
+                  if ((downloadProgress.progress == null ||
+                          downloadProgress.progress == 1) &&
+                      this.onFinishLoaded != null) {
+                    this.onFinishLoaded!();
+                  }
+                  return CircularProgressIndicator(
+                      value: downloadProgress.progress);
+                },
+              )
+            : FadeInImage.assetNetwork(
+                placeholder: KAssets.IMG_TRANSPARENCY,
+                image: imageURL!,
+                fit: BoxFit.cover,
+                fadeInDuration: Duration(milliseconds: 100),
+                imageErrorBuilder: (ctx, exc, stackTrace) => placeholderImage,
+              ));
 
     final body = AspectRatio(
       aspectRatio: 1,
@@ -120,7 +125,8 @@ class KUserAvatar extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(size ?? 100),
-          border: Border.all(color: Colors.black, width: 0.1),
+          border:
+              Border.all(color: this.highlightColor, width: this.highlightSize),
         ),
         child: ClipOval(child: raw),
       ),
