@@ -1,5 +1,6 @@
 import 'package:app_core/model/review.dart';
 import 'package:app_core/model/user_tag.dart';
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/keducation.dart';
@@ -80,6 +81,14 @@ class Tutor extends KUser {
 
   @JsonKey(name: "tutorJoinDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
   DateTime? tutorJoinDate;
+
+  Color get highlightColor => isGenius == true
+      ? Colors.orange.shade300
+      : (isPrefer == true)
+          ? Colors.green
+          : Colors.black;
+
+  double get highlightSize => isGenius == true || isPrefer == true ? 10.0 : 1.0;
 
   /// Getters
   @JsonKey(ignore: true)
