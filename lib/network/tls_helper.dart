@@ -195,7 +195,7 @@ abstract class TLSHelper {
       "tokenMode": KUtil.getPushTokenMode(),
     };
 
-    if (KLocationHelper.cachedPosition != null) {
+    if (KLocationHelper.cachedPosition != null && !KHostConfig.isReleaseMode) {
       final theRunningBeanLocation =
           Location(lat: 10.7728637, lng: 106.7010775);
       data["latLng"] = KLatLng.fromLocation(theRunningBeanLocation);
