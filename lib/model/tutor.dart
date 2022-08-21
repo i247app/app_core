@@ -86,7 +86,7 @@ class Tutor extends KUser {
       ? Colors.orange.shade300
       : (isPrefer == true)
           ? Colors.green
-          : Colors.black;
+          : Colors.black87;
 
   double get highlightSize => isGenius == true || isPrefer == true ? 10.0 : 1.0;
 
