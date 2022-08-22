@@ -83,16 +83,16 @@ class Tutor extends KUser {
   DateTime? tutorJoinDate;
 
   Color get highlightColor => (isPrefer ?? false)
-      ? Colors.white
-      : (isGenius ?? false)
-          ? Colors.transparent
-          : Colors.white;
-
-  Color? get iconColor => (isPrefer ?? false)
       ? Colors.blue
       : (isGenius ?? false)
-          ? Colors.yellowAccent
+          ? Colors.transparent
           : Colors.green;
+
+  Color? get iconColor => (isPrefer ?? false)
+      ? Colors.white
+      : (isGenius ?? false)
+          ? Colors.orange
+          : Colors.white;
 
   IconData? get icon => (isPrefer ?? false)
       ? Icons.diamond_outlined
