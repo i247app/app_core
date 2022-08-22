@@ -70,7 +70,7 @@ class _KGameLevelDialogState extends State<KGameLevelDialog> {
         level: widget.currentLevel.toString(),
       );
 
-      if (result.isSuccess && result.gameScores != null) {
+      if (mounted && result.isSuccess && result.gameScores != null) {
         setState(() {
           gameScores = result.gameScores!;
           isLoaded = true;
@@ -79,9 +79,11 @@ class _KGameLevelDialogState extends State<KGameLevelDialog> {
     } catch (e) {
       print(e);
 
-      this.setState(() {
-        isLoaded = true;
-      });
+      if (mounted) {
+        this.setState(() {
+          isLoaded = true;
+        });
+      }
     }
   }
 
@@ -222,7 +224,6 @@ class _KGameLevelDialogState extends State<KGameLevelDialog> {
                       final score = scores[index];
                       bool isCurrentUserHighScore =
                           score.puid == KSessionData.me!.puid;
-                      print(score.scoreType);
                       return Container(
                         width: 121,
                         padding: EdgeInsets.symmetric(

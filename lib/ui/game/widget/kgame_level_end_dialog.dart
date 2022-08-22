@@ -422,7 +422,6 @@ class _KGameLevelEndDialogState extends State<KGameLevelEndDialog>
                       final score = scores[index];
                       bool isCurrentUserHighScore =
                           score.puid == KSessionData.me!.puid;
-                      print(score.scoreType);
                       return Container(
                         width: 121,
                         padding: EdgeInsets.symmetric(

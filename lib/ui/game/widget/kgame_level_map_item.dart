@@ -28,7 +28,6 @@ class KGameLevelMapItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(currentLevel);
     final levelItem = Container(
       height: 70,
       width: 70,
