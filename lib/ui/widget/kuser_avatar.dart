@@ -17,6 +17,7 @@ class KUserAvatar extends StatelessWidget {
   final bool? isCached;
   final Color highlightColor;
   final double highlightSize;
+  final bool showStar;
   final Function? onFinishLoaded;
 
   Image get placeholderImage =>
@@ -32,6 +33,7 @@ class KUserAvatar extends StatelessWidget {
     this.isCached = false,
     this.highlightColor = Colors.black,
     this.highlightSize = 0.1,
+    this.showStar = false,
     this.onFinishLoaded,
   });
 
@@ -42,6 +44,7 @@ class KUserAvatar extends StatelessWidget {
     bool? isCached,
     Color highlightColor = Colors.black,
     double highlightSize = 0.1,
+    bool showStar = false,
     Function? onFinishLoaded,
   }) =>
       KUserAvatar(
@@ -50,6 +53,7 @@ class KUserAvatar extends StatelessWidget {
         imagePlaceHolder: imagePlaceHolder,
         size: size,
         isCached: isCached,
+        showStar: showStar,
         highlightSize: highlightSize,
         highlightColor: highlightColor,
         onFinishLoaded: onFinishLoaded,
@@ -132,6 +136,17 @@ class KUserAvatar extends StatelessWidget {
       ),
     );
 
-    return Container(height: size, child: body);
+    return Container(
+      height: size,
+      child: Stack(children: [
+        body,
+        if (this.showStar)
+          Positioned(
+              right: 0.0,
+              bottom: 0.0,
+              child: Icon(Icons.star,
+                  size: (size ?? 100) * 0.4, color: Colors.yellow))
+      ]),
+    );
   }
 }
