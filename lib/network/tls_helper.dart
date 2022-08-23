@@ -195,11 +195,8 @@ abstract class TLSHelper {
       "tokenMode": KUtil.getPushTokenMode(),
     };
 
-    if (KLocationHelper.cachedPosition != null && !KHostConfig.isReleaseMode) {
-      final theRunningBeanLocation =
-          Location(lat: 10.7728637, lng: 106.7010775);
-      data["latLng"] = KLatLng.fromLocation(theRunningBeanLocation);
-      // data["latLng"] = KLatLng.fromPosition(KLocationHelper.cachedPosition!);
+    if (KLocationHelper.cachedPosition != null) {
+      data["latLng"] = KLatLng.fromPosition(KLocationHelper.cachedPosition!);
       data["countryCode"] = await KSessionData.getCountryCode();
     }
 

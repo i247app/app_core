@@ -1,7 +1,6 @@
 import 'package:app_core/app_core.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as Math;
 
 class KGameLevelMapItem extends StatelessWidget {
   final String? levelText;
@@ -125,9 +124,7 @@ class KGameLevelMapItem extends StatelessWidget {
     return InkWell(
       child: isCurrent
           ? AvatarGlow(
-              glowColor: Colors.yellowAccent,
-              endRadius: 40.0,
-              child: levelItem)
+              glowColor: Colors.yellowAccent, endRadius: 40.0, child: levelItem)
           : levelItem,
       onTap: () => onTap != null && (level ?? 0) <= (currentLevel ?? 0)
           ? onTap!()

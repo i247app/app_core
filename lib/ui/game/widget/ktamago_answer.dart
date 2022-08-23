@@ -1,13 +1,6 @@
-import 'dart:async';
-import 'dart:io';
-import 'dart:math' as Math;
-
 import 'package:app_core/app_core.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:path_provider/path_provider.dart';
 
 class KTamagoAnswer extends StatefulWidget {
   final bool? isCorrectAnswer;
