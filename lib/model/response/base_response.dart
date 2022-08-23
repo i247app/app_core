@@ -36,6 +36,12 @@ bool? zzz_str2Bool(String? z) =>
 // ignore: non_constant_identifier_names
 String? zzz_bool2Str(bool? b) => KStringHelper.toBooleanCode(b ?? false);
 
+// ignore: non_constant_identifier_names
+double? zzz_atod(String? z) => z == null ? null : double.tryParse(z);
+
+// ignore: non_constant_identifier_names
+String? zzz_dtoa(double? d) => d?.toString();
+
 abstract class BaseResponse {
   static const String KTOKEN = "ktoken";
   static const String KSTATUS = "kstatus";

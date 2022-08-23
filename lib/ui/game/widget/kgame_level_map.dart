@@ -1,7 +1,8 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/ui/game/widget/kgame_level_dialog.dart';
+import 'package:app_core/ui/game/widget/kgame_level_map_item.dart';
+import 'package:app_core/ui/widget/game_levels_scrolling_map/helper/utils.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as Math;
 
 import 'package:app_core/ui/widget/game_levels_scrolling_map/game_levels_scrolling_map.dart';
 import 'package:app_core/ui/widget/game_levels_scrolling_map/model/point_model.dart';
@@ -9,9 +10,6 @@ import 'package:app_core/ui/game/service/kgame_controller.dart';
 import 'package:app_core/ui/game/service/kgame_data.dart';
 import 'package:flutter/services.dart';
 import 'package:xml/xml.dart';
-
-import '../../widget/game_levels_scrolling_map/helper/utils.dart';
-import 'kgame_level_map_item.dart';
 
 class KGameLevelMap extends StatefulWidget {
   final KGameController controller;
@@ -36,10 +34,9 @@ class _KGameLevelMapState extends State<KGameLevelMap> {
 
   bool get canAdvance => gameData.canAdvance ?? false;
 
-  int get currentLevel =>
-      result == null || !canAdvance
-          ? (gameData.currentLevel ?? 0)
-          : ((gameData.currentLevel ?? 0) + 1);
+  int get currentLevel => result == null || !canAdvance
+      ? (gameData.currentLevel ?? 0)
+      : ((gameData.currentLevel ?? 0) + 1);
 
   String get gameID => gameData.gameID;
 
@@ -61,10 +58,9 @@ class _KGameLevelMapState extends State<KGameLevelMap> {
 
   int? pointsPerImage;
 
-  int get imageCount =>
-      pointsPerImage != null && pointsPerImage! > 0
-          ? (levelCount / pointsPerImage!).ceil()
-          : 0;
+  int get imageCount => pointsPerImage != null && pointsPerImage! > 0
+      ? (levelCount / pointsPerImage!).ceil()
+      : 0;
 
   @override
   void initState() {
@@ -76,8 +72,7 @@ class _KGameLevelMapState extends State<KGameLevelMap> {
     if (levelCount > 0) {
       levelIconAssets = List.generate(
         gameData.levelCount ?? 0,
-            (index) =>
-        [
+        (index) => [
           KAssets.BULLET_BALL_GREEN,
           KAssets.BULLET_BALL_BLUE,
           KAssets.BULLET_BALL_ORANGE,
@@ -180,22 +175,21 @@ class _KGameLevelMapState extends State<KGameLevelMap> {
             svgUrl: backgroundSVGPath,
             points: List.generate(
               levelCount,
-                  (index) =>
-                  PointModel(
-                    70,
-                    KGameLevelMapItem(
-                      levelText: "${index + 1}",
-                      levelIcon: levelIconAssets[index],
-                      level: index,
-                      currentLevel: currentLevel,
-                      onTap: () => showGameLevelDialog(index),
-                      // widget.onTapLevel != null
-                      //     ? widget.onTapLevel!(index)
-                      //     : null,
-                      rate: rates.length > index ? rates[index] : null,
-                    ),
-                    isCurrent: index == currentLevel,
-                  ),
+              (index) => PointModel(
+                70,
+                KGameLevelMapItem(
+                  levelText: "${index + 1}",
+                  levelIcon: levelIconAssets[index],
+                  level: index,
+                  currentLevel: currentLevel,
+                  onTap: () => showGameLevelDialog(index),
+                  // widget.onTapLevel != null
+                  //     ? widget.onTapLevel!(index)
+                  //     : null,
+                  rate: rates.length > index ? rates[index] : null,
+                ),
+                isCurrent: index == currentLevel,
+              ),
             ),
             width: constraints.maxWidth,
             imageWidth: backgroundImageWidth!,
@@ -216,8 +210,8 @@ class _KGameLevelMapState extends State<KGameLevelMap> {
     return widget.isEmbedded
         ? body
         : Scaffold(
-      appBar: AppBar(),
-      body: SafeArea(child: body),
-    );
+            appBar: AppBar(),
+            body: SafeArea(child: body),
+          );
   }
 }

@@ -78,6 +78,7 @@ Student _$StudentFromJson(Map<String, dynamic> json) => Student()
       ? null
       : KLatLng.fromJson(json['latLng'] as Map<String, dynamic>)
   ..linkStatus = json['linkStatus'] as String?
+  ..distance = zzz_atod(json['distance'] as String?)
   ..startDate = zzz_str2Date(json['startDate'] as String?)
   ..endDate = zzz_str2Date(json['endDate'] as String?)
   ..review = json['rating'] == null
@@ -160,6 +161,7 @@ Map<String, dynamic> _$StudentToJson(Student instance) {
   writeNotNull('joinDate', zzz_date2Str(instance.joinDate));
   writeNotNull('latLng', instance.currentLatLng?.toJson());
   writeNotNull('linkStatus', instance.linkStatus);
+  writeNotNull('distance', zzz_dtoa(instance.distance));
   writeNotNull('startDate', zzz_date2Str(instance.startDate));
   writeNotNull('endDate', zzz_date2Str(instance.endDate));
   writeNotNull('rating', instance.review?.toJson());

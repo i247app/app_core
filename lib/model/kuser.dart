@@ -163,6 +163,9 @@ class KUser extends KObject {
   @JsonKey(name: "linkStatus")
   String? linkStatus;
 
+  @JsonKey(name: "distance", fromJson: zzz_atod, toJson: zzz_dtoa)
+  double? distance;
+
   /// Methods
   @JsonKey(ignore: true)
   String get sbContactName =>
