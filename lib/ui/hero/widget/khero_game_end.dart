@@ -1,17 +1,23 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/khero.dart';
+import 'package:app_core/ui/game/service/kgame_data.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:vector_math/vector_math_64.dart' as Vector;
 
 class KHeroGameEnd extends StatefulWidget {
+  final KGameData? gameData;
   final KHero? hero;
   final VoidCallback? onFinish;
 
-  const KHeroGameEnd({this.onFinish, this.hero});
+  const KHeroGameEnd({this.onFinish, this.hero, this.gameData});
 
   @override
   _KHeroGameEndState createState() => _KHeroGameEndState();
@@ -19,6 +25,9 @@ class KHeroGameEnd extends StatefulWidget {
 
 class _KHeroGameEndState extends State<KHeroGameEnd>
     with TickerProviderStateMixin {
+  Completer<AudioPlayer> cBackgroundAudioPlayer = Completer();
+  String? winAudioFileUri;
+
   late Animation _adultShakeAnimation, _adultBouncingAnimation;
   late AnimationController _adultShakeAnimationController,
       _adultBouncingAnimationController;
@@ -35,9 +44,13 @@ class _KHeroGameEndState extends State<KHeroGameEnd>
 
   int eggBreakStep = 1;
 
+  bool get isMuted => widget.gameData?.isMuted ?? false;
+
   @override
   void initState() {
     super.initState();
+
+    loadAudioAsset();
 
     _adultBouncingAnimationController =
         AnimationController(vsync: this, duration: adultBouncingDuration)
@@ -57,13 +70,46 @@ class _KHeroGameEndState extends State<KHeroGameEnd>
       begin: 50.0,
       end: 120.0,
     ).animate(_adultShakeAnimationController);
+
+    if (!isMuted) {
+      Future.delayed(Duration(milliseconds: 500), () {
+        if (!isMuted) {
+          try {
+            final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+            ap.play(winAudioFileUri ?? "", isLocal: true);
+            cBackgroundAudioPlayer.complete(ap);
+          } catch (e) {}
+        }
+      });
+    }
   }
 
   @override
   void dispose() {
+    cBackgroundAudioPlayer.future.then((ap) {
+      ap.stop();
+      ap.dispose();
+    });
     this._adultShakeAnimationController.dispose();
     this._adultBouncingAnimationController.dispose();
     super.dispose();
+  }
+
+  void loadAudioAsset() async {
+    try {
+      Directory tempDir = await getTemporaryDirectory();
+
+      ByteData winAudioFileData = await rootBundle
+          .load("packages/app_core/assets/audio/jingle_win.mp3");
+
+      File winAudioTempFile = File('${tempDir.path}/jingle_win.mp3');
+      await winAudioTempFile.writeAsBytes(winAudioFileData.buffer.asUint8List(),
+          flush: true);
+
+      this.setState(() {
+        this.winAudioFileUri = winAudioTempFile.uri.toString();
+      });
+    } catch (e) {}
   }
 
   Vector.Vector3 adultShakeTransformValue() {

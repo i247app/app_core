@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
-import 'package:app_core/ui/voip/kvoip_context.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:app_core/app_core.dart';
 
@@ -37,6 +36,7 @@ typedef void InfoMessage(String msg, int code);
 typedef void ErrorMessage(String msg, int code);
 typedef void CameraToggled(bool isEnabled);
 typedef void MicToggled(bool isEnabled);
+typedef void MediaTypeChanged(bool isAudio);
 
 class KVOIPCommManager {
   static const int CODE_MISSING = -1;
@@ -78,8 +78,8 @@ class KVOIPCommManager {
   final String puid;
   final String deviceID;
   final String nickname;
-
   bool isDisposed = false;
+  final String media;
 
   String get myClientID => KWebRTCHelper.buildWebRTCClientID(
         puid: this.puid,
@@ -94,7 +94,6 @@ class KVOIPCommManager {
   final List<MediaStream> _localStreams = [];
   final List<MediaStream> _remoteStreams = [];
 
-  KVoipContext? voipContext;
   KSimpleWebSocket? _socket;
   Map<String, dynamic>? _turnCredential;
   KP2PSession? session;
@@ -114,12 +113,24 @@ class KVOIPCommManager {
   ErrorMessage? onCallError;
   CameraToggled? onCameraToggled;
   MicToggled? onMicToggled;
+  MediaTypeChanged? mediaTypeChanged;
 
   P2PPeerType peerType = P2PPeerType.not_connected;
   Map<String, dynamic> iceServers = {
     "iceServers": [
       {
-        "urls": ["stun:138.197.180.29:3478"]
+        "urls": [
+          "stun:138.197.180.29:3478",
+          "stun:stun.l.google.com:19302",
+          "stun:stun1.l.google.com:19302",
+          "stun:stun2.l.google.com:19302",
+          "stun:stun3.l.google.com:19302",
+          "stun:stun4.l.google.com:19302",
+          "stun:stun.ekiga.net:3478",
+          "stun:stun.ideasip.com:3478",
+          "stun:stun.iptel.org:3478",
+          "stun:stun.rixtelecom.se:3478",
+        ]
       },
       {
         "username": "bala",
@@ -145,19 +156,19 @@ class KVOIPCommManager {
   KVOIPCommManager({
     required this.puid,
     required this.deviceID,
+    required this.media,
     this.nickname = "Anonymous",
-    this.voipContext,
   });
 
   void close() {
     this.isDisposed = true;
-    this._localStreams.forEach((st) => st.dispose());
+    this._localStreams.forEach((ls) => ls.dispose());
     this._remoteStreams.forEach((st) => st.dispose());
     this._peerConnections.forEach((_, pc) => pc.close());
     this._dataChannels.forEach((_, dc) => dc.close());
 
     if (this._socket != null) KWebRTCHelper.releaseWebsocket(this._socket!);
-    if (this.session?.id != null) sayGoodbye(tag: "KVOIPCommManager.close");
+    if (this.session?.id != null) sayGoodbye();
   }
 
   void switchCamera() {
@@ -173,7 +184,6 @@ class KVOIPCommManager {
         "roomID": this.session?.id,
         "isEnabled": isEnabled,
       });
-      voipContext?.withFlags((flags) => flags.isMySoundEnabled = isEnabled);
     }
   }
 
@@ -185,14 +195,11 @@ class KVOIPCommManager {
         "roomID": this.session?.id,
         "isEnabled": isEnabled,
       });
-      voipContext?.withFlags((flags) => flags.isMyCameraEnabled = isEnabled);
     }
   }
 
-  void setSpeakerphoneEnabled(bool isEnabled) {
-    this._localStream?.getAudioTracks()[0].enableSpeakerphone(isEnabled);
-    voipContext?.withFlags((flags) => flags.isMySpeakerEnabled = isEnabled);
-  }
+  void setSpeakerphoneEnabled(bool isEnabled) =>
+      this._localStream?.getAudioTracks()[0].enableSpeakerphone(isEnabled);
 
   void onPauseState() => setCameraEnabled(false);
 
@@ -206,22 +213,21 @@ class KVOIPCommManager {
   //   this.connectedPeerIDs.forEach((String peerID) {
   //     this._sessionID = "${this._selfPUID}_$peerID";
   //     this._offerID = peerID;
-  //     onStateChangeWrapper(SignalingState.CallStateNew);
-  //
+  //     this.onStateChange?.call(SignalingState.CallStateNew);
+
   //     _createPeerConnection(peerID, media: media, isUserScreen: isUserScreen)
   //         .then((pc) => _createOffer(peerID, pc, media));
   //   });
   // }
 
-  void sayGoodbye({String? roomID, required String tag}) {
-    print("[$tag] sayGoodbye fired...");
-
-    // throw Exception();
+  void sayGoodbye([String? roomId]) {
+    print("sayGoodbye fired...");
 
     _wsSend('goodbye', {
       ...this.stdConnInfo,
-      'roomID': this.session?.id ?? roomID,
+      'roomID': this.session?.id ?? roomId,
     });
+    // close();
   }
 
   void onMessage(Map<String, dynamic> message) async {
@@ -230,7 +236,7 @@ class KVOIPCommManager {
     switch (message['type']) {
       case 'introduction':
         {
-          onStateChangeWrapper(SignalingState.CallStateNew);
+          this.onStateChange?.call(SignalingState.CallStateNew);
         }
         break;
       case 'room.create':
@@ -238,7 +244,7 @@ class KVOIPCommManager {
           this.session = KP2PSession.fromJson(message["session"]);
           this.peerType = P2PPeerType.joined;
           print("CREATED ROOM ID - ${this.session?.id}");
-          onStateChangeWrapper(SignalingState.CallStateRoomCreated);
+          this.onStateChange?.call(SignalingState.CallStateRoomCreated);
         }
         break;
       case 'room.join':
@@ -251,19 +257,19 @@ class KVOIPCommManager {
         {
           this.session = KP2PSession.fromJson(message["session"]);
           this.peerType = P2PPeerType.spectating;
-          onStateChangeWrapper(SignalingState.CallStateRoomInfo);
+          this.onStateChange?.call(SignalingState.CallStateRoomInfo);
         }
         break;
       case 'room.new_participant':
         {
           final peerID = message['newPeerID'];
-          final media = 'video';
+
           final isUserScreen = false;
 
           if (this.peerType == P2PPeerType.joined) {
             _createPeerConnection(
               peerID,
-              media: media,
+              media: this.media,
               isUserScreen: isUserScreen,
             )
                 .then(
@@ -280,7 +286,7 @@ class KVOIPCommManager {
         break;
       case 'room.is_empty':
         {
-          onStateChangeWrapper(SignalingState.CallStateRoomEmpty);
+          this.onStateChange?.call(SignalingState.CallStateRoomEmpty);
         }
         break;
       case 'peers':
@@ -302,7 +308,9 @@ class KVOIPCommManager {
           this._offerID = data["myClientID"];
           this._offerMedia = data['media'];
 
-          // onStateChangeWrapper(SignalingState.CallStateNew);
+          this.mediaTypeChanged?.call(data['media'] == 'audio');
+
+          // this.onStateChange?.call(SignalingState.CallStateNew);
 
           final RTCPeerConnection? pc = await _createPeerConnection(
             this._offerID ?? "",
@@ -340,7 +348,7 @@ class KVOIPCommManager {
               description['type'],
             ));
           }
-          onStateChangeWrapper(SignalingState.CallStateAccepted);
+          this.onStateChange?.call(SignalingState.CallStateAccepted);
         }
         break;
       case 'candidate':
@@ -378,7 +386,7 @@ class KVOIPCommManager {
             this._localStreams.clear();
           }
 
-          onStateChangeWrapper(SignalingState.CallStateBye);
+          this.onStateChange?.call(SignalingState.CallStateBye);
           // close();
         }
         break;
@@ -387,7 +395,7 @@ class KVOIPCommManager {
           print("koip_comm_manager.onMessage case bye...");
 
           try {
-            onStateChangeWrapper(SignalingState.CallStateBye);
+            this.onStateChange?.call(SignalingState.CallStateBye);
           } catch (e) {
             print(e);
           }
@@ -431,7 +439,7 @@ class KVOIPCommManager {
         break;
       case 'receiver_connected':
         {
-          // onStateChangeWrapper(SignalingState.CallStateInvite);
+          // this.onStateChange?.call(SignalingState.CallStateInvite);
           this.connectedPeerIDs.add(data['from']);
         }
         break;
@@ -450,7 +458,7 @@ class KVOIPCommManager {
               .connectedPeerIDs
               .removeWhere((e) => callerIDsToRemove.contains(e));
 
-          onStateChangeWrapper(SignalingState.CallStateInvite);
+          this.onStateChange?.call(SignalingState.CallStateInvite);
         }
         break;
       case 'bye_device':
@@ -474,7 +482,7 @@ class KVOIPCommManager {
             this._dataChannels.remove(to);
           }
 
-          onStateChangeWrapper(SignalingState.CallStateBye);
+          this.onStateChange?.call(SignalingState.CallStateBye);
           // close();
         }
         break;
@@ -495,15 +503,13 @@ class KVOIPCommManager {
       case 'toggle_camera_enabled':
         {
           final bool isEnabled = data['isEnabled'];
-          // this.onCameraToggled?.call(isEnabled);
-          onCameraToggledWrapper(isEnabled);
+          this.onCameraToggled?.call(isEnabled);
         }
         break;
       case 'toggle_mic_enabled':
         {
           final bool isEnabled = data['isEnabled'];
-          // this.onMicToggled?.call(isEnabled);
-          onMicToggledWrapper(isEnabled);
+          this.onMicToggled?.call(isEnabled);
         }
         break;
       case 'call_rejected':
@@ -527,17 +533,12 @@ class KVOIPCommManager {
             this._dataChannels.remove(to);
           }
 
-          onStateChangeWrapper(SignalingState.CallStateRejected);
+          this.onStateChange?.call(SignalingState.CallStateRejected);
         }
         break;
       default:
         break;
     }
-  }
-
-  void onStateChangeWrapper(SignalingState signalState) {
-    onStateChange?.call(signalState);
-    voipContext?.onCommSignal(signalState);
   }
 
   Future connect([String? roomID]) async {
@@ -575,7 +576,7 @@ class KVOIPCommManager {
     }
 
     /// my puid its for registering this user to our server
-    onStateChangeWrapper(SignalingState.ConnectionOpen);
+    this.onStateChange?.call(SignalingState.ConnectionOpen);
   }
 
   Future<MediaStream> _createVideoStream(
@@ -600,7 +601,7 @@ class KVOIPCommManager {
     final MediaStream stream = isUserScreen
         ? await navigator.mediaDevices.getDisplayMedia(mediaConstraints)
         : await navigator.mediaDevices.getUserMedia(mediaConstraints);
-    onLocalStreamWrapper(id, stream);
+    this.onLocalStream?.call(id, stream);
     return stream;
   }
 
@@ -613,30 +614,9 @@ class KVOIPCommManager {
     final MediaStream stream = isUserScreen
         ? await navigator.mediaDevices.getDisplayMedia(mediaConstraints)
         : await navigator.mediaDevices.getUserMedia(mediaConstraints);
-    onLocalStreamWrapper(id, stream);
+    this.onLocalStream?.call(id, stream);
 
     return stream;
-  }
-
-  void onLocalStreamWrapper(String id, MediaStream stream) {
-    onLocalStream?.call(id, stream);
-    print("COMM MANAGER voipContext?.localMedia == ${voipContext?.localMedia}");
-    voipContext?.localMedia = stream;
-    print("COMM MANAGER voipContext?.localMedia == ${voipContext?.localMedia}");
-    voipContext?.withLocalMedia((localMedia) {
-      // Dummy call just to trigger the notifyListeners()
-      // TODO fix this hackiness
-    });
-  }
-
-  void onCameraToggledWrapper(bool b) {
-    onCameraToggled?.call(b);
-    voipContext?.withFlags((flags) => flags.isMyCameraEnabled = b);
-  }
-
-  void onMicToggledWrapper(bool b) {
-    onMicToggled?.call(b);
-    voipContext?.withFlags((flags) => flags.isMySoundEnabled = b);
   }
 
   Future<RTCPeerConnection?> _createPeerConnection(
@@ -673,41 +653,18 @@ class KVOIPCommManager {
     pc.onIceConnectionState = (state) {};
 
     pc.onAddStream = (MediaStream stream) {
-      onAddRemoteStreamWrapper(peerID, stream);
+      this.onAddRemoteStream?.call(peerID, stream);
       this._remoteStreams.add(stream);
     };
 
     pc.onRemoveStream = (MediaStream stream) {
-      onRemoveRemoteStreamWrapper(peerID, stream);
+      this.onRemoveRemoteStream?.call(peerID, stream);
       this._remoteStreams.removeWhere((it) => it.id == stream.id);
     };
 
     pc.onDataChannel = (channel) => _addDataChannel(peerID, channel);
 
     return pc;
-  }
-
-  void onRemoveRemoteStreamWrapper(String peerID, MediaStream stream) {
-    // Fire callback
-    onRemoveRemoteStream?.call(peerID, stream);
-
-    // Update voip context if available
-    voipContext?.withRemoteMedia((remoteMedia) {
-      remoteMedia[peerID]?.dispose();
-      remoteMedia.remove(peerID);
-    });
-  }
-
-  void onAddRemoteStreamWrapper(String peerID, MediaStream stream) async {
-    // Fire callback
-    onAddRemoteStream?.call(peerID, stream);
-
-    // Update voip context if available
-    if (voipContext != null) {
-      voipContext?.withRemoteMedia((remoteMedia) {
-        remoteMedia[peerID] = stream;
-      });
-    }
   }
 
   void _addDataChannel(String peerID, RTCDataChannel channel) {
@@ -806,7 +763,7 @@ class KVOIPCommManager {
 
   void _answerTheCall(RTCPeerConnection pc) async {
     await _createAnswer(this._offerID!, pc, this._offerMedia!);
-    onStateChangeWrapper(SignalingState.CallStateAccepted);
+    this.onStateChange?.call(SignalingState.CallStateAccepted);
   }
 
   Future<Map<String, dynamic>> _getTurnCredential(String host, int port) async {

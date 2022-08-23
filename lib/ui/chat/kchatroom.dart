@@ -12,7 +12,7 @@ import 'package:app_core/model/kuser.dart';
 import 'package:app_core/ui/chat/service/kchatroom_controller.dart';
 import 'package:app_core/ui/chat/service/kchatroom_data.dart';
 import 'package:app_core/ui/chat/widget/kchat_bubble.dart';
-import 'package:app_core/ui/chat/widget/kuser_profile_view.dart';
+import 'package:app_core/ui/chat/widget/kuser_view.dart';
 import 'package:app_core/ui/widget/dialog/kopen_settings_dialog.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/value/kphrases.dart';
@@ -24,12 +24,16 @@ class KChatroom extends StatefulWidget {
   final bool isReadOnly;
   final bool isSupport;
   final bool isEnableTakePhoto;
+  final List<String>? preTexts;
+  final Function()? onSelectDoc;
 
   const KChatroom(
     this.controller, {
     this.isReadOnly = false,
     this.isSupport = false,
     this.isEnableTakePhoto = true,
+    this.onSelectDoc,
+    this.preTexts,
   });
 
   @override
@@ -73,7 +77,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
     messageCtrl.addListener(basicSetStateListener);
     widget.controller.addListener(basicSetStateListener);
 
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
 
     widget.controller.loadChat();
   }
@@ -84,7 +88,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
     widget.controller.removeListener(basicSetStateListener);
     KLocalNotifHelper.unblockBanner(KPushData.APP_CHAT_NOTIFY);
     this.pushDataStreamSub.cancel();
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -138,8 +142,8 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
   }
 
   void onOtherPersonClick(KUser user) {
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: (ctx) => KUserProfileView.fromUser(user)));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (ctx) => KUserView.fromUser(user)));
   }
 
   @override
@@ -166,6 +170,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
               SizedBox(height: 40),
             ],
           );
+
     final chatListing = ListView.builder(
       padding: EdgeInsets.all(4),
       reverse: true,
@@ -193,6 +198,24 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
       },
     );
 
+    final preTextView = widget.preTexts == null
+        ? null
+        : widget.preTexts!
+            .map<Widget>(
+              (text) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: InkWell(
+                  onTap: () {
+                    widget.controller.sendText(text);
+                  },
+                  child: Chip(
+                    label: Text(text),
+                  ),
+                ),
+              ),
+            )
+            .toList();
+
     final chatBody = SingleChildScrollView(
       controller: scrollCtrl,
       reverse: true,
@@ -202,6 +225,13 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
         mainAxisSize: MainAxisSize.min,
         children: [
           chatListing,
+          if (preTextView != null)
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: preTextView,
+              ),
+            ),
           if (widget.isReadOnly)
             Container(
               padding: EdgeInsets.all(10),
@@ -226,6 +256,14 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
       onPressed: onAddGalleryImageClick,
       icon: Icon(
         Icons.image_outlined,
+        color: Theme.of(context).colorScheme.primary,
+      ),
+    );
+
+    final addTextbookButton = IconButton(
+      onPressed: widget.onSelectDoc,
+      icon: Icon(
+        Icons.file_copy_outlined,
         color: Theme.of(context).colorScheme.primary,
       ),
     );
@@ -256,6 +294,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
         children: [
           if (widget.isEnableTakePhoto) addCameraButton,
           addImageButton,
+          if (widget.onSelectDoc != null) addTextbookButton,
           SizedBox(width: 2),
           Expanded(
             child: ScrollConfiguration(

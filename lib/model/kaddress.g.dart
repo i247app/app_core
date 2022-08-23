@@ -9,6 +9,7 @@ part of 'kaddress.dart';
 KAddress _$KAddressFromJson(Map<String, dynamic> json) => KAddress()
   ..addressID = json['addressID'] as String?
   ..puid = json['puid'] as String?
+  ..placeID = json['placeID'] as String?
   ..addressType = json['addressType'] as String?
   ..addressLine1 = json['addressLine1'] as String?
   ..addressLine2 = json['addressLine2'] as String?
@@ -36,6 +37,7 @@ Map<String, dynamic> _$KAddressToJson(KAddress instance) {
 
   writeNotNull('addressID', instance.addressID);
   writeNotNull('puid', instance.puid);
+  writeNotNull('placeID', instance.placeID);
   writeNotNull('addressType', instance.addressType);
   writeNotNull('addressLine1', instance.addressLine1);
   writeNotNull('addressLine2', instance.addressLine2);

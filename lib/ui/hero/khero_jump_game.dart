@@ -3,17 +3,24 @@ import 'dart:io';
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/helper/kserver_handler.dart';
+import 'package:app_core/model/kanswer.dart';
+import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/khero.dart';
-import 'package:app_core/model/kscore.dart';
+import 'package:app_core/model/kquestion.dart';
+import 'package:app_core/model/kgame_score.dart';
+import 'package:app_core/ui/hero/widget/kegg_hero_intro.dart';
+import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
 import 'package:app_core/ui/hero/widget/khero_game_pause_dialog.dart';
+import 'package:app_core/ui/hero/widget/ktamago_chan_jumping.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:uuid/uuid.dart';
 
 class KHeroJumpGame extends StatefulWidget {
   final KHero? hero;
@@ -26,6 +33,7 @@ class KHeroJumpGame extends StatefulWidget {
 
 class _KHeroJumpGameState extends State<KHeroJumpGame> {
   static const GAME_NAME = "jump_game";
+  static const GAME_ID = "530";
 
   static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
@@ -42,32 +50,64 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
   int totalLevel = 4;
   int currentLevel = 0;
   bool isShowEndLevel = false;
-  String? scoreID;
-  List<KScore> scores = [];
+  bool isShowIntro = true;
+
+  KGameScore? score;
+  KGame? game = null;
+
+  List<KQuestion> get questions => game?.qnas?[0].questions ?? [];
+  bool isLoaded = false;
+  bool isCached = false;
 
   @override
   void initState() {
     super.initState();
-    loadScore();
+
+    cacheHeroImages();
+    loadGame();
   }
 
-  loadScore() async {
-    KPrefHelper.get(GAME_NAME).then((value) {
-      if (value != null) {
-        setState(() {
-          scores = KScore.decode(value);
-        });
+  void cacheHeroImages() async {
+    setState(() {
+      this.isCached = false;
+    });
+    try {
+      for (int i = 0; i < KImageAnimationHelper.animationImages.length; i++) {
+        await Future.wait(KImageAnimationHelper.animationImages
+            .map((image) => DefaultCacheManager().getSingleFile(image)));
       }
+    } catch (e) {
+      print(e);
+    }
+    setState(() {
+      this.isCached = true;
     });
   }
 
-  saveScore() async {
-    KPrefHelper.put(GAME_NAME, KScore.encode(scores));
+  loadGame() async {
+    try {
+      setState(() {
+        this.isLoaded = false;
+      });
+
+      final response = await KServerHandler.getGames(
+          gameID: GAME_ID, level: currentLevel.toString());
+
+      if (response.isSuccess &&
+          response.games != null &&
+          response.games!.length > 0) {
+        setState(() {
+          this.game = response.games![0];
+          this.isLoaded = true;
+        });
+      } else {
+        KSnackBarHelper.error("Can not get game data");
+      }
+    } catch (e) {}
   }
 
   @override
   void dispose() {
-    saveScore();
     super.dispose();
     if (this.overlayID != null) {
       KOverlayHelper.removeOverlay(this.overlayID!);
@@ -76,6 +116,9 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
   }
 
   void showHeroGameEndOverlay(Function() onFinish) async {
+    this.setState(() {
+      this.isShowEndLevel = true;
+    });
     final heroGameEnd = KHeroGameEnd(
       hero: KHero()..imageURL = KImageAnimationHelper.randomImage,
       onFinish: onFinish,
@@ -83,11 +126,12 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
     showCustomOverlay(heroGameEnd);
   }
 
-  void showHeroGameLevelOverlay(Function() onFinish) async {
+  void showHeroGameLevelOverlay(Function() onFinish, {bool? canAdvance}) async {
     this.setState(() {
       this.isShowEndLevel = true;
     });
-    final heroGameLevel = KHeroGameLevel(onFinish: onFinish);
+    final heroGameLevel =
+        KTamagoChanJumping(onFinish: onFinish, canAdvance: canAdvance);
     showCustomOverlay(heroGameLevel);
   }
 
@@ -101,11 +145,10 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
           alignment: Alignment.center,
           child: KGameHighscoreDialog(
             onClose: onClose,
-            game: GAME_NAME,
-            scores: this.scores,
+            game: GAME_ID,
+            score: this.score,
             ascendingSort: false,
-            scoreID: this.scoreID,
-            currentLevel: currentLevel + 1,
+            currentLevel: currentLevel,
           ),
         ),
       ],
@@ -143,75 +186,110 @@ class _KHeroJumpGameState extends State<KHeroJumpGame> {
               ),
             ),
             padding: EdgeInsets.symmetric(vertical: 20),
-            child: SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: _KJumpGameScreen(
-                      hero: widget.hero,
-                      totalLevel: totalLevel,
-                      isShowEndLevel: isShowEndLevel,
-                      onFinishLevel: (level, score, isHaveWrongAnswer) {
-                        final scoreID = Uuid().v4();
+            child: !isLoaded || !isCached || game == null
+                ? Container()
+                : (this.isShowIntro
+                    ? Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          if (this.isShowIntro) ...[
+                            KEggHeroIntro(
+                                onFinish: () =>
+                                    setState(() => this.isShowIntro = false)),
+                            GestureDetector(
+                                onTap: () =>
+                                    setState(() => this.isShowIntro = false)),
+                          ],
+                        ],
+                      )
+                    : SafeArea(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: _KJumpGameScreen(
+                                hero: widget.hero,
+                                totalLevel: totalLevel,
+                                isShowEndLevel: isShowEndLevel,
+                                questions: questions,
+                                level: currentLevel,
+                                isLoaded: isLoaded,
+                                onFinishLevel: (level, score, canAdvance) {
+                                  if (!canAdvance) {
+                                    this.showHeroGameLevelOverlay(() {
+                                      this.setState(() {
+                                        this.isShowEndLevel = false;
+                                      });
+                                      if (this.overlayID != null) {
+                                        KOverlayHelper.removeOverlay(
+                                            this.overlayID!);
+                                        this.overlayID = null;
+                                      }
+                                    }, canAdvance: canAdvance);
+                                    return;
+                                  }
 
-                        this.setState(() {
-                          this.scoreID = scoreID;
-                          this.scores.add(
-                                KScore()
-                                  ..game = GAME_NAME
-                                  ..user = KSessionData.me
-                                  ..level = level
-                                  ..scoreID = scoreID
-                                  ..score = score.toDouble(),
-                              );
-                        });
-                        if (level < totalLevel) {
-                          print(isHaveWrongAnswer);
-                          // if (!isHaveWrongAnswer) {
-                          //   this.setState(() {
-                          //     this.levelHighscores.add(score);
-                          //   });
-                          // }
-                          this.showHeroGameLevelOverlay(
-                            () {
-                              if (this.overlayID != null) {
-                                KOverlayHelper.removeOverlay(this.overlayID!);
-                                this.overlayID = null;
-                              }
-                              this.showHeroGameHighscoreOverlay(() {
-                                this.setState(() {
-                                  this.isShowEndLevel = false;
-                                });
-                                if (this.overlayID != null) {
-                                  KOverlayHelper.removeOverlay(this.overlayID!);
-                                  this.overlayID = null;
-                                }
-                              });
-                            },
-                          );
-                        } else {
-                          this.showHeroGameHighscoreOverlay(() {
-                            this.setState(() {
-                              this.isShowEndLevel = false;
-                            });
-                            if (this.overlayID != null) {
-                              KOverlayHelper.removeOverlay(this.overlayID!);
-                              this.overlayID = null;
-                            }
-                          });
-                        }
-                      },
-                      onChangeLevel: (level) => this.setState(
-                        () {
-                          this.currentLevel = level;
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                                  this.setState(() {
+                                    this.score = KGameScore()
+                                      ..game = GAME_ID
+                                      ..avatarURL = KSessionData.me!.avatarURL
+                                      ..kunm = KSessionData.me!.kunm
+                                      ..level = "$level"
+                                      ..score = "$score";
+                                  });
+                                  if (level < totalLevel) {
+                                    this.showHeroGameLevelOverlay(() {
+                                      if (this.overlayID != null) {
+                                        KOverlayHelper.removeOverlay(
+                                            this.overlayID!);
+                                        this.overlayID = null;
+                                      }
+                                      this.showHeroGameHighscoreOverlay(() {
+                                        this.setState(() {
+                                          this.isShowEndLevel = false;
+                                        });
+                                        if (this.overlayID != null) {
+                                          KOverlayHelper.removeOverlay(
+                                              this.overlayID!);
+                                          this.overlayID = null;
+                                        }
+                                      });
+                                    }, canAdvance: canAdvance);
+                                  } else {
+                                    this.showHeroGameEndOverlay(
+                                      () {
+                                        if (this.overlayID != null) {
+                                          KOverlayHelper.removeOverlay(
+                                              this.overlayID!);
+                                          this.overlayID = null;
+                                        }
+                                        this.showHeroGameHighscoreOverlay(() {
+                                          this.setState(() {
+                                            this.isShowEndLevel = false;
+                                          });
+                                          if (this.overlayID != null) {
+                                            KOverlayHelper.removeOverlay(
+                                                this.overlayID!);
+                                            this.overlayID = null;
+                                          }
+                                        });
+                                      },
+                                    );
+                                  }
+                                },
+                                onChangeLevel: (level) {
+                                  this.setState(
+                                    () {
+                                      this.currentLevel = level;
+                                    },
+                                  );
+                                  this.loadGame();
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
           ),
         ),
       ],
@@ -230,6 +308,8 @@ class _KJumpGameScreen extends StatefulWidget {
   final Function(int, int, bool)? onFinishLevel;
   final bool isShowEndLevel;
   final int? totalLevel;
+  final bool isLoaded;
+  final List<KQuestion> questions;
   final int? level;
   final int? grade;
 
@@ -237,6 +317,8 @@ class _KJumpGameScreen extends StatefulWidget {
     this.hero,
     this.onChangeLevel,
     this.onFinishLevel,
+    required this.questions,
+    required this.isLoaded,
     required this.isShowEndLevel,
     this.totalLevel,
     this.level,
@@ -248,8 +330,9 @@ class _KJumpGameScreen extends StatefulWidget {
 }
 
 class _KJumpGameScreenState extends State<_KJumpGameScreen>
-    with TickerProviderStateMixin {
-  AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+    with TickerProviderStateMixin, WidgetsBindingObserver {
+  AudioPlayer backgroundAudioPlayer =
+      AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
@@ -311,9 +394,16 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
 
   List<List<String>> levelQuestions = [];
   List<List<int>> levelRightAnswers = [];
-  List<String> get questions => levelQuestions[currentLevel];
-  List<int> get rightAnswers => levelRightAnswers[currentLevel];
   int currentQuestionIndex = 0;
+
+  List<KQuestion> get questions => widget.questions;
+
+  KQuestion get currentQuestion => questions[currentQuestionIndex];
+
+  List<KAnswer> get questionAnswers => currentQuestion.generateAnswers();
+
+  List<KAnswer> currentQuestionAnswers = [];
+
   int? spinningHeroIndex;
   int? currentShowStarIndex;
   int? currentCollisionIndex;
@@ -325,16 +415,12 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
     KImageAnimationHelper.randomImage,
   ];
 
-  int get getRandomAnswer => rightAnswers[currentQuestionIndex] <= 4
-      ? (Math.Random().nextInt(4) + rightAnswers[currentQuestionIndex])
-      : (Math.Random().nextInt(4) + rightAnswers[currentQuestionIndex] - 3);
-
   bool get canRestartGame =>
-      currentLevel + 1 < levelHardness.length ||
-      (currentLevel < levelHardness.length &&
+      currentLevel + 1 < totalLevel ||
+      (currentLevel < totalLevel &&
           (rightAnswerCount / questions.length) < levelHardness[currentLevel]);
 
-  List<int> barrierValues = [];
+  List<KAnswer> barrierValues = [];
   double barrierWidth = 0.5;
   List<List<double>> barrierHeight = [
     [0.6, 0.4],
@@ -350,7 +436,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   @override
   void initState() {
     super.initState();
-
+    WidgetsBinding.instance.addObserver(this);
     this.currentLevel = widget.level ?? 0;
     this.totalLevel = widget.totalLevel ?? 1;
     this.levelHardness = List.generate(
@@ -393,13 +479,13 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
         7,
       ],
     );
+    currentQuestionAnswers = questionAnswers;
 
     loadAudioAsset();
 
-    barrierValues = [
-      this.getRandomAnswer,
-      this.getRandomAnswer,
-    ];
+    barrierValues = [];
+    barrierValues.add(this.getRandomAnswer());
+    barrierValues.add(this.getRandomAnswer());
 
     _playerScaleAnimationController = AnimationController(
       duration: const Duration(milliseconds: 200),
@@ -571,7 +657,15 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused && !this.isPause)
+      showPauseDialog();
+    else if (state == AppLifecycleState.resumed && this.isPause) resumeGame();
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
     _heroScaleAnimationController.dispose();
     _playerScaleAnimationController.dispose();
@@ -593,49 +687,50 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
     super.dispose();
   }
 
+  KAnswer getRandomAnswer() {
+    if (currentQuestionAnswers.length <= 0) {
+      return KAnswer();
+    }
+
+    final List<KAnswer> answerNotInCurrent = currentQuestionAnswers
+        .where((answer) =>
+            barrierValues
+                .map((barrierValue) => barrierValue.text)
+                .toList()
+                .indexOf(answer.text) ==
+            -1)
+        .toList();
+
+    if (answerNotInCurrent.length > 0) {
+      return answerNotInCurrent[
+          Math.Random().nextInt(answerNotInCurrent.length)];
+    } else {
+      return currentQuestionAnswers[
+          Math.Random().nextInt(currentQuestionAnswers.length)];
+    }
+  }
+
   void showCountDownOverlay() {
     this.setState(() {
       this.isShowCountDown = true;
     });
-    final view = KGameCountDownIntro(
-      onFinish: () {
-        this.setState(() {
-          this.isShowCountDown = false;
-        });
+  }
 
-        if (this.overlayID != null) {
-          KOverlayHelper.removeOverlay(this.overlayID!);
-          this.overlayID = null;
-        }
-
-        if (!isStart && currentLevel == 0) {
-          if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
-            this.setState(() {
-              this.isBackgroundSoundPlaying = true;
-            });
-            backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
-                isLocal: true);
-          }
-          setState(() {
-            isStart = true;
-            time = 0;
-          });
-        }
-      },
-    );
-    final overlay = Stack(
-      fit: StackFit.expand,
-      children: [
-        Align(
-          alignment: Alignment.center,
-          child: view,
-        ),
-      ],
-    );
-    this.overlayID = KOverlayHelper.addOverlay(overlay);
+  void resumeGame() {
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+    if (isStart && !this.isBackgroundSoundPlaying) {
+      toggleBackgroundSound();
+    }
+    this.setState(() {
+      this.isPause = false;
+    });
   }
 
   void showPauseDialog() {
+    if (this.isPause) return;
     if (this.isBackgroundSoundPlaying) {
       toggleBackgroundSound();
     }
@@ -650,18 +745,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
         }
         Navigator.of(context).pop();
       },
-      onResume: () {
-        if (this.overlayID != null) {
-          KOverlayHelper.removeOverlay(this.overlayID!);
-          this.overlayID = null;
-        }
-        if (!this.isBackgroundSoundPlaying) {
-          toggleBackgroundSound();
-        }
-        this.setState(() {
-          this.isPause = false;
-        });
-      },
+      onResume: resumeGame,
     );
     final overlay = Stack(
       fit: StackFit.expand,
@@ -699,7 +783,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
       ByteData wrongAudioFileData =
           await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
       ByteData backgroundAudioFileData = await rootBundle
-          .load("packages/app_core/assets/audio/background.mp3");
+          .load("packages/app_core/assets/audio/music_background_1.mp3");
 
       File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
       await correctAudioTempFile
@@ -709,7 +793,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
       await wrongAudioTempFile
           .writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
 
-      File backgroundAudioTempFile = File('${tempDir.path}/background.mp3');
+      File backgroundAudioTempFile =
+          File('${tempDir.path}/music_background_1.mp3');
       await backgroundAudioTempFile.writeAsBytes(
           backgroundAudioFileData.buffer.asUint8List(),
           flush: true);
@@ -750,7 +835,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
           setState(() {
             barrierX[i] += 3;
             // points += 1;
-            barrierValues[i] = this.getRandomAnswer;
+            barrierValues[i] = this.getRandomAnswer();
+            barrierImageUrls[i] = KImageAnimationHelper.randomImage;
           });
         }
       }
@@ -814,8 +900,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                     bottomBulletY <= bottomBarrier &&
                     bottomBulletY >= topBarrier)) {
           this._bouncingAnimationController.forward();
-          bool isTrueAnswer =
-              barrierValues[i] == rightAnswers[currentQuestionIndex];
+          bool isTrueAnswer = barrierValues[i].isCorrect ?? false;
 
           if (this.currentCollisionIndex == null ||
               this.currentCollisionIndex != i) {
@@ -860,22 +945,30 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                     KImageAnimationHelper.randomImage,
                     KImageAnimationHelper.randomImage
                   ];
-                  barrierValues = [
-                    this.getRandomAnswer,
-                    this.getRandomAnswer,
-                  ];
+                  barrierValues = [];
+                  barrierValues.add(this.getRandomAnswer());
+                  barrierValues.add(this.getRandomAnswer());
                   this.currentCollisionIndex = null;
                   this.isPlaySound = false;
                 });
                 Future.delayed(Duration(milliseconds: 50), () {
                   this.setState(() {
+                    currentQuestionAnswers = questionAnswers;
+                  });
+                  this.setState(() {
+                    barrierValues = [];
+                    barrierValues.add(this.getRandomAnswer());
+                    barrierValues.add(this.getRandomAnswer());
                     isScroll = true;
                   });
                 });
               } else {
                 if (widget.onFinishLevel != null) {
-                  widget.onFinishLevel!(currentLevel + 1,
-                      levelPoints[currentLevel], wrongAnswerCount > 0);
+                  widget.onFinishLevel!(
+                      currentLevel + 1,
+                      levelPoints[currentLevel],
+                      rightAnswerCount / questions.length >=
+                          levelHardness[currentLevel]);
                 }
                 this.setState(() {
                   if (rightAnswerCount / questions.length >=
@@ -891,10 +984,9 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                     KImageAnimationHelper.randomImage,
                     KImageAnimationHelper.randomImage
                   ];
-                  barrierValues = [
-                    this.getRandomAnswer,
-                    this.getRandomAnswer,
-                  ];
+                  barrierValues = [];
+                  barrierValues.add(this.getRandomAnswer());
+                  barrierValues.add(this.getRandomAnswer());
                   this.currentCollisionIndex = null;
                   this.isPlaySound = false;
                 });
@@ -928,6 +1020,13 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
           time = 0;
         });
       }
+
+      if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+        this.setState(() {
+          this.isBackgroundSoundPlaying = true;
+        });
+        backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
+      }
     }
   }
 
@@ -959,12 +1058,34 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
       rightAnswerCount = 0;
       wrongAnswerCount = 0;
       canAdvance = false;
-      this.barrierValues = [getRandomAnswer, getRandomAnswer];
+      this.barrierValues = [];
+    });
+    Future.delayed(Duration(milliseconds: 50), () {
+      this.setState(() {
+        currentQuestionAnswers = questionAnswers;
+      });
+      this.setState(() {
+        barrierValues = [];
+        barrierValues.add(this.getRandomAnswer());
+        barrierValues.add(this.getRandomAnswer());
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final countDown = KGameCountDownIntro(
+      onFinish: () {
+        if (mounted) {
+          setState(() {
+            this.isShowCountDown = false;
+            isStart = true;
+            time = 0;
+          });
+        }
+      },
+    );
+
     final body = Stack(
       fit: StackFit.expand,
       children: [
@@ -1016,7 +1137,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (currentLevel == 0 && result == null) ...[
+                  if (result == null) ...[
                     Text(
                       "Level ${currentLevel + 1}",
                       style: TextStyle(fontSize: 30, color: Colors.white),
@@ -1051,9 +1172,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                       ),
                     ),
                   ],
-                  if (currentLevel >= 0 &&
-                      result != null &&
-                      canRestartGame) ...[
+                  if (result != null && canRestartGame) ...[
                     Text(
                       "${((rightAnswerCount / questions.length) * 100).floor()}% Correct",
                       style: TextStyle(fontSize: 30, color: Colors.white),
@@ -1062,13 +1181,57 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                       height: 16,
                     ),
                     canAdvance
-                        ? Text(
-                            "Tap To Play Next Level",
-                            style: TextStyle(fontSize: 18, color: Colors.white),
+                        ? Container(
+                            width: MediaQuery.of(context).size.width * 0.75,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 15),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(40),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  blurRadius: 8,
+                                  offset: Offset(2, 6),
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              "NEXT LEVEL",
+                              textScaleFactor: 1.0,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 35,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           )
-                        : Text(
-                            "Tap To Re-play Level",
-                            style: TextStyle(fontSize: 18, color: Colors.white),
+                        : Container(
+                            width: MediaQuery.of(context).size.width * 0.75,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 15),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(40),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.5),
+                                  blurRadius: 8,
+                                  offset: Offset(2, 6),
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              "REPLAY LEVEL",
+                              textScaleFactor: 1.0,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 35,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                   ],
                   if (!canRestartGame) ...[
@@ -1090,8 +1253,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
             child: ScaleTransition(
               scale: _playerScaleAnimation,
               child: widget.hero?.imageURL != null
-                  ? Image.network(
-                      widget.hero!.imageURL!,
+                  ? Image(
+                      image: CachedNetworkImageProvider(widget.hero!.imageURL!),
                       width: heroWidth,
                       height: heroHeight,
                       errorBuilder: (context, error, stack) => Image.asset(
@@ -1245,7 +1408,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                   ],
                 ),
                 child: Text(
-                  questions[currentQuestionIndex],
+                  currentQuestion.text ?? "",
                   textScaleFactor: 1.0,
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -1270,7 +1433,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                       barrierWidth: barrierWidth,
                       barrierHeight: barrierHeight[i][1],
                       imageUrl: barrierImageUrls[i],
-                      value: barrierValues[i],
+                      answer: barrierValues[i],
                       rotateAngle: spinningHeroIndex == i
                           ? -this._spinAnimationController.value * 4 * Math.pi
                           : 0,
@@ -1350,6 +1513,11 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
               ),
             ),
           ),
+        if (isShowCountDown)
+          Align(
+            alignment: Alignment.center,
+            child: countDown,
+          ),
       ],
     );
 
@@ -1364,7 +1532,7 @@ class _Barrier extends StatelessWidget {
   final String imageUrl;
   final double rotateAngle;
   final Animation<double>? scaleAnimation;
-  final int value;
+  final KAnswer answer;
   final Offset bouncingAnimation;
   final double? starY;
   final bool? isShowStar;
@@ -1376,7 +1544,7 @@ class _Barrier extends StatelessWidget {
     required this.imageUrl,
     required this.rotateAngle,
     this.scaleAnimation,
-    required this.value,
+    required this.answer,
     required this.bouncingAnimation,
     this.starY,
     this.isShowStar,
@@ -1421,7 +1589,7 @@ class _Barrier extends StatelessWidget {
                       0.4,
                   child: FittedBox(
                     child: Text(
-                      "${this.value}",
+                      "${answer.text}",
                       textScaleFactor: 1.0,
                       textAlign: TextAlign.center,
                       style: TextStyle(
@@ -1439,8 +1607,8 @@ class _Barrier extends StatelessWidget {
                     child: scaleAnimation != null
                         ? (ScaleTransition(
                             scale: scaleAnimation!,
-                            child: Image.network(
-                              imageUrl,
+                            child: Image(
+                              image: CachedNetworkImageProvider(imageUrl),
                               width: (MediaQuery.of(context).size.width / 2) *
                                   barrierWidth,
                               height: (MediaQuery.of(context).size.height / 2) *
@@ -1460,8 +1628,8 @@ class _Barrier extends StatelessWidget {
                               ),
                             ),
                           ))
-                        : (Image.network(
-                            imageUrl,
+                        : (Image(
+                            image: CachedNetworkImageProvider(imageUrl),
                             width: (MediaQuery.of(context).size.width / 2) *
                                 barrierWidth,
                             height: (MediaQuery.of(context).size.height / 2) *

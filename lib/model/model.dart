@@ -19,3 +19,4 @@ export 'business.dart';
 export 'store.dart';
 export 'tutor.dart';
 export 'order.dart';
+export 'knote.dart';

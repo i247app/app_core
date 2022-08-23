@@ -3,20 +3,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:app_core/helper/khost_config.dart';
-import 'package:app_core/header/kcore_code.dart';
-import 'package:app_core/helper/klocation_helper.dart';
-import 'package:app_core/helper/ksession_data.dart';
-import 'package:app_core/helper/kstring_helper.dart';
-import 'package:app_core/helper/ktoast_helper.dart';
-import 'package:app_core/helper/kutil.dart';
-import 'package:app_core/model/khost_info.dart';
-import 'package:app_core/model/klat_lng.dart';
-import 'package:app_core/model/response/simple_response.dart';
+import 'package:app_core/app_core.dart';
 import 'package:app_core/network/kpacket_header.dart';
-import 'package:app_core/network/ksocket_manager.dart';
+import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_webservice/geocoding.dart';
 
 abstract class TLSHelper {
   static const int KSTATUS_UNKNOWN_ERROR = -1;
@@ -39,10 +31,11 @@ abstract class TLSHelper {
     Map<String, dynamic> inputData, {
     KHostInfo? hostInfo,
     bool isAuthed = true,
+    bool isDebug = true,
   }) async {
     final int reqID = _reqCount++;
     final String apiName = "${inputData['svc']}:${inputData['req']}";
-
+    print(apiName);
     hostInfo ??= KHostConfig.hostInfo;
 
     KSocketResource? socketResource;
@@ -64,14 +57,15 @@ abstract class TLSHelper {
       final List<int> raw =
           await writeToSocket(socketResource, utf8.encode(json));
       answer = utf8.decode(raw, allowMalformed: false);
-
-      _log(
-        reqID,
-        "CLIENT [${hostInfo.nickname}]",
-        apiName,
-        json,
-        ignoreBlacklist: true,
-      );
+      if (isDebug) {
+        _log(
+          reqID,
+          "CLIENT [${hostInfo.nickname}]",
+          apiName,
+          json,
+          ignoreBlacklist: true,
+        );
+      }
 
       // Test JSON for validity
       decodedAnswer = jsonDecode(answer);
@@ -84,7 +78,7 @@ abstract class TLSHelper {
 
       answer = buildErrorJSON(
         kstatus: KSTATUS_SOCKET_ERROR,
-        message: "Socket connection error",
+        message: KPhrases.noWifi,
       );
     } on RangeError catch (e) {
       print(e.toString());
@@ -105,14 +99,15 @@ abstract class TLSHelper {
           KSocketManager.releaseSocket(socketResource);
       } catch (e) {}
     }
-
-    _log(
-      reqID,
-      "SERVER [${hostInfo.nickname}]",
-      apiName,
-      answer,
-      ignoreBlacklist: false,
-    );
+    if (isDebug) {
+      _log(
+        reqID,
+        "SERVER [${hostInfo.nickname}]",
+        apiName,
+        answer,
+        ignoreBlacklist: false,
+      );
+    }
 
     // Store response token if local one is different
     final result = decodedAnswer ?? jsonDecode(answer);
@@ -126,13 +121,14 @@ abstract class TLSHelper {
 
     // Replace stack with Splash in case of BAD SESSION response
     try {
-      final condition = (result["kstatus"] == KCoreCode.BAD_SESSION) &&
-          KSessionData.hasActiveSession;
+      final condition =
+          ((int.tryParse(result["kstatus"]) ?? 0) == KCoreCode.BAD_SESSION) &&
+              KSessionData.hasActiveSession;
       if (condition) {
         KSessionData.wipeSession();
         // TODO: Check for schoolbird
-        // KSessionHelper.hardReload();
         KToastHelper.show("Session terminated");
+        KRebuildHelper.forceHardReload();
       }
     } catch (_) {}
 
@@ -173,8 +169,12 @@ abstract class TLSHelper {
       "model": () async => await KUtil.getDeviceModel(),
       "deviceName": () async => await KUtil.getDeviceName(),
       "deviceNumber": () async => await KUtil.getDeviceID(),
+      "tz": () async => await KUtil.getTimezoneName(),
+      "utcOffset": () async => await KUtil.getTimezonOffset(),
       "locale": () async => KUtil.localeName(),
+      "language": () async => KUtil.localeName().split("_")[0],
       "domain": () async => await KUtil.getPackageName(),
+      "countryCode": () async => await KSessionData.getCountryCode(),
     };
 
     // Build the _cachedDefaultReqData
@@ -193,10 +193,15 @@ abstract class TLSHelper {
       "pushToken": await KSessionData.getFCMToken(),
       "voipToken": await KSessionData.getVoipToken(),
       "tokenMode": KUtil.getPushTokenMode(),
-      "latLng": (KLocationHelper.cachedPosition == null
-          ? null
-          : KLatLng.fromPosition(KLocationHelper.cachedPosition!)),
     };
+
+    if (KLocationHelper.cachedPosition != null && !KHostConfig.isReleaseMode) {
+      final theRunningBeanLocation =
+          Location(lat: 10.7728637, lng: 106.7010775);
+      data["latLng"] = KLatLng.fromLocation(theRunningBeanLocation);
+      // data["latLng"] = KLatLng.fromPosition(KLocationHelper.cachedPosition!);
+      data["countryCode"] = await KSessionData.getCountryCode();
+    }
 
     return {...data, "metadata": data};
   }
@@ -216,12 +221,10 @@ abstract class TLSHelper {
 
   static void _log(int reqID, String tag, String apiName, String message,
       {bool ignoreBlacklist = false}) {
-    if (!KHostConfig.isReleaseMode) {
-      String displayMessage = logBlacklist.contains(apiName) && !ignoreBlacklist
-          ? compactLog(message)
-          : KUtil.prettyJSON(message);
-      debugPrint('[$reqID] $tag $apiName - $displayMessage');
-    }
+    final displayMessage = logBlacklist.contains(apiName) && !ignoreBlacklist
+        ? compactLog(message)
+        : KUtil.prettyJSON(message);
+    debugPrint('[$reqID] $tag $apiName - $displayMessage');
   }
 
   static Future<List<int>> writeToSocket(

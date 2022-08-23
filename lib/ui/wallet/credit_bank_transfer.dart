@@ -3,7 +3,9 @@ import 'package:app_core/helper/kbank_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/helper/ksnackbar_helper.dart';
+import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/ui/kbank_picker.dart';
+import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/profile_input.dart';
 import 'package:app_core/value/kphrases.dart';
 import 'package:app_core/value/kstyles.dart';
@@ -13,9 +15,11 @@ enum BankTransferAction { withdraw, deposit }
 
 class CreditBankTransfer extends StatefulWidget {
   final String tokenName;
+  final String total;
   final BankTransferAction action;
 
-  const CreditBankTransfer({required this.tokenName, required this.action});
+  const CreditBankTransfer(
+      {required this.tokenName, required this.action, required this.total});
 
   @override
   _CreditBankTransferState createState() => _CreditBankTransferState();
@@ -27,6 +31,9 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
   final accountNameCtrl = TextEditingController();
   final bankAccountNumberCtrl = TextEditingController();
   final bankCtrl = TextEditingController();
+
+  bool isValidAmount = true;
+  bool isSubmitting = false;
 
   @override
   void initState() {
@@ -48,40 +55,61 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
     final bankName =
         banks![int.parse(this.bankCtrl.text) - 100].shortName ?? "";
 
-    if ((KSessionData.me?.bankName ?? "") != bankName ||
-        (KSessionData.me?.bankAccName ?? "") != accountNameCtrl.text ||
-        (KSessionData.me?.bankAccNumber ?? "") != bankAccountNumberCtrl.text) {
-      final response = await KServerHandler.modifyUserBank(
+    setState(() {
+      this.isSubmitting = true;
+    });
+    try {
+      if ((KSessionData.me?.bankName ?? "") != bankName ||
+          (KSessionData.me?.bankAccName ?? "") != accountNameCtrl.text ||
+          (KSessionData.me?.bankAccNumber ?? "") != bankAccountNumberCtrl.text) {
+        final response = await KServerHandler.modifyUserBank(
+          bankID: bankID,
+          bankName: bankName,
+          bankAccount: accountNameCtrl.text,
+          bankAccNumber: bankAccountNumberCtrl.text,
+        );
+        if (response.kstatus != KCoreCode.SUCCESS) {
+          KSnackBarHelper.show(
+            text: response.kmessage ?? "",
+            isSuccess: false,
+          );
+          setState(() {
+            this.isSubmitting = false;
+          });
+          return;
+        }
+        hasModifyBank = true;
+      }
+
+      final apiCall = widget.action == BankTransferAction.withdraw
+          ? KServerHandler.bankWithdrawal
+          : KServerHandler.bankDeposit;
+      final response = await apiCall.call(
         bankID: bankID,
         bankName: bankName,
         bankAccount: accountNameCtrl.text,
         bankAccNumber: bankAccountNumberCtrl.text,
+        amount: amountCtrl.text.isEmpty ? "0" : amountCtrl.text,
+        tokenName: widget.tokenName,
       );
-      if (response.kstatus != KCoreCode.SUCCESS) {
+      if (response.kstatus == KCoreCode.SUCCESS &&
+          (response.transactions?.length ?? 0) > 0) {
+        final transaction = response.transactions![0];
+
+        if (hasModifyBank) {
+          await KSessionData.reload();
+        }
+        Navigator.of(context).pop(transaction);
+      } else {
         KSnackBarHelper.show(
           text: response.kmessage ?? "",
           isSuccess: false,
         );
-        return;
       }
-      hasModifyBank = true;
-    }
-
-    final apiCall = widget.action == BankTransferAction.withdraw
-        ? KServerHandler.bankWithdrawal
-        : KServerHandler.bankDeposit;
-    final response = await apiCall.call(
-      bankID: bankID,
-      bankName: bankName,
-      bankAccount: accountNameCtrl.text,
-      bankAccNumber: bankAccountNumberCtrl.text,
-      amount: amountCtrl.text.isEmpty ? "0" : amountCtrl.text,
-    );
-    KSnackBarHelper.fromResponse(response);
-
-    if (hasModifyBank) {
-      await KSessionData.reload();
-    }
+    } catch(ex) {}
+    setState(() {
+      this.isSubmitting = false;
+    });
   }
 
   @override
@@ -89,7 +117,7 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
     final editButton = Container(
       margin: EdgeInsets.all(10),
       child: ElevatedButton(
-        onPressed: onSubmitClick,
+        onPressed: isSubmitting ? null : onSubmitClick,
         child: Text("Confirm"),
       ),
     );
@@ -99,7 +127,7 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
       headingWidth: 105,
       readOnly: true,
       customChild: KBankPicker(
-        controller: this.bankCtrl,
+        controller: bankCtrl,
         decoration: BoxDecoration(),
         height: 59,
       ),
@@ -125,14 +153,37 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
     );
 
     final amount = KProfileInput(
-      keyboardType: TextInputType.number,
-      controller: amountCtrl,
-      headingWidth: 105,
-      readOnly: false,
-      heading: '${KPhrases.amount} (${widget.tokenName})',
-      hintText: KPhrases.amountPlaceHolder,
-      isRequired: true,
-    );
+        keyboardType: TextInputType.number,
+        controller: amountCtrl,
+        headingWidth: 105,
+        readOnly: false,
+        heading: '${KPhrases.amount} (${widget.tokenName})',
+        hintText: KPhrases.amountPlaceHolder,
+        isRequired: true,
+        onChanged: (value) {
+          if (BankTransferAction.deposit == widget.action) {
+            return;
+          }
+
+          if (value.isEmpty) {
+            setState(() {
+              isValidAmount = true;
+            });
+            return;
+          }
+
+          final amountDouble = double.tryParse(value);
+          if (amountDouble != null &&
+              amountDouble > (double.tryParse(widget.total) ?? 0)) {
+            setState(() {
+              isValidAmount = false;
+            });
+          } else {
+            setState(() {
+              isValidAmount = true;
+            });
+          }
+        });
 
     final content = Form(
       key: formKey,
@@ -144,9 +195,21 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
             bankAccountName,
             bankAccount,
             amount,
-            SizedBox(height: 20),
+            isValidAmount
+                ? Container()
+                : Container(
+                    margin: EdgeInsets.only(top: 10),
+                    child: Text(
+                      "${KPhrases.amountMustLowerThanBalance} ${KUtil.prettyMoney(amount: widget.total, tokenName: widget.tokenName)}",
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText1!
+                          .copyWith(color: Theme.of(context).errorColor),
+                    ),
+                  ),
+            // SizedBox(height: 20),
             // FadeInImage(
-            //   placeholder: AssetImage(Assets.IMG_TRANSPARENCY),
+            //   placeholder: AssetImage(KAssets.IMG_TRANSPARENCY),
             //   image: AssetImage(KAssets.IMG_POWERED_BY_CHAO),
             //   height: 60,
             // ),
@@ -172,15 +235,19 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
     );
 
     final shortestSide = MediaQuery.of(context).size.shortestSide;
-    if (shortestSide >= KStyles.smallestSize) return body;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.action == BankTransferAction.withdraw
-            ? KPhrases.withdrawal
-            : KPhrases.deposit),
-      ),
-      body: SafeArea(child: body),
-    );
+    if (shortestSide >= KStyles.smallestSize) {
+      return KeyboardKiller(child: body);
+    } else {
+      return KeyboardKiller(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(widget.action == BankTransferAction.withdraw
+                ? KPhrases.withdrawal
+                : KPhrases.deposit),
+          ),
+          body: SafeArea(child: body),
+        ),
+      );
+    }
   }
 }

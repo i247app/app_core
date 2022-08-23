@@ -1,8 +1,8 @@
 import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 enum KNumberPadMode { NONE, NUMBER, QWERTY }
+
 enum KNumberPadStyle { ORIGINAL, CASHAPP }
 
 class _NumpadStyleManager extends InheritedWidget {
@@ -43,11 +43,10 @@ class KNumberPad extends StatelessWidget {
 
   void _textChange(String string) => this.onTextChange?.call(string);
 
-  double _getShortestSide() => WidgetsBinding.instance != null
-      ? MediaQueryData.fromWindow(WidgetsBinding.instance!.window)
+  double _getShortestSide() =>
+      MediaQueryData.fromWindow(WidgetsBinding.instance.window)
           .size
-          .shortestSide
-      : 200;
+          .shortestSide;
 
   double _keyboardHeight() {
     final w = _getShortestSide();

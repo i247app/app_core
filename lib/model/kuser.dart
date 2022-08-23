@@ -2,12 +2,21 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/model/kaddress.dart';
 import 'package:app_core/model/keducation.dart';
 import 'package:app_core/model/kobject.dart';
+import 'package:app_core/value/kphrases.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'kuser.g.dart';
 
 @JsonSerializable()
 class KUser extends KObject {
+  static const String ACTION_ADD = "add";
+  static const String ACTION_LIST = "list";
+  static const String ACTION_MODIFY = "modify";
+  static const String ACTION_REMOVE = "remove";
+
+  @JsonKey(name: "action")
+  String? action;
+
   @JsonKey(name: "puid")
   String? puid;
 
@@ -19,6 +28,9 @@ class KUser extends KObject {
 
   @JsonKey(name: "foneCode")
   String? phoneCode;
+
+  @JsonKey(name: "fullAddressLine")
+  String? fullAddress;
 
   @JsonKey(name: "email")
   String? email;
@@ -34,6 +46,9 @@ class KUser extends KObject {
 
   @JsonKey(name: "dob", fromJson: zzz_str2Date, toJson: zzz_date2Str)
   DateTime? dob;
+
+  @JsonKey(name: "ppuid")
+  String? ppuid;
 
   @JsonKey(name: "parentName")
   String? parentName;
@@ -62,6 +77,12 @@ class KUser extends KObject {
   @deprecated
   @JsonKey(name: "zipCode")
   String? zip;
+
+  @JsonKey(name: "ward")
+  String? ward;
+
+  @JsonKey(name: "district")
+  String? district;
 
   @JsonKey(name: "countryCode")
   String? countryCode;
@@ -112,6 +133,9 @@ class KUser extends KObject {
   @JsonKey(name: "addresses")
   List<KAddress>? addresses;
 
+  @JsonKey(name: "notes")
+  List<KNote>? notes;
+
   @JsonKey(name: "officialIDNumber")
   String? officialIDNumber;
 
@@ -136,6 +160,9 @@ class KUser extends KObject {
   @JsonKey(name: "latLng")
   KLatLng? currentLatLng;
 
+  @JsonKey(name: "linkStatus")
+  String? linkStatus;
+
   /// Methods
   @JsonKey(ignore: true)
   String get sbContactName =>
@@ -158,6 +185,51 @@ class KUser extends KObject {
       KUtil.prettyName(
           fnm: firstName ?? "", mnm: middleName ?? "", lnm: lastName ?? "") ??
       phone;
+
+  String? get prettryDistrict {
+    // Check if district not contains one of item in KUtil.ignoreAddressWords list then add Quận before it
+    if (district != null && district!.isNotEmpty) {
+      if (KUtil.ignoreAddressWords.any((word) => district!.contains(word))) {
+        return district;
+      } else {
+        return "${KPhrases.district} $district";
+      }
+    }
+    return district;
+  }
+
+  String? get prettryWard {
+    // Check if district not contains one of item in KUtil.ignoreAddressWords list then add Quận before it
+    if (ward != null && ward!.isNotEmpty) {
+      if (KUtil.ignoreAddressWords.any((word) => ward!.contains(word))) {
+        return ward;
+      } else {
+        return "${KPhrases.ward} $ward";
+      }
+    }
+    return ward;
+  }
+
+  String get area {
+    final address = [
+      prettryWard,
+      prettryDistrict,
+      city,
+    ].where((e) => e != null).join(", ");
+    return address;
+  }
+
+  String get prettyAddress {
+    if ((this.addresses?.length ?? 0) > 0) {
+      return this.addresses!.first.prettyAddress;
+    }
+    final area = this.area;
+    if (area.contains(this.address1 ?? "")) {
+      return area;
+    } else {
+      return "${this.address1}, $area";
+    }
+  }
 
   String get prettyFone =>
       KUtil.prettyFone(foneCode: phoneCode ?? "", number: phone ?? "");

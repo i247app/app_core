@@ -1,5 +1,15 @@
+import 'dart:math';
+
 import 'package:app_core/app_core.dart';
+import 'package:app_core/model/bank_withdrawal.dart';
+import 'package:app_core/model/chapter.dart';
+import 'package:app_core/model/course.dart';
+import 'package:app_core/model/kanswer.dart';
+import 'package:app_core/model/kgame.dart';
+import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/model/khero.dart';
+import 'package:app_core/model/kquestion.dart';
+import 'package:app_core/model/lop_schedule.dart';
 import 'package:app_core/model/response/chat_add_members_response.dart';
 import 'package:app_core/model/response/chat_remove_members_response.dart';
 import 'package:app_core/model/response/credit_transfer_response.dart';
@@ -8,16 +18,28 @@ import 'package:app_core/model/response/get_business_response.dart';
 import 'package:app_core/model/response/get_chat_response.dart';
 import 'package:app_core/model/response/get_chats_response.dart';
 import 'package:app_core/model/response/get_credit_transactions_response.dart';
+import 'package:app_core/model/response/get_games_response.dart';
+import 'package:app_core/model/response/get_lop_schedules_response.dart';
+import 'package:app_core/model/response/get_scores_response.dart';
 import 'package:app_core/model/response/get_users_response.dart';
 import 'package:app_core/model/response/list_heroes_response.dart';
+import 'package:app_core/model/response/list_textbooks_response.dart';
 import 'package:app_core/model/response/list_xfr_proxy_response.dart';
 import 'package:app_core/model/response/list_xfr_role_response.dart';
+import 'package:app_core/model/response/old_schedules_response.dart';
+import 'package:app_core/model/response/recent_users_response.dart';
 import 'package:app_core/model/response/resume_session_response.dart';
 import 'package:app_core/model/response/search_users_response.dart';
 import 'package:app_core/model/response/send_2fa_response.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
+import 'package:app_core/model/share.dart';
+import 'package:app_core/model/textbook.dart';
 import 'package:app_core/model/xfr_proxy.dart';
 import 'package:app_core/model/xfr_ticket.dart';
+import 'package:app_core/ui/school/kdoc_picker.dart';
+import 'package:app_core/model/response/save_score_response.dart';
+
+import '../model/response/share_response.dart';
 
 abstract class KServerHandler {
   static Future<SimpleResponse> logToServer(String key, value) async {
@@ -154,6 +176,15 @@ abstract class KServerHandler {
         .then((data) => SearchUsersResponse.fromJson(data));
   }
 
+  static Future<RecentUsersResponse> recentsUsers() async {
+    final params = {
+      "svc": "auth",
+      "req": "xfr.recent.users",
+    };
+    return TLSHelper.send(params)
+        .then((data) => RecentUsersResponse.fromJson(data));
+  }
+
   static Future<SimpleResponse> notifyWebRTCCall({
     required List<String> refPUIDs,
     required String callID,
@@ -207,6 +238,21 @@ abstract class KServerHandler {
     };
     return TLSHelper.send(params)
         .then((data) => KListHeroesResponse.fromJson(data));
+  }
+
+  static Future<KGetGameScoresResponse> getGameHighscore({
+    required String gameID,
+    required String level,
+  }) async {
+    final params = {
+      "svc": "game",
+      "req": "game.score.get",
+      "gameScore": KGameScore()
+        ..game = gameID
+        ..level = level,
+    };
+    return TLSHelper.send(params)
+        .then((data) => KGetGameScoresResponse.fromJson(data));
   }
 
   static Future<KListHeroesResponse> getHeroes() async {
@@ -270,47 +316,79 @@ abstract class KServerHandler {
         ..bankAccName = bankAccount
         ..bankAccNumber = bankAccNumber,
     };
-    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+    return TLSHelper.send(params, isDebug: true)
+        .then((data) => SimpleResponse.fromJson(data));
   }
 
-  static Future<SimpleResponse> bankDeposit({
+  static Future<KSaveScoreResponse> saveGameScore({
+    required String gameID,
+    required String level,
+    String? time,
+    String? point,
+    String? gameAppID,
+    String? language,
+    String? topic,
+  }) async {
+    final params = {
+      "svc": "game",
+      "req": "game.score.save",
+      "gameScore": KGameScore()
+        ..game = gameID
+        ..level = level
+        ..time = time
+        ..point = point
+        ..gameAppID = gameAppID
+        ..language = language
+        ..topic = topic,
+    };
+    return TLSHelper.send(params)
+        .then((data) => KSaveScoreResponse.fromJson(data));
+  }
+
+  static Future<CreditTransferResponse> bankDeposit({
     required String bankID,
     required String bankName,
     required String bankAccount,
     required String bankAccNumber,
     required String amount,
+    required String tokenName,
   }) async {
     final params = {
       "svc": "chao",
       "req": "bank.deposit",
       "amount": amount,
+      "tokenName": tokenName,
       "user": KUser()
         ..bankID = bankID
         ..bankName = bankName
         ..bankAccName = bankAccount
         ..bankAccNumber = bankAccNumber,
     };
-    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+    return TLSHelper.send(params)
+        .then((data) => CreditTransferResponse.fromJson(data));
   }
 
-  static Future<SimpleResponse> bankWithdrawal({
+  static Future<CreditTransferResponse> bankWithdrawal({
     required String bankID,
     required String bankName,
     required String bankAccount,
     required String bankAccNumber,
     required String amount,
+    required String tokenName,
   }) async {
     final params = {
       "svc": "chao",
       "req": "bank.withdrawal",
-      "amount": amount,
-      "user": KUser()
+      "bankWithdrawal": BankWithdrawal()
         ..bankID = bankID
         ..bankName = bankName
-        ..bankAccName = bankAccount
-        ..bankAccNumber = bankAccNumber,
+        ..bankAccountName = bankAccount
+        ..bankAccountNumber = bankAccNumber
+        ..amount = amount
+        ..tokenName = tokenName,
     };
-    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+    return TLSHelper.send(params, isDebug: true)
+        .then((data) => CreditTransferResponse.fromJson(data));
   }
 
   static Future<ResumeSessionResponse> resumeSession(String? ktoken,
@@ -438,5 +516,274 @@ abstract class KServerHandler {
     };
     return TLSHelper.send(params)
         .then((data) => ListXFRProxyResponse.fromJson(data));
+  }
+
+  static Future<KGetGamesResponse> getGames({
+    required String gameID,
+    required String level,
+    String? gameAppID,
+    String? topic,
+    String? language,
+    String? mimeType,
+  }) async {
+    print(gameAppID);
+    print("gameAppID");
+    final params = {
+      "svc": "game",
+      "req": "game.get",
+      "game": KGame()
+        ..gameID = gameID
+        ..gameAppID = gameAppID
+        ..level = "$level"
+        ..topic = topic ?? "number"
+        ..mimeType = mimeType ?? "TEXT"
+        ..language = language ?? "en",
+    };
+    return TLSHelper.send(params)
+        .then((data) => KGetGamesResponse.fromJson(data));
+  }
+
+  static List<KQuestion> questionsMockup() {
+    final questions = [
+      "1 + 1",
+      "3 + 2",
+      "4 - 1",
+      "4 + 5",
+      "2 x 1",
+      "2 x 3",
+      "1 + 2 - 1",
+      "4 + 8 - 5",
+      "1 x 2 + 3",
+      "1 + 2 x 3",
+    ];
+    final answers = [
+      2,
+      5,
+      3,
+      9,
+      2,
+      6,
+      2,
+      7,
+      5,
+      7,
+    ];
+
+    final _random = new Random();
+    return List.generate(questions.length, (indexQuestion) {
+      final correctIndex = _random.nextInt(3);
+      final correctAnswer = answers[indexQuestion];
+      var list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      return KQuestion()
+        ..questionID = "q${indexQuestion + 1}"
+        ..text = questions[indexQuestion]
+        ..answers = List.generate(4, (index) {
+          final dummyAnswer = list.removeAt(_random.nextInt(list.length));
+          return KAnswer()
+            ..answerID = "a${index + 1}"
+            ..text = index == correctIndex
+                ? correctAnswer.toString()
+                : dummyAnswer.toString()
+            ..isCorrect = index == correctIndex;
+        });
+    });
+  }
+
+  // requires puid or (refID/RefApp)
+  static Future<SimpleResponse> pushFlash({
+    String? refPUID,
+    String? refID,
+    String? refApp,
+    required String flashType,
+    required String mediaType,
+    required String flashValue,
+  }) async {
+    final params = {
+      "svc": "share",
+      "req": "flash.notify",
+      "refPUID": refPUID,
+      "refID": refID,
+      "refApp": refApp,
+      "flashType": flashType,
+      "mediaType": mediaType,
+      "flashValue": flashValue,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> pushPage({
+    required String? ssID,
+    required String? index,
+    String? refID,
+    String? refApp,
+    String? refPUID,
+  }) async {
+    final params = {
+      "svc": "share",
+      "req": "page.push",
+      "ssID": ssID,
+      "refPUID": refPUID,
+      "refID": refID,
+      "refApp": refApp,
+      "index": index,
+    };
+
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> pushCurrentPage({
+    required int pageIndex,
+    String? scheduleID,
+    // String? gigID,
+  }) async {
+    final params = {
+      "svc": "bird",
+      "req": "lop.page.push",
+      "pageIndex": "$pageIndex",
+      "scheduleID": scheduleID,
+      // "gigID": gigID,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> startLopQuiz(String scheduleID) async {
+    final params = {
+      "svc": "bird",
+      "req": "lop.answer.prompt.notify",
+      "scheduleID": scheduleID,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> pushFlashToLopSchedule({
+    required String scheduleID,
+    required String flashType,
+    required String mediaType,
+    required String flashValue,
+  }) async {
+    final params = {
+      "svc": "bird",
+      "req": "lop.flash.notify",
+      "scheduleID": scheduleID,
+      "flashType": flashType,
+      "mediaType": mediaType,
+      "flashValue": flashValue,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<GetLopSchedulesResponse> getLopSchedules() async {
+    final params = {
+      "svc": "bird",
+      "req": "lop.schedule.list",
+    };
+    return TLSHelper.send(params)
+        .then((data) => GetLopSchedulesResponse.fromJson(data));
+  }
+
+  static Future<GetLopSchedulesResponse> getSchedule({
+    required String lopID,
+    required String scheduleID,
+  }) async {
+    final params = {
+      "svc": "bird",
+      "req": "lop.schedule.get",
+      "lopSchedule": LopSchedule()
+        ..lopID = lopID
+        ..lopScheduleID = scheduleID,
+    };
+    return TLSHelper.send(params)
+        .then((data) => GetLopSchedulesResponse.fromJson(data));
+  }
+
+  static Future<OldSchedulesResponse> getCourses() async {
+    final params = {
+      "svc": "bird",
+      "req": "course.list",
+    };
+    return TLSHelper.send(params)
+        .then((data) => OldSchedulesResponse.fromJson(data));
+  }
+
+  static Future<OldSchedulesResponse> getCourse(String courseID) async {
+    final params = {
+      "svc": "bird",
+      "req": "course.get",
+      "course": Course()..courseID = courseID,
+    };
+    return TLSHelper.send(params)
+        .then((data) => OldSchedulesResponse.fromJson(data));
+  }
+
+  static Future<ListTextbooksResponse> getListTextbook({
+    int? grade,
+    required KDocType type,
+    int? chapter,
+  }) async {
+    final params = {
+      "svc": "bird",
+      "req": "headstart.picker",
+      "textbook": Textbook()
+        ..category = type == KDocType.headstart ? "HEADSTART" : "CLASS"
+        ..grade = grade != null ? grade.toString() : null
+        ..chapterNumber = (chapter != null) ? chapter.toString() : null
+    };
+    return TLSHelper.send(params)
+        .then((data) => ListTextbooksResponse.fromJson(data));
+  }
+
+  static Future<ListTextbooksResponse> getTextbook({
+    required String textbookID,
+    required String chapterID,
+  }) async {
+    final params = {
+      "svc": "bird",
+      "req": "textbook.get",
+      "textbook": Chapter()
+        ..textbookID = textbookID
+        ..chapterID = chapterID
+    };
+    return TLSHelper.send(params)
+        .then((data) => ListTextbooksResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> docPushPage({
+    required String ssID,
+    required String pageIndex,
+  }) async {
+    final params = {
+      "svc": "bird",
+      "req": "push.page",
+      "ssID": ssID,
+      "pageIndex": pageIndex,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  // requires shareID or (refID, refApp)
+  static Future<ShareResponse> shareAction({
+    String? ssID,
+    required String refID,
+    required String refApp,
+    String? refPUID,
+    String? textbookID,
+    String? chapterID,
+    String? role,
+    String? action,
+  }) async {
+    final params = {
+      "svc": "share",
+      "req": "share.action",
+      "share": Share()
+        ..ssID = ssID
+        ..refID = refID
+        ..refApp = refApp
+        ..refPUID = refPUID
+        ..textbookID = textbookID
+        ..chapterID = chapterID
+        ..role = role
+        ..action = action,
+    };
+    return TLSHelper.send(params).then((data) => ShareResponse.fromJson(data));
   }
 }

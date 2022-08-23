@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/ui/game/service/kgame_data.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,9 +11,11 @@ import 'package:flutter/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 
 class KTamagoChanJumping extends StatefulWidget {
+  final KGameData? gameData;
   final Function? onFinish;
+  final bool? canAdvance;
 
-  const KTamagoChanJumping({this.onFinish});
+  const KTamagoChanJumping({this.onFinish, this.canAdvance, this.gameData});
 
   @override
   _KTamagoChanJumpingState createState() => _KTamagoChanJumpingState();
@@ -21,7 +24,10 @@ class KTamagoChanJumping extends StatefulWidget {
 class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
     with TickerProviderStateMixin {
   Completer<AudioPlayer> cAudioPlayer = Completer();
+  Completer<AudioPlayer> cBackgroundAudioPlayer = Completer();
   String? correctAudioFileUri;
+  String? winAudioFileUri;
+  String? loseAudioFileUri;
 
   late Animation _bouncingAnimation,
       _shakeTheTopLeftAnimation,
@@ -38,6 +44,9 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
   final Duration bouncingDuration = Duration(milliseconds: 250);
 
   int eggBreakStep = 1;
+  int eggMaxBreakStep = 3;
+
+  bool get isMuted => widget.gameData?.isMuted ?? false;
 
   @override
   void initState() {
@@ -56,7 +65,7 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
                 this._shakeTheTopRightAnimationController.forward();
               } else {
                 _bouncingAnimationController.reverse();
-                if (eggBreakStep < 4) {
+                if (eggBreakStep < eggMaxBreakStep) {
                   Future.delayed(Duration(milliseconds: 1000), () {
                     if (mounted) {
                       this.setState(() {
@@ -70,8 +79,9 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
                 }
               }
             } else if (status == AnimationStatus.dismissed) {
-              if (eggBreakStep >= 4) {
-                Future.delayed(Duration(milliseconds: 1000), () {
+              if ((!(widget.canAdvance ?? false) && eggBreakStep == 10) ||
+                  eggBreakStep >= eggMaxBreakStep) {
+                Future.delayed(Duration(milliseconds: 1200), () {
                   if (this.widget.onFinish != null) this.widget.onFinish!();
                 });
               }
@@ -91,7 +101,7 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
           _shakeTheTopRightAnimationController.reverse();
         } else if (status == AnimationStatus.dismissed) {
           _bouncingAnimationController.reverse();
-          if (eggBreakStep < 4) {
+          if (eggBreakStep < eggMaxBreakStep) {
             Future.delayed(Duration(milliseconds: 1000), () {
               this.setState(() {
                 this.eggBreakStep = this.eggBreakStep + 1;
@@ -118,7 +128,7 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
           _shakeTheTopLeftAnimationController.reverse();
         } else if (status == AnimationStatus.dismissed) {
           _bouncingAnimationController.reverse();
-          if (eggBreakStep < 4) {
+          if (eggBreakStep < eggMaxBreakStep) {
             Future.delayed(Duration(milliseconds: 1000), () {
               this.setState(() {
                 this.eggBreakStep = this.eggBreakStep + 1;
@@ -135,25 +145,61 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
       end: -0.06,
     ).animate(_shakeTheTopLeftAnimationController);
 
-    Future.delayed(Duration(milliseconds: 500), () {
-      try {
-        final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
-        ap.play(correctAudioFileUri ?? "", isLocal: true);
-        cAudioPlayer.complete(ap);
-      } catch (e) {}
-    });
+    if (!isMuted) {
+      Future.delayed(Duration(milliseconds: 500), () {
+        if (!isMuted) {
+          try {
+            // final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+            // ap.play(correctAudioFileUri ?? "", isLocal: true);
+            // cAudioPlayer.complete(ap);
+
+            if (widget.canAdvance ?? false) {
+              try {
+                final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+                ap.play(winAudioFileUri ?? "", isLocal: true);
+                cBackgroundAudioPlayer.complete(ap);
+              } catch (e) {}
+            } else {
+              try {
+                final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+                ap.play(loseAudioFileUri ?? "", isLocal: true);
+                cBackgroundAudioPlayer.complete(ap);
+              } catch (e) {}
+            }
+          } catch (e) {}
+        }
+      });
+    }
+
     Future.delayed(Duration(milliseconds: 1000), () {
-      this.setState(() {
-        this.eggBreakStep = this.eggBreakStep + 1;
-      });
-      Future.delayed(Duration(milliseconds: 100), () {
-        _bouncingAnimationController.forward();
-      });
+      if (!(widget.canAdvance ?? false)) {
+        this.setState(() {
+          this.eggBreakStep = 10;
+        });
+        Future.delayed(Duration(milliseconds: 2700), () {
+          if (this.widget.onFinish != null) this.widget.onFinish!();
+        });
+      } else {
+        this.setState(() {
+          this.eggBreakStep = this.eggBreakStep + 1;
+        });
+        Future.delayed(Duration(milliseconds: 100), () {
+          _bouncingAnimationController.forward();
+        });
+      }
     });
   }
 
   @override
   void dispose() {
+    cBackgroundAudioPlayer.future.then((ap) {
+      ap.stop();
+      ap.dispose();
+    });
+    cAudioPlayer.future.then((ap) {
+      ap.stop();
+      ap.dispose();
+    });
     this._bouncingAnimationController.dispose();
     super.dispose();
   }
@@ -164,13 +210,25 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
 
       ByteData correctAudioFileData =
           await rootBundle.load("packages/app_core/assets/audio/correct.mp3");
+      ByteData winAudioFileData = await rootBundle
+          .load("packages/app_core/assets/audio/jingle_win.mp3");
+      ByteData loseAudioFileData = await rootBundle
+          .load("packages/app_core/assets/audio/jingle_lose.mp3");
 
       File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
       await correctAudioTempFile
           .writeAsBytes(correctAudioFileData.buffer.asUint8List(), flush: true);
+      File winAudioTempFile = File('${tempDir.path}/jingle_win.mp3');
+      await winAudioTempFile.writeAsBytes(winAudioFileData.buffer.asUint8List(),
+          flush: true);
+      File loseAudioTempFile = File('${tempDir.path}/jingle_lose.mp3');
+      await loseAudioTempFile
+          .writeAsBytes(loseAudioFileData.buffer.asUint8List(), flush: true);
 
       this.setState(() {
         this.correctAudioFileUri = correctAudioTempFile.uri.toString();
+        this.winAudioFileUri = winAudioTempFile.uri.toString();
+        this.loseAudioFileUri = loseAudioTempFile.uri.toString();
       });
     } catch (e) {}
   }
@@ -244,6 +302,26 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
           : Container(),
     );
 
+    final eggSad = AnimatedOpacity(
+      duration: Duration(milliseconds: 700),
+      opacity: this.eggBreakStep == 10 ? 1.0 : 0.0,
+      child: this.eggBreakStep == 10
+          ? Container(
+              transform:
+                  Matrix4.rotationZ(_shakeTheTopRightAnimation.value * Math.pi),
+              transformAlignment: Alignment.bottomCenter,
+              child: Transform.translate(
+                offset: _bouncingAnimation.value,
+                child: Image.asset(
+                  KAssets.IMG_TAMAGO_CHAN_SAD,
+                  package: 'app_core',
+                  width: 120,
+                ),
+              ),
+            )
+          : Container(),
+    );
+
     final content = Stack(
       children: [
         Align(
@@ -261,6 +339,10 @@ class _KTamagoChanJumpingState extends State<KTamagoChanJumping>
         Align(
           alignment: Alignment.center,
           child: eggStep4,
+        ),
+        Align(
+          alignment: Alignment.center,
+          child: eggSad,
         ),
       ],
     );

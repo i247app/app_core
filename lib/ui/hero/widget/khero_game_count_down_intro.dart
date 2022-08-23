@@ -1,7 +1,11 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 class KGameCountDownIntro extends StatefulWidget {
   final Function? onFinish;
@@ -14,6 +18,9 @@ class KGameCountDownIntro extends StatefulWidget {
 
 class _KGameCountDownIntroState extends State<KGameCountDownIntro>
     with SingleTickerProviderStateMixin {
+  Completer<AudioPlayer> cAudioPlayer = Completer();
+  String? countAudioFileUri;
+
   int count = 3;
   Timer? _timer;
   late Animation<double> _scaleAnimation;
@@ -22,6 +29,8 @@ class _KGameCountDownIntroState extends State<KGameCountDownIntro>
   @override
   void initState() {
     super.initState();
+
+    loadAudioAsset();
 
     _scaleAnimationController = AnimationController(
       duration: const Duration(milliseconds: 500),
@@ -38,29 +47,58 @@ class _KGameCountDownIntroState extends State<KGameCountDownIntro>
       end: 1.0,
     ).animate(new CurvedAnimation(
         parent: _scaleAnimationController, curve: Curves.easeInOutSine));
-
-    _scaleAnimationController.forward();
-    _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
-      ;
-      if (count - 1 == 0 && this.widget.onFinish != null) {
-        _timer?.cancel();
-        this.widget.onFinish!();
-      }
-      if (mounted && count > 0) {
-        _scaleAnimationController.forward();
-        this.setState(() {
-          count = count - 1;
-        });
-      }
-    });
   }
 
   @override
   void dispose() {
     _timer?.cancel();
     _scaleAnimationController.dispose();
+    cAudioPlayer.future.then((ap) {
+      ap.stop();
+      ap.dispose();
+    });
     // TODO: implement dispose
     super.dispose();
+  }
+
+  void loadAudioAsset() async {
+    try {
+      Directory tempDir = await getTemporaryDirectory();
+
+      ByteData countAudioFileData =
+          await rootBundle.load("packages/app_core/assets/audio/beep_tone.mp3");
+
+      File countAudioTempFile = File('${tempDir.path}/count.mp3');
+      await countAudioTempFile
+          .writeAsBytes(countAudioFileData.buffer.asUint8List(), flush: true);
+
+      this.setState(() {
+        this.countAudioFileUri = countAudioTempFile.uri.toString();
+      });
+
+      final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+      try {
+        ap.play(countAudioFileUri ?? "", isLocal: true);
+        cAudioPlayer.complete(ap);
+      } catch (e) {}
+      _scaleAnimationController.forward();
+      _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
+        if (count - 1 == 0 && this.widget.onFinish != null) {
+          _timer?.cancel();
+          this.widget.onFinish!();
+        }
+        if (mounted && count > 0) {
+          try {
+            ap.play(countAudioFileUri ?? "", isLocal: true);
+            cAudioPlayer.complete(ap);
+          } catch (e) {}
+          _scaleAnimationController.forward();
+          this.setState(() {
+            count = count - 1;
+          });
+        }
+      });
+    } catch (e) {}
   }
 
   @override

@@ -8,9 +8,10 @@ import 'package:app_core/helper/khost_config.dart';
 import 'package:app_core/helper/klocale_helper.dart';
 import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/helper/ktablet_detector.dart';
+import 'package:app_core/model/kgig_address.dart';
 import 'package:app_core/model/krole.dart';
+import 'package:app_core/model/kuser.dart';
 import 'package:app_core/ui/wallet/wallet_transfer.dart';
-import 'package:app_core/ui/wallet/wallet_transfer_2.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -21,12 +22,33 @@ abstract class KUtil {
   static Random? _random = Random();
   static String? _buildVersion;
   static String? _buildNumber;
-
+  static List<String> ignoreAddressWords = [
+    "ward",
+    "district",
+    "Ward",
+    "District",
+    "Phường",
+    "Quận"
+  ];
   static String get buildVersion => KUtil._buildVersion ?? "";
 
   static String get buildNumber => KUtil._buildNumber ?? "";
 
   static Future<String> getDeviceID() async => KDeviceIDHelper.deviceID;
+
+  static String getTimezoneName() {
+    final DateTime now = DateTime.now();
+    return now.timeZoneName;
+  }
+
+  // Get timezone offet with hours and minutes format hh:mm
+  static String getTimezonOffset() {
+    final DateTime now = DateTime.now();
+    final offsetString = now.timeZoneOffset.toString();
+    final parts = offsetString.split(":");
+    parts.removeLast();
+    return parts.join(":");
+  }
 
   static Future<String> getDeviceBrand() async {
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -122,6 +144,29 @@ abstract class KUtil {
     return z;
   }
 
+  // static String? prettyAddressLine(String addressLine1, String addressLine2, String ward, String district) {
+  static String? prettyGigAddressLine(KGigAddress address) {
+    String? z;
+
+    if (!KStringHelper.isEmpty(address.addressLine1)) {
+      z = (z ?? "") + address.addressLine1!;
+    }
+
+    if (!KStringHelper.isEmpty(address.addressLine2)) {
+      z = (z ?? "") + ", ${address.addressLine2}";
+    }
+
+    if (!KStringHelper.isEmpty(address.ward)) {
+      z = (z ?? "") + ", ${address.ward}";
+    }
+
+    if (!KStringHelper.isEmpty(address.district)) {
+      z = (z ?? "") + ", ${address.district}";
+    }
+
+    return z;
+  }
+
   static String maskedFone(String fone) {
     if (fone.length <= 4) {
       return fone.replaceAll(RegExp(r'.'), 'x');
@@ -131,10 +176,24 @@ abstract class KUtil {
     }
   }
 
+  static String prettyDistance({double distanceInMeters = 0}) {
+    if (distanceInMeters < 1000) {
+      int meters = distanceInMeters.ceil();
+      return "${meters}m";
+    }
+
+    double distanceInKiloMeters = distanceInMeters / 1000;
+    double roundDistanceInKM =
+        double.parse((distanceInKiloMeters).toStringAsFixed(1));
+    return "${roundDistanceInKM}km";
+  }
+
   static String prettyFone({String foneCode = "", String number = ""}) {
     foneCode = foneCode.replaceAll("+", "");
-    final String prefix = foneCode.isNotEmpty ? "+$foneCode " : "";
-    return prefix.isEmpty ? number : "$prefix$number";
+    final String prefix = foneCode.isNotEmpty ? "+$foneCode" : "";
+    final String numberWithoutLeadingZero =
+        number.replaceAll(RegExp(r'^0+'), '');
+    return prefix.isEmpty ? number : "$prefix$numberWithoutLeadingZero";
   }
 
   // TODO VN - last, middle first else first middle last
@@ -228,6 +287,14 @@ abstract class KUtil {
     return z;
   }
 
+  // Remove all string match with ignoreStrings and trim it
+  static String removeIgnoreStrings(String str, List<String> ignoreStrings) {
+    for (String ignoreString in ignoreStrings) {
+      str = str.replaceAll(RegExp(ignoreString), "");
+    }
+    return str.trim();
+  }
+
   // TODO - currency Name override symbol. perhaps use int instead???
   // no exception thrown
   // return "0" on amount on any errors
@@ -246,6 +313,7 @@ abstract class KUtil {
     bool useCurrencySymbol = true,
     bool useCurrencyName = false,
     bool acceptZero = true,
+    bool tokenToRight = false,
   }) {
     if (amount == null) return "";
     double dAmount = double.tryParse(amount) ?? 0;
@@ -254,8 +322,15 @@ abstract class KUtil {
     try {
       switch (uppercaseToken) {
         case "USD":
-          if (useCurrencyName) // USD1,234.56 or USD1,234.00
-            pretty = NumberFormat.currency(locale: "en").format(dAmount);
+          if (useCurrencyName) {
+            if (tokenToRight) {
+              pretty = NumberFormat.currency(locale: "en").format(dAmount);
+              pretty = pretty.replaceAll("USD", "");
+              pretty = "$pretty USD";
+            } else {
+              pretty = NumberFormat.currency(locale: "en").format(dAmount);
+            }
+          } // USD1,234.56 or USD1,234.00
           else if (useCurrencySymbol) // $1,234.56 or $1,234.00
             pretty = NumberFormat.simpleCurrency(locale: "en").format(dAmount);
           else // 1,234.56 or 1,234.00
@@ -271,7 +346,12 @@ abstract class KUtil {
           break;
         default: // default locale most likely en or vi
           // 1.234,56 or 1.234
-          pretty = NumberFormat("#,###.##").format(dAmount);
+          if (useCurrencyName) {
+            pretty = NumberFormat("#,###.## ${uppercaseToken}").format(dAmount);
+          } else {
+            pretty = NumberFormat("#,###.##").format(dAmount);
+          }
+
           break;
       }
     } catch (e) {
@@ -387,12 +467,9 @@ abstract class KUtil {
     return pretty;
   }
 
-  // WARNING - isUTC or not
-  static String prettyDate(
+  static String formatDate(
     dynamic rawDate, {
-    bool showTime = false,
-    bool abbreviate = false,
-    bool is24H = true,
+    String format = "MM/yyyy",
   }) {
     String pretty = "";
 
@@ -417,12 +494,55 @@ abstract class KUtil {
 
       // Build pretty string
       try {
-        String format = "";
+        if (date != null) {
+          pretty = DateFormat(format).format(date);
+        }
+      } catch (e) {
+        print(e.toString());
+        // pretty = date.toIso8601String();
+        pretty = 'hellobye';
+      }
+    } catch (e) {
+      pretty = "";
+    }
 
+    return pretty;
+  }
+
+  // WARNING - isUTC or not
+  static String prettyDate(
+    dynamic rawDate, {
+    bool showTime = false,
+    bool abbreviate = false,
+    bool is24H = true,
+    String format = "yyyy-MM-dd",
+  }) {
+    String pretty = "";
+
+    try {
+      // Convert input to DateTime object
+      DateTime? date;
+      switch (rawDate.runtimeType) {
+        case DateTime:
+          date = KDateHelper.copy(rawDate);
+          break;
+        case String:
+        default:
+          date = KDateHelper.from20FSP(rawDate.toString(), isUTC: false);
+          break;
+      }
+
+      // if (date != null && date.isUtc) {
+      //   print("a date is utc");
+      //   date = date.toLocal(); // localized for display only
+      // }
+      date = date?.toLocal();
+
+      // Build pretty string
+      try {
         if (abbreviate) {
           format = "E, MMM dd";
         } else {
-          format = "yyyy-MM-dd";
           if (showTime) {
             if (is24H)
               format = format + " HH:mm:ss";
@@ -633,23 +753,45 @@ abstract class KUtil {
           .join();
 
   // TODO move somewhere else later
+  // static Widget getPaymentScreen({
+  //   required String? rcvPUID,
+  //   required KRole? sndRole,
+  //   required KTransferType transferType,
+  //   required String tokenName,
+  // }) =>
+  //     KHostConfig.isReleaseMode
+  //         ? WalletTransfer(
+  //             transferType: transferType,
+  //             tokenName: tokenName,
+  //             rcvPUID: rcvPUID,
+  //             sndRole: sndRole,
+  //           )
+  //         : WalletTransfer2(
+  //             transferType: transferType,
+  //             tokenName: tokenName,
+  //             rcvPUID: rcvPUID,
+  //             sndRole: sndRole,
+  //           );
+
   static Widget getPaymentScreen({
+    required KUser user,
     required String? rcvPUID,
     required KRole? sndRole,
     required KTransferType transferType,
     required String tokenName,
   }) =>
-      KHostConfig.isReleaseMode
-          ? WalletTransfer(
-              transferType: transferType,
-              tokenName: tokenName,
-              rcvPUID: rcvPUID,
-              sndRole: sndRole,
-            )
-          : WalletTransfer2(
-              transferType: transferType,
-              tokenName: tokenName,
-              rcvPUID: rcvPUID,
-              sndRole: sndRole,
-            );
+      WalletTransfer(
+        user: user,
+        transferType: transferType,
+        tokenName: tokenName,
+        rcvPUID: rcvPUID,
+        sndRole: sndRole,
+      );
+
+  static String generateRandomString(int len) {
+    var r = Random();
+    const _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    return List.generate(len, (index) => _chars[r.nextInt(_chars.length)])
+        .join();
+  }
 }

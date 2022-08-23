@@ -35,6 +35,17 @@ abstract class KLinkHelper {
     return boo;
   }
 
+  /// Open the sms app using this number
+  static Future<bool> openSMS(String phoneNumber) async {
+    bool? boo;
+    try {
+      //  TODO - clean up phone number +84 0909100050 will break
+      final url = "sms:$phoneNumber".trim();
+      if (await canLaunch(url)) boo = await launch(url);
+    } catch (e) {}
+    return boo ?? false;
+  }
+
   /// Open the telephone app using this number
   static Future<bool> openPhone(String phoneNumber) async {
     bool? boo;

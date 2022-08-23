@@ -1,5 +1,6 @@
 import 'package:app_core/model/review.dart';
 import 'package:app_core/model/user_tag.dart';
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/keducation.dart';
@@ -11,6 +12,12 @@ part 'tutor.g.dart';
 class Tutor extends KUser {
   static const String TUTOR_ID = "tutorID";
   static const String IS_ONLINE = "isOnline";
+  static const String ONLINE_MODE = "onlineMode";
+
+  static const String IS_IN_PERSON = "isInPerson";
+  static const String IS_HEADSTART = "isHeadstart";
+  static const String IS_ENGLISH = "isEnglish";
+
   static const String GIG_COUNT = "gigCount";
 
   static const String STATUS_PENDING = "P";
@@ -23,6 +30,12 @@ class Tutor extends KUser {
   static const String ACTION_ACTIVATE = "ACTIVATE";
   static const String ACTION_ALERT = "ALERT";
   static const String ACTION_OFFLINE = "OFFLINE";
+  static const String ACTION_IN_PERSON = "IN_PERSON";
+  static const String ACTION_HEADSTART = "HEADSTART";
+  static const String ACTION_ENGLISH = "ENGLISH";
+
+  static const String IS_PREFER = "isPrefer";
+  static const String IS_GENIUS = "isGenius";
 
   @JsonKey(name: "rating")
   Review? review;
@@ -36,8 +49,29 @@ class Tutor extends KUser {
   @JsonKey(name: IS_ONLINE)
   bool? isOnline;
 
+  @JsonKey(name: ONLINE_MODE, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
+  bool? onlineMode;
+
+  @JsonKey(name: IS_IN_PERSON)
+  bool? isInPerson;
+
+  @JsonKey(name: IS_HEADSTART)
+  bool? isHeadstart;
+
+  @JsonKey(name: IS_ENGLISH)
+  bool? isEnglish;
+
+  @JsonKey(name: IS_PREFER)
+  bool? isPrefer;
+
+  @JsonKey(name: IS_GENIUS)
+  bool? isGenius;
+
   @JsonKey(name: "tutorStatus")
   String? tutorStatus;
+
+  @JsonKey(name: "userType")
+  String? userType;
 
   @JsonKey(name: "userTags")
   List<UserTag>? userTags;
@@ -47,6 +81,26 @@ class Tutor extends KUser {
 
   @JsonKey(name: "tutorJoinDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
   DateTime? tutorJoinDate;
+
+  Color get highlightColor => (isPrefer ?? false)
+      ? Colors.blue
+      : (isGenius ?? false)
+          ? Colors.transparent
+          : Colors.green;
+
+  Color? get iconColor => (isPrefer ?? false)
+      ? Colors.white
+      : (isGenius ?? false)
+          ? Colors.orange
+          : Colors.white;
+
+  IconData? get icon => (isPrefer ?? false)
+      ? Icons.diamond_outlined
+      : (isGenius ?? false)
+          ? Icons.star
+          : Icons.verified_outlined;
+
+  double get highlightSize => isGenius != true || isPrefer != true ? 10.0 : 1.0;
 
   /// Getters
   @JsonKey(ignore: true)

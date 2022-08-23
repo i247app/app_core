@@ -21,10 +21,11 @@ class KUserSession {
   static const String USER = "user";
   static const String TUTOR = "tutor";
   static const String HOST_DATA = "hostData";
-  static const String IS_ADMIN_READY = "isAdminReady";
   static const String IS_TUTOR_READY = "isTutorReady";
   static const String IS_BIZ_READY = "isBizReady";
   static const String IS_CUSUP_READY = "isCUSUPReady";
+  static const String IS_DOMAIN_ADMIN_READY = "isDomainAdminReady";
+  static const String IS_ADMIN_READY = "isAdminReady";
   static const String IS_SUPER_ADMIN = "isSuperAdmin";
   static const String BUSINESS = "business";
   static const String BUSINESS_MEMBERS = "businessMembers";
@@ -53,9 +54,6 @@ class KUserSession {
   @JsonKey(name: HOST_DATA)
   KSystemHostData? hostData;
 
-  @JsonKey(name: IS_ADMIN_READY)
-  bool? isAdminReady;
-
   @JsonKey(name: IS_TUTOR_READY)
   bool? isTutorReady;
 
@@ -64,6 +62,12 @@ class KUserSession {
 
   @JsonKey(name: IS_CUSUP_READY)
   bool? isCusupReady;
+
+  @JsonKey(name: IS_DOMAIN_ADMIN_READY)
+  bool? isDomainAdminReady;
+
+  @JsonKey(name: IS_ADMIN_READY)
+  bool? isAdminReady;
 
   @JsonKey(name: IS_SUPER_ADMIN)
   bool? isSuperAdmin;

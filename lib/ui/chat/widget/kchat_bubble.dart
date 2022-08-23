@@ -1,4 +1,8 @@
 import 'package:app_core/app_core.dart';
+import 'package:app_core/helper/kserver_handler.dart';
+import 'package:app_core/model/chapter.dart';
+import 'package:app_core/ui/school/widget/kdoc_screen.dart';
+import 'package:app_core/ui/school/widget/kdoc_view.dart';
 import 'package:app_core/ui/widget/kimage_viewer.dart';
 import 'package:app_core/ui/widget/ksmart_image.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
@@ -118,6 +122,31 @@ class KChatBubble extends StatelessWidget {
       Navigator.of(ctx).push(MaterialPageRoute(
           builder: (c) => Scaffold(body: KImageViewer.network(msg.message))));
     }
+  }
+
+  void onChapterClick(ctx, String encodedIDs) async {
+    // KToastHelper.success("Chapter $chapterID");
+
+    // Load in chapter
+    Chapter? chapter;
+    String? ssID;
+    try {
+      final textbookID = encodedIDs.split("::")[0];
+      final chapterID = encodedIDs.split("::")[1];
+      ssID = encodedIDs.split("::")[2];
+      chapter = await KServerHandler.getTextbook(
+              textbookID: textbookID, chapterID: chapterID)
+          .then((r) => r.textbooks!.first.chapters!.first);
+    } catch (_) {
+      chapter = null;
+    }
+
+    final screen = KDocScreen(
+      chapter: chapter!,
+      mode: KDocViewMode.movable,
+      ssID: ssID,
+    );
+    Navigator.of(ctx).push(MaterialPageRoute(builder: (_) => screen));
   }
 
   Widget wrapWithChatBubble(Widget child, Color chatBGColor) => Container(
@@ -241,6 +270,52 @@ class KChatBubble extends StatelessWidget {
             ],
           ),
           chatBGColor,
+        );
+        break;
+      case KChatMessage.CONTENT_TYPE_CHAPTER:
+        content = GestureDetector(
+          onTap: () => onChapterClick(context, msg.message ?? "?"),
+          child: wrapWithChatBubble(
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.menu_book_outlined, color: chatForegroundColor),
+                    SizedBox(width: 10),
+                    Flexible(
+                      child: Text(
+                        () {
+                          String linkText;
+                          try {
+                            final tokens = msg.message!.split("::");
+                            final title = tokens[3];
+                            final chapterNumber = tokens[4];
+                            final grade = tokens[5];
+                            linkText = "Lop $grade Bai $chapterNumber: $title";
+                          } catch (_) {
+                            linkText = "textbook";
+                          }
+                          return "$linkText";
+                        }.call(),
+                        style: theme.textTheme.subtitle1!
+                            .copyWith(color: chatForegroundColor),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 4),
+                Text(
+                  "${KUtil.prettyDate(msg.messageDate, showTime: true)}",
+                  style: theme.textTheme.caption!
+                      .copyWith(color: chatForegroundColor),
+                ),
+              ],
+            ),
+            chatBGColor,
+          ),
         );
         break;
       default:

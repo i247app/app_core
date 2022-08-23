@@ -1,22 +1,10 @@
 import 'dart:async';
 
-import 'package:app_core/value/kstyles.dart';
-import 'package:app_core/helper/khost_config.dart';
-import 'package:app_core/helper/klocation_helper.dart';
-import 'package:app_core/helper/ksession_data.dart';
-import 'package:app_core/helper/kwebrtc_helper.dart';
-import 'package:app_core/model/kchat.dart';
-import 'package:app_core/model/kchat_member.dart';
-import 'package:app_core/model/kchat_message.dart';
+import 'package:app_core/app_core.dart';
+import 'package:app_core/helper/kcall_control_stream_helper.dart';
+import 'package:app_core/helper/kcall_stream_helper.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
-import 'package:app_core/model/kuser.dart';
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/ui/chat/kchat_contact_listing.dart';
-import 'package:app_core/ui/chat/kchat_manager.dart';
-import 'package:app_core/header/kassets.dart';
-import 'package:app_core/ui/chat/kchatroom.dart';
-import 'package:app_core/ui/chat/service/kchatroom_controller.dart';
-import 'package:app_core/ui/voip/kvoip_call.dart';
 import 'package:flutter/material.dart';
 
 class KChatScreen extends StatefulWidget {
@@ -45,6 +33,7 @@ class KChatScreen extends StatefulWidget {
 
 class _KChatScreenState extends State<KChatScreen> {
   late KChatroomController chatroomCtrl;
+  late final StreamSubscription streamCallControl;
 
   List<KChatMember> get members =>
       this.chatroomCtrl.value.members ?? widget.members ?? [];
@@ -65,11 +54,16 @@ class _KChatScreenState extends State<KChatScreen> {
     this.chatroomCtrl.addListener(chatroomListener);
 
     requestPermissions(); // need perms before any api call
+
+    this.streamCallControl = KCallStreamHelper.stream.listen((event) {
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
     this.chatroomCtrl.removeListener(chatroomListener);
+    this.streamCallControl.cancel();
     super.dispose();
   }
 
@@ -166,8 +160,9 @@ class _KChatScreenState extends State<KChatScreen> {
         invitePUIDs: invitePUIDs,
         chatroomCtrl: this.chatroomCtrl,
         videoLogo: KAssets.IMG_TRANSPARENCY);
-
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
+    KCallStreamHelper.broadcast(screen);
+    KCallControlStreamHelper.broadcast(KCallType.foreground);
+    // Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
   }
 
   Future<List<KUser>> searchUsers(String? searchText) async {
@@ -217,23 +212,25 @@ class _KChatScreenState extends State<KChatScreen> {
   @override
   Widget build(BuildContext context) {
     final body = KChatroom(
-      this.chatroomCtrl,
+      chatroomCtrl,
       isSupport: widget.isSupport,
     );
 
     final addMemberAction = IconButton(
-      onPressed: () => this.onManagerMember(),
+      onPressed: onManagerMember,
       icon: Icon(
         Icons.group_add,
-        color: Theme.of(context).colorScheme.primaryVariant,
+        size: 36,
+        color: Theme.of(context).colorScheme.primary,
       ),
     );
 
     final videoCallAction = IconButton(
-      onPressed: this.isVideoCallEnabled ? onCallUser : null,
+      onPressed: isVideoCallEnabled ? onCallUser : null,
       icon: Icon(
-        Icons.video_call,
-        color: Theme.of(context).colorScheme.primaryVariant,
+        Icons.videocam_outlined,
+        size: 36,
+        color: Theme.of(context).colorScheme.primary,
       ),
     );
 
@@ -243,12 +240,13 @@ class _KChatScreenState extends State<KChatScreen> {
       return Scaffold(
         appBar: AppBar(
           title: InkWell(
-            onTap: () => this.onManagerMember(),
-            child: Text(this.chatroomCtrl.value.chatTitle ??
+            onTap: onManagerMember,
+            child: Text(chatroomCtrl.value.chatTitle ??
                 (widget.isSupport ? "Support" : "Chat")),
           ),
           actions: <Widget>[
-            if (this.isVideoCallEnabled) videoCallAction,
+            if (this.isVideoCallEnabled && !KCallKitHelper.instance.isCalling)
+              videoCallAction,
             addMemberAction
           ],
           elevation: 1,
@@ -274,7 +272,7 @@ class _KChatScreenState extends State<KChatScreen> {
                 SizedBox(width: 10),
                 Expanded(
                   child: InkWell(
-                    onTap: () => this.onManagerMember(),
+                    onTap: onManagerMember,
                     child: Text(
                       this.chatroomCtrl.value.chatTitle ?? "Chat",
                       style: Theme.of(context).textTheme.headline5,

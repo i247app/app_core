@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:app_core/helper/service/kvoip_service.dart';
-import 'package:app_core/ui/voip/kvoip_context.dart';
-import 'package:app_core/ui/widget/dialog/boolean_dialog.dart';
-import 'package:app_core/value/kphrases.dart';
+import 'package:app_core/helper/kcall_control_stream_helper.dart';
+import 'package:app_core/helper/kcall_stream_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:app_core/ui/voip/widget/kp2p_button_view.dart';
@@ -18,8 +16,11 @@ import 'package:uuid/uuid.dart';
 import 'package:app_core/app_core.dart';
 import 'package:wakelock/wakelock.dart';
 
+enum _CallPerspective { sender, receiver }
+enum _CallState { ws_error, init, waiting, in_progress, ended }
+
 class KVOIPCall extends StatefulWidget {
-  final KVoipPerspective perspective;
+  final _CallPerspective perspective;
   final bool autoPickup;
   final KUser? refUser;
   final List<String>? invitePUIDs;
@@ -27,39 +28,43 @@ class KVOIPCall extends StatefulWidget {
   final String? uuid;
   final KChatroomController? chatroomCtrl;
   final String? videoLogo;
+  final bool isAudioCall;
 
-  // KVOIPCall({
-  //   required this.perspective,
-  //   this.refUser,
-  //   this.invitePUIDs,
-  //   this.callID,
-  //   this.uuid,
-  //   this.autoPickup = false,
-  //   this.chatroomCtrl,
-  //   this.videoLogo,
-  // });
+  KVOIPCall({
+    required this.perspective,
+    this.refUser,
+    this.invitePUIDs,
+    this.callID,
+    this.uuid,
+    this.autoPickup = false,
+    this.chatroomCtrl,
+    this.videoLogo,
+    this.isAudioCall = false,
+  });
 
   KVOIPCall.asSender(
-    this.refUser, {
-    this.invitePUIDs,
+    KUser refUser, {
+    List<String>? invitePUIDs,
     this.chatroomCtrl,
-    this.videoLogo,
-  })  : this.perspective = KVoipPerspective.sender,
+    String? videoLogo,
+    bool isAudioCall = false,
+  })  : this.refUser = refUser,
+        this.invitePUIDs = invitePUIDs,
+        this.perspective = _CallPerspective.sender,
         this.autoPickup = false,
+        this.uuid = Uuid().v4(),
         this.callID = null,
-        this.uuid = Uuid().v4();
+        this.videoLogo = videoLogo,
+        this.isAudioCall = isAudioCall;
 
-  KVOIPCall.asReceiver(
-    String callID,
-    String uuid, {
-    this.autoPickup = false,
-    this.videoLogo,
-    this.chatroomCtrl,
-  })  : this.perspective = KVoipPerspective.receiver,
-        this.refUser = null,
+  KVOIPCall.asReceiver(String callID, String uuid,
+      {this.autoPickup = false, this.videoLogo, this.chatroomCtrl})
+      : this.refUser = null,
         this.invitePUIDs = null,
+        this.perspective = _CallPerspective.receiver,
         this.callID = callID,
-        this.uuid = uuid;
+        this.uuid = uuid,
+        this.isAudioCall = false;
 
   @override
   _KVOIPCallState createState() => _KVOIPCallState();
@@ -68,24 +73,21 @@ class KVOIPCall extends StatefulWidget {
 class _KVOIPCallState extends State<KVOIPCall>
     with WidgetsBindingObserver, TickerProviderStateMixin {
   late final StreamSubscription streamSub;
+  late final StreamSubscription streamCallControl;
   late AnimationController _slidingAnimationController;
   late Animation<Offset> _slidingAnimation;
 
-  final Duration panelSlideDuration = Duration(milliseconds: 500);
   final PanelController panelCtrl = PanelController();
   final Set<int> receivedCodes = {};
   final Map<String, RTCVideoRenderer> remoteRenderers = {};
 
-  // final Map<String, RTCVideoRenderer> remoteRenderers = {};
-
   late KChatroomController? chatCtrl =
       widget.chatroomCtrl == null ? null : widget.chatroomCtrl!;
+  late _CallState callState = widget.perspective == _CallPerspective.sender
+      ? _CallState.waiting
+      : _CallState.init;
 
-  // late KVoipCallState callState = widget.perspective == KVoipPerspective.sender
-  //     ? KVoipCallState.waiting
-  //     : KVoipCallState.init;
-
-  KVoipContext? voipContext;
+  KVOIPCommManager? commManager;
   Timer? ringtoneTimer;
   Timer? endCallTimer;
   Timer? panelTimer;
@@ -93,50 +95,39 @@ class _KVOIPCallState extends State<KVOIPCall>
   int? infoCode;
   RTCVideoRenderer? localRenderer;
 
-  bool isPanelOpen = true;
-
-  // RTCVideoRenderer? localRenderer;
-  // bool isMySoundEnabled = true;
-  // bool isMySpeakerEnabled = true;
-  // bool isMyCameraEnabled = true;
-  // bool isOtherSoundEnabled = true;
-  // bool isOtherCameraEnabled = true;
-  // bool isPanelOpen = false;
-
-  String get voipServiceID {
-    final id = widget.callID ?? "anonymous call";
-    print("VOIP SERVICE ID - $id");
-    return id;
-  }
-
-  KVOIPCommManager? get commManager => voipContext?.commManager;
-
-  KVoipCallState get callState => voipContext?.callState ?? KVoipCallState.init;
+  bool isMySoundEnabled = true;
+  bool isMySpeakerEnabled = true;
+  bool isMyCameraEnabled = true;
+  bool isOtherSoundEnabled = true;
+  bool isOtherCameraEnabled = true;
+  bool isVideoInitialized = false;
+  bool isBringMyCamBack = false;
+  bool isPanelOpen = false;
 
   bool get isAccepted => widget.autoPickup;
 
   String get _uuid => widget.uuid ?? Uuid().v4();
 
-  bool get isAudioCall => false;
+  bool isAudioCall = false;
 
-  bool get isChatEnabled => chatCtrl != null;
+  bool get isChatEnabled => this.chatCtrl != null;
 
   String? get chatID =>
-      widget.chatroomCtrl?.value.chatID ?? commManager?.session?.chatID;
+      widget.chatroomCtrl?.value.chatID ?? this.commManager?.session?.chatID;
 
   String? get refApp =>
-      widget.chatroomCtrl?.value.refApp ?? commManager?.session?.refApp;
+      widget.chatroomCtrl?.value.refApp ?? this.commManager?.session?.refApp;
 
   String? get refID =>
-      widget.chatroomCtrl?.value.refID ?? commManager?.session?.refID;
+      widget.chatroomCtrl?.value.refID ?? this.commManager?.session?.refID;
 
-  String? get refAvatarURL => widget.perspective == KVoipPerspective.sender
+  String? get refAvatarURL => widget.perspective == _CallPerspective.sender
       ? widget.refUser?.avatarURL
-      : commManager?.session?.adminAvatarURL;
+      : this.commManager?.session?.adminAvatarURL;
 
-  String? get refName => widget.perspective == KVoipPerspective.sender
+  String? get refName => widget.perspective == _CallPerspective.sender
       ? widget.refUser?.fullName
-      : commManager?.session?.adminName;
+      : this.commManager?.session?.adminName;
 
   String? get myPUID => KSessionData.me?.puid;
 
@@ -145,43 +136,48 @@ class _KVOIPCallState extends State<KVOIPCall>
   String? get refPUID => widget.refUser?.puid;
 
   String get infoLabel {
-    if (hasPeerError) {
+    if (this.hasPeerError) {
       final refName = widget.refUser?.firstName ?? "The other person";
       return "$refName left the call";
     } else {
-      final prefix = KHostConfig.isReleaseMode ? "" : "[${infoCode}] ";
-      return KStringHelper.isEmpty(infoMsg) ? "" : "$prefix${infoMsg}...";
+      final prefix = KHostConfig.isReleaseMode ? "" : "[${this.infoCode}] ";
+      return KStringHelper.isEmpty(this.infoMsg)
+          ? ""
+          : "$prefix${this.infoMsg}...";
     }
   }
 
   bool get isReceiverReadyToPickup =>
-      receivedCodes.contains(KVOIPCommManager.CODE_INCOMING_CALL);
+      this.receivedCodes.contains(KVOIPCommManager.CODE_INCOMING_CALL);
 
-  bool get hasPeerError => receivedCodes.contains(KVOIPCommManager.NO_PEER);
+  bool get hasPeerError =>
+      this.receivedCodes.contains(KVOIPCommManager.NO_PEER);
 
   @override
   void initState() {
     super.initState();
+    isAudioCall = widget.isAudioCall;
+    FocusManager.instance.primaryFocus?.unfocus();
+
     Wakelock.enable();
     KCallKitHelper.instance.isCalling = true;
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
 
-    _slidingAnimationController = AnimationController(
+    this._slidingAnimationController = AnimationController(
       vsync: this,
-      duration: panelSlideDuration,
+      duration: Duration(milliseconds: 500),
     )..forward();
-
-    _slidingAnimation = Tween<Offset>(
+    this._slidingAnimation = Tween<Offset>(
       begin: Offset(0.0, 1.0),
       end: Offset(0.0, 0.0),
-    ).animate(CurvedAnimation(
+    ).animate(new CurvedAnimation(
       parent: _slidingAnimationController,
       curve: Curves.easeInOut,
     ));
-    _slidingAnimationController.addListener(() => setState(() => isPanelOpen =
-        _slidingAnimationController.status == AnimationStatus.completed));
 
-    streamSub = KNotifStreamHelper.stream.listen(notifListener);
+    this.streamSub = KNotifStreamHelper.stream.listen(notifListener);
+    this.streamCallControl =
+        KCallControlStreamHelper.stream.listen(callControlListener);
 
     // White status bar icons & black software buttons
     SystemChrome.setSystemUIOverlayStyle(KStyles.systemStyle.copyWith(
@@ -189,133 +185,161 @@ class _KVOIPCallState extends State<KVOIPCall>
       systemNavigationBarColor: KStyles.black,
     ));
 
-    requestPermission().whenComplete(setupVoipContext).whenComplete(() {
+    requestPermission()
+        .whenComplete(initRenderers)
+        .whenComplete(setup)
+        .whenComplete(() {
       if (widget.autoPickup) answerCall();
     });
   }
 
   @override
   void dispose() {
-    if (!KHostConfig.isReleaseMode) print("P2PCall.dispose fired...");
-    _slidingAnimationController.dispose();
+    if (!KHostConfig.isReleaseMode) print("KVOIPCall.dispose fired...");
 
-    Wakelock.disable();
-    WidgetsBinding.instance?.removeObserver(this);
+    try {
+      this._slidingAnimationController.dispose();
+    } catch (e) {
+      print(e.toString());
+    }
 
-    stopRingtone();
+    try {
+      Wakelock.disable();
+    } catch (e) {
+      print(e.toString());
+    }
+
+    try {
+      WidgetsBinding.instance.removeObserver(this);
+    } catch (e) {
+      print(e.toString());
+    }
+
+    try {
+      stopRingtone();
+    } catch (e) {
+      print(e.toString());
+    }
 
     SystemChrome.setSystemUIOverlayStyle(KStyles.systemStyle);
-    voipContext?.removeListener(voipContextListener);
-    ringtoneTimer?.cancel();
-    endCallTimer?.cancel();
-    panelTimer?.cancel();
-    streamSub.cancel();
-    KCallKitHelper.instance.isCalling = false;
+
+    try {
+      this.ringtoneTimer?.cancel();
+    } catch (e) {
+      print(e.toString());
+    }
+
+    try {
+      this.endCallTimer?.cancel();
+    } catch (e) {
+      print(e.toString());
+    }
+
+    try {
+      this.panelTimer?.cancel();
+    } catch (e) {
+      print(e.toString());
+    }
+
+    try {
+      this.streamSub.cancel();
+    } catch (e) {
+      print(e.toString());
+    }
+
+    try {
+      this.streamCallControl.cancel();
+    } catch (e) {
+      print(e.toString());
+    }
+
+    try {
+      releaseResourceIfNeed();
+    } catch (e) {
+      print(e.toString());
+    }
+
+    try {
+      KCallKitHelper.instance.isCalling = false;
+    } catch (e) {
+      print(e.toString());
+    }
+
     super.dispose();
+  }
+
+  void releaseResourceIfNeed() {
+    if (this.commManager != null && !this.commManager!.isDisposed) {
+      this.commManager?.close();
+      KCallKitHelper.instance.endCall(this._uuid, "", "", "");
+    }
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused)
-      commManager?.onPauseState();
-    else if (state == AppLifecycleState.resumed) commManager?.onResumedState();
+      this.commManager?.onPauseState();
+    else if (state == AppLifecycleState.resumed)
+      this.commManager?.onResumedState();
   }
 
-  void voipContextListener() {
-    setState(() {});
+  static Future<void> requestPermission() async {
+    // ios
+    // try {
+    //   await AppTrackingTransparency.requestTrackingAuthorization();
+    // } catch (e) {}
 
-    // Setup local renderer
-    if (localRenderer == null && voipContext?.localMedia != null) {
-      setupLocalRenderer();
-    }
+    // local and push ask for iOS
+    try {
+      // await KLocalNotifHelper.setupLocalNotifications();
+    } catch (e) {}
 
-    // Setup remote renderers
-    if (remoteRenderers.length != (voipContext?.remoteMedia ?? {}).length) {
-      setupRemoteRenderers();
-    }
+    // setup location permission ask
+    try {
+      await KLocationHelper.askForPermission();
+    } catch (e) {}
+
+    // audio and video
+    try {
+      await KWebRTCHelper.askForPermissions();
+    } catch (e) {}
   }
 
-  void setupLocalRenderer() {
-    buildLocalRenderer().then((renderer) {
-      if (renderer == null) {
-        print("##### buildLocalRenderer - RETURNED NULL");
-        return;
+  void callControlListener(KCallType type) {
+    if (!this.isAudioCall) {
+      if (type == KCallType.foreground) {
+        if (this.isBringMyCamBack) {
+          this.onCameraToggled(true);
+          setState(() {
+            this.isBringMyCamBack = false;
+          });
+        }
       }
-      localRenderer?.dispose();
-      renderer.srcObject = voipContext?.localMedia;
-      setState(() => localRenderer = renderer);
-    });
-  }
-
-  void setupRemoteRenderers() {
-    voipContext?.remoteMedia.forEach((key, val) {
-      final renderer = RTCVideoRenderer();
-      renderer.initialize().whenComplete(() {
-        renderer.srcObject = val;
-        remoteRenderers[key]?.dispose();
-        setState(() => remoteRenderers[key] = renderer);
-      });
-    });
-  }
-
-  Future<void> setupVoipContext() async {
-    // CHECK FOR EXISTING VOIP CONTEXT
-    if (KVoipService.hasContext(voipServiceID)) {
-      print("###### KVoipService EXISTING CONTEXT ID - $voipServiceID");
-      voipContext = KVoipService.getContext(voipServiceID);
-      setupLocalRenderer();
-      setupRemoteRenderers();
-      // setState(() => callState = KVoipCallState.in_progress);
-      return;
-    } else {
-      print("###### KVoipService !! NO !! CONTEXT ID - $voipServiceID");
-      voipContext = widget.perspective == KVoipPerspective.sender
-          ? KVoipContext.sender(voipServiceID)
-          : KVoipContext.receiver(voipServiceID);
-    }
-    voipContext?.addListener(voipContextListener);
-
-    // SETUP COMM MANAGER
-    final commManagerResult = await buildCommManager(myPUID!, myName!);
-    if (commManagerResult == null) {
-      KSnackBarHelper.error("Websocket connection failed");
-      safePop();
-      return;
-    } else {
-      setState(() {
-        voipContext!.commManager = commManagerResult;
-      });
-    }
-
-    KVoipService.addContext(voipServiceID, voipContext!);
-  }
-
-  Future<RTCVideoRenderer?> buildLocalRenderer() async {
-    final permissionsGranted = await KWebRTCHelper.askForPermissions();
-    if (permissionsGranted) {
-      final renderer = RTCVideoRenderer();
-      await renderer.initialize();
-      return renderer;
-    } else {
-      print("SAFE POP because permissions not granted");
-      // safePop();
-      return null;
+      if (type == KCallType.background) {
+        if (this.isMyCameraEnabled) {
+          setState(() {
+            this.isBringMyCamBack = true;
+          });
+        }
+        this.onCameraToggled(false);
+      }
     }
   }
-
-  // audio and video
-  static Future<void> requestPermission() async =>
-      KWebRTCHelper.askForPermissions();
 
   void notifListener(KFullNotification notification) {
     switch (notification.app) {
       case KPushData.APP_P2P_CALL_NOTIFY:
         // final bool isDifferentCall =
-        //     notification.data?.otherId != commManager?.session?.id;
+        //     notification.data?.otherId != this.commManager?.session?.id;
 
         // If this call has already ended, respond to incoming call
         if (notification.data?.id != null &&
-            callState == KVoipCallState.ended) {
+            this.callState == _CallState.ended) {
+          final screen = KVOIPCall.asReceiver(
+              notification.data!.id!, notification.data!.uuid!,
+              autoPickup: true, videoLogo: widget.videoLogo);
+          KCallStreamHelper.broadcast(screen);
+          KCallControlStreamHelper.broadcast(KCallType.foreground);
           Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (ctx) => KVOIPCall.asReceiver(
                   notification.data!.id!, notification.data!.uuid!,
@@ -328,66 +352,89 @@ class _KVOIPCallState extends State<KVOIPCall>
     }
   }
 
+  void setup() async => setupCommManager(this.myPUID!, this.myName!);
+
   void safePop([final result]) {
-    if (mounted && (ModalRoute.of(context)?.isActive ?? false)) {
-      Navigator.of(context).maybePop(result);
+    KCallStreamHelper.broadcast(null);
+    KCallKitHelper.instance.isCalling = false;
+    KCallControlStreamHelper.broadcast(KCallType.kill);
+    // (mounted && (ModalRoute.of(context)?.isActive ?? false))
+    //     ? Navigator.of(context).pop(result)
+    //     : null;
+  }
+
+  Future initRenderers() async {
+    final permissionsGranted = await KWebRTCHelper.askForPermissions();
+    if (permissionsGranted) {
+      this.localRenderer = RTCVideoRenderer();
+      return Future.wait([this.localRenderer!.initialize()])
+        ..whenComplete(() => setState(() => this.isVideoInitialized = true));
+    } else {
+      print("SAFE POP because permissions not granted");
+      safePop();
     }
   }
 
-  Future<KVOIPCommManager?> buildCommManager(String puid, String name) async {
-    KVOIPCommManager? commManager;
+  Future setupCommManager(String puid, String name) async {
     try {
-      commManager = KVOIPCommManager(
+      this.commManager = KVOIPCommManager(
         puid: puid,
         deviceID: await KUtil.getDeviceID(),
         nickname: name,
-        voipContext: voipContext,
+        media: this.isAudioCall ? "audio" : "video",
       );
     } catch (e) {
+      KSnackBarHelper.error("Websocket connection failed");
+      safePop();
       return null;
     }
+    this.commManager?.mediaTypeChanged = ((isAudio) {
+      setState(() {
+        this.isAudioCall = isAudio;
+      });
+    });
 
-    commManager.onStateChange = (SignalingState ss) {
+    this.commManager?.onStateChange = (SignalingState ss) {
       genericSignalListener(ss);
       Function.apply(
-        widget.perspective == KVoipPerspective.sender
+        widget.perspective == _CallPerspective.sender
             ? senderSignalListener
             : receiverSignalListener,
         [ss],
       );
     };
 
-    commManager.onCallInfo = onCallStatusUpdate;
-    commManager.onCallError = onCallError;
+    this.commManager?.onCallInfo = onCallStatusUpdate;
+    this.commManager?.onCallError = onCallError;
 
-    // commManager.onLocalStream =
-    //     ((peerID, stream) => setState(() => localRenderer?.srcObject = stream));
+    this.commManager?.onLocalStream = ((peerID, stream) =>
+        setState(() => this.localRenderer?.srcObject = stream));
 
-    // commManager.onAddRemoteStream = ((peerID, stream) async {
-    //   final remoteRenderer = RTCVideoRenderer();
-    //   await remoteRenderer.initialize();
-    //   remoteRenderer.srcObject = stream;
-    //   if (mounted) setState(() => remoteRenderers?[peerID] = remoteRenderer);
-    // });
+    this.commManager?.onAddRemoteStream = ((peerID, stream) async {
+      final remoteRenderer = RTCVideoRenderer();
+      await remoteRenderer.initialize();
+      remoteRenderer.srcObject = stream;
+      if (mounted)
+        setState(() => this.remoteRenderers[peerID] = remoteRenderer);
+    });
 
-    // commManager.onRemoveRemoteStream =
-    //     ((peerID, _) => remoteRenderers?[peerID]?.srcObject = null);
+    this.commManager?.onRemoveRemoteStream =
+        ((peerID, _) => this.remoteRenderers[peerID]?.srcObject = null);
 
-    // commManager.onCameraToggled =
-    //     (b) => !mounted ? null : setState(() => isOtherCameraEnabled = b);
+    this.commManager?.onCameraToggled =
+        (b) => !mounted ? null : setState(() => this.isOtherCameraEnabled = b);
 
-    // commManager.onMicToggled =
-    //     (b) => !mounted ? null : setState(() => isOtherSoundEnabled = b);
+    this.commManager?.onMicToggled =
+        (b) => !mounted ? null : setState(() => this.isOtherSoundEnabled = b);
 
-    await commManager.connect(widget.callID);
-    return commManager;
+    return await this.commManager?.connect(widget.callID);
   }
 
   void onCallStatusUpdate(String msg, int code) {
     setState(() {
-      infoMsg = msg;
-      infoCode = code;
-      receivedCodes.add(code);
+      this.infoMsg = msg;
+      this.infoCode = code;
+      this.receivedCodes.add(code);
     });
     if (code == KVOIPCommManager.CODE_INCOMING_CALL)
       print("We got the incoming call signal!");
@@ -395,9 +442,9 @@ class _KVOIPCallState extends State<KVOIPCall>
 
   void onCallError(String msg, int code) {
     setState(() {
-      infoMsg = msg;
-      infoCode = code;
-      // receivedCodes.add(code);
+      this.infoMsg = msg;
+      this.infoCode = code;
+      // this.receivedCodes.add(code);
     });
     if (code == KVOIPCommManager.NO_PEER)
       print("We got the missing peer signal!");
@@ -418,33 +465,33 @@ class _KVOIPCallState extends State<KVOIPCall>
       case SignalingState.CallStateNew:
         {
           final p2pSession = KP2PSession.fromUser(KSessionData.me!)
-            ..chatID = chatID
-            ..refApp = refApp
-            ..refID = refID;
-          // setState(() => callState = KVoipCallState.waiting);
-          commManager?.createRoom(p2pSession);
+            ..chatID = this.chatID
+            ..refApp = this.refApp
+            ..refID = this.refID;
+          setState(() => this.callState = _CallState.waiting);
+          this.commManager?.createRoom(p2pSession);
         }
         break;
       case SignalingState.CallStateRoomCreated:
         {
-          if (commManager?.session != null)
-            notifyWebRTCCall(commManager!.session!.id!);
+          if (this.commManager?.session != null)
+            notifyWebRTCCall(this.commManager!.session!.id!);
         }
         break;
       case SignalingState.CallStateRoomEmpty:
         // safePop(false);
-        // setState(() => callState = KVoipCallState.ended);
+        setState(() => this.callState = _CallState.ended);
         endCallTimeout();
-        // releaseResourceIfNeed();
+        releaseResourceIfNeed();
         break;
       case SignalingState.CallStateBye:
-        if (!KHostConfig.isReleaseMode) {
+        if (!KHostConfig.isReleaseMode)
           print("senderSignalListener case CallStateBye");
-        }
+
         // TODO do we need to null out localRenderer/remoteRenderer
         // pop() will call dispose()
-        // setState(() => callState = KVoipCallState.ended);
-        // releaseResourceIfNeed();
+        setState(() => this.callState = _CallState.ended);
+        releaseResourceIfNeed();
         endCallTimeout();
         Future.delayed(
           Duration(milliseconds: 500),
@@ -455,30 +502,30 @@ class _KVOIPCallState extends State<KVOIPCall>
         if (!KHostConfig.isReleaseMode)
           print("senderSignalListener case CallStateInvite");
 
-        // invitePeer(refPUID ?? "", false);
+        // invitePeer(this.refPUID ?? "", false);
         break;
       case SignalingState.CallStateAccepted:
-        if (!KHostConfig.isReleaseMode) {
+        if (!KHostConfig.isReleaseMode)
           print("senderSignalListener case CallStateAccepted");
-        }
+
         // stopCallerTune();
         stopRingtone();
         startPanelTimeout(6);
-        // setState(() => callState = KVoipCallState.in_progress);
+        setState(() => this.callState = _CallState.in_progress);
         break;
       case SignalingState.CallStateRejected:
-        if (!KHostConfig.isReleaseMode) {
+        if (!KHostConfig.isReleaseMode)
           print("senderSignalListener case CallStateRejected");
-        }
+
         // stopCallerTune();
         stopRingtone();
         KSnackBarHelper.error("Call declined");
         setState(() {
-          // localRenderer.srcObject = null;
-          // remoteRenderer.srcObject = null;
-          // callState = KVoipCallState.ended;
+          // this.localRenderer.srcObject = null;
+          // this.remoteRenderer.srcObject = null;
+          this.callState = _CallState.ended;
         });
-        // releaseResourceIfNeed();
+        releaseResourceIfNeed();
         endCallTimeout();
         // should do more like fb messenger
         Future.delayed(
@@ -500,26 +547,26 @@ class _KVOIPCallState extends State<KVOIPCall>
   }
 
   void receiverSignalListener(SignalingState state) {
-    if (!KHostConfig.isReleaseMode) {
+    if (!KHostConfig.isReleaseMode)
       print("receiverSignalListener state $state");
-    }
+
     switch (state) {
       case SignalingState.CallStateNew:
-        commManager?.getRoomInfo(widget.callID!);
+        this.commManager?.getRoomInfo(widget.callID!);
         break;
       case SignalingState.CallStateRoomInfo:
-        // setState(() => callState = KVoipCallState.waiting);
-        if (commManager?.session != null) {
+        setState(() => this.callState = _CallState.waiting);
+        if (this.commManager?.session != null) {
           setState(() {
-            chatCtrl = KChatroomController(
-              chatID: commManager!.session!.chatID,
-              refApp: commManager!.session!.refApp,
-              refID: commManager!.session!.refID,
+            this.chatCtrl = KChatroomController(
+              chatID: this.commManager!.session!.chatID,
+              refApp: this.commManager!.session!.refApp,
+              refID: this.commManager!.session!.refID,
               members: [
                 KChatMember.fromUser(KUser()
-                  ..firstName = commManager!.session!.adminName
-                  ..puid = commManager!.session!.adminPUID
-                  ..avatarURL = commManager!.session!.adminAvatarURL),
+                  ..firstName = this.commManager!.session!.adminName
+                  ..puid = this.commManager!.session!.adminPUID
+                  ..avatarURL = this.commManager!.session!.adminAvatarURL),
                 KChatMember.fromUser(KSessionData.me!),
               ],
             );
@@ -529,33 +576,32 @@ class _KVOIPCallState extends State<KVOIPCall>
       case SignalingState.CallStateRoomEmpty:
         // safePop(false);
         stopRingtone();
-        // setState(() => callState = KVoipCallState.ended);
-        // releaseResourceIfNeed();
+        setState(() => this.callState = _CallState.ended);
+        releaseResourceIfNeed();
         endCallTimeout();
         break;
       case SignalingState.CallStateBye:
-        if (!KHostConfig.isReleaseMode) {
+        if (!KHostConfig.isReleaseMode)
           print("receiverSignalListener case CallStateBye");
-        }
+
         stopRingtone();
         Future.delayed(Duration(milliseconds: 3500), () => safePop(true));
         break;
       case SignalingState.CallStateAccepted:
-        if (!KHostConfig.isReleaseMode) {
+        if (!KHostConfig.isReleaseMode)
           print("receiverSignalListener case CallStateAccepted");
-        }
-        // setState(() => callState = KVoipCallState.in_progress);
+
+        setState(() => this.callState = _CallState.in_progress);
         startPanelTimeout(6);
         stopRingtone();
         break;
       case SignalingState.ConnectionOpen:
-        if (!KHostConfig.isReleaseMode) {
+        if (!KHostConfig.isReleaseMode)
           print("receiverSignalListener case ConnectionOpen");
-        }
-        // commManager?.receiverConnected(widget.refUser.puid ?? "");
-        if (!widget.autoPickup) {
-          startRingtone();
-        }
+
+        // this.commManager?.receiverConnected(widget.refUser.puid ?? "");
+        if (!widget.autoPickup) startRingtone();
+
         break;
       default:
         break;
@@ -564,34 +610,32 @@ class _KVOIPCallState extends State<KVOIPCall>
 
   void notifyWebRTCCall(String roomID) async => KServerHandler.notifyWebRTCCall(
         refPUIDs: [
-          refPUID!,
+          this.refPUID!,
           ...?widget.invitePUIDs,
         ],
         callID: roomID,
-        uuid: _uuid,
+        uuid: this._uuid,
         // callType: WebRTCHelper.CATEGORY_VIDEO,
       );
 
-  void switchCamera() => commManager?.switchCamera();
+  void switchCamera() => this.commManager?.switchCamera();
 
   void setSpeakerphone(bool enabled) =>
-      commManager?.setSpeakerphoneEnabled(enabled);
+      this.commManager?.setSpeakerphoneEnabled(enabled);
 
   // void invitePeer(String peerID, bool useScreen) async {
-  //   if (commManager != null && peerID != myPUID)
-  //     commManager?.invite(isAudioCall ? 'audio' : 'video', useScreen);
+  //   if (this.commManager != null && peerID != this.myPUID)
+  //     this.commManager?.invite(this.isAudioCall ? 'audio' : 'video', useScreen);
   // }
 
   void endCallTimeout() async {
-    endCallTimer = Timer.periodic(Duration(seconds: 3), (timer) {
-      safePop(true);
-    });
+    this.endCallTimer = Timer(Duration(seconds: 3), () => safePop(true));
   }
 
   void startRingtone([double volume = 0.9]) {
     try {
       if (Platform.isIOS) {
-        ringtoneTimer = Timer.periodic(
+        this.ringtoneTimer = Timer.periodic(
           Duration(seconds: 3),
           (_) => FlutterRingtonePlayer.playRingtone(
             looping: true,
@@ -606,52 +650,47 @@ class _KVOIPCallState extends State<KVOIPCall>
 
   void stopRingtone() {
     try {
-      ringtoneTimer?.cancel();
+      this.ringtoneTimer?.cancel();
       FlutterRingtonePlayer.stop();
     } catch (e) {}
   }
 
-  void hangUp() async {
-    final doesWantToHangUp = await showDialog(
-      context: context,
-      builder: (_) => BooleanDialog(
-        title: KPhrases.hangUpQuestion,
-        valence: false,
-      ),
-    );
-    if (!doesWantToHangUp) return;
-
+  void hangUp() {
     print("tutoring_p2p_call.hangUp am clicking hangup.........");
-    ringtoneTimer?.cancel();
+    this.ringtoneTimer?.cancel();
     FlutterRingtonePlayer.stop();
     try {
       // stopCallerTune();
-      commManager?.sayGoodbye(tag: "KVoipCall.hangUp");
+      this.commManager?.sayGoodbye();
     } catch (e) {}
-    safePop(true);
-    KVoipService.removeContext(voipServiceID);
+    Future.delayed(
+      Duration(milliseconds: 1000),
+      () => safePop(true),
+    );
   }
 
   void videoTap() {
-    if (panelCtrl.isAttached) {
-      if (_slidingAnimationController.status == AnimationStatus.dismissed) {
-        _slidingAnimationController.forward();
-      } else if (_slidingAnimationController.status ==
+    if (this.panelCtrl.isAttached) {
+      if (this._slidingAnimationController.status ==
+          AnimationStatus.dismissed) {
+        this._slidingAnimationController.forward();
+      } else if (this._slidingAnimationController.status ==
           AnimationStatus.completed) {
-        _slidingAnimationController.reverse();
+        this._slidingAnimationController.reverse();
       }
     }
     startPanelTimeout();
   }
 
   void startPanelTimeout([int seconds = 4]) {
-    panelTimer?.cancel();
-    panelTimer = Timer.periodic(
+    this.panelTimer?.cancel();
+    this.panelTimer = Timer.periodic(
       Duration(seconds: seconds),
       (_) {
-        if (panelCtrl.isAttached &&
-            _slidingAnimationController.status == AnimationStatus.completed) {
-          _slidingAnimationController.reverse();
+        if (this.panelCtrl.isAttached &&
+            this._slidingAnimationController.status ==
+                AnimationStatus.completed) {
+          this._slidingAnimationController.reverse();
         }
       },
     );
@@ -659,49 +698,56 @@ class _KVOIPCallState extends State<KVOIPCall>
 
   void answerCall() {
     // print("ANSWERING THE CALL");
-    // commManager?.acceptCallInvite(widget.refUser?.puid ?? "");
+    // this.commManager?.acceptCallInvite(widget.refUser?.puid ?? "");
 
     print("JOINING ROOM!!!");
-    commManager?.joinRoom(widget.callID!);
+    this.commManager?.joinRoom(widget.callID!);
   }
 
   void rejectCall() {
     print("tutoring_p2p_call.rejectCall am clicking hangup.........");
-    ringtoneTimer?.cancel();
+    this.ringtoneTimer?.cancel();
     FlutterRingtonePlayer.stop();
     try {
-      commManager?.sayGoodbye(tag: "KVoipCall.rejectCall");
+      this.commManager?.sayGoodbye();
     } catch (e) {}
     safePop(true);
   }
 
   void onMicToggled(bool newValue) {
-    // setState(() => isMySoundEnabled = newValue);
-    commManager?.setMicEnabled(newValue);
+    setState(() => this.isMySoundEnabled = newValue);
+    this.commManager?.setMicEnabled(newValue);
   }
 
   void onSpeakerToggled(bool newValue) {
-    // setState(() => isMySpeakerEnabled = newValue);
-    commManager?.setSpeakerphoneEnabled(newValue);
+    setState(() => this.isMySpeakerEnabled = newValue);
+    this.commManager?.setSpeakerphoneEnabled(newValue);
   }
 
   void onCameraToggled(bool newValue) {
-    // setState(() => isMyCameraEnabled = newValue);
-    commManager?.setCameraEnabled(newValue);
-  }
-
-  void releaseResources() {
-    localRenderer?.srcObject = null;
-    localRenderer?.dispose();
-    remoteRenderers.forEach((_, rr) {
-      rr.srcObject = null;
-      rr.dispose();
-    });
+    setState(() => this.isMyCameraEnabled = newValue);
+    this.commManager?.setCameraEnabled(newValue);
   }
 
   Future<bool> _onWillPop() async {
-    releaseResources();
-    return true;
+    return (await showDialog(
+          context: context,
+          builder: (context) => new AlertDialog(
+            title: new Text('Hang up call?'),
+            content: new Text('Cúp máy?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: new Text('No'),
+              ),
+              TextButton(
+                onPressed: hangUp,
+                child: new Text('Yes'),
+              ),
+            ],
+          ),
+        )) ??
+        false;
   }
 
   @override
@@ -709,18 +755,37 @@ class _KVOIPCallState extends State<KVOIPCall>
     final callView = Stack(
       fit: StackFit.expand,
       children: <Widget>[
-        if (localRenderer != null) ...[
+        if (this.isVideoInitialized) ...[
           KP2PVideoView(
-            localRenderer: localRenderer!,
-            remoteRenderers: remoteRenderers,
-            isRemoteCameraEnabled:
-                voipContext?.flags.isOtherCameraEnabled ?? false,
-            isRemoteMicEnabled: voipContext?.flags.isOtherSoundEnabled ?? false,
-            onLocalVideoTap: switchCamera,
-            onRemoteVideoTap: videoTap,
+            localRenderer: this.localRenderer!,
+            remoteRenderers: this.remoteRenderers,
+            isRemoteCameraEnabled: this.isOtherCameraEnabled,
+            isRemoteMicEnabled: this.isOtherSoundEnabled,
+            onLocalVideoTap: this.switchCamera,
+            onRemoteVideoTap: this.videoTap,
+            type: this.isAudioCall
+                ? KWebRTCCallType.audio
+                : KWebRTCCallType.video,
+            refAvatarUrl: this.refAvatarURL ?? "",
+            refName: this.refName ?? "",
+          ),
+          Positioned(
+            child: IconButton(
+              icon: Icon(
+                Icons.close_fullscreen,
+                color: Colors.white,
+                size: 36,
+              ),
+              onPressed: () {
+                KCallControlStreamHelper.broadcast(KCallType.background);
+              },
+            ),
+            top: 32,
+            left: 24,
           ),
         ],
-        if (!isChatEnabled) ...[
+        if (!this.isChatEnabled ||
+            this.callState != _CallState.in_progress) ...[
           Positioned(
             bottom: 20.0,
             left: 10.0,
@@ -729,20 +794,18 @@ class _KVOIPCallState extends State<KVOIPCall>
               child: Container(
                 width: 200.0,
                 child: KP2PButtonView(
-                  isMicEnabled: voipContext?.flags.isMySoundEnabled ?? false,
-                  isCameraEnabled:
-                      voipContext?.flags.isMyCameraEnabled ?? false,
+                  isMicEnabled: this.isMySoundEnabled,
+                  isCameraEnabled: this.isMyCameraEnabled,
                   type: KWebRTCCallType.video,
                   onMicToggled: onMicToggled,
                   onCameraToggled: onCameraToggled,
-                  isSpeakerEnabled:
-                      voipContext?.flags.isMySpeakerEnabled ?? false,
+                  isSpeakerEnabled: this.isMySpeakerEnabled,
                   onSpeakerToggled: onSpeakerToggled,
                   onHangUp: hangUp,
                 ),
               ),
             ),
-          ),
+          )
         ],
       ],
     );
@@ -761,19 +824,19 @@ class _KVOIPCallState extends State<KVOIPCall>
     final receiverConnectButtons = Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        if (!hasPeerError)
+        if (!this.hasPeerError)
           KP2PButton(
             onClick: rejectCall,
             backgroundColor: KStyles.colorBGNo,
             icon: Icon(Icons.call, color: KStyles.colorButtonText),
           ),
-        if (hasPeerError)
+        if (this.hasPeerError)
           KP2PButton(
             onClick: safePop,
             backgroundColor: KStyles.colorBGNo,
             icon: Icon(Icons.logout, color: KStyles.colorButtonText),
           ),
-        if (!(isAudioCall || isAccepted || hasPeerError)) ...[
+        if (!(this.isAudioCall || this.isAccepted || this.hasPeerError)) ...[
           KP2PButton(
             onClick: answerCall,
             backgroundColor: Colors.green,
@@ -786,13 +849,13 @@ class _KVOIPCallState extends State<KVOIPCall>
     final callBackground = Stack(
       fit: StackFit.expand,
       children: [
-        refAvatarURL == null && widget.videoLogo == null
+        this.refAvatarURL == null && widget.videoLogo == null
             ? Icon(Icons.video_call, size: 300, color: Colors.green)
             : FadeInImage(
                 placeholder: AssetImage(KAssets.IMG_TRANSPARENCY),
-                image: (refAvatarURL == null)
+                image: (this.refAvatarURL == null)
                     ? Image.asset(widget.videoLogo!).image
-                    : NetworkImage(refAvatarURL!),
+                    : NetworkImage(this.refAvatarURL!),
                 fit: BoxFit.cover,
               ),
         Container(color: KStyles.black.withOpacity(0.8)),
@@ -804,23 +867,23 @@ class _KVOIPCallState extends State<KVOIPCall>
               Container(
                 width: 100,
                 child: KUserAvatar(
-                  imageURL: refAvatarURL,
-                  initial: refName,
+                  imageURL: this.refAvatarURL,
+                  initial: this.refName,
                 ),
               ),
               SizedBox(height: 24),
               Text(
-                refName ?? "",
+                this.refName ?? "",
                 textAlign: TextAlign.center,
                 style: KStyles.largeXXLText.copyWith(
                   color: KStyles.white,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              if (callState == KVoipCallState.in_progress) ...[
+              if (this.callState == _CallState.in_progress) ...[
                 SizedBox(height: 24),
                 Text(
-                  infoLabel,
+                  this.infoLabel,
                   textAlign: TextAlign.center,
                   style: KStyles.normalText.copyWith(color: KStyles.lightGrey),
                 ),
@@ -844,7 +907,7 @@ class _KVOIPCallState extends State<KVOIPCall>
             child: SafeArea(
               child: Container(
                 width: 200.0,
-                child: widget.perspective == KVoipPerspective.sender
+                child: widget.perspective == _CallPerspective.sender
                     ? senderConnectButtons
                     : receiverConnectButtons,
               ),
@@ -958,23 +1021,23 @@ class _KVOIPCallState extends State<KVOIPCall>
     );
 
     final voipView;
-    switch (callState) {
-      case KVoipCallState.ws_error:
+    switch (this.callState) {
+      case _CallState.ws_error:
         voipView = wsErrorView;
         break;
-      case KVoipCallState.init:
+      case _CallState.init:
         // isStartedCall = widget.autoPickup;
         voipView = widget.autoPickup ? callView : initView;
         break;
-      case KVoipCallState.waiting:
+      case _CallState.waiting:
         // isStartedCall = widget.autoPickup;
         voipView = widget.autoPickup ? callView : connectView;
         break;
-      case KVoipCallState.in_progress:
+      case _CallState.in_progress:
         // isStartedCall = true;
         voipView = callView;
         break;
-      case KVoipCallState.ended:
+      case _CallState.ended:
         voipView = endedView;
         break;
     }
@@ -986,7 +1049,7 @@ class _KVOIPCallState extends State<KVOIPCall>
             isEnableTakePhoto: false,
           );
 
-    final body = callState == KVoipCallState.in_progress && isChatEnabled
+    final body = this.callState == _CallState.in_progress && this.isChatEnabled
         ? () {
             final chatView = Column(
               children: [
@@ -1000,47 +1063,43 @@ class _KVOIPCallState extends State<KVOIPCall>
                   ),
                 ),
                 KP2PButtonView(
-                  isMicEnabled: voipContext?.flags.isMySoundEnabled ?? false,
-                  isCameraEnabled:
-                      voipContext?.flags.isMyCameraEnabled ?? false,
-                  type: KWebRTCCallType.video,
+                  isMicEnabled: this.isMySoundEnabled,
+                  isCameraEnabled: this.isMyCameraEnabled,
+                  type: isAudioCall
+                      ? KWebRTCCallType.audio
+                      : KWebRTCCallType.video,
                   onMicToggled: onMicToggled,
                   onCameraToggled: onCameraToggled,
-                  isSpeakerEnabled:
-                      voipContext?.flags.isMySpeakerEnabled ?? false,
+                  isSpeakerEnabled: this.isMySpeakerEnabled,
                   onSpeakerToggled: onSpeakerToggled,
                   onHangUp: hangUp,
                 ),
                 SizedBox(height: 28),
-                Expanded(child: Container(child: chatroom)),
+                // Expanded(child: Container(child: chatroom)),
               ],
             );
 
             final viewInsets = EdgeInsets.fromWindowPadding(
-              WidgetsBinding.instance!.window.viewInsets,
-              WidgetsBinding.instance!.window.devicePixelRatio,
+              WidgetsBinding.instance.window.viewInsets,
+              WidgetsBinding.instance.window.devicePixelRatio,
             );
             final screenHeight = MediaQuery.of(context).size.height * 0.8;
             final maxHeight = screenHeight - viewInsets.bottom.toDouble();
             final slidingBody = SlidingUpPanel(
               color: Colors.transparent,
               onPanelClosed: () {
-                setState(() => isPanelOpen = false);
-                print("PANEL IS OPEN - $isPanelOpen");
                 FocusManager.instance.primaryFocus?.unfocus();
-                startPanelTimeout();
+                this.startPanelTimeout();
               },
               onPanelOpened: () {
-                setState(() => isPanelOpen = true);
-                print("PANEL IS OPEN - $isPanelOpen");
-                panelTimer?.cancel();
+                this.panelTimer?.cancel();
               },
               border: Border.all(color: Colors.white),
               backdropEnabled: false,
               boxShadow: null,
-              controller: panelCtrl,
-              minHeight: 150,
-              maxHeight: maxHeight,
+              controller: this.panelCtrl,
+              minHeight: 153,
+              maxHeight: 153,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(24.0),
                 topRight: Radius.circular(24.0),
@@ -1051,22 +1110,11 @@ class _KVOIPCallState extends State<KVOIPCall>
             );
 
             return Stack(
-              fit: StackFit.expand,
               children: [
                 voipView,
                 SlideTransition(
-                  position: _slidingAnimation,
+                  position: this._slidingAnimation,
                   child: slidingBody,
-                ),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: SafeArea(
-                    child: AnimatedOpacity(
-                      opacity: isPanelOpen ? 1 : 0,
-                      duration: panelSlideDuration,
-                      child: BackButton(),
-                    ),
-                  ),
                 ),
               ],
             );

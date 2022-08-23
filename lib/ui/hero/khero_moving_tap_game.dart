@@ -3,8 +3,13 @@ import 'dart:io';
 import 'dart:math' as Math;
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/helper/kserver_handler.dart';
+import 'package:app_core/model/kanswer.dart';
+import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/khero.dart';
-import 'package:app_core/model/kscore.dart';
+import 'package:app_core/model/kquestion.dart';
+import 'package:app_core/model/kgame_score.dart';
+import 'package:app_core/ui/hero/widget/kegg_hero_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_count_down_intro.dart';
 import 'package:app_core/ui/hero/widget/khero_game_end.dart';
 import 'package:app_core/ui/hero/widget/khero_game_highscore_dialog.dart';
@@ -14,7 +19,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:uuid/uuid.dart';
 
 class KHeroMovingTapGame extends StatefulWidget {
   final KHero? hero;
@@ -27,6 +31,7 @@ class KHeroMovingTapGame extends StatefulWidget {
 
 class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
   static const GAME_NAME = "tap_moving";
+  static const GAME_ID = "512";
 
   static const List<String> BACKGROUND_IMAGES = [
     KAssets.IMG_BG_COUNTRYSIDE_LIGHT,
@@ -42,34 +47,47 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
 
   int totalLevel = 4;
   int currentLevel = 0;
+  int eggReceive = 0;
   bool isShowEndLevel = false;
+  bool isShowIntro = true;
 
-  String? scoreID;
-  List<KScore> scores = [];
+  KGameScore? score;
+  KGame? game = null;
+
+  List<KQuestion> get questions => game?.qnas?[0].questions ?? [];
+  bool isLoaded = false;
 
   @override
   void initState() {
     super.initState();
-    loadScore();
+
+    loadGame();
   }
 
-  loadScore() async {
-    KPrefHelper.get(GAME_NAME).then((value) {
-      if (value != null) {
+  loadGame() async {
+    try {
+      setState(() {
+        this.isLoaded = false;
+      });
+
+      final response = await KServerHandler.getGames(
+          gameID: GAME_ID, level: currentLevel.toString());
+
+      if (response.isSuccess &&
+          response.games != null &&
+          response.games!.length > 0) {
         setState(() {
-          scores = KScore.decode(value);
+          this.game = response.games![0];
+          this.isLoaded = true;
         });
+      } else {
+        KSnackBarHelper.error("Can not get game data");
       }
-    });
-  }
-
-  saveScore() async {
-    KPrefHelper.put(GAME_NAME, KScore.encode(scores));
+    } catch (e) {}
   }
 
   @override
   void dispose() {
-    saveScore();
     super.dispose();
     if (this.overlayID != null) {
       KOverlayHelper.removeOverlay(this.overlayID!);
@@ -78,6 +96,9 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
   }
 
   void showHeroGameEndOverlay(Function() onFinish) async {
+    this.setState(() {
+      this.isShowEndLevel = true;
+    });
     final heroGameEnd = KHeroGameEnd(
       hero: KHero()..imageURL = KImageAnimationHelper.randomImage,
       onFinish: onFinish,
@@ -85,15 +106,17 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
     showCustomOverlay(heroGameEnd);
   }
 
-  void showHeroGameLevelOverlay(Function() onFinish) async {
+  void showHeroGameLevelOverlay(Function() onFinish, {bool? canAdvance}) async {
     this.setState(() {
       this.isShowEndLevel = true;
     });
-    final heroGameLevel = KTamagoChanJumping(onFinish: onFinish);
+    final heroGameLevel =
+        KTamagoChanJumping(onFinish: onFinish, canAdvance: canAdvance);
     showCustomOverlay(heroGameLevel);
   }
 
-  void showHeroGameHighscoreOverlay(Function() onClose) async {
+  void showHeroGameHighscoreOverlay(
+      Function() onClose, bool canSaveHighScore) async {
     this.setState(() {
       this.isShowEndLevel = true;
     });
@@ -103,10 +126,10 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
           alignment: Alignment.center,
           child: KGameHighscoreDialog(
             onClose: onClose,
-            game: GAME_NAME,
-            scores: this.scores,
-            scoreID: this.scoreID,
-            currentLevel: currentLevel + 1,
+            game: GAME_ID,
+            score: this.score,
+            canSaveHighScore: canSaveHighScore,
+            currentLevel: currentLevel,
           ),
         ),
       ],
@@ -115,6 +138,9 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
   }
 
   void showCustomOverlay(Widget view) {
+    this.setState(() {
+      this.isShowEndLevel = true;
+    });
     final overlay = Stack(
       fit: StackFit.expand,
       children: [
@@ -144,88 +170,146 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
               ),
             ),
             padding: EdgeInsets.symmetric(vertical: 20),
-            child: SafeArea(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Padding(
-                  //   padding: EdgeInsets.only(
-                  //     left: 15,
-                  //   ),
-                  //   child: GestureDetector(
-                  //     onTap: () {
-                  //       Navigator.of(context).pop();
-                  //     },
-                  //     child: Icon(
-                  //       Icons.arrow_back_ios,
-                  //       color: Colors.white,
-                  //     ),
-                  //   ),
-                  // ),
-                  Expanded(
-                    child: KMovingTapGameScreen(
-                      hero: widget.hero,
-                      totalLevel: totalLevel,
-                      isShowEndLevel: isShowEndLevel,
-                      onFinishLevel: (level, score, isHaveWrongAnswer) {
-                        final scoreID = Uuid().v4();
-                        this.setState(() {
-                          this.scoreID = scoreID;
-                          this.scores.add(
-                                KScore()
-                                  ..game = GAME_NAME
-                                  ..user = KSessionData.me
-                                  ..level = level
-                                  ..scoreID = scoreID
-                                  ..score = score.toDouble(),
-                              );
-                        });
-                        if (level < totalLevel) {
-                          print(isHaveWrongAnswer);
-                          // if (!isHaveWrongAnswer) {
-                          //   this.setState(() {
-                          //     this.levelHighscores.add(score);
-                          //   });
-                          // }
-                          this.showHeroGameLevelOverlay(
-                            () {
-                              if (this.overlayID != null) {
-                                KOverlayHelper.removeOverlay(this.overlayID!);
-                                this.overlayID = null;
-                              }
-                              this.showHeroGameHighscoreOverlay(() {
-                                this.setState(() {
-                                  this.isShowEndLevel = false;
-                                });
-                                if (this.overlayID != null) {
-                                  KOverlayHelper.removeOverlay(this.overlayID!);
-                                  this.overlayID = null;
-                                }
-                              });
-                            },
-                          );
-                        } else {
-                          this.showHeroGameHighscoreOverlay(() {
-                            this.setState(() {
-                              this.isShowEndLevel = false;
-                            });
-                            if (this.overlayID != null) {
-                              KOverlayHelper.removeOverlay(this.overlayID!);
-                              this.overlayID = null;
-                            }
-                          });
-                        }
-                      },
-                      onChangeLevel: (level) => this.setState(
-                        () {
-                          this.currentLevel = level;
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: !isLoaded || game == null
+                ? Container()
+                : (this.isShowIntro
+                    ? Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          if (this.isShowIntro) ...[
+                            KEggHeroIntro(
+                                onFinish: () =>
+                                    setState(() => this.isShowIntro = false)),
+                            GestureDetector(
+                                onTap: () =>
+                                    setState(() => this.isShowIntro = false)),
+                          ],
+                        ],
+                      )
+                    : SafeArea(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Padding(
+                            //   padding: EdgeInsets.only(
+                            //     left: 15,
+                            //   ),
+                            //   child: GestureDetector(
+                            //     onTap: () {
+                            //       Navigator.of(context).pop();
+                            //     },
+                            //     child: Icon(
+                            //       Icons.arrow_back_ios,
+                            //       color: Colors.white,
+                            //     ),
+                            //   ),
+                            // ),
+                            Expanded(
+                              child: KMovingTapGameScreen(
+                                gameID: GAME_ID,
+                                hero: widget.hero,
+                                totalLevel: totalLevel,
+                                isShowEndLevel: isShowEndLevel,
+                                questions: questions,
+                                level: currentLevel,
+                                isLoaded: isLoaded,
+                                loadGame: loadGame,
+                                eggReceive: eggReceive,
+                                onEggReceive: () {
+                                  this.setState(() {
+                                    eggReceive = eggReceive + 1;
+                                  });
+                                },
+                                onFinishLevel: (level, score, canAdvance,
+                                    canSaveHighScore) {
+                                  if (!canAdvance) {
+                                    this.showHeroGameLevelOverlay(() {
+                                      this.setState(() {
+                                        this.isShowEndLevel = false;
+                                      });
+                                      if (this.overlayID != null) {
+                                        KOverlayHelper.removeOverlay(
+                                            this.overlayID!);
+                                        this.overlayID = null;
+                                      }
+                                    }, canAdvance: canAdvance);
+                                    return;
+                                  }
+
+                                  this.setState(() {
+                                    this.score = KGameScore()
+                                      ..game = GAME_ID
+                                      ..avatarURL = KSessionData.me!.avatarURL
+                                      ..kunm = KSessionData.me!.kunm
+                                      ..level = "$level"
+                                      ..score = "$score";
+                                  });
+
+                                  if (level < totalLevel) {
+                                    // if (!isHaveWrongAnswer) {
+                                    //   this.setState(() {
+                                    //     this.levelHighscores.add(score);
+                                    //   });
+                                    // }
+                                    this.showHeroGameLevelOverlay(() {
+                                      if (this.overlayID != null) {
+                                        KOverlayHelper.removeOverlay(
+                                            this.overlayID!);
+                                        this.overlayID = null;
+                                      }
+                                      this.showHeroGameHighscoreOverlay(
+                                        () {
+                                          this.setState(() {
+                                            this.isShowEndLevel = false;
+                                          });
+                                          if (this.overlayID != null) {
+                                            KOverlayHelper.removeOverlay(
+                                                this.overlayID!);
+                                            this.overlayID = null;
+                                          }
+                                        },
+                                        canSaveHighScore,
+                                      );
+                                    }, canAdvance: canAdvance);
+                                  } else {
+                                    this.showHeroGameEndOverlay(
+                                      () {
+                                        if (this.overlayID != null) {
+                                          KOverlayHelper.removeOverlay(
+                                              this.overlayID!);
+                                          this.overlayID = null;
+                                        }
+                                        this.showHeroGameHighscoreOverlay(
+                                          () {
+                                            this.setState(() {
+                                              this.isShowEndLevel = false;
+                                            });
+                                            if (this.overlayID != null) {
+                                              KOverlayHelper.removeOverlay(
+                                                  this.overlayID!);
+                                              this.overlayID = null;
+                                            }
+                                          },
+                                          canSaveHighScore,
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
+                                onChangeLevel: (level) {
+                                  this.setState(
+                                    () {
+                                      this.currentLevel = level;
+                                      this.score = null;
+                                    },
+                                  );
+                                  this.loadGame();
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
           ),
         ),
       ],
@@ -240,30 +324,44 @@ class _KHeroMovingTapGameState extends State<KHeroMovingTapGame> {
 
 class KMovingTapGameScreen extends StatefulWidget {
   final KHero? hero;
+  final String gameID;
+  final Function()? onEggReceive;
+  final Function()? loadGame;
   final Function(int)? onChangeLevel;
-  final Function(int, int, bool)? onFinishLevel;
+  final Function(int, int, bool, bool)? onFinishLevel;
   final bool isShowEndLevel;
+  final bool isLoaded;
+  final List<KQuestion> questions;
   final int? totalLevel;
   final int? level;
+  final int? eggReceive;
   final int? grade;
 
   const KMovingTapGameScreen({
+    Key? key,
     this.hero,
+    this.onEggReceive,
+    this.loadGame,
     this.onChangeLevel,
     this.onFinishLevel,
-    required this.isShowEndLevel,
     this.totalLevel,
+    required this.gameID,
+    required this.isShowEndLevel,
+    required this.questions,
+    required this.isLoaded,
     this.level,
+    this.eggReceive = 0,
     this.grade,
-  });
+  }) : super(key: key);
 
   @override
-  _KMovingTapGameScreenState createState() => _KMovingTapGameScreenState();
+  KMovingTapGameScreenState createState() => KMovingTapGameScreenState();
 }
 
-class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
-    with TickerProviderStateMixin {
-  AudioPlayer backgroundAudioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+class KMovingTapGameScreenState extends State<KMovingTapGameScreen>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
+  AudioPlayer backgroundAudioPlayer =
+      AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
@@ -297,7 +395,6 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
   bool isScroll = true;
   double scrollSpeed = 0.01;
   bool isShooting = false;
-  int eggReceive = 0;
   bool isWrongAnswer = false;
   int rightAnswerCount = 0;
   int wrongAnswerCount = 0;
@@ -323,10 +420,14 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
   List<List<String>> levelQuestions = [];
   List<List<int>> levelRightAnswers = [];
 
-  List<String> get questions => levelQuestions[currentLevel];
-
-  List<int> get rightAnswers => levelRightAnswers[currentLevel];
   int currentQuestionIndex = 0;
+
+  List<KQuestion> get questions => widget.questions;
+
+  KQuestion get currentQuestion => questions[currentQuestionIndex];
+
+  List<KAnswer> get currentQuestionAnswers => currentQuestion.generateAnswers();
+
   int? spinningHeroIndex;
   int? currentShowStarIndex;
   bool isPlaySound = false;
@@ -337,16 +438,12 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
 
   Math.Random rand = new Math.Random();
 
-  int get getRandomAnswer => rightAnswers[currentQuestionIndex] <= 4
-      ? (rand.nextInt(4) + rightAnswers[currentQuestionIndex])
-      : (rand.nextInt(4) + rightAnswers[currentQuestionIndex] - 3);
-
   bool get canRestartGame =>
-      currentLevel + 1 < levelHardness.length ||
-      (currentLevel < levelHardness.length &&
+      currentLevel + 1 < totalLevel ||
+      (currentLevel < totalLevel &&
           (rightAnswerCount / questions.length) < levelHardness[currentLevel]);
 
-  List<int> barrierValues = [];
+  List<KAnswer> barrierValues = [];
   double topBoundary = -2.1;
 
   int? overlayID;
@@ -356,6 +453,7 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
     this.currentLevel = widget.level ?? 0;
     this.totalLevel = widget.totalLevel ?? 1;
@@ -455,12 +553,12 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
       ..addListener(() => setState(() {}))
       ..addStatusListener((status) {
         if (mounted && status == AnimationStatus.completed) {
-          this.setState(() {
-            isShowPlusPoint = false;
-          });
-          Future.delayed(Duration(milliseconds: 50), () {
-            this._moveUpAnimationController.reset();
-          });
+          // this.setState(() {
+          //   isShowPlusPoint = false;
+          // });
+          // Future.delayed(Duration(milliseconds: 50), () {
+          //   this._moveUpAnimationController.reset();
+          // });
         }
       });
     _moveUpAnimation = new Tween(
@@ -477,11 +575,11 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
       vsync: this,
     )..repeat(reverse: true);
 
-    _timer = Timer.periodic(Duration(milliseconds: 1), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 16), (timer) {
       if (isStart && mounted && !isPause) {
         if (currentLevel < totalLevel) {
           this.setState(() {
-            this.levelPlayTimes[currentLevel] += 1;
+            this.levelPlayTimes[currentLevel] += 16;
           });
         }
       }
@@ -507,7 +605,15 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused && !this.isPause)
+      showPauseDialog();
+    else if (state == AppLifecycleState.resumed && this.isPause) resumeGame();
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
     _gameTimer?.cancel();
     _barrierMovingAnimationController.dispose();
@@ -528,7 +634,55 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
     super.dispose();
   }
 
+  void resumeGame() {
+    if (this.overlayID != null) {
+      KOverlayHelper.removeOverlay(this.overlayID!);
+      this.overlayID = null;
+    }
+    if (isStart && !this.isBackgroundSoundPlaying) {
+      toggleBackgroundSound();
+    }
+    this.setState(() {
+      this.isPause = false;
+    });
+  }
+
+  void showHighscoreDialog() {
+    if (this.isPause) return;
+    if (this.isBackgroundSoundPlaying) {
+      toggleBackgroundSound();
+    }
+    this.setState(() {
+      this.isPause = true;
+    });
+    final view = Stack(
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: KGameHighscoreDialog(
+            onClose: resumeGame,
+            game: widget.gameID,
+            score: null,
+            canSaveHighScore: false,
+            currentLevel: currentLevel,
+          ),
+        ),
+      ],
+    );
+    final overlay = Stack(
+      fit: StackFit.expand,
+      children: [
+        Align(
+          alignment: Alignment.center,
+          child: view,
+        ),
+      ],
+    );
+    this.overlayID = KOverlayHelper.addOverlay(overlay);
+  }
+
   void showPauseDialog() {
+    if (this.isPause) return;
     if (this.isBackgroundSoundPlaying) {
       toggleBackgroundSound();
     }
@@ -543,18 +697,7 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
         }
         Navigator.of(context).pop();
       },
-      onResume: () {
-        if (this.overlayID != null) {
-          KOverlayHelper.removeOverlay(this.overlayID!);
-          this.overlayID = null;
-        }
-        if (!this.isBackgroundSoundPlaying) {
-          toggleBackgroundSound();
-        }
-        this.setState(() {
-          this.isPause = false;
-        });
-      },
+      onResume: resumeGame,
     );
     final overlay = Stack(
       fit: StackFit.expand,
@@ -572,42 +715,6 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
     this.setState(() {
       this.isShowCountDown = true;
     });
-    final view = KGameCountDownIntro(
-      onFinish: () {
-        this.setState(() {
-          this.isShowCountDown = false;
-        });
-
-        if (this.overlayID != null) {
-          KOverlayHelper.removeOverlay(this.overlayID!);
-          this.overlayID = null;
-        }
-
-        if (!isStart && currentLevel == 0) {
-          if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
-            this.setState(() {
-              this.isBackgroundSoundPlaying = true;
-            });
-            backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
-                isLocal: true);
-          }
-          setState(() {
-            isStart = true;
-            time = 0;
-          });
-        }
-      },
-    );
-    final overlay = Stack(
-      fit: StackFit.expand,
-      children: [
-        Align(
-          alignment: Alignment.center,
-          child: view,
-        ),
-      ],
-    );
-    this.overlayID = KOverlayHelper.addOverlay(overlay);
   }
 
   void toggleBackgroundSound() {
@@ -634,26 +741,8 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
   }
 
   void getListAnswer() {
-    final currentRightAnswer = rightAnswers[currentQuestionIndex];
-
     this.setState(() {
-      if (currentRightAnswer <= 4) {
-        this.barrierValues = [
-          currentRightAnswer,
-          currentRightAnswer + 1,
-          currentRightAnswer + 2,
-          currentRightAnswer + 3,
-        ];
-        this.barrierValues.shuffle();
-      } else {
-        this.barrierValues = [
-          currentRightAnswer,
-          currentRightAnswer - 1,
-          currentRightAnswer - 2,
-          currentRightAnswer - 3,
-        ];
-        this.barrierValues.shuffle();
-      }
+      this.barrierValues = currentQuestionAnswers;
     });
   }
 
@@ -694,6 +783,13 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
           time = 0;
         });
       }
+
+      if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+        this.setState(() {
+          this.isBackgroundSoundPlaying = true;
+        });
+        backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
+      }
     }
   }
 
@@ -708,7 +804,7 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
       ByteData wrongAudioFileData =
           await rootBundle.load("packages/app_core/assets/audio/wrong.mp3");
       ByteData backgroundAudioFileData = await rootBundle
-          .load("packages/app_core/assets/audio/background.mp3");
+          .load("packages/app_core/assets/audio/music_background_1.mp3");
 
       File correctAudioTempFile = File('${tempDir.path}/correct.mp3');
       await correctAudioTempFile
@@ -718,7 +814,8 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
       await wrongAudioTempFile
           .writeAsBytes(wrongAudioFileData.buffer.asUint8List(), flush: true);
 
-      File backgroundAudioTempFile = File('${tempDir.path}/background.mp3');
+      File backgroundAudioTempFile =
+          File('${tempDir.path}/music_background_1.mp3');
       await backgroundAudioTempFile.writeAsBytes(
           backgroundAudioFileData.buffer.asUint8List(),
           flush: true);
@@ -744,11 +841,11 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
     });
   }
 
-  void handlePickAnswer(int answer, int answerIndex) {
+  void handlePickAnswer(KAnswer answer, int answerIndex) {
     if (_spinAnimationController.value != 0) {
       return;
     }
-    bool isTrueAnswer = answer == rightAnswers[currentQuestionIndex];
+    bool isTrueAnswer = answer.isCorrect ?? false;
 
     if (!isPlaySound) {
       this.setState(() {
@@ -781,39 +878,55 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
       });
 
       Future.delayed(Duration(milliseconds: 500), () {
-        if (mounted && currentQuestionIndex + 1 < questions.length) {
+        if (mounted) {
           this.setState(() {
-            currentQuestionIndex = currentQuestionIndex + 1;
-            resetListAnswer();
-            Future.delayed(Duration(milliseconds: 50), () {
-              randomBoxPosition();
-              getListAnswer();
-            });
+            currentShowStarIndex = null;
           });
-          Future.delayed(Duration(milliseconds: 50), () {
-            this.setState(() {
-              isScroll = true;
-            });
-          });
-        } else {
-          if (widget.onFinishLevel != null) {
-            widget.onFinishLevel!(currentLevel + 1,
-                levelPlayTimes[currentLevel], wrongAnswerCount > 0);
-          }
-          this.setState(() {
-            if (rightAnswerCount / questions.length >=
-                levelHardness[currentLevel]) {
-              eggReceive = eggReceive + 1;
-              if (currentLevel + 1 < totalLevel) {
-                canAdvance = true;
+          Future.delayed(Duration(milliseconds: 500), () {
+            if (mounted) {
+              this._moveUpAnimationController.reset();
+
+              if (currentQuestionIndex + 1 < questions.length) {
+                this.setState(() {
+                  currentQuestionIndex = currentQuestionIndex + 1;
+                  resetListAnswer();
+                  Future.delayed(Duration(milliseconds: 50), () {
+                    randomBoxPosition();
+                    getListAnswer();
+                  });
+                });
+                Future.delayed(Duration(milliseconds: 50), () {
+                  this.setState(() {
+                    isScroll = true;
+                  });
+                });
+              } else {
+                if (widget.onFinishLevel != null) {
+                  widget.onFinishLevel!(
+                    currentLevel + 1,
+                    levelPlayTimes[currentLevel],
+                    rightAnswerCount / questions.length >=
+                        levelHardness[currentLevel],
+                    rightAnswerCount == questions.length,
+                  );
+                }
+                this.setState(() {
+                  if (rightAnswerCount / questions.length >=
+                      levelHardness[currentLevel]) {
+                    if (widget.onEggReceive != null) widget.onEggReceive!();
+                    if (currentLevel + 1 < totalLevel) {
+                      canAdvance = true;
+                    }
+                  }
+                  isStart = false;
+                  resetListAnswer();
+                  Future.delayed(Duration(milliseconds: 50), () {
+                    randomBoxPosition();
+                    getListAnswer();
+                  });
+                });
               }
             }
-            isStart = false;
-            resetListAnswer();
-            Future.delayed(Duration(milliseconds: 50), () {
-              randomBoxPosition();
-              getListAnswer();
-            });
           });
         }
       });
@@ -837,7 +950,12 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
           widget.onChangeLevel!(currentLevel + 1);
         currentLevel += 1;
       });
+    } else {
+      this.setState(() {
+        levelPlayTimes[currentLevel] = 0;
+      });
     }
+
     this.setState(() {
       this.isStart = true;
       this.isScroll = true;
@@ -860,6 +978,18 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
 
   @override
   Widget build(BuildContext context) {
+    final countDown = KGameCountDownIntro(
+      onFinish: () {
+        if (mounted) {
+          setState(() {
+            this.isShowCountDown = false;
+            isStart = true;
+            time = 0;
+          });
+        }
+      },
+    );
+
     final body = Stack(
       fit: StackFit.expand,
       children: [
@@ -918,7 +1048,8 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
                         shrinkWrap: true,
                         crossAxisCount: 3,
                         reverse: true,
-                        children: List.generate(eggReceive, (index) {
+                        children:
+                            List.generate(widget.eggReceive ?? 0, (index) {
                           return Padding(
                             padding: EdgeInsets.only(top: 4),
                             child: Image.asset(
@@ -949,7 +1080,7 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (currentLevel == 0 && result == null) ...[
+                  if (result == null) ...[
                     Text(
                       "Level ${currentLevel + 1}",
                       style: TextStyle(fontSize: 30, color: Colors.white),
@@ -957,29 +1088,32 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
                     SizedBox(
                       height: 16,
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.75,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                        borderRadius: BorderRadius.circular(40),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.5),
-                            blurRadius: 8,
-                            offset: Offset(2, 6),
+                    GestureDetector(
+                      onTap: () => start(),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.75,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(40),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.5),
+                              blurRadius: 8,
+                              offset: Offset(2, 6),
+                            ),
+                          ],
+                        ),
+                        child: Text(
+                          "START",
+                          textScaleFactor: 1.0,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
-                      ),
-                      child: Text(
-                        "START",
-                        textScaleFactor: 1.0,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 35,
-                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
@@ -994,39 +1128,48 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
                     SizedBox(
                       height: 16,
                     ),
-                    canAdvance
-                        ? Container(
-                            width: MediaQuery.of(context).size.width * 0.75,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 15),
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(40),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.5),
-                                  blurRadius: 8,
-                                  offset: Offset(2, 6),
-                                ),
-                              ],
-                            ),
-                            child: Text(
-                              "NEXT LEVEL",
-                              textScaleFactor: 1.0,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 35,
-                                fontWeight: FontWeight.bold,
+                    if (canAdvance) ...[
+                      GestureDetector(
+                        onTap: () => restartGame(),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.75,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(40),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.5),
+                                blurRadius: 8,
+                                offset: Offset(2, 6),
                               ),
+                            ],
+                          ),
+                          child: Text(
+                            "NEXT LEVEL",
+                            textScaleFactor: 1.0,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 35,
+                              fontWeight: FontWeight.bold,
                             ),
-                          )
-                        : Container(
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      if (widget.loadGame != null)
+                        GestureDetector(
+                          onTap: () => widget.loadGame!(),
+                          child: Container(
                             width: MediaQuery.of(context).size.width * 0.75,
                             padding: EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 15),
                             decoration: BoxDecoration(
-                              color: Colors.red,
+                              color: Colors.orange,
                               borderRadius: BorderRadius.circular(40),
                               boxShadow: [
                                 BoxShadow(
@@ -1047,6 +1190,38 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
                               ),
                             ),
                           ),
+                        ),
+                    ],
+                    if (!canAdvance)
+                      GestureDetector(
+                        onTap: () => restartGame(),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.75,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(40),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.5),
+                                blurRadius: 8,
+                                offset: Offset(2, 6),
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            "REPLAY LEVEL",
+                            textScaleFactor: 1.0,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 35,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                   if (!canRestartGame) ...[
                     Text(
@@ -1058,13 +1233,13 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
               ),
             ),
           ),
-        if (!isStart)
-          GestureDetector(
-              onTap: (isShowCountDown || widget.isShowEndLevel || isPause)
-                  ? () {}
-                  : (result == null
-                      ? start
-                      : (canRestartGame ? restartGame : () {}))),
+        // if (!isStart)
+        //   GestureDetector(
+        //       onTap: (isShowCountDown || widget.isShowEndLevel || isPause)
+        //           ? () {}
+        //           : (result == null
+        //               ? start
+        //               : (canRestartGame ? restartGame : () {}))),
         Align(
           alignment: Alignment.bottomRight,
           child: Padding(
@@ -1132,7 +1307,8 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
                           (i) => _Barrier(
                             animationController:
                                 _barrierMovingAnimationController,
-                            onTap: (int answer) => handlePickAnswer(answer, i),
+                            onTap: (KAnswer answer) =>
+                                handlePickAnswer(answer, i),
                             onOutSide: () {
                               if (!this.barrierOutSide[i]) {
                                 this.setState(() {
@@ -1142,7 +1318,7 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
                             },
                             barrierX: barrierX[i],
                             barrierY: barrierY[i],
-                            value: barrierValues[i],
+                            answer: barrierValues[i],
                             rotateAngle: spinningHeroIndex == i
                                 ? -this._spinAnimationController.value *
                                     4 *
@@ -1184,7 +1360,7 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
                   ],
                 ),
                 child: Text(
-                  questions[currentQuestionIndex],
+                  currentQuestion.text ?? "",
                   textScaleFactor: 1.0,
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -1205,7 +1381,28 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  if (isStart || result != null)
+                  InkWell(
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      padding:
+                          EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      child: Icon(
+                        Icons.star_border,
+                        color: Color(0xff2c1c44),
+                        size: 30,
+                      ),
+                    ),
+                    onTap: () => showHighscoreDialog(),
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  if (isStart || result != null) ...[
                     InkWell(
                       child: Container(
                         width: 50,
@@ -1226,9 +1423,10 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
                       ),
                       onTap: () => this.toggleBackgroundSound(),
                     ),
-                  SizedBox(
-                    width: 10,
-                  ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                  ],
                   InkWell(
                     child: Container(
                       width: 50,
@@ -1251,6 +1449,11 @@ class _KMovingTapGameScreenState extends State<KMovingTapGameScreen>
               ),
             ),
           ),
+        if (isShowCountDown)
+          Align(
+            alignment: Alignment.center,
+            child: countDown,
+          ),
       ],
     );
 
@@ -1264,11 +1467,11 @@ class _Barrier extends StatefulWidget {
   final double barrierY;
   final double rotateAngle;
   final Animation<double>? scaleAnimation;
-  final int value;
+  final KAnswer answer;
   final Offset bouncingAnimation;
   final double? starY;
   final bool? isShowStar;
-  final Function(int value) onTap;
+  final Function(KAnswer answer) onTap;
   final Function() onOutSide;
 
   _Barrier({
@@ -1277,7 +1480,7 @@ class _Barrier extends StatefulWidget {
     required this.barrierY,
     required this.rotateAngle,
     this.scaleAnimation,
-    required this.value,
+    required this.answer,
     required this.bouncingAnimation,
     this.starY,
     this.isShowStar,
@@ -1328,7 +1531,7 @@ class _BarrierState extends State<_Barrier>
   Widget build(context) {
     final box = InkWell(
       onTap: () {
-        widget.onTap(widget.value);
+        widget.onTap(widget.answer);
       },
       child: Container(
         width: 80,
@@ -1339,7 +1542,7 @@ class _BarrierState extends State<_Barrier>
         ),
         child: FittedBox(
           child: Text(
-            "${widget.value}",
+            "${widget.answer.text}",
             textScaleFactor: 1.0,
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -1369,7 +1572,10 @@ class _BarrierState extends State<_Barrier>
                   offset: Offset(0, -60 * (widget.starY ?? 0)),
                   child: AnimatedOpacity(
                     duration: Duration(milliseconds: 500),
-                    opacity: (widget.isShowStar ?? false) ? 1 : 0,
+                    opacity: (widget.isShowStar ?? false) &&
+                            (widget.answer.isCorrect ?? false)
+                        ? 1
+                        : 0,
                     child: Icon(
                       Icons.star,
                       color: Colors.amberAccent,

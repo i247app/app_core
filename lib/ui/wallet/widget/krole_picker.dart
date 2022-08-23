@@ -3,7 +3,6 @@ import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/model/krole.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class KRolePicker extends StatefulWidget {
   final Function(KRole?)? onChange;
@@ -33,7 +32,9 @@ class _KRolePickerState extends State<KRolePicker> {
   void loadRoles() async {
     final response = await KServerHandler.listXFRRoles();
     if (response.isSuccess) {
-      setState(() => roles = response.roles ?? []);
+      if (mounted) {
+        setState(() => roles = response.roles ?? []);
+      }
     }
   }
 
@@ -60,12 +61,12 @@ class _KRolePickerState extends State<KRolePicker> {
   @override
   Widget build(BuildContext context) {
     final loadingView = Container(
-      // padding: EdgeInsets.all(6),
-      // child: AspectRatio(
-      //   aspectRatio: 1,
-      //   child: CircularProgressIndicator(),
-      // ),
-    );
+        // padding: EdgeInsets.all(6),
+        // child: AspectRatio(
+        //   aspectRatio: 1,
+        //   child: `CircularProgressIndicator`(),
+        // ),
+        );
 
     final content = () {
       final role = selectedRole ?? buildSelfPlaceholderRole();

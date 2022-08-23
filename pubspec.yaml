@@ -2,7 +2,7 @@ name: app_core
 
 description: App core package
 
-version: 1.0.68
+version: 1.1.120
 
 homepage: none
 
@@ -25,51 +25,56 @@ dependencies:
   timeago: ^3.1.0
   intl: ^0.17.0
   flutter_secure_storage: ^4.2.0
-  json_annotation: ^4.4.0
+  json_annotation: ^4.5.0
   fluttertoast: ^8.0.7
   local_auth: ^1.1.6
   new_version: ^0.2.0
   flutter_local_notifications: ^6.1.0
   flutter_slidable: ^0.6.0
+  draggable_widget: ^2.0.0
 
   # Location
   geolocator: ^7.0.3
+  geocoding: ^2.0.4
   google_maps_flutter: ^2.0.5
   google_maps_webservice: ^0.0.20-nullsafety.5
   flutter_google_places: ^0.3.0
 
+  lottie: ^1.2.2
+
   # Photo picker
-  image_picker: ^0.8.1
+  image_picker: ^0.8.5
 
   # QR code scan
   flutter_barcode_scanner: ^2.0.0
 
   # Firebase
-  firebase_core: ^1.2.0
-  firebase_messaging: ^10.0.0
+  firebase_core: ^1.19.1
+  firebase_messaging: ^11.4.4 # ^10.0.0
 
   gallery_saver: 2.1.0 # +2.1.1 broken so far
   path_provider: ^2.0.1
+  provider: ^6.0.2
 
-  google_fonts: ^2.1.0
+  # google_fonts: 2.2.0 # >=2.3.1 requires Flutter SDK >=2.10.0-0
+  google_fonts: ^2.3.1
 
   # VoIP
   connectycube_flutter_call_kit:
     git:
       url: https://github.com/KashinApp/flutter_voip_android.git
+      ref: flutter3
     # path: ../flutter_voip_android_local
   flutter_ios_voip_kit:
     git:
       url: https://github.com/KashinApp/flutter_voip_ios.git
-    #  ref: 0.0.6
+      ref: flutter2.x
     # path: ../flutter_voip_ios_local
 
   # Flutter WebRTC
-  flutter_webrtc: 0.8.0 # 0.6.3 # 0.5.8
-  flutter_ringtone_player:
-    git:
-      url: https://github.com/huynhtuanhuy/flutter_ringtone_player.git
-    #^3.0.0
+  flutter_webrtc: 0.6.3 # 0.5.8
+
+  flutter_ringtone_player: ^3.2.0
 
   wakelock: 0.5.6 # ^0.5.1
   uuid: ^3.0.4
@@ -82,12 +87,27 @@ dependencies:
 
   sliding_up_panel: 2.0.0+1
 
-  confetti: ^0.6.0-nullsafety
+  confetti: ^0.7.0
 
-  get: ^4.3.8
+  get: ^4.6.3
+
   get_storage: ^2.0.3
 
   audioplayers: 0.20.1
+
+  flutter_tts: ^3.3.3
+
+  # Cache image
+  flutter_cache_manager: ^3.3.0
+  cached_network_image:
+    git:
+      url: https://github.com/Thanhktm/flutter_cached_network_image.git
+      ref: flutter3.0.1
+  flutter_picker: ^2.0.2
+
+  xml: ^5.1.2
+
+  avatar_glow: ^2.0.2
 
 dev_dependencies:
   flutter_test:
@@ -95,15 +115,15 @@ dev_dependencies:
 
   lints: any
   build_runner: ^2.1.5 # ^1.11.5 # ^1.0.0
-  json_serializable: ^6.0.1 # ^3.5.1 # ^3.0.0
+  json_serializable: 6.2.0 # 6.1.2 ^3.5.1 # ^3.0.0
   test: ^1.17.10
+  analyzer: ^4.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
-
   # To add assets to your package, add an assets section, like this:
   assets:
     - assets/

@@ -16,22 +16,24 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..kmodifyID = json['modifyID'] as String?
   ..kmodifyDate = zzz_str2Date(json['modifyDate'] as String?)
   ..kisValid = json['isValid'] as String?
-  ..action = json['action'] as String?
   ..korderBy = json['orderBy'] as String?
   ..klimit = json['limit'] as String?
   ..koffset = json['offset'] as String?
   ..kstatus = json['kstatus'] as String?
   ..kmessage = json['kmessage'] as String?
   ..kcount = json['kcount'] as String?
+  ..action = json['action'] as String?
   ..puid = json['puid'] as String?
   ..kunm = json['kunm'] as String?
   ..phone = json['fone'] as String?
   ..phoneCode = json['foneCode'] as String?
+  ..fullAddress = json['fullAddressLine'] as String?
   ..email = json['email'] as String?
   ..firstName = json['firstName'] as String?
   ..middleName = json['middleName'] as String?
   ..lastName = json['lastName'] as String?
   ..dob = zzz_str2Date(json['dob'] as String?)
+  ..ppuid = json['ppuid'] as String?
   ..parentName = json['parentName'] as String?
   ..parentEmail = json['parentEmail'] as String?
   ..parentPhone = json['parentPhone'] as String?
@@ -40,6 +42,8 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..city = json['city'] as String?
   ..state = json['stateCode'] as String?
   ..zip = json['zipCode'] as String?
+  ..ward = json['ward'] as String?
+  ..district = json['district'] as String?
   ..countryCode = json['countryCode'] as String?
   ..displayImg = json['displayImg'] as String?
   ..avatarURL = json['avatar'] as String?
@@ -60,6 +64,9 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..addresses = (json['addresses'] as List<dynamic>?)
       ?.map((e) => KAddress.fromJson(e as Map<String, dynamic>))
       .toList()
+  ..notes = (json['notes'] as List<dynamic>?)
+      ?.map((e) => KNote.fromJson(e as Map<String, dynamic>))
+      .toList()
   ..officialIDNumber = json['officialIDNumber'] as String?
   ..officialIDURL = json['officialIDURL'] as String?
   ..officialIDData = json['officialIDData'] as String?
@@ -70,13 +77,21 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..currentLatLng = json['latLng'] == null
       ? null
       : KLatLng.fromJson(json['latLng'] as Map<String, dynamic>)
+  ..linkStatus = json['linkStatus'] as String?
   ..review = json['rating'] == null
       ? null
       : Review.fromJson(json['rating'] as Map<String, dynamic>)
   ..tutorID = json['tutorID'] as String?
   ..gigCount = json['gigCount'] as String?
   ..isOnline = json['isOnline'] as bool?
+  ..onlineMode = zzz_str2Bool(json['onlineMode'] as String?)
+  ..isInPerson = json['isInPerson'] as bool?
+  ..isHeadstart = json['isHeadstart'] as bool?
+  ..isEnglish = json['isEnglish'] as bool?
+  ..isPrefer = json['isPrefer'] as bool?
+  ..isGenius = json['isGenius'] as bool?
   ..tutorStatus = json['tutorStatus'] as String?
+  ..userType = json['userType'] as String?
   ..userTags = (json['userTags'] as List<dynamic>?)
       ?.map((e) => UserTag.fromJson(e as Map<String, dynamic>))
       .toList()
@@ -101,22 +116,24 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('modifyID', instance.kmodifyID);
   writeNotNull('modifyDate', zzz_date2Str(instance.kmodifyDate));
   writeNotNull('isValid', instance.kisValid);
-  writeNotNull('action', instance.action);
   writeNotNull('orderBy', instance.korderBy);
   writeNotNull('limit', instance.klimit);
   writeNotNull('offset', instance.koffset);
   writeNotNull('kstatus', instance.kstatus);
   writeNotNull('kmessage', instance.kmessage);
   writeNotNull('kcount', instance.kcount);
+  writeNotNull('action', instance.action);
   writeNotNull('puid', instance.puid);
   writeNotNull('kunm', instance.kunm);
   writeNotNull('fone', instance.phone);
   writeNotNull('foneCode', instance.phoneCode);
+  writeNotNull('fullAddressLine', instance.fullAddress);
   writeNotNull('email', instance.email);
   writeNotNull('firstName', instance.firstName);
   writeNotNull('middleName', instance.middleName);
   writeNotNull('lastName', instance.lastName);
   writeNotNull('dob', zzz_date2Str(instance.dob));
+  writeNotNull('ppuid', instance.ppuid);
   writeNotNull('parentName', instance.parentName);
   writeNotNull('parentEmail', instance.parentEmail);
   writeNotNull('parentPhone', instance.parentPhone);
@@ -125,6 +142,8 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('city', instance.city);
   writeNotNull('stateCode', instance.state);
   writeNotNull('zipCode', instance.zip);
+  writeNotNull('ward', instance.ward);
+  writeNotNull('district', instance.district);
   writeNotNull('countryCode', instance.countryCode);
   writeNotNull('displayImg', instance.displayImg);
   writeNotNull('avatar', instance.avatarURL);
@@ -143,6 +162,7 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
       'educations', instance.educations?.map((e) => e.toJson()).toList());
   writeNotNull(
       'addresses', instance.addresses?.map((e) => e.toJson()).toList());
+  writeNotNull('notes', instance.notes?.map((e) => e.toJson()).toList());
   writeNotNull('officialIDNumber', instance.officialIDNumber);
   writeNotNull('officialIDURL', instance.officialIDURL);
   writeNotNull('officialIDData', instance.officialIDData);
@@ -151,11 +171,19 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('studentIDData', instance.studentIDData);
   writeNotNull('joinDate', zzz_date2Str(instance.joinDate));
   writeNotNull('latLng', instance.currentLatLng?.toJson());
+  writeNotNull('linkStatus', instance.linkStatus);
   writeNotNull('rating', instance.review?.toJson());
   writeNotNull('tutorID', instance.tutorID);
   writeNotNull('gigCount', instance.gigCount);
   writeNotNull('isOnline', instance.isOnline);
+  writeNotNull('onlineMode', zzz_bool2Str(instance.onlineMode));
+  writeNotNull('isInPerson', instance.isInPerson);
+  writeNotNull('isHeadstart', instance.isHeadstart);
+  writeNotNull('isEnglish', instance.isEnglish);
+  writeNotNull('isPrefer', instance.isPrefer);
+  writeNotNull('isGenius', instance.isGenius);
   writeNotNull('tutorStatus', instance.tutorStatus);
+  writeNotNull('userType', instance.userType);
   writeNotNull('userTags', instance.userTags?.map((e) => e.toJson()).toList());
   writeNotNull('activeDate', zzz_date2Str(instance.activeDate));
   writeNotNull('tutorJoinDate', zzz_date2Str(instance.tutorJoinDate));

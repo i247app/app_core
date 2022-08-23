@@ -6,6 +6,8 @@ import 'package:app_core/helper/kglobals.dart';
 import 'package:app_core/helper/kpref_helper.dart';
 import 'package:app_core/model/klat_lng.dart';
 import 'package:app_core/ui/widget/dialog/klocation_permission_info_dialog.dart';
+import 'package:app_core/ui/widget/open_settings_dialog.dart';
+import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -13,11 +15,19 @@ import 'package:permission_handler/permission_handler.dart';
 abstract class KLocationHelper {
   static Position? _theCachedPosition;
   static Completer<bool>? _dialogCompleter;
+  static bool _isAsking = false;
+  static bool _firstAsk = true;
 
   static Position? get cachedPosition {
     hasPermission().then((bool yes) {
       if (yes) {
-        Geolocator.getCurrentPosition().then((pos) => _theCachedPosition = pos);
+        hasServiceEnabled().then((bool _yes) {
+          if (_yes) {
+            Geolocator.getCurrentPosition(
+                desiredAccuracy: LocationAccuracy.bestForNavigation)
+                .then((pos) => _theCachedPosition = pos);
+          }
+        });
       }
     });
     return _theCachedPosition;
@@ -28,6 +38,9 @@ abstract class KLocationHelper {
             LocationPermission.always,
             LocationPermission.whileInUse
           ].contains(lp));
+
+  static Future<bool> hasServiceEnabled() async =>
+      Geolocator.isLocationServiceEnabled();
 
   static Future<PermissionStatus?> askForPermission() async {
     if (await hasPermission()) return PermissionStatus.granted;
@@ -59,15 +72,24 @@ abstract class KLocationHelper {
       return null;
   }
 
-  static Future<KLatLng?> getKLatLng(
-      {bool askForPermissions: true}) async {
+  static Future<KLatLng?> getKLatLng({bool askForPermissions: true, bool askForEnableService: false}) async {
+    if (_theCachedPosition == null) {
+      final positionString = await KPrefHelper.get(KPrefHelper.CACHED_POSITION);
+      if (positionString != null) {
+        _theCachedPosition = Position.fromMap(positionString);
+      }
+    }
     Position? position;
     if (askForPermissions || (await hasPermission())) {
       if (askForPermissions && !(await hasPermission())) {
-        final result = await askForPermission();
+        final result = await askForPermission1();
         if (result != PermissionStatus.granted) return null;
       }
-      position = await Geolocator.getCurrentPosition();
+      if (!(await hasServiceEnabled()) && !askForEnableService) {
+        return null;
+      }
+      position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.bestForNavigation);
     }
     _setCachedPosition(position);
     return position == null ? null : KLatLng.fromPosition(position);
@@ -75,10 +97,57 @@ abstract class KLocationHelper {
 
   static void _setCachedPosition(Position? position) {
     if (position != null) {
-      KPrefHelper.put(
-          KPrefHelper.CACHED_POSITION, position.toJson());
+      KPrefHelper.put(KPrefHelper.CACHED_POSITION, position.toJson());
       _theCachedPosition = position;
     }
+  }
+
+  static Future<PermissionStatus?> askForPermission1({
+    bool askPermissionSetting: false,
+    String? settingMessage,
+  }) async {
+    final result = await Geolocator.checkPermission();
+
+    if (_isAsking) return null;
+    _isAsking = true;
+    if (result == LocationPermission.deniedForever) {
+      // Show dialog ask user enable location service in settings
+      if (askPermissionSetting) {
+        showDialog(
+          context: kNavigatorKey.currentContext!,
+          builder: (ctx) => KSettingsDialog(
+            title: KPhrases.locationPermissionDialogTitle,
+            body: settingMessage ?? KPhrases.locationPermissionDialogBody,
+          ),
+        );
+      }
+      _isAsking = false;
+      return PermissionStatus.permanentlyDenied;
+    }
+
+    if (result == LocationPermission.denied) {
+      final requestResult = await Geolocator.requestPermission();
+      if (requestResult == LocationPermission.denied ||
+          requestResult == LocationPermission.deniedForever) {
+        if (askPermissionSetting) {
+          showDialog(
+            context: kNavigatorKey.currentContext!,
+            builder: (ctx) => KSettingsDialog(
+              title: KPhrases.locationPermissionDialogTitle,
+              body: KPhrases.locationPermissionDialogBody,
+            ),
+          );
+        }
+        _isAsking = false;
+        return PermissionStatus.permanentlyDenied;
+      }
+      // _firstAsk = false;
+      _isAsking = false;
+      return PermissionStatus.granted;
+    }
+    // _firstAsk = false;
+    _isAsking = false;
+    return PermissionStatus.granted;
   }
 
   // Calculate distance in meters between two KLatLng

@@ -4,8 +4,8 @@ import 'package:app_core/helper/kstring_helper.dart';
 import 'package:app_core/model/kchat.dart';
 import 'package:app_core/model/kchat_member.dart';
 import 'package:app_core/model/kuser.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class KUserAvatar extends StatelessWidget {
   final String? initial;
@@ -14,6 +14,12 @@ class KUserAvatar extends StatelessWidget {
   final Color? backgroundColor;
   final Color? foregroundColor;
   final double? size;
+  final bool? isCached;
+  final Color highlightColor;
+  final double highlightSize;
+  final IconData? icon;
+  final Color? iconColor;
+  final Function? onFinishLoaded;
 
   Image get placeholderImage =>
       imagePlaceHolder ?? Image.asset(KAssets.IMG_TRANSPARENCY);
@@ -25,18 +31,36 @@ class KUserAvatar extends StatelessWidget {
     this.backgroundColor,
     this.foregroundColor,
     this.size,
+    this.isCached = false,
+    this.highlightColor = Colors.black,
+    this.highlightSize = 0.1,
+    this.icon,
+    this.iconColor,
+    this.onFinishLoaded,
   });
 
   factory KUserAvatar.fromUser(
     KUser? user, {
     Image? imagePlaceHolder,
     double? size,
+    bool? isCached,
+    Color highlightColor = Colors.black,
+    double highlightSize = 0.1,
+    IconData? icon,
+    Color? iconColor,
+    Function? onFinishLoaded,
   }) =>
       KUserAvatar(
         initial: user?.firstInitial,
         imageURL: user?.avatarURL,
         imagePlaceHolder: imagePlaceHolder,
         size: size,
+        isCached: isCached,
+        icon: icon,
+        iconColor: iconColor,
+        highlightSize: highlightSize,
+        highlightColor: highlightColor,
+        onFinishLoaded: onFinishLoaded,
       );
 
   factory KUserAvatar.fromChatMember(KChatMember? member, {double? size}) =>
@@ -81,13 +105,26 @@ class KUserAvatar extends StatelessWidget {
                   ),
                 ),
               )
-        : FadeInImage.assetNetwork(
-            placeholder: KAssets.IMG_TRANSPARENCY,
-            image: imageURL!,
-            fit: BoxFit.cover,
-            fadeInDuration: Duration(milliseconds: 100),
-            imageErrorBuilder: (ctx, exc, stackTrace) => placeholderImage,
-          );
+        : ((this.isCached ?? false)
+            ? CachedNetworkImage(
+                imageUrl: imageURL!,
+                progressIndicatorBuilder: (context, url, downloadProgress) {
+                  if ((downloadProgress.progress == null ||
+                          downloadProgress.progress == 1) &&
+                      this.onFinishLoaded != null) {
+                    this.onFinishLoaded!();
+                  }
+                  return CircularProgressIndicator(
+                      value: downloadProgress.progress);
+                },
+              )
+            : FadeInImage.assetNetwork(
+                placeholder: KAssets.IMG_TRANSPARENCY,
+                image: imageURL!,
+                fit: BoxFit.cover,
+                fadeInDuration: Duration(milliseconds: 100),
+                imageErrorBuilder: (ctx, exc, stackTrace) => placeholderImage,
+              ));
 
     final body = AspectRatio(
       aspectRatio: 1,
@@ -96,12 +133,34 @@ class KUserAvatar extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(size ?? 100),
-          border: Border.all(color: Colors.black, width: 0.1),
         ),
         child: ClipOval(child: raw),
       ),
     );
 
-    return Container(height: size, child: body);
+    return Container(
+      height: size,
+      child: Stack(children: [
+        body,
+        if (this.icon != null && this.iconColor != null)
+          Positioned(
+            right: 0.0,
+            bottom: 0.0,
+            child: Container(
+                // padding: EdgeInsets.only(
+                //     top: (size ?? 100) * 0.01, left: (size ?? 100) * 0.01),
+                decoration: BoxDecoration(
+                  color: this.highlightColor,
+                  borderRadius: BorderRadius.circular(
+                    (size ?? 100) * 0.15,
+                  ),
+                ),
+                width: (size ?? 100) * 0.3,
+                height: (size ?? 100) * 0.3,
+                child: Icon(this.icon!,
+                    size: (size ?? 100) * 0.3, color: this.iconColor!)),
+          )
+      ]),
+    );
   }
 }

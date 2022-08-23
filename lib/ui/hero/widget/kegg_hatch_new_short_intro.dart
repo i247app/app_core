@@ -111,13 +111,15 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
             Future.delayed(
                 Duration(milliseconds: introShakeTime - 1 > 0 ? 1000 : 500),
                 () {
-              if (introShakeTime - 1 > 0) {
-                this._shakeTheTopAnimationController.forward();
-              } else {
-                this._bouncingAnimationController.forward();
-              }
-              if (introShakeTime > 0)
-                this.setState(() => introShakeTime = introShakeTime - 1);
+                  if (mounted) {
+                    if (introShakeTime - 1 > 0) {
+                      this._shakeTheTopAnimationController.forward();
+                    } else {
+                      this._bouncingAnimationController.forward();
+                    }
+                    if (introShakeTime > 0)
+                      this.setState(() => introShakeTime = introShakeTime - 1);
+                  }
             });
           }
         }
@@ -182,7 +184,7 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
 
     Future.delayed(Duration(milliseconds: 500), () {
       try {
-        final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+        final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
         ap.play(introAudioFileUri ?? "", isLocal: true);
         cBackgroundAudioPlayer.complete(ap);
       } catch (e) {}

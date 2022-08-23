@@ -46,6 +46,13 @@ abstract class KPhrases {
 
   static String get confirm => _klingo.yak("confirm");
 
+  static String get amountMustLowerThanBalance =>
+      _klingo.yak("amount_must_lower_than_balance");
+
+  static String get transferRecipient => _klingo.yak("transfer_recipient");
+
+  static String get memoHintText => _klingo.yak("memo_hint_text");
+
   static String get accountName => _klingo.yak("account_name");
 
   static String get accountNumber => _klingo.yak("account_number");
@@ -75,7 +82,9 @@ abstract class KPhrases {
   static String get gigListReadyAndWaiting =>
       _klingo.yak("gig_list_ready_waiting");
 
-  static String get noTransactionsFound => _klingo.yak("no_transactions_found");
+  static String get noData => _klingo.yak("no_data");
+
+  static String get noContactFound => _klingo.yak("no_contact_found");
 
   static String get waitingForOtherUser =>
       _klingo.yak("waiting_for_other_user");
@@ -88,6 +97,12 @@ abstract class KPhrases {
 
   static String get hi => _klingo.yak("hi");
 
+  static String get locationPermissionDialogTitle =>
+      _klingo.yak("loc_perm_title");
+
+  static String get locationPermissionDialogBody =>
+      _klingo.yak("loc_perm_body");
+
   static String get emailAlreadyUsed => _klingo.yak("email_already_used");
 
   static String get phoneAlreadyUsed => _klingo.yak("phone_already_used");
@@ -98,5 +113,23 @@ abstract class KPhrases {
 
   static String get success => _klingo.yak("success");
 
-  static String get hangUpQuestion => 'Cúp máy?';
+  static String get grade => _klingo.yak("grade");
+
+  static String get headstart => _klingo.yak("headstart");
+
+  static String get headstartDoc => _klingo.yak("headstart_documents");
+
+  static String get classDoc => _klingo.yak("class_documents");
+
+  static String get math => _klingo.yak("math");
+
+  static String get english => _klingo.yak("english");
+
+  static String get vietnamese => _klingo.yak("vietnamese");
+
+  static String get district => _klingo.yak("district");
+
+  static String get ward => _klingo.yak("ward");
+
+  static String get noWifi => _klingo.yak("no_wifi");
 }

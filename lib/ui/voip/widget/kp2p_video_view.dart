@@ -1,6 +1,8 @@
+import 'package:app_core/helper/kwebrtc_helper.dart';
+import 'package:app_core/model/kuser.dart';
+import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 class KP2PVideoView extends StatefulWidget {
@@ -10,10 +12,16 @@ class KP2PVideoView extends StatefulWidget {
   final bool isRemoteMicEnabled;
   final Function? onLocalVideoTap;
   final Function? onRemoteVideoTap;
+  final String refAvatarUrl;
+  final String refName;
+  final KWebRTCCallType type;
 
   const KP2PVideoView({
     required this.localRenderer,
     required this.remoteRenderers,
+    required this.refName,
+    required this.refAvatarUrl,
+    this.type = KWebRTCCallType.video,
     this.isRemoteCameraEnabled = false,
     this.isRemoteMicEnabled = false,
     this.onLocalVideoTap,
@@ -21,21 +29,21 @@ class KP2PVideoView extends StatefulWidget {
   });
 
   @override
-  State<StatefulWidget> createState() => _KP2PVideoViewState();
+  State<StatefulWidget> createState() => _P2PVideoViewState();
 }
 
-class _KP2PVideoViewState extends State<KP2PVideoView> {
+class _P2PVideoViewState extends State<KP2PVideoView> {
+  KWebRTCCallType get type => widget.type;
+
+  void _onLocalVideoTap() => this.widget.onLocalVideoTap?.call();
+
+  void _onRemoteVideoTap() => this.widget.onRemoteVideoTap?.call();
+
   double? get localAspectRatio {
     final ratio = widget.localRenderer.videoHeight.toDouble() /
         widget.localRenderer.videoWidth.toDouble();
     return ratio.isNaN ? null : ratio;
   }
-
-  Iterable<RTCVideoRenderer> get validRemoteRenderers =>
-      widget.remoteRenderers.values.where((rr) => rr.srcObject != null);
-
-  bool get showLocalVideo =>
-      localAspectRatio != null && widget.localRenderer.srcObject != null;
 
   @override
   void initState() {
@@ -45,15 +53,11 @@ class _KP2PVideoViewState extends State<KP2PVideoView> {
     widget.remoteRenderers.forEach((_, rr) => rr.onResize = onVideoResize);
   }
 
-  void _onLocalVideoTap() => widget.onLocalVideoTap?.call();
-
-  void _onRemoteVideoTap() => widget.onRemoteVideoTap?.call();
-
   void onVideoResize() => !mounted ? null : setState(() {});
 
   @override
   Widget build(BuildContext context) {
-    final local = !showLocalVideo
+    final local = this.localAspectRatio == null
         ? Container()
         : ClipRRect(
             borderRadius: BorderRadius.circular(10),
@@ -61,7 +65,7 @@ class _KP2PVideoViewState extends State<KP2PVideoView> {
               height: MediaQuery.of(context).size.height / 4,
               color: KStyles.extraDarkGrey,
               child: AspectRatio(
-                aspectRatio: localAspectRatio!,
+                aspectRatio: this.localAspectRatio!,
                 child: InkWell(
                   child: RTCVideoView(widget.localRenderer),
                   onTap: _onLocalVideoTap,
@@ -70,25 +74,25 @@ class _KP2PVideoViewState extends State<KP2PVideoView> {
             ),
           );
 
-    final remoteVideo = validRemoteRenderers.length == 1
+    final remoteVideo = widget.remoteRenderers.length == 1
         ? Container(
             color: KStyles.black,
             child: RTCVideoView(
-              validRemoteRenderers.first,
+              widget.remoteRenderers.values.first,
               objectFit: RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
             ),
           )
         : Column(
-            children: validRemoteRenderers
+            children: widget.remoteRenderers.keys
                 .map(
-                  (rr) => Expanded(
+                  (id) => Expanded(
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.red),
                         color: KStyles.black,
                       ),
                       child: RTCVideoView(
-                        rr,
+                        widget.remoteRenderers[id]!,
                         objectFit:
                             RTCVideoViewObjectFit.RTCVideoViewObjectFitCover,
                       ),
@@ -143,16 +147,34 @@ class _KP2PVideoViewState extends State<KP2PVideoView> {
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          remote,
-          Align(
-            alignment: Alignment.topRight,
-            child: SafeArea(
-              child: Container(
-                margin: EdgeInsets.all(14),
-                child: local,
+          if (type == KWebRTCCallType.video) ...[
+            remote,
+            Align(
+              alignment: Alignment.topRight,
+              child: SafeArea(
+                child: Container(
+                  margin: EdgeInsets.all(14),
+                  child: local,
+                ),
               ),
+            )
+          ] else ...[
+            InkWell(
+              child: Container(
+                color: KStyles.black,
+                child: Center(
+                  child: Container(
+                    width: 100,
+                    child: KUserAvatar(
+                      imageURL: widget.refAvatarUrl,
+                      initial: widget.refName,
+                    ),
+                  ),
+                ),
+              ),
+              onTap: _onRemoteVideoTap,
             ),
-          ),
+          ],
         ],
       ),
     );

@@ -7,13 +7,16 @@ class KLocale {
 
   const KLocale({required this.language, required this.country});
 
-  Locale toSystemLocale() => Locale(this.language, this.country);
+  Locale toSystemLocale() => Locale(language, country);
 
   @override
-  String toString() => "${this.language}-${this.country}";
+  String toString() => "$language-$country";
 }
 
 abstract class KLocaleHelper {
+  static const String TTS_LANGUAGE_EN = "en-US";
+  static const String TTS_LANGUAGE_VI = "vi-VN";
+
   static const String LANGUAGE_EN = "en";
   static const String LANGUAGE_VI = "vi";
 
@@ -50,7 +53,8 @@ abstract class KLocaleHelper {
         ctry = zz[1];
       }
 
-      locale = KLocale(language: lang, country: ctry);
+      locale =
+          KLocale(language: lang.toLowerCase(), country: ctry.toLowerCase());
     } catch (e) {
       print(e.toString());
       locale = defaultLocale;

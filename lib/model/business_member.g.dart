@@ -17,18 +17,20 @@ BusinessMember _$BusinessMemberFromJson(Map<String, dynamic> json) =>
       ..kmodifyID = json['modifyID'] as String?
       ..kmodifyDate = zzz_str2Date(json['modifyDate'] as String?)
       ..kisValid = json['isValid'] as String?
-      ..action = json['action'] as String?
       ..korderBy = json['orderBy'] as String?
       ..klimit = json['limit'] as String?
       ..koffset = json['offset'] as String?
       ..kstatus = json['kstatus'] as String?
       ..kmessage = json['kmessage'] as String?
       ..kcount = json['kcount'] as String?
+      ..action = json['action'] as String?
       ..kunm = json['kunm'] as String?
       ..phone = json['fone'] as String?
       ..phoneCode = json['foneCode'] as String?
+      ..fullAddress = json['fullAddressLine'] as String?
       ..email = json['email'] as String?
       ..dob = zzz_str2Date(json['dob'] as String?)
+      ..ppuid = json['ppuid'] as String?
       ..parentName = json['parentName'] as String?
       ..parentEmail = json['parentEmail'] as String?
       ..parentPhone = json['parentPhone'] as String?
@@ -37,6 +39,8 @@ BusinessMember _$BusinessMemberFromJson(Map<String, dynamic> json) =>
       ..city = json['city'] as String?
       ..state = json['stateCode'] as String?
       ..zip = json['zipCode'] as String?
+      ..ward = json['ward'] as String?
+      ..district = json['district'] as String?
       ..countryCode = json['countryCode'] as String?
       ..displayImg = json['displayImg'] as String?
       ..avatarURL = json['avatar'] as String?
@@ -56,6 +60,9 @@ BusinessMember _$BusinessMemberFromJson(Map<String, dynamic> json) =>
       ..addresses = (json['addresses'] as List<dynamic>?)
           ?.map((e) => KAddress.fromJson(e as Map<String, dynamic>))
           .toList()
+      ..notes = (json['notes'] as List<dynamic>?)
+          ?.map((e) => KNote.fromJson(e as Map<String, dynamic>))
+          .toList()
       ..officialIDNumber = json['officialIDNumber'] as String?
       ..officialIDURL = json['officialIDURL'] as String?
       ..officialIDData = json['officialIDData'] as String?
@@ -66,6 +73,7 @@ BusinessMember _$BusinessMemberFromJson(Map<String, dynamic> json) =>
       ..currentLatLng = json['latLng'] == null
           ? null
           : KLatLng.fromJson(json['latLng'] as Map<String, dynamic>)
+      ..linkStatus = json['linkStatus'] as String?
       ..puid = json['puid'] as String?
       ..buid = json['buid'] as String?
       ..storeID = json['storeID'] as String?
@@ -98,18 +106,20 @@ Map<String, dynamic> _$BusinessMemberToJson(BusinessMember instance) {
   writeNotNull('modifyID', instance.kmodifyID);
   writeNotNull('modifyDate', zzz_date2Str(instance.kmodifyDate));
   writeNotNull('isValid', instance.kisValid);
-  writeNotNull('action', instance.action);
   writeNotNull('orderBy', instance.korderBy);
   writeNotNull('limit', instance.klimit);
   writeNotNull('offset', instance.koffset);
   writeNotNull('kstatus', instance.kstatus);
   writeNotNull('kmessage', instance.kmessage);
   writeNotNull('kcount', instance.kcount);
+  writeNotNull('action', instance.action);
   writeNotNull('kunm', instance.kunm);
   writeNotNull('fone', instance.phone);
   writeNotNull('foneCode', instance.phoneCode);
+  writeNotNull('fullAddressLine', instance.fullAddress);
   writeNotNull('email', instance.email);
   writeNotNull('dob', zzz_date2Str(instance.dob));
+  writeNotNull('ppuid', instance.ppuid);
   writeNotNull('parentName', instance.parentName);
   writeNotNull('parentEmail', instance.parentEmail);
   writeNotNull('parentPhone', instance.parentPhone);
@@ -118,6 +128,8 @@ Map<String, dynamic> _$BusinessMemberToJson(BusinessMember instance) {
   writeNotNull('city', instance.city);
   writeNotNull('stateCode', instance.state);
   writeNotNull('zipCode', instance.zip);
+  writeNotNull('ward', instance.ward);
+  writeNotNull('district', instance.district);
   writeNotNull('countryCode', instance.countryCode);
   writeNotNull('displayImg', instance.displayImg);
   writeNotNull('avatar', instance.avatarURL);
@@ -135,6 +147,7 @@ Map<String, dynamic> _$BusinessMemberToJson(BusinessMember instance) {
       'educations', instance.educations?.map((e) => e.toJson()).toList());
   writeNotNull(
       'addresses', instance.addresses?.map((e) => e.toJson()).toList());
+  writeNotNull('notes', instance.notes?.map((e) => e.toJson()).toList());
   writeNotNull('officialIDNumber', instance.officialIDNumber);
   writeNotNull('officialIDURL', instance.officialIDURL);
   writeNotNull('officialIDData', instance.officialIDData);
@@ -143,6 +156,7 @@ Map<String, dynamic> _$BusinessMemberToJson(BusinessMember instance) {
   writeNotNull('studentIDData', instance.studentIDData);
   writeNotNull('joinDate', zzz_date2Str(instance.joinDate));
   writeNotNull('latLng', instance.currentLatLng?.toJson());
+  writeNotNull('linkStatus', instance.linkStatus);
   writeNotNull('puid', instance.puid);
   writeNotNull('buid', instance.buid);
   writeNotNull('storeID', instance.storeID);

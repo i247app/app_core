@@ -91,6 +91,7 @@ abstract class KDateHelper {
     DateTime? initialDate,
     DateTime? lastDate,
     required bool skipDate,
+    required bool skipTime,
     required bool use24HourFormat,
   }) async {
     initialDate ??= DateTime.now();
@@ -112,7 +113,9 @@ abstract class KDateHelper {
     }
 
     // Get the time
-    final TimeOfDay? tod = await showTimePicker(
+    TimeOfDay? tod;
+    if (!skipTime) {
+      tod = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.fromDateTime(initialDate),
         builder: use24HourFormat
@@ -123,15 +126,17 @@ abstract class KDateHelper {
                   child: child!,
                 );
               }
-            : null);
-    if (tod == null) return null;
+            : null,
+      );
+    }
+    // if (tod == null) return null;
 
     return DateTime(
       date.year,
       date.month,
       date.day,
-      tod.hour,
-      tod.minute,
+      tod?.hour ?? 0,
+      tod?.minute ?? 0,
     );
   }
 

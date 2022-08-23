@@ -1,6 +1,5 @@
 import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class KLocationPermissionInfoDialog extends StatelessWidget {
   @override

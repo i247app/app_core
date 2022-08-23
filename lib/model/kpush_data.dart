@@ -8,6 +8,7 @@ class KPushData {
   static const String PUSH_TYPE = "pushType";
   static const String APP = "app";
   static const String ID = "id";
+  static const String INDEX = "index";
   static const String REF_APP = "refApp";
   static const String REF_ID = "refID";
   static const String REM = "rem";
@@ -42,6 +43,9 @@ class KPushData {
 
   @JsonKey(name: ID)
   String? id;
+
+  @JsonKey(name: INDEX)
+  String? index;
 
   @JsonKey(name: REF_APP)
   String? refApp;

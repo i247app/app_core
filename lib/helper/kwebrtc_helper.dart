@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:app_core/helper/kcall_control_stream_helper.dart';
+import 'package:app_core/helper/kcall_stream_helper.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:app_core/app_core.dart';
 
@@ -26,21 +27,29 @@ abstract class KWebRTCHelper {
         KThrottleHelper.throttle(
           () {
             if (KCallKitHelper.instance.isCalling) {
-              kNavigatorKey.currentState?.pushReplacement(MaterialPageRoute(
-                  builder: (ctx) => KVOIPCall.asReceiver(
-                        callID,
-                        uuid,
-                        autoPickup: autoPickup,
-                        videoLogo: videoLogo,
-                      )));
+              KCallStreamHelper.broadcast(null);
+              KCallKitHelper.instance.isCalling = false;
+              KCallControlStreamHelper.broadcast(KCallType.kill);
+              Timer(Duration(seconds: 2), () {
+                final screen = KVOIPCall.asReceiver(
+                  callID,
+                  uuid,
+                  autoPickup: autoPickup,
+                  videoLogo: videoLogo,
+                );
+
+                KCallStreamHelper.broadcast(screen);
+                KCallControlStreamHelper.broadcast(KCallType.foreground);
+              });
             } else {
-              kNavigatorKey.currentState?.push(MaterialPageRoute(
-                  builder: (ctx) => KVOIPCall.asReceiver(
-                        callID,
-                        uuid,
-                        autoPickup: autoPickup,
-                        videoLogo: videoLogo,
-                      )));
+              final screen = KVOIPCall.asReceiver(
+                callID,
+                uuid,
+                autoPickup: autoPickup,
+                videoLogo: videoLogo,
+              );
+              KCallStreamHelper.broadcast(screen);
+              KCallControlStreamHelper.broadcast(KCallType.foreground);
             }
           },
           throttleID: "tutoring_chat_answer_p2p_call",

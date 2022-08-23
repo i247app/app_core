@@ -1,4 +1,4 @@
-import 'package:app_core/model/menu_item.dart';
+import 'package:app_core/model/kmenu_item.dart';
 import 'package:app_core/model/order_subitem.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -70,7 +70,7 @@ class OrderItem {
   @JsonKey(name: ORDER_SUB_ITEMS)
   List<OrderSubitem>? subItems;
 
-  factory OrderItem.fromMenuItem(MenuItem menuItem) => OrderItem()
+  factory OrderItem.fromMenuItem(KMenuItem menuItem) => OrderItem()
     ..menuID = menuItem.menuID
     ..menuItemID = menuItem.menuItemID
     ..name = menuItem.name

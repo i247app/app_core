@@ -15,10 +15,10 @@ Menu _$MenuFromJson(Map<String, dynamic> json) => Menu()
   ..menuStatus = json['menuStatus'] as String?
   ..currencyCode = json['currencyCode'] as String?
   ..items = (json['menuItems'] as List<dynamic>?)
-      ?.map((e) => MenuItem.fromJson(e as Map<String, dynamic>))
+      ?.map((e) => KMenuItem.fromJson(e as Map<String, dynamic>))
       .toList()
   ..featured = (json['featureItems'] as List<dynamic>?)
-      ?.map((e) => MenuItem.fromJson(e as Map<String, dynamic>))
+      ?.map((e) => KMenuItem.fromJson(e as Map<String, dynamic>))
       .toList()
   ..business = json['business'] == null
       ? null

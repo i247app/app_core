@@ -1,17 +1,13 @@
 import 'dart:convert';
 
 import 'package:app_core/app_core.dart';
-import 'package:app_core/header/no_overscroll.dart';
+import 'package:app_core/helper/kmoney_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/model/kcredit_transaction.dart';
 import 'package:app_core/model/krole.dart';
-import 'package:app_core/model/response/credit_transfer_response.dart';
-import 'package:app_core/model/xfr_ticket.dart';
-import 'package:app_core/ui/wallet/credit_receipt.dart';
+import 'package:app_core/ui/wallet/transfer_confirm.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 enum KTransferType { direct, proxy }
 
@@ -20,10 +16,12 @@ class WalletTransfer extends StatefulWidget {
   final KRole? sndRole;
   final KTransferType transferType;
   final String tokenName;
+  final KUser? user;
 
   WalletTransfer({
     this.rcvPUID,
     this.sndRole,
+    this.user,
     required this.transferType,
     required this.tokenName,
   });
@@ -33,19 +31,24 @@ class WalletTransfer extends StatefulWidget {
 }
 
 class _WalletTransferState extends State<WalletTransfer> {
-  final TextEditingController userCtrl = TextEditingController();
+  final TextEditingController userController = TextEditingController();
   final TextEditingController amountCtrl = TextEditingController();
-  final TextEditingController memoCtrl = TextEditingController();
 
   String? balanceAmount;
   KUser? selectedUser;
 
   bool isNetworking = false;
 
-  bool get isButtonEnabled =>
-      selectedUser != null &&
-      amountCtrl.text.isNotEmpty &&
-      (double.tryParse(amountCtrl.text) ?? 0) > 0;
+  void Function()? get actionButtonHandler {
+    final amount = double.tryParse(amountCtrl.text) ?? 0;
+    selectedUser = widget.user;
+
+    if (amount > (double.tryParse(balanceAmount ?? "0") ?? 0) || amount == 0) {
+      return null;
+    } else {
+      return attemptTransferCredit;
+    }
+  }
 
   @override
   void initState() {
@@ -53,6 +56,7 @@ class _WalletTransferState extends State<WalletTransfer> {
 
     loadBalance();
 
+    amountCtrl.text = "0";
     amountCtrl.addListener(fieldListener);
 
     if (widget.rcvPUID != null) loadUserInfo(puid: widget.rcvPUID!);
@@ -82,97 +86,45 @@ class _WalletTransferState extends State<WalletTransfer> {
     }
   }
 
-  void attemptTransferCredit() {
-    final rcvPUID = selectedUser?.puid ?? "";
-    final amount = amountCtrl.text;
-
-    if (rcvPUID.isNotEmpty && amount.isNotEmpty)
-      transferCredit(
-        rcvPUID: rcvPUID,
-        amount: amount,
-        tokenName: widget.tokenName,
-      );
-
+  void attemptTransferCredit() async {
     FocusScope.of(context).unfocus(); // dismiss keyboard
-  }
 
-  void transferCredit({
-    required String rcvPUID,
-    required String amount,
-    String? tokenName,
-  }) async {
-    try {
-      setState(() => isNetworking = true);
+    final rcvPUID = selectedUser?.puid ?? "";
+    final amount = amountCtrl.text.endsWith(".")
+        ? amountCtrl.text.replaceAll(".", "")
+        : amountCtrl.text;
 
-      final ticket = XFRTicket(
-        sndPUID: widget.sndRole?.buid,
-        rcvPUID: rcvPUID,
-        amount: amount,
-        tokenName: tokenName,
-        memo: memoCtrl.text,
-      );
-      final Future<CreditTransferResponse> Function(XFRTicket) fn =
-          widget.transferType == KTransferType.direct
-              ? KServerHandler.xfrDirect
-              : KServerHandler.xfrProxy;
-      final response = await fn.call(ticket);
-
-      setState(() => isNetworking = false);
-
-      switch (response.kstatus) {
-        case 100:
-          final assPUIDToLookFor = widget.transferType == KTransferType.proxy
-              ? widget.sndRole?.buid
-              : KSessionData.me?.puid;
-          KCreditTransaction? theTx;
-          try {
-            theTx = response.transactions?.firstWhere((t) {
-              print("t.assPUID == ${t.assPUID}");
-              print("assPUIDToLookFor == $assPUIDToLookFor");
-              return t.assPUID == assPUIDToLookFor;
-            });
-          } catch (e) {
-            print(e.toString());
-          }
-          if (theTx != null) {
-            await Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (ctx) => CreditReceipt(
-                transactionID: theTx!.txID ?? "",
-                lineID: theTx.lineID ?? "",
-                tokenName: widget.tokenName,
-              ),
-            ));
-          } else {
-            KToastHelper.fromResponse(response);
-          }
-          loadBalance();
-          break;
-        case 2104:
-          // multiple toast until a better solution
-          KToastHelper.show("Insufficient funds",
-              backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
-          // do noting
-          break;
-        case 400:
-          KToastHelper.show("Transfer failed",
-              backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
-          break;
-        default:
-          KToastHelper.show(response.kmessage ?? "Transfer failed",
-              backgroundColor: Colors.red, toastLength: Toast.LENGTH_LONG);
-          break;
+    if (rcvPUID.isNotEmpty && amount.isNotEmpty && selectedUser != null) {
+      // Open TransferConfirm screen
+      final result = await openConfirmScreen(
+          amount, widget.tokenName, selectedUser!, balanceAmount ?? "");
+      if (result != null) {
+        Navigator.of(context).pop();
       }
-    } catch (e) {
-      print(e);
-      print("release isNetworking = false");
-      setState(() => isNetworking = false);
     }
   }
 
   void toChooseContact() async {
-    final KUser? user = await Navigator.of(context)
-        .push(MaterialPageRoute(builder: (ctx) => KChooseContact()));
+    final KUser? user = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (ctx) => KChooseContact(contactType: KContactType.transfer)));
     if (user?.puid != null) loadUserInfo(puid: user!.puid!);
+  }
+
+  Future<dynamic> openConfirmScreen(
+      String amout, String tokenName, KUser user, String balanceAmount) async {
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => TransferConfirm(
+          sndRole: widget.sndRole,
+          transferType: widget.transferType,
+          amount: amout,
+          tokenName: tokenName,
+          user: user,
+          balanceAmount: balanceAmount,
+        ),
+      ),
+    );
+    return Future.value(result);
   }
 
   void loadUserInfo({required String puid}) async {
@@ -181,7 +133,7 @@ class _WalletTransferState extends State<WalletTransfer> {
       KUser user = response.users!.first;
       setState(() {
         this.selectedUser = user;
-        this.userCtrl.text = !(user.kunm ?? "").isEmpty
+        this.userController.text = !(user.kunm ?? "").isEmpty
             ? (KUtil.chatDisplayName(
                     kunm: user.kunm,
                     fnm: user.firstName ?? "",
@@ -196,14 +148,30 @@ class _WalletTransferState extends State<WalletTransfer> {
     }
   }
 
+  void onRecipientClick() async => toChooseContact();
+
   void onScanQR() async {
     final result = await KScanHelper.scan();
     try {
-      Map data = jsonDecode(result.data ?? "");
-      String puid = data["puid"];
+      final data = jsonDecode(result.data ?? "");
+      final puid = data["puid"];
       loadUserInfo(puid: puid);
     } catch (e) {
       print(e.toString());
+    }
+  }
+
+  String prettyPartialDecimal(String rawAmount) {
+    final endsWithPeriod = rawAmount.endsWith(".");
+    final base = KUtil.prettyMoney(
+      amount: rawAmount,
+      tokenName: widget.tokenName,
+      useCurrencySymbol: false,
+    );
+    if (endsWithPeriod) {
+      return "$base.";
+    } else {
+      return base;
     }
   }
 
@@ -228,62 +196,104 @@ class _WalletTransferState extends State<WalletTransfer> {
             ],
           );
 
+    final balanceView = () {
+      final amt = KUtil.prettyMoney(
+        amount: balanceAmount ?? "",
+        tokenName: widget.tokenName,
+        useCurrencyName: true,
+        useCurrencySymbol: false,
+        tokenToRight: true,
+      );
+      // ignore: unused_local_variable
+      final alexVersion = Text("You have $amt available");
+      // unnecessary nice lol
+
+      final balanceText = Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Balance",
+            style: Theme.of(context)
+                .textTheme
+                .headline6!
+                .copyWith(color: Theme.of(context).primaryColorLight),
+          ),
+          SizedBox(
+            width: 32,
+          ),
+          Text(amt, style: Theme.of(context).textTheme.headline6)
+        ],
+      );
+      return balanceAmount == null ? Text("") : balanceText;
+    }.call();
+
     final transferTo = _CreditInput(
-      controller: userCtrl,
+      controller: userController,
       label: "Transfer To",
       asset: KAssets.IMG_PROFILE,
       keyboardType: TextInputType.text,
       onClick: toChooseContact,
     );
 
-    final transferAmount = _CreditInput(
-      controller: amountCtrl,
-      label: "Transfer Amount",
-      style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-      keyboardType: TextInputType.numberWithOptions(decimal: true),
-    );
-
-    final transferMemo = _CreditInput(
-      controller: memoCtrl,
-      label: "Leave a Message (Optional)",
-      keyboardType: TextInputType.text,
-    );
-
-    final sendButton = ElevatedButton(
-      onPressed: isButtonEnabled ? attemptTransferCredit : null,
-      child: Text("TRANSFER"),
-    );
-
-    final body = ScrollConfiguration(
-      behavior: NoOverscroll(),
-      child: KeyboardKiller(
-        child: ListView(
-          padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-          children: <Widget>[
-            if (widget.sndRole != null) roleDisplay,
-            SizedBox(height: 20),
-            transferAmount,
-            SizedBox(height: 40),
-            Center(
-              child: Text(
-                "Balance: ${KUtil.prettyMoney(amount: balanceAmount, tokenName: widget.tokenName)}",
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-            ),
-            SizedBox(height: 20),
-            transferTo,
-            SizedBox(height: 20),
-            transferMemo,
-            SizedBox(height: 20),
-            isNetworking
-                ? Center(child: CircularProgressIndicator())
-                : sendButton,
-          ],
+    final transferAmount = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 32),
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: Text(
+          prettyPartialDecimal(amountCtrl.text),
+          // KUtil.prettyMoney(
+          //   amount: amountController.text,
+          //   tokenName: widget.tokenName,
+          //   useCurrencySymbol: false,
+          // ),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
     );
 
+    final sendButton = ElevatedButton(
+      onPressed: actionButtonHandler,
+      child: Container(
+        height: 26,
+        child: Center(
+          child: isNetworking ? CircularProgressIndicator() : Text("NEXT"),
+        ),
+      ),
+    );
+
+    final body = Container(
+      padding: EdgeInsets.all(6),
+      child: Column(
+        children: <Widget>[
+          if (widget.sndRole != null) roleDisplay,
+          Expanded(child: transferAmount),
+          Center(child: balanceView),
+          Expanded(
+            child: KNumberPad(
+              controller: amountCtrl,
+              onReturn: () {},
+              style: KNumberPadStyle.CASHAPP,
+              decimals: widget.tokenName == KMoney.VND ? 0 : 2,
+            ),
+          ),
+          SizedBox(height: 10),
+          sendButton,
+        ],
+      ),
+    );
+
     final actions = [
+      InkWell(
+        onTap: onRecipientClick,
+        child: Row(
+          children: [
+            Text(selectedUser?.fullName ?? "",
+                style: Theme.of(context).textTheme.headline6),
+            SizedBox(width: 12),
+            KUserAvatar.fromUser(selectedUser, size: 32)
+          ],
+        ),
+      ),
       IconButton(
         onPressed: onScanQR,
         icon: Image.asset(
@@ -294,12 +304,17 @@ class _WalletTransferState extends State<WalletTransfer> {
       ),
     ];
 
-    return Scaffold(
-      appBar: AppBar(
-        // title: Text("Transfer"),
-        actions: actions,
+    return KeyboardKiller(
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        // backgroundColor: Theme.of(context).colorScheme.primary,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          leading: CloseButton(),
+          actions: actions,
+        ),
+        body: SafeArea(child: body),
       ),
-      body: body,
     );
   }
 }
@@ -308,7 +323,6 @@ class _CreditInput extends StatelessWidget {
   final TextEditingController controller;
   final String label;
   final String? asset;
-  final TextStyle? style;
   final TextInputType keyboardType;
   final Function()? onClick;
 
@@ -316,7 +330,6 @@ class _CreditInput extends StatelessWidget {
     required this.controller,
     required this.label,
     this.asset,
-    this.style,
     this.onClick,
     this.keyboardType = TextInputType.text,
   });
@@ -350,7 +363,7 @@ class _CreditInput extends StatelessWidget {
       keyboardType: this.keyboardType,
       textInputAction: TextInputAction.done,
       onTap: onClick == null ? null : () => clickHandler(context),
-      style: style,
+      // style: TextStyle(color: Theme.of(context).primaryColor),
       decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(horizontal: 10),
         suffixIcon: icon,

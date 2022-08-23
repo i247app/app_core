@@ -1,7 +1,6 @@
 import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/model/kbalance.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class CreditTokenPicker extends StatefulWidget {
   final List<KBalance> balances;

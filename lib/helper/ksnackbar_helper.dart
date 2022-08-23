@@ -1,6 +1,5 @@
 import 'package:app_core/helper/kglobals.dart';
 import 'package:app_core/model/response/base_response.dart';
-import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
 
 abstract class KSnackBarHelper {
@@ -13,7 +12,7 @@ abstract class KSnackBarHelper {
       ScaffoldMessenger.of((key ?? kNavigatorKey).currentContext!).showSnackBar(
         SnackBar(
           content: Text(text),
-          backgroundColor: isSuccess ? KStyles.colorBGYes : KStyles.colorBGNo,
+          backgroundColor: isSuccess ? Colors.green : Colors.red,
         ),
       );
 
