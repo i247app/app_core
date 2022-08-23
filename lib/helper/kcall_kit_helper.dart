@@ -51,10 +51,7 @@ class KCallKitHelper {
   }
 
   Future<void> sendEndCallSocket(String callID) async {
-    commManager?.sayGoodbye(
-      roomID: callID,
-      tag: "KCallKitHelper.sendEndCallSocket",
-    );
+    commManager?.sayGoodbye(callID);
     Future.delayed(Duration(seconds: 3), commManager?.close);
   }
 
@@ -85,12 +82,12 @@ class KCallKitHelper {
     // );
     ConnectycubeFlutterCallKit.showCallNotification(
       // callEvent
-        sessionId: callID,
-        callType: 1,
-        callerId: 0,
-        callerName: callName,
-        opponentsIds: [0].toSet(),
-        );
+      sessionId: callID,
+      callType: 1,
+      callerId: 0,
+      callerName: callName,
+      opponentsIds: [0].toSet(),
+    );
     // }
   }
 
@@ -176,27 +173,25 @@ class KCallKitHelper {
 
     // send to rebroadcast helper
     if (data != null && data.app == KPushData.APP_P2P_CALL_NOTIFY) {
-      ConnectycubeFlutterCallKit.onCallRejectedWhenTerminated =
-          (
-          // CallEvent callEvent
-              sessionId,
-              callType,
-              callerId,
-              callerName,
-              opponentsIds,
-              ) {
+      ConnectycubeFlutterCallKit.onCallRejectedWhenTerminated = (
+        // CallEvent callEvent
+        sessionId,
+        callType,
+        callerId,
+        callerName,
+        opponentsIds,
+      ) {
         return onCallEnded("", sessionId);
       };
 
-      ConnectycubeFlutterCallKit.onCallAcceptedWhenTerminated =
-          (
-          // CallEvent callEvent
-              sessionId,
-              callType,
-              callerId,
-              callerName,
-              opponentsIds,
-              ) {
+      ConnectycubeFlutterCallKit.onCallAcceptedWhenTerminated = (
+        // CallEvent callEvent
+        sessionId,
+        callType,
+        callerId,
+        callerName,
+        opponentsIds,
+      ) {
         return saveCallInfo("", sessionId);
       };
 
@@ -287,22 +282,22 @@ class KCallKitHelper {
 
   /// Event Listener Callbacks for 'connectycube_flutter_call_kit'
   Future _onCallAccepted(
-      // CallEvent callEvent
-          String sessionId,
-          int callType,
-          int callerId,
-          String? callerName,
-          Set<int>? opponentsIds,
-          ) =>
+    // CallEvent callEvent
+    String sessionId,
+    int callType,
+    int callerId,
+    String? callerName,
+    Set<int>? opponentsIds,
+  ) =>
       onCallAccepted("", sessionId);
 
   Future _onCallRejected(
-      // CallEvent callEvent
-          String sessionId,
-          int callType,
-          int callerId,
-          String? callerName,
-          Set<int>? opponentsIds,
-          ) =>
+    // CallEvent callEvent
+    String sessionId,
+    int callType,
+    int callerId,
+    String? callerName,
+    Set<int>? opponentsIds,
+  ) =>
       onCallEnded("", sessionId);
 }
