@@ -1347,7 +1347,6 @@ class _KGameConsoleState extends State<KGameConsole>
           // if (result == null) startScreen,
           // if (result != null && canRestartGame) advanceScreen,
           // if (!canRestartGame) gameOverScreen,
-          print(level);
         },
         isEmbedded: true,
       ),
@@ -1629,7 +1628,7 @@ class _KGameConsoleState extends State<KGameConsole>
             decoration: BoxDecoration(
               image: DecorationImage(
                 image: AssetImage(
-                  BACKGROUND_IMAGES[currentLevel],
+                  BACKGROUND_IMAGES[currentLevel % 6],
                   package: 'app_core',
                 ),
                 fit: BoxFit.cover,

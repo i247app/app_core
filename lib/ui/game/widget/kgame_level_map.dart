@@ -93,7 +93,6 @@ class _KGameLevelMapState extends State<KGameLevelMap> {
   }
 
   void showGameLevelDialog(int level) async {
-    print(isCountTime);
     final gameLevelDialog = Align(
       alignment: Alignment.center,
       // child: KGameLevelDialog(

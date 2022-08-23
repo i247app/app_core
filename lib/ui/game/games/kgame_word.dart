@@ -585,7 +585,6 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
                           : box;
                     },
                     onAccept: (int answerIndex) {
-                      print(answerIndex);
                       if (barrierValues.length > answerIndex) {
                         final answer = barrierValues[answerIndex];
                         handlePickAnswer(answer, answerIndex, i);

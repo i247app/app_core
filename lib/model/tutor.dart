@@ -82,13 +82,25 @@ class Tutor extends KUser {
   @JsonKey(name: "tutorJoinDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
   DateTime? tutorJoinDate;
 
-  Color get highlightColor => (isGenius ?? false)
-      ? Colors.orange.shade300
-      : (isPrefer ?? false)
-          ? Colors.green
-          : Colors.black87;
+  Color get highlightColor => (isPrefer ?? false)
+      ? Colors.blue
+      : (isGenius ?? false)
+          ? Colors.transparent
+          : Colors.green;
 
-  double get highlightSize => isGenius == true || isPrefer == true ? 10.0 : 1.0;
+  Color? get iconColor => (isPrefer ?? false)
+      ? Colors.white
+      : (isGenius ?? false)
+          ? Colors.orange
+          : Colors.white;
+
+  IconData? get icon => (isPrefer ?? false)
+      ? Icons.diamond_outlined
+      : (isGenius ?? false)
+          ? Icons.star
+          : Icons.verified_outlined;
+
+  double get highlightSize => isGenius != true || isPrefer != true ? 10.0 : 1.0;
 
   /// Getters
   @JsonKey(ignore: true)

@@ -2,8 +2,11 @@ import 'package:app_core/model/kanswer.dart';
 import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/model/kquestion.dart';
+import 'package:get/utils.dart';
 
 class KGameData {
+  static const double DEFAULT_BASE_LEVEL_HARDNESS = 0.7;
+
   String gameID;
   String? gameAppID;
   String? gameName;
@@ -35,15 +38,22 @@ class KGameData {
 
   List<double> get levelHardness => List.generate(
         this.levelCount ?? 0,
-        (index) => (baseLevelHardness ?? 0) + (index * 0.1),
+        (index) =>
+        (index *
+            ((1 - (baseLevelHardness ?? DEFAULT_BASE_LEVEL_HARDNESS)) /
+                ((this.levelCount != null && this.levelCount! > 1
+                    ? this.levelCount!
+                    : 2) -
+                    1)) +
+            (baseLevelHardness ?? DEFAULT_BASE_LEVEL_HARDNESS)).toPrecision(1),
       );
 
   List<int?> rates = [];
 
   List<double> get levelScrollSpeeds => List.generate(
-    this.levelCount ?? 0,
+        this.levelCount ?? 0,
         (index) => index * 0.1,
-  );
+      );
 
   List<int> levelPlayTimes = [];
 
@@ -55,8 +65,12 @@ class KGameData {
       ? this.questions[this.currentQuestionIndex ?? 0]
       : KQuestion();
 
-  List<KAnswer> get currentQuestionAnswers => (this.currentQuestion.isGenAnswer ?? true) || (this.currentQuestion.answers ?? []).length == 1 ?
-      this.currentQuestion.generateAnswers(4, answerType ?? 'number', isUniqueAnswer ?? false) : this.currentQuestion.answers!;
+  List<KAnswer> get currentQuestionAnswers =>
+      (this.currentQuestion.isGenAnswer ?? true) ||
+              (this.currentQuestion.answers ?? []).length == 1
+          ? this.currentQuestion.generateAnswers(
+              4, answerType ?? 'number', isUniqueAnswer ?? false)
+          : this.currentQuestion.answers!;
 
   bool get canRestartGame =>
       (currentLevel ?? 0) + 1 < levelHardness.length ||
@@ -74,7 +88,7 @@ class KGameData {
     this.game,
     this.score,
     this.isSpeechGame = false,
-    this.baseLevelHardness = 0.7,
+    this.baseLevelHardness = DEFAULT_BASE_LEVEL_HARDNESS,
     this.currentQuestionIndex = 0,
     this.answerType = "number",
     this.isCountTime = false,
