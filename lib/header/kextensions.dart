@@ -30,4 +30,11 @@ extension KWidget<T> on State<StatefulWidget> {
   }
 
   bool isKeyboardHidden() => !isKeyboardVisible();
+
+  void safeSetState(f) {
+    if (mounted) {
+      // ignore: invalid_use_of_protected_member
+      setState(f);
+    }
+  }
 }
