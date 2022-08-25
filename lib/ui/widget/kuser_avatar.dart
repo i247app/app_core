@@ -1,3 +1,4 @@
+import 'package:app_core/app_core.dart';
 import 'package:app_core/header/kassets.dart';
 import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/helper/kstring_helper.dart';
@@ -19,6 +20,8 @@ class KUserAvatar extends StatelessWidget {
   final double highlightSize;
   final IconData? icon;
   final Color? iconColor;
+  final bool? showOnlineStatus;
+  final bool? isOnline;
   final Function? onFinishLoaded;
 
   Image get placeholderImage =>
@@ -36,6 +39,8 @@ class KUserAvatar extends StatelessWidget {
     this.highlightSize = 0.1,
     this.icon,
     this.iconColor,
+    this.showOnlineStatus,
+    this.isOnline,
     this.onFinishLoaded,
   });
 
@@ -48,6 +53,8 @@ class KUserAvatar extends StatelessWidget {
     double highlightSize = 0.1,
     IconData? icon,
     Color? iconColor,
+    bool? showOnlineStatus,
+    bool? isOnline,
     Function? onFinishLoaded,
   }) =>
       KUserAvatar(
@@ -58,6 +65,8 @@ class KUserAvatar extends StatelessWidget {
         isCached: isCached,
         icon: icon,
         iconColor: iconColor,
+        showOnlineStatus: showOnlineStatus,
+        isOnline: isOnline,
         highlightSize: highlightSize,
         highlightColor: highlightColor,
         onFinishLoaded: onFinishLoaded,
@@ -142,24 +151,41 @@ class KUserAvatar extends StatelessWidget {
       height: size,
       child: Stack(children: [
         body,
+        if (this.showOnlineStatus ?? false)
+          Positioned(
+            left: 0.0,
+            bottom: 0.0,
+            child: Container(
+              width: (size ?? 100) * 0.3,
+              height: (size ?? 100) * 0.3,
+              child: Icon(
+                Icons.fiber_manual_record,
+                size: (size ?? 100) * 0.3,
+                color: (this.isOnline ?? false)
+                    ? KStyles.green
+                    : Colors.grey.shade400,
+              ),
+            ),
+          ),
         if (this.icon != null && this.iconColor != null)
           Positioned(
             right: 0.0,
             bottom: 0.0,
             child: Container(
-                // padding: EdgeInsets.only(
-                //     top: (size ?? 100) * 0.01, left: (size ?? 100) * 0.01),
-                decoration: BoxDecoration(
-                  color: this.highlightColor,
-                  borderRadius: BorderRadius.circular(
-                    (size ?? 100) * 0.15,
-                  ),
+              // padding: EdgeInsets.only(
+              //     top: (size ?? 100) * 0.01, left: (size ?? 100) * 0.01),
+              decoration: BoxDecoration(
+                color: this.highlightColor,
+                borderRadius: BorderRadius.circular(
+                  (size ?? 100) * 0.15,
                 ),
-                width: (size ?? 100) * 0.3,
-                height: (size ?? 100) * 0.3,
-                child: Icon(this.icon!,
-                    size: (size ?? 100) * 0.3, color: this.iconColor!)),
-          )
+              ),
+              width: (size ?? 100) * 0.3,
+              height: (size ?? 100) * 0.3,
+              child: Icon(this.icon!,
+                  size: (size ?? 100) * 0.3, color: this.iconColor!),
+            ),
+          ),
       ]),
     );
   }

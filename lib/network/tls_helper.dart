@@ -51,12 +51,6 @@ abstract class TLSHelper {
       // Remove all entries with null value
       data.removeWhere((_, v) => v == null);
       final String json = jsonEncode(data);
-
-      // Write to socket and get the response
-      socketResource = await KSocketManager.getSocket(hostInfo);
-      final List<int> raw =
-          await writeToSocket(socketResource, utf8.encode(json));
-      answer = utf8.decode(raw, allowMalformed: false);
       if (isDebug) {
         _log(
           reqID,
@@ -66,6 +60,11 @@ abstract class TLSHelper {
           ignoreBlacklist: true,
         );
       }
+      // Write to socket and get the response
+      socketResource = await KSocketManager.getSocket(hostInfo);
+      final List<int> raw =
+          await writeToSocket(socketResource, utf8.encode(json));
+      answer = utf8.decode(raw, allowMalformed: false);
 
       // Test JSON for validity
       decodedAnswer = jsonDecode(answer);
