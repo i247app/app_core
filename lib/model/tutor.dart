@@ -91,7 +91,7 @@ class Tutor extends KUser {
   Color? get iconColor => (isPrefer ?? false)
       ? Colors.white
       : (isGenius ?? false)
-          ? Colors.orange
+          ? Colors.red
           : Colors.white;
 
   IconData? get icon => (isPrefer ?? false)
