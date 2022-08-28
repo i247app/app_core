@@ -21,6 +21,13 @@ String? zzz_date2Str(DateTime? d) =>
     d == null ? null : KDateHelper.to20FSP(d, toUTC: true);
 
 // ignore: non_constant_identifier_names
+KUser? zzz_json2User(Map<String, dynamic>? m) =>
+    m == null ? null : KUser.fromJson(m);
+
+// ignore: non_constant_identifier_names
+Map<String, dynamic>? zzz_user2JSON(KUser? u) => u?.toJson();
+
+// ignore: non_constant_identifier_names
 String? zzz_dur2Str(Duration? d) => d == null ? null : "${d.inMilliseconds}";
 
 // ignore: non_constant_identifier_names

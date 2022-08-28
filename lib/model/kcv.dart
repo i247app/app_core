@@ -1,6 +1,7 @@
 import 'package:app_core/model/response/base_response.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'kobject.dart';
+import 'kuser.dart';
 
 part 'kcv.g.dart';
 
@@ -44,8 +45,8 @@ class KCV extends KObject {
   @JsonKey(name: "avatar")
   String? avatar;
 
-  @JsonKey(name: "user")
-  String? user;
+  @JsonKey(name: "user", fromJson: zzz_json2User, toJson: zzz_user2JSON)
+  KUser? user;
 
   // JSON
   KCV();

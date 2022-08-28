@@ -33,7 +33,7 @@ KCV _$KCVFromJson(Map<String, dynamic> json) => KCV()
   ..middleName = json['middleName'] as String?
   ..lastName = json['lastName'] as String?
   ..avatar = json['avatar'] as String?
-  ..user = json['user'] as String?;
+  ..user = zzz_json2User(json['user'] as Map<String, dynamic>?);
 
 Map<String, dynamic> _$KCVToJson(KCV instance) {
   final val = <String, dynamic>{};
@@ -70,6 +70,6 @@ Map<String, dynamic> _$KCVToJson(KCV instance) {
   writeNotNull('middleName', instance.middleName);
   writeNotNull('lastName', instance.lastName);
   writeNotNull('avatar', instance.avatar);
-  writeNotNull('user', instance.user);
+  writeNotNull('user', zzz_user2JSON(instance.user));
   return val;
 }
