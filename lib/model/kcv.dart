@@ -11,8 +11,8 @@ class KCV extends KObject {
   static const String ACTION_MODIFY = "modify";
   static const String ACTION_REMOVE = "remove";
 
-  @JsonKey(name: "cv")
-  String? cv;
+  // @JsonKey(name: "cv")
+  // String? cv;
 
   @JsonKey(name: "id")
   String? id;
@@ -20,8 +20,8 @@ class KCV extends KObject {
   @JsonKey(name: "puid")
   String? puid;
 
-  @JsonKey(name: "cvDate")
-  String? cvDate;
+  @JsonKey(name: "cvDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
+  DateTime? cvDate;
 
   @JsonKey(name: "cvText")
   String? cvText;

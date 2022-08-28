@@ -23,10 +23,9 @@ KCV _$KCVFromJson(Map<String, dynamic> json) => KCV()
   ..kstatus = json['kstatus'] as String?
   ..kmessage = json['kmessage'] as String?
   ..kcount = json['kcount'] as String?
-  ..cv = json['cv'] as String?
   ..id = json['id'] as String?
   ..puid = json['puid'] as String?
-  ..cvDate = json['cvDate'] as String?
+  ..cvDate = zzz_str2Date(json['cvDate'] as String?)
   ..cvText = json['cvText'] as String?
   ..cvStatus = json['cvStatus'] as String?
   ..kunm = json['kunm'] as String?
@@ -61,10 +60,9 @@ Map<String, dynamic> _$KCVToJson(KCV instance) {
   writeNotNull('kstatus', instance.kstatus);
   writeNotNull('kmessage', instance.kmessage);
   writeNotNull('kcount', instance.kcount);
-  writeNotNull('cv', instance.cv);
   writeNotNull('id', instance.id);
   writeNotNull('puid', instance.puid);
-  writeNotNull('cvDate', instance.cvDate);
+  writeNotNull('cvDate', zzz_date2Str(instance.cvDate));
   writeNotNull('cvText', instance.cvText);
   writeNotNull('cvStatus', instance.cvStatus);
   writeNotNull('kunm', instance.kunm);
