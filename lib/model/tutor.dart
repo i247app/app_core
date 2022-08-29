@@ -82,23 +82,53 @@ class Tutor extends KUser {
   @JsonKey(name: "tutorJoinDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
   DateTime? tutorJoinDate;
 
-  Color get highlightColor => (isPrefer ?? false)
-      ? Colors.blue
-      : (isGenius ?? false)
-          ? Colors.transparent
-          : Colors.green;
+  Color get highlightColor {
+    if (tutorStatus == STATUS_BLOCK) {
+      return Colors.white;
+    } else if (tutorStatus == STATUS_PENDING) {
+      return Colors.white;
+    } else if (tutorStatus == STATUS_ACTIVE) {
+      return (isPrefer ?? false)
+          ? Colors.blue
+          : (isGenius ?? false)
+              ? Colors.white
+              : Colors.green;
+    } else {
+      return Colors.white;
+    }
+  }
 
-  Color? get iconColor => (isPrefer ?? false)
-      ? Colors.white
-      : (isGenius ?? false)
-          ? Colors.red
-          : Colors.white;
+  Color? get iconColor {
+    if (tutorStatus == STATUS_BLOCK) {
+      return Colors.red;
+    } else if (tutorStatus == STATUS_PENDING) {
+      return Colors.orange;
+    } else if (tutorStatus == STATUS_ACTIVE) {
+      return (isPrefer ?? false)
+          ? Colors.white
+          : (isGenius ?? false)
+              ? Colors.green
+              : Colors.white;
+    } else {
+      return Colors.red;
+    }
+  }
 
-  IconData? get icon => (isPrefer ?? false)
-      ? Icons.diamond_outlined
-      : (isGenius ?? false)
-          ? Icons.star
-          : Icons.verified_outlined;
+  IconData? get icon {
+    if (tutorStatus == STATUS_BLOCK) {
+      return Icons.gpp_bad_outlined;
+    } else if (tutorStatus == STATUS_PENDING) {
+      return Icons.gpp_maybe_outlined;
+    } else if (tutorStatus == STATUS_ACTIVE) {
+      return (isPrefer ?? false)
+          ? Icons.diamond_outlined
+          : (isGenius ?? false)
+              ? Icons.local_police_outlined
+              : Icons.verified_outlined;
+    } else {
+      return Icons.gpp_maybe_outlined;
+    }
+  }
 
   double get highlightSize => isGenius != true || isPrefer != true ? 10.0 : 1.0;
 
