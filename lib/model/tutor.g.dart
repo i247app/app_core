@@ -53,6 +53,7 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..schoolName = json['schoolName'] as String?
   ..businessName = json['businessName'] as String?
   ..userRating = json['userRating'] as String?
+  ..userStatus = json['userStatus'] as String?
   ..userRatingCount = json['userRatingCount'] as String?
   ..bankID = json['bankID'] as String?
   ..bankName = json['bankName'] as String?
@@ -91,7 +92,7 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..isEnglish = json['isEnglish'] as bool?
   ..isPrefer = json['isPrefer'] as bool?
   ..isGenius = json['isGenius'] as bool?
-  ..tutorStatus = json['userStatus'] as String?
+  ..tutorStatus = json['tutorStatus'] as String?
   ..userType = json['userType'] as String?
   ..userTags = (json['userTags'] as List<dynamic>?)
       ?.map((e) => UserTag.fromJson(e as Map<String, dynamic>))
@@ -154,6 +155,7 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('schoolName', instance.schoolName);
   writeNotNull('businessName', instance.businessName);
   writeNotNull('userRating', instance.userRating);
+  writeNotNull('userStatus', instance.userStatus);
   writeNotNull('userRatingCount', instance.userRatingCount);
   writeNotNull('bankID', instance.bankID);
   writeNotNull('bankName', instance.bankName);
@@ -184,7 +186,7 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('isEnglish', instance.isEnglish);
   writeNotNull('isPrefer', instance.isPrefer);
   writeNotNull('isGenius', instance.isGenius);
-  writeNotNull('userStatus', instance.tutorStatus);
+  writeNotNull('tutorStatus', instance.tutorStatus);
   writeNotNull('userType', instance.userType);
   writeNotNull('userTags', instance.userTags?.map((e) => e.toJson()).toList());
   writeNotNull('activeDate', zzz_date2Str(instance.activeDate));

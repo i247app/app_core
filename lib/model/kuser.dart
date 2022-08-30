@@ -112,6 +112,9 @@ class KUser extends KObject {
   @JsonKey(name: "userRating")
   String? userRating;
 
+  @JsonKey(name: "userStatus")
+  String? userStatus;
+
   @JsonKey(name: "userRatingCount")
   String? userRatingCount;
 
