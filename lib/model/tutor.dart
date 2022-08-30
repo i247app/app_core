@@ -67,7 +67,7 @@ class Tutor extends KUser {
   @JsonKey(name: IS_GENIUS)
   bool? isGenius;
 
-  @JsonKey(name: "userStatus")
+  @JsonKey(name: "tutorStatus")
   String? tutorStatus;
 
   @JsonKey(name: "userType")
@@ -83,11 +83,11 @@ class Tutor extends KUser {
   DateTime? tutorJoinDate;
 
   Color get highlightColor {
-    if (tutorStatus == STATUS_BLOCK) {
+    if (userStatus == STATUS_BLOCK) {
       return Colors.white;
-    } else if (tutorStatus == STATUS_PENDING) {
+    } else if (userStatus == STATUS_PENDING) {
       return Colors.white;
-    } else if (tutorStatus == STATUS_ACTIVE) {
+    } else if (userStatus == STATUS_ACTIVE) {
       return (isPrefer ?? false)
           ? Colors.blue
           : (isGenius ?? false)
@@ -99,11 +99,11 @@ class Tutor extends KUser {
   }
 
   Color? get iconColor {
-    if (tutorStatus == STATUS_BLOCK) {
+    if (userStatus == STATUS_BLOCK) {
       return Colors.red;
-    } else if (tutorStatus == STATUS_PENDING) {
+    } else if (userStatus == STATUS_PENDING) {
       return Colors.orange;
-    } else if (tutorStatus == STATUS_ACTIVE) {
+    } else if (userStatus == STATUS_ACTIVE) {
       return (isPrefer ?? false)
           ? Colors.white
           : (isGenius ?? false)
@@ -115,16 +115,16 @@ class Tutor extends KUser {
   }
 
   IconData? get icon {
-    if (tutorStatus == STATUS_BLOCK) {
+    if (userStatus == STATUS_BLOCK) {
       return Icons.gpp_bad_outlined;
-    } else if (tutorStatus == STATUS_PENDING) {
+    } else if (userStatus == STATUS_PENDING) {
       return Icons.gpp_maybe_outlined;
-    } else if (tutorStatus == STATUS_ACTIVE) {
+    } else if (userStatus == STATUS_ACTIVE) {
       return (isPrefer ?? false)
           ? Icons.diamond_outlined
           : (isGenius ?? false)
               ? Icons.local_police_outlined
-              : Icons.verified_outlined;
+              : Icons.verified_user_outlined;
     } else {
       return Icons.gpp_maybe_outlined;
     }
