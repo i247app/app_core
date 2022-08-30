@@ -67,7 +67,7 @@ class Tutor extends KUser {
   @JsonKey(name: IS_GENIUS)
   bool? isGenius;
 
-  @JsonKey(name: "tutorStatus")
+  @JsonKey(name: "userStatus")
   String? tutorStatus;
 
   @JsonKey(name: "userType")
