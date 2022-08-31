@@ -11,6 +11,7 @@ import 'package:app_core/ui/kicon/kicon_manager.dart';
 import 'package:app_core/ui/widget/kerror_view.dart';
 import 'package:draggable_widget/draggable_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 
 class KApp extends StatefulWidget {
@@ -147,6 +148,7 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
               darkTheme: darkTheme,
               themeMode: themeMode,
               home: widget.home,
+              builder: EasyLoading.init(),
             ),
           ),
         ),
