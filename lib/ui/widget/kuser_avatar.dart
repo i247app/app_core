@@ -146,7 +146,7 @@ class KUserAvatar extends StatelessWidget {
         child: ClipOval(child: raw),
       ),
     );
-
+    final badgeSize = (size ?? 100) * 0.4;
     return Container(
       height: size,
       child: Stack(children: [
@@ -156,11 +156,11 @@ class KUserAvatar extends StatelessWidget {
             left: 0.0,
             bottom: 0.0,
             child: Container(
-              width: (size ?? 100) * 0.3,
-              height: (size ?? 100) * 0.3,
+              width: badgeSize,
+              height: badgeSize,
               child: Icon(
                 Icons.fiber_manual_record,
-                size: (size ?? 100) * 0.3,
+                size: badgeSize,
                 color: (this.isOnline ?? false)
                     ? KStyles.green
                     : Colors.grey.shade400,
@@ -177,13 +177,12 @@ class KUserAvatar extends StatelessWidget {
               decoration: BoxDecoration(
                 color: this.highlightColor,
                 borderRadius: BorderRadius.circular(
-                  (size ?? 100) * 0.15,
+                  badgeSize / 2,
                 ),
               ),
-              width: (size ?? 100) * 0.3,
-              height: (size ?? 100) * 0.3,
-              child: Icon(this.icon!,
-                  size: (size ?? 100) * 0.3, color: this.iconColor!),
+              width: badgeSize,
+              height: badgeSize,
+              child: Icon(this.icon!, size: badgeSize, color: this.iconColor!),
             ),
           ),
       ]),
