@@ -83,19 +83,20 @@ class Tutor extends KUser {
   DateTime? tutorJoinDate;
 
   Color get highlightColor {
-    if (userStatus == STATUS_BLOCK) {
-      return Colors.white;
-    } else if (userStatus == STATUS_PENDING) {
-      return Colors.white;
-    } else if (userStatus == STATUS_ACTIVE) {
-      return (isPrefer ?? false)
-          ? Colors.blue
-          : (isGenius ?? false)
-              ? Colors.white
-              : Colors.green;
-    } else {
-      return Colors.white;
-    }
+    return Colors.white;
+    // if (userStatus == STATUS_BLOCK) {
+    //   return Colors.white;
+    // } else if (userStatus == STATUS_PENDING) {
+    //   return Colors.white;
+    // } else if (userStatus == STATUS_ACTIVE) {
+    //   return (isPrefer ?? false)
+    //       ? Colors.blue
+    //       : (isGenius ?? false)
+    //           ? Colors.white
+    //           : Colors.green;
+    // } else {
+    //   return Colors.white;
+    // }
   }
 
   Color? get iconColor {
@@ -105,10 +106,10 @@ class Tutor extends KUser {
       return Colors.orange;
     } else if (userStatus == STATUS_ACTIVE) {
       return (isPrefer ?? false)
-          ? Colors.white
+          ? Colors.blue
           : (isGenius ?? false)
               ? Colors.green
-              : Colors.white;
+              : Colors.green;
     } else {
       return Colors.red;
     }
