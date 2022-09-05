@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kdate_helper.dart';
 import 'package:app_core/helper/kdevice_id_helper.dart';
 import 'package:app_core/helper/khost_config.dart';
@@ -202,12 +203,17 @@ abstract class KUtil {
 
     String? title;
     try {
-      title = KStringHelper.capitalize(fnm ?? "");
+      title = KSessionData.me!.countryCode == KLocaleHelper.COUNTRY_VN
+          ? KStringHelper.capitalize(lnm ?? "")
+          : KStringHelper.capitalize(fnm ?? "");
 
       if (!KStringHelper.isEmpty(mnm))
         title += " " + KStringHelper.capitalize(mnm ?? "");
       if (!KStringHelper.isEmpty(lnm))
-        title += " " + KStringHelper.capitalize(lnm ?? "");
+        title += " " +
+            (KSessionData.me!.countryCode == KLocaleHelper.COUNTRY_VN
+                ? KStringHelper.capitalize(fnm ?? "")
+                : KStringHelper.capitalize(lnm ?? ""));
     } catch (e) {
       title = null;
     }
