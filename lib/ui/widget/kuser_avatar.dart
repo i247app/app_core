@@ -93,6 +93,22 @@ class KUserAvatar extends StatelessWidget {
   factory KUserAvatar.me({Image? imagePlaceHolder}) =>
       KUserAvatar.fromUser(KSessionData.me, imagePlaceHolder: imagePlaceHolder);
 
+  Widget buildFadeInImage() {
+    try {
+      Widget widget = FadeInImage.assetNetwork(
+        placeholder: KAssets.IMG_TRANSPARENCY,
+        image: imageURL!,
+        fit: BoxFit.cover,
+        fadeInDuration: Duration(milliseconds: 100),
+        imageErrorBuilder: (ctx, exc, stackTrace) => placeholderImage,
+      );
+      return widget;
+    } catch (e) {
+      print("KUserAvatar.buildFadeInImage: $e");
+      return placeholderImage;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final raw = (imageURL ?? "").isEmpty
@@ -127,13 +143,7 @@ class KUserAvatar extends StatelessWidget {
                       value: downloadProgress.progress);
                 },
               )
-            : FadeInImage.assetNetwork(
-                placeholder: KAssets.IMG_TRANSPARENCY,
-                image: imageURL!,
-                fit: BoxFit.cover,
-                fadeInDuration: Duration(milliseconds: 100),
-                imageErrorBuilder: (ctx, exc, stackTrace) => placeholderImage,
-              ));
+            : buildFadeInImage());
 
     final body = AspectRatio(
       aspectRatio: 1,
