@@ -24,7 +24,7 @@ abstract class KLocationHelper {
         hasServiceEnabled().then((bool _yes) {
           if (_yes) {
             Geolocator.getCurrentPosition(
-                desiredAccuracy: LocationAccuracy.bestForNavigation)
+                    desiredAccuracy: LocationAccuracy.bestForNavigation)
                 .then((pos) => _theCachedPosition = pos);
           }
         });
@@ -72,7 +72,8 @@ abstract class KLocationHelper {
       return null;
   }
 
-  static Future<KLatLng?> getKLatLng({bool askForPermissions: true, bool askForEnableService: false}) async {
+  static Future<KLatLng?> getKLatLng(
+      {bool askForPermissions: true, bool askForEnableService: false}) async {
     if (_theCachedPosition == null) {
       final positionString = await KPrefHelper.get(KPrefHelper.CACHED_POSITION);
       if (positionString != null) {
