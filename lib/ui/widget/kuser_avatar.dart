@@ -34,7 +34,7 @@ class KUserAvatar extends StatelessWidget {
     this.backgroundColor,
     this.foregroundColor,
     this.size,
-    this.isCached = false,
+    this.isCached = true,
     this.highlightColor = Colors.black,
     this.highlightSize = 0.1,
     this.icon,
@@ -95,13 +95,15 @@ class KUserAvatar extends StatelessWidget {
 
   Widget buildFadeInImage() {
     try {
-      Widget widget = FadeInImage.assetNetwork(
-        placeholder: KAssets.IMG_TRANSPARENCY,
-        image: imageURL!,
-        fit: BoxFit.cover,
-        fadeInDuration: Duration(milliseconds: 100),
-        imageErrorBuilder: (ctx, exc, stackTrace) => placeholderImage,
-      );
+      Widget widget = imageURL == null
+          ? placeholderImage
+          : FadeInImage.assetNetwork(
+              placeholder: KAssets.IMG_TRANSPARENCY,
+              image: imageURL ?? "",
+              fit: BoxFit.cover,
+              fadeInDuration: Duration(milliseconds: 100),
+              imageErrorBuilder: (ctx, exc, stackTrace) => placeholderImage,
+            );
       return widget;
     } catch (e) {
       print("KUserAvatar.buildFadeInImage: $e");
@@ -111,39 +113,46 @@ class KUserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final raw = (imageURL ?? "").isEmpty
-        ? (initial ?? "").isEmpty
-            ? placeholderImage
-            : FittedBox(
-                fit: BoxFit.cover,
-                child: CircleAvatar(
-                  backgroundColor:
-                      backgroundColor ?? Theme.of(context).colorScheme.primary,
-                  foregroundColor: foregroundColor ?? Colors.white,
-                  child: Text(
-                    KStringHelper.substring(initial!, 0, 2).toUpperCase(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: foregroundColor ?? Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+    var raw = null;
+    if ((imageURL ?? "").isEmpty && (initial ?? "").isEmpty) {
+      raw = placeholderImage;
+    }
+    if ((imageURL ?? "").isEmpty && !(initial ?? "").isEmpty) {
+      raw = FittedBox(
+        fit: BoxFit.cover,
+        child: CircleAvatar(
+          backgroundColor:
+              backgroundColor ?? Theme.of(context).colorScheme.primary,
+          foregroundColor: foregroundColor ?? Colors.white,
+          child: Text(
+            KStringHelper.substring(initial!, 0, 2).toUpperCase(),
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: foregroundColor ?? Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      );
+    }
+    if (!(imageURL ?? "").isEmpty) {
+      raw = isCached == true
+          ? CachedNetworkImage(
+              imageUrl: imageURL ?? "",
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
                   ),
                 ),
-              )
-        : ((this.isCached ?? false)
-            ? CachedNetworkImage(
-                imageUrl: imageURL!,
-                progressIndicatorBuilder: (context, url, downloadProgress) {
-                  if ((downloadProgress.progress == null ||
-                          downloadProgress.progress == 1) &&
-                      this.onFinishLoaded != null) {
-                    this.onFinishLoaded!();
-                  }
-                  return CircularProgressIndicator(
-                      value: downloadProgress.progress);
-                },
-              )
-            : buildFadeInImage());
+              ),
+              placeholder: (context, url) => placeholderImage,
+              errorWidget: (context, url, error) => placeholderImage,
+            )
+          : buildFadeInImage();
+    }
 
     final body = AspectRatio(
       aspectRatio: 1,
@@ -153,7 +162,7 @@ class KUserAvatar extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(size ?? 100),
         ),
-        child: ClipOval(child: raw),
+        child: ClipOval(child: raw ?? placeholderImage),
       ),
     );
     final badgeSize = (size ?? 100) * 0.4;
