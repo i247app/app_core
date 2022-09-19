@@ -287,8 +287,14 @@ class _WalletTransferState extends State<WalletTransfer> {
         onTap: onRecipientClick,
         child: Row(
           children: [
-            Text(selectedUser?.fullName ?? "",
-                style: Theme.of(context).textTheme.headline6),
+            SizedBox(
+              width: 230,
+              height: 30,
+              child: FittedBox(
+                child: Text(selectedUser?.fullName ?? "",
+                    style: Theme.of(context).textTheme.headline6),
+              ),
+            ),
             SizedBox(width: 12),
             KUserAvatar.fromUser(selectedUser, size: 32)
           ],
