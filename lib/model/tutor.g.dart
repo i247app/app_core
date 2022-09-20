@@ -100,7 +100,11 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
       ?.map((e) => UserTag.fromJson(e as Map<String, dynamic>))
       .toList()
   ..activeDate = zzz_str2Date(json['activeDate'] as String?)
-  ..tutorJoinDate = zzz_str2Date(json['tutorJoinDate'] as String?);
+  ..tutorJoinDate = zzz_str2Date(json['tutorJoinDate'] as String?)
+  ..gigMedium = json['gigMedium'] as String?
+  ..mathLevel = json['mathLevel'] as String?
+  ..vietLevel = json['vietLevel'] as String?
+  ..anhLevel = json['anhLevel'] as String?;
 
 Map<String, dynamic> _$TutorToJson(Tutor instance) {
   final val = <String, dynamic>{};
@@ -195,5 +199,9 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('userTags', instance.userTags?.map((e) => e.toJson()).toList());
   writeNotNull('activeDate', zzz_date2Str(instance.activeDate));
   writeNotNull('tutorJoinDate', zzz_date2Str(instance.tutorJoinDate));
+  writeNotNull('gigMedium', instance.gigMedium);
+  writeNotNull('mathLevel', instance.mathLevel);
+  writeNotNull('vietLevel', instance.vietLevel);
+  writeNotNull('anhLevel', instance.anhLevel);
   return val;
 }

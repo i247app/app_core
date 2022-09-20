@@ -85,6 +85,18 @@ class Tutor extends KUser {
   @JsonKey(name: "tutorJoinDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
   DateTime? tutorJoinDate;
 
+  @JsonKey(name: "gigMedium")
+  String? gigMedium;
+
+  @JsonKey(name: "mathLevel")
+  String? mathLevel;
+
+  @JsonKey(name: "vietLevel")
+  String? vietLevel;
+
+  @JsonKey(name: "anhLevel")
+  String? anhLevel;
+
   Color get highlightColor {
     return Colors.white;
     // if (userStatus == STATUS_BLOCK) {
