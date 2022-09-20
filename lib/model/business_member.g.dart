@@ -24,6 +24,7 @@ BusinessMember _$BusinessMemberFromJson(Map<String, dynamic> json) =>
       ..kmessage = json['kmessage'] as String?
       ..kcount = json['kcount'] as String?
       ..action = json['action'] as String?
+      ..gigCount = json['gigCount'] as String?
       ..kunm = json['kunm'] as String?
       ..phone = json['fone'] as String?
       ..phoneCode = json['foneCode'] as String?
@@ -115,6 +116,7 @@ Map<String, dynamic> _$BusinessMemberToJson(BusinessMember instance) {
   writeNotNull('kmessage', instance.kmessage);
   writeNotNull('kcount', instance.kcount);
   writeNotNull('action', instance.action);
+  writeNotNull('gigCount', instance.gigCount);
   writeNotNull('kunm', instance.kunm);
   writeNotNull('fone', instance.phone);
   writeNotNull('foneCode', instance.phoneCode);

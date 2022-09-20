@@ -23,6 +23,7 @@ KUser _$KUserFromJson(Map<String, dynamic> json) => KUser()
   ..kmessage = json['kmessage'] as String?
   ..kcount = json['kcount'] as String?
   ..action = json['action'] as String?
+  ..gigCount = json['gigCount'] as String?
   ..puid = json['puid'] as String?
   ..kunm = json['kunm'] as String?
   ..phone = json['fone'] as String?
@@ -106,6 +107,7 @@ Map<String, dynamic> _$KUserToJson(KUser instance) {
   writeNotNull('kmessage', instance.kmessage);
   writeNotNull('kcount', instance.kcount);
   writeNotNull('action', instance.action);
+  writeNotNull('gigCount', instance.gigCount);
   writeNotNull('puid', instance.puid);
   writeNotNull('kunm', instance.kunm);
   writeNotNull('fone', instance.phone);

@@ -18,8 +18,6 @@ class Tutor extends KUser {
   static const String IS_HEADSTART = "isHeadstart";
   static const String IS_ENGLISH = "isEnglish";
 
-  static const String GIG_COUNT = "gigCount";
-
   static const String STATUS_PENDING = "P";
   static const String STATUS_ACTIVE = "A";
   static const String STATUS_ALERT = "K";
@@ -44,9 +42,6 @@ class Tutor extends KUser {
 
   @JsonKey(name: TUTOR_ID)
   String? tutorID;
-
-  @JsonKey(name: GIG_COUNT)
-  String? gigCount;
 
   @JsonKey(name: IS_ONLINE)
   bool? isOnline;

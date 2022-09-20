@@ -13,9 +13,13 @@ class KUser extends KObject {
   static const String ACTION_LIST = "list";
   static const String ACTION_MODIFY = "modify";
   static const String ACTION_REMOVE = "remove";
+  static const String GIG_COUNT = "gigCount";
 
   @JsonKey(name: "action")
   String? action;
+
+  @JsonKey(name: GIG_COUNT)
+  String? gigCount;
 
   @JsonKey(name: "puid")
   String? puid;

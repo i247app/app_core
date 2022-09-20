@@ -23,6 +23,7 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..kmessage = json['kmessage'] as String?
   ..kcount = json['kcount'] as String?
   ..action = json['action'] as String?
+  ..gigCount = json['gigCount'] as String?
   ..puid = json['puid'] as String?
   ..kunm = json['kunm'] as String?
   ..phone = json['fone'] as String?
@@ -84,7 +85,6 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
       ? null
       : Review.fromJson(json['rating'] as Map<String, dynamic>)
   ..tutorID = json['tutorID'] as String?
-  ..gigCount = json['gigCount'] as String?
   ..isOnline = json['isOnline'] as bool?
   ..onlineMode = zzz_str2Bool(json['onlineMode'] as String?)
   ..isInPerson = json['isInPerson'] as bool?
@@ -127,6 +127,7 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('kmessage', instance.kmessage);
   writeNotNull('kcount', instance.kcount);
   writeNotNull('action', instance.action);
+  writeNotNull('gigCount', instance.gigCount);
   writeNotNull('puid', instance.puid);
   writeNotNull('kunm', instance.kunm);
   writeNotNull('fone', instance.phone);
@@ -180,7 +181,6 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('distance', zzz_dtoa(instance.distance));
   writeNotNull('rating', instance.review?.toJson());
   writeNotNull('tutorID', instance.tutorID);
-  writeNotNull('gigCount', instance.gigCount);
   writeNotNull('isOnline', instance.isOnline);
   writeNotNull('onlineMode', zzz_bool2Str(instance.onlineMode));
   writeNotNull('isInPerson', instance.isInPerson);
