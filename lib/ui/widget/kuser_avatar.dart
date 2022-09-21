@@ -48,7 +48,7 @@ class KUserAvatar extends StatelessWidget {
     KUser? user, {
     Image? imagePlaceHolder,
     double? size,
-    bool? isCached,
+    bool isCached = true,
     Color highlightColor = Colors.black,
     double highlightSize = 0.1,
     IconData? icon,
