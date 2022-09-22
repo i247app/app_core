@@ -35,7 +35,7 @@ class Tutor extends KUser {
   static const String IS_PREFER = "isPrefer";
   static const String IS_GENIUS = "isGenius";
   static const String IS_KEEP_WORKER = "isKeepWorker";
-  static const String IS_AVOID_WORKER = "isAvoidWorker";
+  static const String IS_BLOCK_WORKER = "isBlockWorker";
 
   @JsonKey(name: "rating")
   Review? review;
@@ -67,8 +67,8 @@ class Tutor extends KUser {
   @JsonKey(name: IS_KEEP_WORKER)
   bool? isKeepWorker;
 
-  @JsonKey(name: IS_AVOID_WORKER)
-  bool? isAvoidWorker;
+  @JsonKey(name: IS_BLOCK_WORKER)
+  bool? isBlockWorker;
 
   @JsonKey(name: "tutorStatus")
   String? tutorStatus;
