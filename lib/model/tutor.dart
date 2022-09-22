@@ -85,9 +85,6 @@ class Tutor extends KUser {
   @JsonKey(name: "tutorJoinDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
   DateTime? tutorJoinDate;
 
-  @JsonKey(name: "gigMedium")
-  String? gigMedium;
-
   @JsonKey(name: "mathLevel")
   String? mathLevel;
 

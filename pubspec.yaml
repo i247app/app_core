@@ -112,6 +112,8 @@ dependencies:
 
   flutter_easyloading: ^3.0.5
 
+  syncfusion_flutter_sliders: ^20.2.50
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
