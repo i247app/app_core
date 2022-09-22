@@ -87,10 +87,10 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..tutorID = json['tutorID'] as String?
   ..isOnline = json['isOnline'] as bool?
   ..onlineMode = zzz_str2Bool(json['onlineMode'] as String?)
-  ..isInPerson = json['isInPerson'] as bool?
-  ..isHeadstart = json['isHeadstart'] as bool?
-  ..isEnglish = json['isEnglish'] as bool?
-  ..isPrefer = json['isPrefer'] as bool?
+  ..canInPerson = json['canInPerson'] as bool?
+  ..canHeadstart = json['canHeadstart'] as bool?
+  ..canEnglish = json['canEnglish'] as bool?
+  ..isSkill = json['isSkill'] as bool?
   ..isGenius = json['isGenius'] as bool?
   ..isKeepWorker = json['isKeepWorker'] as bool?
   ..isBlockWorker = json['isBlockWorker'] as bool?
@@ -103,7 +103,8 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..tutorJoinDate = zzz_str2Date(json['tutorJoinDate'] as String?)
   ..mathLevel = json['mathLevel'] as String?
   ..vietLevel = json['vietLevel'] as String?
-  ..anhLevel = json['anhLevel'] as String?;
+  ..anhLevel = json['anhLevel'] as String?
+  ..canOnline = json['canOnline'] as bool?;
 
 Map<String, dynamic> _$TutorToJson(Tutor instance) {
   final val = <String, dynamic>{};
@@ -186,10 +187,10 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('tutorID', instance.tutorID);
   writeNotNull('isOnline', instance.isOnline);
   writeNotNull('onlineMode', zzz_bool2Str(instance.onlineMode));
-  writeNotNull('isInPerson', instance.isInPerson);
-  writeNotNull('isHeadstart', instance.isHeadstart);
-  writeNotNull('isEnglish', instance.isEnglish);
-  writeNotNull('isPrefer', instance.isPrefer);
+  writeNotNull('canInPerson', instance.canInPerson);
+  writeNotNull('canHeadstart', instance.canHeadstart);
+  writeNotNull('canEnglish', instance.canEnglish);
+  writeNotNull('isSkill', instance.isSkill);
   writeNotNull('isGenius', instance.isGenius);
   writeNotNull('isKeepWorker', instance.isKeepWorker);
   writeNotNull('isBlockWorker', instance.isBlockWorker);
@@ -201,5 +202,6 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('mathLevel', instance.mathLevel);
   writeNotNull('vietLevel', instance.vietLevel);
   writeNotNull('anhLevel', instance.anhLevel);
+  writeNotNull('canOnline', instance.canOnline);
   return val;
 }

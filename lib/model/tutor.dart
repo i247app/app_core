@@ -14,9 +14,9 @@ class Tutor extends KUser {
   static const String IS_ONLINE = "isOnline";
   static const String ONLINE_MODE = "onlineMode";
 
-  static const String IS_IN_PERSON = "isInPerson";
-  static const String IS_HEADSTART = "isHeadstart";
-  static const String IS_ENGLISH = "isEnglish";
+  static const String CAN_IN_PERSON = "canInPerson";
+  static const String CAN_HEADSTART = "canHeadstart";
+  static const String CAN_ENGLISH = "canEnglish";
 
   static const String STATUS_PENDING = "P";
   static const String STATUS_ACTIVE = "A";
@@ -32,7 +32,7 @@ class Tutor extends KUser {
   static const String ACTION_HEADSTART = "HEADSTART";
   static const String ACTION_ENGLISH = "ENGLISH";
 
-  static const String IS_PREFER = "isPrefer";
+  static const String IS_SKILL = "isSkill";
   static const String IS_GENIUS = "isGenius";
   static const String IS_KEEP_WORKER = "isKeepWorker";
   static const String IS_BLOCK_WORKER = "isBlockWorker";
@@ -49,17 +49,17 @@ class Tutor extends KUser {
   @JsonKey(name: ONLINE_MODE, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? onlineMode;
 
-  @JsonKey(name: IS_IN_PERSON)
-  bool? isInPerson;
+  @JsonKey(name: CAN_IN_PERSON)
+  bool? canInPerson;
 
-  @JsonKey(name: IS_HEADSTART)
-  bool? isHeadstart;
+  @JsonKey(name: CAN_HEADSTART)
+  bool? canHeadstart;
 
-  @JsonKey(name: IS_ENGLISH)
-  bool? isEnglish;
+  @JsonKey(name: CAN_ENGLISH)
+  bool? canEnglish;
 
-  @JsonKey(name: IS_PREFER)
-  bool? isPrefer;
+  @JsonKey(name: IS_SKILL)
+  bool? isSkill;
 
   @JsonKey(name: IS_GENIUS)
   bool? isGenius;
@@ -94,6 +94,9 @@ class Tutor extends KUser {
   @JsonKey(name: "anhLevel")
   String? anhLevel;
 
+  @JsonKey(name: "canOnline")
+  bool? canOnline;
+
   Color get highlightColor {
     return Colors.white;
     // if (userStatus == STATUS_BLOCK) {
@@ -117,7 +120,7 @@ class Tutor extends KUser {
     } else if (userStatus == STATUS_PENDING) {
       return Colors.orange;
     } else if (userStatus == STATUS_ACTIVE) {
-      return (isPrefer ?? false)
+      return (isSkill ?? false)
           ? Colors.blue
           : (isGenius ?? false)
               ? Colors.green
@@ -133,7 +136,7 @@ class Tutor extends KUser {
     } else if (userStatus == STATUS_PENDING) {
       return Icons.gpp_maybe_outlined;
     } else if (userStatus == STATUS_ACTIVE) {
-      return (isPrefer ?? false)
+      return (isSkill ?? false)
           ? Icons.diamond_outlined
           : (isGenius ?? false)
               ? Icons.local_police_outlined
@@ -143,7 +146,7 @@ class Tutor extends KUser {
     }
   }
 
-  double get highlightSize => isGenius != true || isPrefer != true ? 10.0 : 1.0;
+  double get highlightSize => isGenius != true || isSkill != true ? 10.0 : 1.0;
 
   /// Getters
   @JsonKey(ignore: true)
