@@ -91,8 +91,8 @@ class Tutor extends KUser {
   @JsonKey(name: "vietLevel")
   String? vietLevel;
 
-  @JsonKey(name: "anhLevel")
-  String? anhLevel;
+  @JsonKey(name: "englishLevel")
+  String? englishLevel;
 
   @JsonKey(name: "canOnline")
   bool? canOnline;

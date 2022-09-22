@@ -103,7 +103,7 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..tutorJoinDate = zzz_str2Date(json['tutorJoinDate'] as String?)
   ..mathLevel = json['mathLevel'] as String?
   ..vietLevel = json['vietLevel'] as String?
-  ..anhLevel = json['anhLevel'] as String?
+  ..englishLevel = json['englishLevel'] as String?
   ..canOnline = json['canOnline'] as bool?;
 
 Map<String, dynamic> _$TutorToJson(Tutor instance) {
@@ -201,7 +201,7 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('tutorJoinDate', zzz_date2Str(instance.tutorJoinDate));
   writeNotNull('mathLevel', instance.mathLevel);
   writeNotNull('vietLevel', instance.vietLevel);
-  writeNotNull('anhLevel', instance.anhLevel);
+  writeNotNull('englishLevel', instance.englishLevel);
   writeNotNull('canOnline', instance.canOnline);
   return val;
 }
