@@ -41,7 +41,7 @@ bool? zzz_str2Bool(String? z) =>
     KStringHelper.parseBoolean(z ?? KStringHelper.FALSE);
 
 // ignore: non_constant_identifier_names
-String? zzz_bool2Str(bool? b) => KStringHelper.toBooleanCode(b ?? false);
+String? zzz_bool2Str(bool? b) => b == null ? null : KStringHelper.toBooleanCode(b);
 
 // ignore: non_constant_identifier_names
 double? zzz_atod(String? z) => z == null ? null : double.tryParse(z);
