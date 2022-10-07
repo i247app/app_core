@@ -105,6 +105,7 @@ dependencies:
       url: https://github.com/Thanhktm/flutter_cached_network_image.git
       ref: flutter3.0.1
   flutter_picker: ^2.0.2
+  wheel_chooser: ^1.0.0
 
   xml: ^5.1.2
 
