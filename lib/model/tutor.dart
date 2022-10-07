@@ -28,10 +28,11 @@ class Tutor extends KUser {
   static const String ACTION_ACTIVATE = "ACTIVATE";
   static const String ACTION_ALERT = "ALERT";
   static const String ACTION_OFFLINE = "OFFLINE";
-  static const String ACTION_IN_PERSON = "IN_PERSON";
-  static const String ACTION_ONLINE = "ONLINE";
-  static const String ACTION_HEADSTART = "HEADSTART";
-  static const String ACTION_ENGLISH = "ENGLISH";
+  static const String ACTION_FORCE_OFFLINE = "FORCE_OFFLINE";
+  static const String ACTION_CAN_IN_PERSON = "CAN_IN_PERSON";
+  static const String ACTION_CAN_ONLINE = "CAN_ONLINE";
+  static const String ACTION_CAN_HEADSTART = "CAN_HEADSTART";
+  static const String ACTION_CAN_ENGLISH = "CAN_ENGLISH";
 
   static const String IS_SKILL = "isSkill";
   static const String IS_GENIUS = "isGenius";
