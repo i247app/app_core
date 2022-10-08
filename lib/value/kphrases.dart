@@ -89,6 +89,8 @@ abstract class KPhrases {
   static String get waitingForOtherUser =>
       _klingo.yak("waiting_for_other_user");
 
+  static String get tapReturnSession => _klingo.yak("tap_return_session");
+
   static String get sessionEnded => _klingo.yak("session_ended");
 
   static String get bankTitle => _klingo.yak("bank_title");
