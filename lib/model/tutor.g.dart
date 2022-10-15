@@ -85,15 +85,15 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
       ? null
       : Review.fromJson(json['rating'] as Map<String, dynamic>)
   ..tutorID = json['tutorID'] as String?
-  ..isOnline = zzz_str2Bool(json['isOnline'] as String?)
+  ..isOnline = json['isOnline'] as bool?
   ..onlineMode = zzz_str2Bool(json['onlineMode'] as String?)
-  ..canInPerson = zzz_str2Bool(json['canInPerson'] as String?)
-  ..canHeadstart = zzz_str2Bool(json['canHeadstart'] as String?)
-  ..canEnglish = zzz_str2Bool(json['canEnglish'] as String?)
-  ..isSkill = zzz_str2Bool(json['isSkill'] as String?)
-  ..isGenius = zzz_str2Bool(json['isGenius'] as String?)
-  ..isKeepWorker = zzz_str2Bool(json['isKeepWorker'] as String?)
-  ..isBlockWorker = zzz_str2Bool(json['isBlockWorker'] as String?)
+  ..canInPerson = json['canInPerson'] as bool?
+  ..canHeadstart = json['canHeadstart'] as bool?
+  ..canEnglish = json['canEnglish'] as bool?
+  ..isSkill = json['isSkill'] as bool?
+  ..isGenius = json['isGenius'] as bool?
+  ..isKeepWorker = json['isKeepWorker'] as bool?
+  ..isBlockWorker = json['isBlockWorker'] as bool?
   ..tutorStatus = json['tutorStatus'] as String?
   ..userType = json['userType'] as String?
   ..userTags = (json['userTags'] as List<dynamic>?)
@@ -104,7 +104,7 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..mathLevel = json['mathLevel'] as String?
   ..vietLevel = json['vietLevel'] as String?
   ..englishLevel = json['englishLevel'] as String?
-  ..canOnline = zzz_str2Bool(json['canOnline'] as String?);
+  ..canOnline = json['canOnline'] as bool?;
 
 Map<String, dynamic> _$TutorToJson(Tutor instance) {
   final val = <String, dynamic>{};
@@ -185,15 +185,15 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('distance', zzz_dtoa(instance.distance));
   writeNotNull('rating', instance.review?.toJson());
   writeNotNull('tutorID', instance.tutorID);
-  writeNotNull('isOnline', zzz_bool2Str(instance.isOnline));
+  writeNotNull('isOnline', instance.isOnline);
   writeNotNull('onlineMode', zzz_bool2Str(instance.onlineMode));
-  writeNotNull('canInPerson', zzz_bool2Str(instance.canInPerson));
-  writeNotNull('canHeadstart', zzz_bool2Str(instance.canHeadstart));
-  writeNotNull('canEnglish', zzz_bool2Str(instance.canEnglish));
-  writeNotNull('isSkill', zzz_bool2Str(instance.isSkill));
-  writeNotNull('isGenius', zzz_bool2Str(instance.isGenius));
-  writeNotNull('isKeepWorker', zzz_bool2Str(instance.isKeepWorker));
-  writeNotNull('isBlockWorker', zzz_bool2Str(instance.isBlockWorker));
+  writeNotNull('canInPerson', instance.canInPerson);
+  writeNotNull('canHeadstart', instance.canHeadstart);
+  writeNotNull('canEnglish', instance.canEnglish);
+  writeNotNull('isSkill', instance.isSkill);
+  writeNotNull('isGenius', instance.isGenius);
+  writeNotNull('isKeepWorker', instance.isKeepWorker);
+  writeNotNull('isBlockWorker', instance.isBlockWorker);
   writeNotNull('tutorStatus', instance.tutorStatus);
   writeNotNull('userType', instance.userType);
   writeNotNull('userTags', instance.userTags?.map((e) => e.toJson()).toList());
@@ -202,6 +202,6 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('mathLevel', instance.mathLevel);
   writeNotNull('vietLevel', instance.vietLevel);
   writeNotNull('englishLevel', instance.englishLevel);
-  writeNotNull('canOnline', zzz_bool2Str(instance.canOnline));
+  writeNotNull('canOnline', instance.canOnline);
   return val;
 }
