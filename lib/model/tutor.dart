@@ -51,7 +51,7 @@ class Tutor extends KUser {
   @JsonKey(name: ONLINE_MODE, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? onlineMode;
 
-  @JsonKey(name: CAN_IN_PERSON)
+  @JsonKey(name: CAN_IN_PERSON, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canInPerson;
 
   @JsonKey(name: CAN_HEADSTART)
@@ -96,7 +96,7 @@ class Tutor extends KUser {
   @JsonKey(name: "englishLevel")
   String? englishLevel;
 
-  @JsonKey(name: "canOnline")
+  @JsonKey(name: "canOnline", fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canOnline;
 
   Color get highlightColor {
