@@ -90,6 +90,7 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..canInPerson = json['canInPerson'] as bool?
   ..canHeadstart = json['canHeadstart'] as bool?
   ..canEnglish = json['canEnglish'] as bool?
+  ..canViet = json['canViet'] as bool?
   ..isSkill = json['isSkill'] as bool?
   ..isGenius = json['isGenius'] as bool?
   ..isKeepWorker = json['isKeepWorker'] as bool?
@@ -190,6 +191,7 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('canInPerson', instance.canInPerson);
   writeNotNull('canHeadstart', instance.canHeadstart);
   writeNotNull('canEnglish', instance.canEnglish);
+  writeNotNull('canViet', instance.canViet);
   writeNotNull('isSkill', instance.isSkill);
   writeNotNull('isGenius', instance.isGenius);
   writeNotNull('isKeepWorker', instance.isKeepWorker);

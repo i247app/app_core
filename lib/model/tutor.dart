@@ -17,6 +17,7 @@ class Tutor extends KUser {
   static const String CAN_IN_PERSON = "canInPerson";
   static const String CAN_HEADSTART = "canHeadstart";
   static const String CAN_ENGLISH = "canEnglish";
+  static const String CAN_VIET = "canViet";
 
   static const String STATUS_PENDING = "P";
   static const String STATUS_ACTIVE = "A";
@@ -33,6 +34,7 @@ class Tutor extends KUser {
   static const String ACTION_CAN_ONLINE = "CAN_ONLINE";
   static const String ACTION_CAN_HEADSTART = "CAN_HEADSTART";
   static const String ACTION_CAN_ENGLISH = "CAN_ENGLISH";
+  static const String ACTION_CAN_VIET = "CAN_VIET";
 
   static const String IS_SKILL = "isSkill";
   static const String IS_GENIUS = "isGenius";
@@ -59,6 +61,9 @@ class Tutor extends KUser {
 
   @JsonKey(name: CAN_ENGLISH)
   bool? canEnglish;
+
+  @JsonKey(name: CAN_VIET)
+  bool? canViet;
 
   @JsonKey(name: IS_SKILL)
   bool? isSkill;
