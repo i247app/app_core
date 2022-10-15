@@ -16,6 +16,8 @@ class Tutor extends KUser {
 
   static const String CAN_IN_PERSON = "canInPerson";
   static const String CAN_HEADSTART = "canHeadstart";
+  static const String CAN_ONLINE = "canOnline";
+
   static const String CAN_ENGLISH = "canEnglish";
 
   static const String STATUS_PENDING = "P";
@@ -45,7 +47,7 @@ class Tutor extends KUser {
   @JsonKey(name: TUTOR_ID)
   String? tutorID;
 
-  @JsonKey(name: IS_ONLINE)
+  @JsonKey(name: IS_ONLINE, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isOnline;
 
   @JsonKey(name: ONLINE_MODE, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
@@ -54,22 +56,22 @@ class Tutor extends KUser {
   @JsonKey(name: CAN_IN_PERSON, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canInPerson;
 
-  @JsonKey(name: CAN_HEADSTART)
+  @JsonKey(name: CAN_HEADSTART, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canHeadstart;
 
-  @JsonKey(name: CAN_ENGLISH)
+  @JsonKey(name: CAN_ENGLISH, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canEnglish;
 
-  @JsonKey(name: IS_SKILL)
+  @JsonKey(name: IS_SKILL, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isSkill;
 
-  @JsonKey(name: IS_GENIUS)
+  @JsonKey(name: IS_GENIUS, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isGenius;
 
-  @JsonKey(name: IS_KEEP_WORKER)
+  @JsonKey(name: IS_KEEP_WORKER, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isKeepWorker;
 
-  @JsonKey(name: IS_BLOCK_WORKER)
+  @JsonKey(name: IS_BLOCK_WORKER, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isBlockWorker;
 
   @JsonKey(name: "tutorStatus")
@@ -96,7 +98,7 @@ class Tutor extends KUser {
   @JsonKey(name: "englishLevel")
   String? englishLevel;
 
-  @JsonKey(name: "canOnline", fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
+  @JsonKey(name: CAN_ONLINE, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canOnline;
 
   Color get highlightColor {
