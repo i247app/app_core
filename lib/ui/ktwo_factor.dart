@@ -51,36 +51,43 @@ class _KTwoFactorState extends State<KTwoFactor> {
   }
 
   void sendCode() async {
-    setState(() {
-      notice = null;
-      responseKpin = null;
-    });
-
-    final isAllowed = await Permission.notification.isGranted;
-    if (isAllowed) {
-      final status = await Permission.notification.request();
-      if (status != PermissionStatus.granted) print("Permissions denied");
-    }
-
-    final response = await KServerHandler.send2FACode(
-      phone: widget.phone,
-      email: widget.email,
-    );
-
-    if (response.isSuccess) {
+    try {
       setState(() {
-        notice = KNoticeData.success("");
-        responseKpin = response.kpin;
-        sendCodeEnabled = false;
+        notice = null;
+        responseKpin = null;
       });
 
-      Future.delayed(
-        Duration(seconds: 30),
-        () => mounted ? setState(() => sendCodeEnabled = true) : null,
+      final isAllowed = await Permission.notification.isGranted;
+      if (isAllowed) {
+        final status = await Permission.notification.request();
+        if (status != PermissionStatus.granted) print("Permissions denied");
+      }
+
+      final response = await KServerHandler.send2FACode(
+        phone: widget.phone,
+        email: widget.email,
       );
-    } else {
+
+      if (response.isSuccess) {
+        setState(() {
+          notice = KNoticeData.success("");
+          responseKpin = response.kpin;
+          sendCodeEnabled = false;
+        });
+
+        Future.delayed(
+          Duration(seconds: 30),
+              () => mounted ? setState(() => sendCodeEnabled = true) : null,
+        );
+      } else {
+        setState(
+                () =>
+            notice = KNoticeData.error("Failed to send security code."));
+      }
+    } catch (ex) {
       setState(
-          () => notice = KNoticeData.error("Failed to send security code."));
+              () =>
+          notice = KNoticeData.error("Failed to send security code."));
     }
   }
 
@@ -100,24 +107,34 @@ class _KTwoFactorState extends State<KTwoFactor> {
   }
 
   void legacySubmit(String kpin) async {
-    final response = await KServerHandler.verify2FACode(kpin);
-    if (response.kstatus == 100) {
-      Navigator.of(context).pop(kpin);
-    } else if (response.kstatus == 415) {
+    try {
+      final response = await KServerHandler.verify2FACode(kpin);
+      if (response.kstatus == 100) {
+        Navigator.of(context).pop(kpin);
+      } else if (response.kstatus == 415) {
+        setState(() {
+          keyboardMode = KNumberPadMode.NUMBER;
+          pinController.clear();
+          responseKpin = null;
+          notice =
+              KNoticeData.error(response.kmessage ?? "Security Code Expired");
+        });
+      } else {
+        setState(() {
+          keyboardMode = KNumberPadMode.NUMBER;
+          pinController.clear();
+          responseKpin = null;
+          notice =
+              KNoticeData.error(response.kmessage ?? "Invalid Security Code");
+        });
+      }
+    } catch (ex) {
       setState(() {
         keyboardMode = KNumberPadMode.NUMBER;
         pinController.clear();
         responseKpin = null;
         notice =
-            KNoticeData.error(response.kmessage ?? "Security Code Expired");
-      });
-    } else {
-      setState(() {
-        keyboardMode = KNumberPadMode.NUMBER;
-        pinController.clear();
-        responseKpin = null;
-        notice =
-            KNoticeData.error(response.kmessage ?? "Invalid Security Code");
+            KNoticeData.error("Failed to send security code.");
       });
     }
   }
@@ -165,28 +182,28 @@ class _KTwoFactorState extends State<KTwoFactor> {
     final errorLabel = notice == null && responseKpin == null
         ? CircularProgressIndicator()
         : responseKpin == null
-            ? Text(
-                notice?.message ?? "An error occurred",
-                style: TextStyle(
-                  color: notice?.isSuccess ?? false
-                      ? KStyles.darkGrey
-                      : KStyles.colorError,
-                ),
-              )
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text("Pin", style: TextStyle(fontSize: 30)),
-                  SizedBox(height: 6),
-                  Text(
-                    responseKpin ?? "",
-                    style: TextStyle(
-                      fontSize: 60,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ],
-              );
+        ? Text(
+      notice?.message ?? "An error occurred",
+      style: TextStyle(
+        color: notice?.isSuccess ?? false
+            ? KStyles.darkGrey
+            : KStyles.colorError,
+      ),
+    )
+        : Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text("Pin", style: TextStyle(fontSize: 30)),
+        SizedBox(height: 6),
+        Text(
+          responseKpin ?? "",
+          style: TextStyle(
+            fontSize: 60,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+      ],
+    );
 
     final upperContent = ListView(
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 26),
