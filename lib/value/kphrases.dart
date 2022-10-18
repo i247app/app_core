@@ -134,4 +134,6 @@ abstract class KPhrases {
   static String get ward => _klingo.yak("ward");
 
   static String get noWifi => _klingo.yak("no_wifi");
+
+  static String get resendCode => _klingo.yak("resend_code");
 }

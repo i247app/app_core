@@ -175,5 +175,6 @@
   "vietnamese": "Vietnamese",
   "district": "District",
   "ward": "Ward",
-  "no_wifi": "No WIFI Internet"
+  "no_wifi": "No WIFI Internet",
+  "resend_code": "Resend Code"
 }
