@@ -53,19 +53,25 @@ class _KTwoFactorState extends State<KTwoFactor> {
   void sendCode() async {
     try {
       setState(() {
-        notice = null;
-        responseKpin = null;
+        notice = KNoticeData.success("");
+        responseKpin = response.kpin;
+        sendCodeEnabled = false;
+        lastSendCodeDate = DateTime.now();
       });
 
-      final isAllowed = await Permission.notification.isGranted;
-      if (isAllowed) {
-        final status = await Permission.notification.request();
-        if (status != PermissionStatus.granted) print("Permissions denied");
-      }
+      timer = Timer.periodic(
+        Duration(seconds: 1),
+            (timer) {
+          if (lastSendCodeDate == null) return;
 
-      final response = await KServerHandler.send2FACode(
-        phone: widget.phone,
-        email: widget.email,
+          setState(() {});
+
+          final now = DateTime.now();
+          if (lastSendCodeDate!.isBefore(now.subtract(resendCodeCooldown))) {
+            if (mounted) setState(() => sendCodeEnabled = true);
+            timer.cancel();
+          }
+        },
       );
 
       if (response.isSuccess) {
@@ -109,33 +115,29 @@ class _KTwoFactorState extends State<KTwoFactor> {
   void legacySubmit(String kpin) async {
     try {
       final response = await KServerHandler.verify2FACode(kpin);
-      if (response.kstatus == 100) {
+      if (response.isSuccess) {
         Navigator.of(context).pop(kpin);
       } else if (response.kstatus == 415) {
         setState(() {
           keyboardMode = KNumberPadMode.NUMBER;
-          pinController.clear();
-          responseKpin = null;
+          pinCtrl.clear();
+          // responseKpin = null;
           notice =
               KNoticeData.error(response.kmessage ?? "Security Code Expired");
         });
       } else {
         setState(() {
           keyboardMode = KNumberPadMode.NUMBER;
-          pinController.clear();
-          responseKpin = null;
+          pinCtrl.clear();
+          // responseKpin = null;
           notice =
               KNoticeData.error(response.kmessage ?? "Invalid Security Code");
         });
       }
     } catch (ex) {
-      setState(() {
-        keyboardMode = KNumberPadMode.NUMBER;
-        pinController.clear();
-        responseKpin = null;
-        notice =
-            KNoticeData.error("Failed to send security code.");
-      });
+      setState(
+              () =>
+          notice = KNoticeData.error("Failed to send security code."));
     }
   }
 
@@ -181,27 +183,30 @@ class _KTwoFactorState extends State<KTwoFactor> {
 
     final errorLabel = notice == null && responseKpin == null
         ? CircularProgressIndicator()
-        : responseKpin == null
-        ? Text(
-      notice?.message ?? "An error occurred",
-      style: TextStyle(
-        color: notice?.isSuccess ?? false
-            ? KStyles.darkGrey
-            : KStyles.colorError,
-      ),
-    )
         : Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text("Pin", style: TextStyle(fontSize: 30)),
-        SizedBox(height: 6),
-        Text(
-          responseKpin ?? "",
-          style: TextStyle(
-            fontSize: 60,
-            fontWeight: FontWeight.normal,
+        if ((notice?.message ?? "").isNotEmpty)
+          Text(
+            notice?.message ?? "An error occurred",
+            style: TextStyle(
+              color: notice?.isSuccess ?? false
+                  ? KStyles.darkGrey
+                  : KStyles.colorError,
+            ),
           ),
-        ),
+        if (responseKpin != null) ...[
+          SizedBox(height: 10),
+          Text("Pin", style: TextStyle(fontSize: 30)),
+          SizedBox(height: 2),
+          Text(
+            responseKpin ?? "",
+            style: TextStyle(
+              fontSize: 60,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ],
       ],
     );
 
