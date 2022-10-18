@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/knotice_data.dart';
 import 'package:app_core/helper/kserver_handler.dart';
+import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -25,16 +28,36 @@ class KTwoFactor extends StatefulWidget {
 }
 
 class _KTwoFactorState extends State<KTwoFactor> {
-  final TextEditingController pinController = TextEditingController();
+  final Duration resendCodeCooldown = Duration(seconds: 30);
+
+  final TextEditingController pinCtrl = TextEditingController();
   final FocusNode focusNode = FocusNode();
 
   String? responseKpin;
   KNoticeData? notice;
+  DateTime? lastSendCodeDate;
+  Timer? timer;
 
   KNumberPadMode keyboardMode = KNumberPadMode.NUMBER;
   bool sendCodeEnabled = true;
 
   bool get shouldAutoSendPin => true;
+
+  String get resendCodeLabel {
+    final baseLabel = KPhrases.resendCode;
+    final now = DateTime.now();
+    if (lastSendCodeDate != null) {
+      final durSinceLastSend = now.difference(lastSendCodeDate!);
+      final timeLeftUntilCooldownOver = resendCodeCooldown - durSinceLastSend;
+      if (timeLeftUntilCooldownOver.inSeconds > 0) {
+        return "${timeLeftUntilCooldownOver.inSeconds} - $baseLabel";
+      } else {
+        return baseLabel;
+      }
+    } else {
+      return baseLabel;
+    }
+  }
 
   @override
   void initState() {
@@ -46,6 +69,7 @@ class _KTwoFactorState extends State<KTwoFactor> {
 
   @override
   void dispose() {
+    timer?.cancel();
     focusNode.dispose();
     super.dispose();
   }
@@ -53,19 +77,25 @@ class _KTwoFactorState extends State<KTwoFactor> {
   void sendCode() async {
     try {
       setState(() {
-        notice = null;
-        responseKpin = null;
+        notice = KNoticeData.success("");
+        responseKpin = response.kpin;
+        sendCodeEnabled = false;
+        lastSendCodeDate = DateTime.now();
       });
 
-      final isAllowed = await Permission.notification.isGranted;
-      if (isAllowed) {
-        final status = await Permission.notification.request();
-        if (status != PermissionStatus.granted) print("Permissions denied");
-      }
+      timer = Timer.periodic(
+        Duration(seconds: 1),
+            (timer) {
+          if (lastSendCodeDate == null) return;
 
-      final response = await KServerHandler.send2FACode(
-        phone: widget.phone,
-        email: widget.email,
+          setState(() {});
+
+          final now = DateTime.now();
+          if (lastSendCodeDate!.isBefore(now.subtract(resendCodeCooldown))) {
+            if (mounted) setState(() => sendCodeEnabled = true);
+            timer.cancel();
+          }
+        },
       );
 
       if (response.isSuccess) {
@@ -109,33 +139,29 @@ class _KTwoFactorState extends State<KTwoFactor> {
   void legacySubmit(String kpin) async {
     try {
       final response = await KServerHandler.verify2FACode(kpin);
-      if (response.kstatus == 100) {
+      if (response.isSuccess) {
         Navigator.of(context).pop(kpin);
       } else if (response.kstatus == 415) {
         setState(() {
           keyboardMode = KNumberPadMode.NUMBER;
-          pinController.clear();
-          responseKpin = null;
+          pinCtrl.clear();
+          // responseKpin = null;
           notice =
               KNoticeData.error(response.kmessage ?? "Security Code Expired");
         });
       } else {
         setState(() {
           keyboardMode = KNumberPadMode.NUMBER;
-          pinController.clear();
-          responseKpin = null;
+          pinCtrl.clear();
+          // responseKpin = null;
           notice =
               KNoticeData.error(response.kmessage ?? "Invalid Security Code");
         });
       }
     } catch (ex) {
-      setState(() {
-        keyboardMode = KNumberPadMode.NUMBER;
-        pinController.clear();
-        responseKpin = null;
-        notice =
-            KNoticeData.error("Failed to send security code.");
-      });
+      setState(
+              () =>
+          notice = KNoticeData.error("Failed to send security code."));
     }
   }
 
@@ -144,7 +170,7 @@ class _KTwoFactorState extends State<KTwoFactor> {
   @override
   Widget build(BuildContext context) {
     final rawPinEdit = TextField(
-      controller: pinController,
+      controller: pinCtrl,
       autofocus: true,
       readOnly: true,
       showCursor: keyboardMode == KNumberPadMode.NUMBER,
@@ -176,32 +202,35 @@ class _KTwoFactorState extends State<KTwoFactor> {
           color: sendCodeEnabled ? KStyles.colorSecondary : KStyles.lightGrey,
         ),
       ),
-      child: Text("Resend Code"),
+      child: Text(resendCodeLabel),
     );
 
     final errorLabel = notice == null && responseKpin == null
         ? CircularProgressIndicator()
-        : responseKpin == null
-        ? Text(
-      notice?.message ?? "An error occurred",
-      style: TextStyle(
-        color: notice?.isSuccess ?? false
-            ? KStyles.darkGrey
-            : KStyles.colorError,
-      ),
-    )
         : Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text("Pin", style: TextStyle(fontSize: 30)),
-        SizedBox(height: 6),
-        Text(
-          responseKpin ?? "",
-          style: TextStyle(
-            fontSize: 60,
-            fontWeight: FontWeight.normal,
+        if ((notice?.message ?? "").isNotEmpty)
+          Text(
+            notice?.message ?? "An error occurred",
+            style: TextStyle(
+              color: notice?.isSuccess ?? false
+                  ? KStyles.darkGrey
+                  : KStyles.colorError,
+            ),
           ),
-        ),
+        if (responseKpin != null) ...[
+          SizedBox(height: 10),
+          Text("Pin", style: TextStyle(fontSize: 30)),
+          SizedBox(height: 2),
+          Text(
+            responseKpin ?? "",
+            style: TextStyle(
+              fontSize: 60,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+        ],
       ],
     );
 
@@ -220,7 +249,7 @@ class _KTwoFactorState extends State<KTwoFactor> {
     );
 
     final keyboard = KNumberPad(
-      controller: pinController,
+      controller: pinCtrl,
       onReturn: () {},
       onTextChange: (pin) {
         if (pin.length == KTwoFactor.PIN_LENGTH &&
