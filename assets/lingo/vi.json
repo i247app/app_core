@@ -176,5 +176,6 @@
   "vietnamese": "Tiếng Việt",
   "district": "Quận",
   "ward": "Phường",
-  "no_wifi": "No WIFI Internet"
+  "no_wifi": "No WIFI Internet",
+  "resend_code": "Resend Code"
 }
