@@ -23,7 +23,7 @@ class KGameLevelMapItem extends StatelessWidget {
 
   bool get isReached => (level ?? 0) <= (currentLevel ?? 0);
 
-  bool get isPassed => isReached && rate != null && rate! > 0;
+  bool get isPassed => isReached && rate != null && rate! != null;
 
   @override
   Widget build(BuildContext context) {

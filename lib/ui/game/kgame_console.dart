@@ -194,7 +194,9 @@ class _KGameConsoleState extends State<KGameConsole>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if ((state == AppLifecycleState.inactive || state == AppLifecycleState.paused) && !this.isPause)
+    if ((state == AppLifecycleState.inactive ||
+            state == AppLifecycleState.paused) &&
+        !this.isPause)
       showPauseDialog();
     else if (state == AppLifecycleState.resumed && this.isPause) resumeGame();
   }
@@ -663,7 +665,7 @@ class _KGameConsoleState extends State<KGameConsole>
                         (1 - levelHardness[currentLevel])) *
                     3)
                 .floor())
-        : 0;
+        : null;
 
     if (maxLevel == 0 && currentLevel + 1 == levelCount) {
       gameController.value.levelCount =

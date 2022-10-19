@@ -183,9 +183,6 @@ class _KGameLevelMapState extends State<KGameLevelMap> {
                   level: index,
                   currentLevel: currentLevel,
                   onTap: () => showGameLevelDialog(index),
-                  // widget.onTapLevel != null
-                  //     ? widget.onTapLevel!(index)
-                  //     : null,
                   rate: rates.length > index ? rates[index] : null,
                 ),
                 isCurrent: index == currentLevel,
