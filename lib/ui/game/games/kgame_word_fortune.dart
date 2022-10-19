@@ -360,7 +360,7 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
       widget.controller.value.result = false;
       // widget.controller.value.point = point > 0 ? point - 1 : 0;
       if (this.selectedWordIndex.where((item) => item != null).length + 1 <
-              this.correctAnswer.length &&
+              this.correctAnswer.toSet().toList().length &&
           wrongCount >= wrongCountShowHint) {
         this.handleShowHint();
       }
