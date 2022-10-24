@@ -141,9 +141,8 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
               setState(() {
                 time = 0;
               });
+              this._shakeTheTopAnimationController.forward();
             }
-            // this.fire();
-            this._shakeTheTopAnimationController.forward();
           });
         } else if (mounted && status == AnimationStatus.dismissed) {}
       });

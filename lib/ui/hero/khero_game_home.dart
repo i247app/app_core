@@ -23,6 +23,8 @@ import 'package:app_core/ui/hero/khero_tap_game.dart';
 import 'package:app_core/ui/hero/widget/kegg_hatch_new_short_intro.dart';
 import 'package:flutter/material.dart';
 
+import '../game/widget/kgame_setting_dialog.dart';
+
 class KHeroGameHome extends StatefulWidget {
   final KHero? hero;
 
@@ -41,6 +43,22 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
   @override
   void initState() {
     super.initState();
+  }
+
+  void showGameSettingDialog() async {
+    final gameLevelDialog = Align(
+      alignment: Alignment.center,
+      // child: KGameLevelDialog(
+      child: KGameSettingDialog(
+        onClose: () {
+          if (this.overlayID != null) {
+            KOverlayHelper.removeOverlay(this.overlayID!);
+            this.overlayID = null;
+          }
+        },
+      ),
+    );
+    showCustomOverlay(gameLevelDialog);
   }
 
   void onTraining(KHero? hero) {
@@ -148,7 +166,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
     final overlay = Stack(
       fit: StackFit.expand,
       children: [
-        Container(color: Theme.of(context).backgroundColor.withOpacity(1)),
+        Container(color: Theme.of(context).backgroundColor.withOpacity(0)),
         Align(
           alignment: Alignment.topCenter,
           child: view,
@@ -902,476 +920,6 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
         SizedBox(
           height: 32,
         ),
-        // Text(
-        //   "Speech Games",
-        //   style: TextStyle(
-        //     fontWeight: FontWeight.w600,
-        //     fontSize: 18,
-        //   ),
-        // ),
-        // SizedBox(height: 5),
-        // Container(
-        //   child: GridView.count(
-        //     shrinkWrap: true,
-        //     childAspectRatio: 1,
-        //     crossAxisCount: 4,
-        //     crossAxisSpacing: 10,
-        //     physics: NeverScrollableScrollPhysics(),
-        //     children: [
-        //       Column(
-        //         mainAxisSize: MainAxisSize.min,
-        //         crossAxisAlignment: CrossAxisAlignment.center,
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         children: [
-        //           ElevatedButton(
-        //             onPressed: () =>
-        //                 Navigator.of(context).push(MaterialPageRoute(
-        //               builder: (ctx) => KGameConsole(
-        //                 KGameController(
-        //                   gameID: KGameMultiLetter.GAME_ID,
-        //                   gameAppID: KGameMultiLetter.GAME_APP_ID,
-        //                   gameName: KGameMultiLetter.GAME_NAME,
-        //                   levelCount: 4,
-        //                   currentLevel: 0,
-        //                   answerType: 'letter',
-        //                   isSpeechGame: true,
-        //                   // isCountTime: true,
-        //                 ),
-        //               ),
-        //             )),
-        //             style: KStyles.squaredButton(
-        //               Theme.of(context).colorScheme.primary,
-        //               textColor: Colors.white,
-        //             ),
-        //             child: Text("👾"),
-        //           ),
-        //           SizedBox(width: 5),
-        //           FittedBox(
-        //             child: Text("Letter"),
-        //           ),
-        //         ],
-        //       ),
-        //       Column(
-        //         mainAxisSize: MainAxisSize.min,
-        //         crossAxisAlignment: CrossAxisAlignment.center,
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         children: [
-        //           ElevatedButton(
-        //             onPressed: () =>
-        //                 Navigator.of(context).push(MaterialPageRoute(
-        //               builder: (ctx) => KGameConsole(
-        //                 KGameController(
-        //                   gameID: KGameMulti.GAME_ID,
-        //                   gameAppID: KGameMulti.GAME_APP_ID,
-        //                   gameName: KGameMulti.GAME_NAME,
-        //                   levelCount: 4,
-        //                   currentLevel: 0,
-        //                   isSpeechGame: true,
-        //                   // isCountTime: true,
-        //                 ),
-        //               ),
-        //             )),
-        //             style: KStyles.squaredButton(
-        //               Theme.of(context).colorScheme.primary,
-        //               textColor: Colors.white,
-        //             ),
-        //             child: Text("👾"),
-        //           ),
-        //           SizedBox(width: 5),
-        //           FittedBox(
-        //             child: Text("Number"),
-        //           ),
-        //         ],
-        //       ),
-        //     ],
-        //   ),
-        // ),
-        // SizedBox(height: 25),
-        // Text(
-        //   "Other Games",
-        //   style: TextStyle(
-        //     fontWeight: FontWeight.w600,
-        //     fontSize: 18,
-        //   ),
-        // ),
-        // SizedBox(height: 5),
-        // Container(
-        //   child: GridView.count(
-        //     shrinkWrap: true,
-        //     childAspectRatio: 1,
-        //     crossAxisCount: 4,
-        //     crossAxisSpacing: 10,
-        //     physics: NeverScrollableScrollPhysics(),
-        //     children: [
-        //       // Column(
-        //       //   mainAxisSize: MainAxisSize.min,
-        //       //   crossAxisAlignment: CrossAxisAlignment.center,
-        //       //   mainAxisAlignment: MainAxisAlignment.center,
-        //       //   children: [
-        //       //     ElevatedButton(
-        //       //       onPressed: () =>
-        //       //           Navigator.of(context).push(MaterialPageRoute(
-        //       //         builder: (ctx) => KGameRoom(
-        //       //           KGameController(
-        //       //             gameID: KGameSpeechLetterTap.GAME_ID,
-        //       //             gameAppID: KGameSpeechLetterTap.GAME_APP_ID,
-        //       //             gameName: KGameSpeechLetterTap.GAME_NAME,
-        //       //             levelCount: 4,
-        //       //             currentLevel: 0,
-        //       //             answerType: 'letter',
-        //       //             isSpeechGame: true,
-        //       //             // isCountTime: true,
-        //       //           ),
-        //       //         ),
-        //       //       )),
-        //       //       style: KStyles.squaredButton(
-        //       //         Theme.of(context).colorScheme.primary,
-        //       //         textColor: Colors.white,
-        //       //       ),
-        //       //       child: Text("🔈"),
-        //       //     ),
-        //       //     SizedBox(width: 5),
-        //       //     FittedBox(
-        //       //       child: Text("Speech Letter"),
-        //       //     ),
-        //       //   ],
-        //       // ),
-        //       // Column(
-        //       //   mainAxisSize: MainAxisSize.min,
-        //       //   crossAxisAlignment: CrossAxisAlignment.center,
-        //       //   mainAxisAlignment: MainAxisAlignment.center,
-        //       //   children: [
-        //       //     ElevatedButton(
-        //       //       onPressed: () =>
-        //       //           Navigator.of(context).push(MaterialPageRoute(
-        //       //         builder: (ctx) => KGameRoom(
-        //       //           KGameController(
-        //       //             gameID: KGameSpeechTap.GAME_ID,
-        //       //             // gameAppID: KGameSpeechTap.GAME_APP_ID,
-        //       //             gameName: KGameSpeechTap.GAME_NAME,
-        //       //             levelCount: 4,
-        //       //             currentLevel: 0,
-        //       //             isSpeechGame: true,
-        //       //             // isCountTime: true,
-        //       //           ),
-        //       //         ),
-        //       //       )),
-        //       //       style: KStyles.squaredButton(
-        //       //         Theme.of(context).colorScheme.primary,
-        //       //         textColor: Colors.white,
-        //       //       ),
-        //       //       child: Text("🔈"),
-        //       //     ),
-        //       //     SizedBox(width: 5),
-        //       //     FittedBox(
-        //       //       child: Text("Speech Math"),
-        //       //     ),
-        //       //   ],
-        //       // ),
-        //       // Column(
-        //       //   mainAxisSize: MainAxisSize.min,
-        //       //   crossAxisAlignment: CrossAxisAlignment.center,
-        //       //   mainAxisAlignment: MainAxisAlignment.center,
-        //       //   children: [
-        //       //     ElevatedButton(
-        //       //       onPressed: () =>
-        //       //           Navigator.of(context).push(MaterialPageRoute(
-        //       //         builder: (ctx) => KGameRoom(
-        //       //           KGameController(
-        //       //             gameID: KGameSpeechMovingTap.GAME_ID,
-        //       //             gameAppID: KGameSpeechMovingTap.GAME_APP_ID,
-        //       //             gameName: KGameSpeechMovingTap.GAME_NAME,
-        //       //             levelCount: 4,
-        //       //             currentLevel: 0,
-        //       //             isSpeechGame: true,
-        //       //             // isCountTime: true,
-        //       //           ),
-        //       //         ),
-        //       //       )),
-        //       //       style: KStyles.squaredButton(
-        //       //         Theme.of(context).colorScheme.primary,
-        //       //         textColor: Colors.white,
-        //       //       ),
-        //       //       child: Text("🔈"),
-        //       //     ),
-        //       //     SizedBox(width: 5),
-        //       //     FittedBox(
-        //       //       child: Text("Speech Math Moving"),
-        //       //     ),
-        //       //   ],
-        //       // ),
-        //       Column(
-        //         mainAxisSize: MainAxisSize.min,
-        //         crossAxisAlignment: CrossAxisAlignment.center,
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         children: [
-        //           ElevatedButton(
-        //             onPressed: () =>
-        //                 Navigator.of(context).push(MaterialPageRoute(
-        //               builder: (ctx) => KGameConsole(
-        //                 KGameController(
-        //                   gameID: KGameWord.GAME_ID,
-        //                   gameName: KGameWord.GAME_NAME,
-        //                   levelCount: 4,
-        //                   currentLevel: 0,
-        //                   answerType: 'letter',
-        //                   isCountTime: true,
-        //                 ),
-        //               ),
-        //             )),
-        //             style: KStyles.squaredButton(
-        //               Theme.of(context).colorScheme.primary,
-        //               textColor: Colors.white,
-        //             ),
-        //             child: Text("👾"),
-        //           ),
-        //           SizedBox(width: 5),
-        //           FittedBox(
-        //             child: Text("Word"),
-        //           ),
-        //         ],
-        //       ),
-        //       Column(
-        //         mainAxisSize: MainAxisSize.min,
-        //         crossAxisAlignment: CrossAxisAlignment.center,
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         children: [
-        //           ElevatedButton(
-        //             onPressed: () =>
-        //                 Navigator.of(context).push(MaterialPageRoute(
-        //               builder: (ctx) => KGameConsole(
-        //                 KGameController(
-        //                   gameID: KGameTap.GAME_ID,
-        //                   gameName: KGameTap.GAME_NAME,
-        //                   levelCount: 4,
-        //                   currentLevel: 0,
-        //                   isCountTime: true,
-        //                 ),
-        //               ),
-        //             )),
-        //             style: KStyles.squaredButton(
-        //               Theme.of(context).colorScheme.primary,
-        //               textColor: Colors.white,
-        //             ),
-        //             child: Text("👾"),
-        //           ),
-        //           SizedBox(width: 5),
-        //           FittedBox(
-        //             child: Text("Tap"),
-        //           ),
-        //         ],
-        //       ),
-        //       Column(
-        //         mainAxisSize: MainAxisSize.min,
-        //         crossAxisAlignment: CrossAxisAlignment.center,
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         children: [
-        //           ElevatedButton(
-        //             onPressed: () =>
-        //                 Navigator.of(context).push(MaterialPageRoute(
-        //               builder: (ctx) => KGameConsole(
-        //                 KGameController(
-        //                   gameID: KGameMovingTap.GAME_ID,
-        //                   gameName: KGameMovingTap.GAME_NAME,
-        //                   levelCount: 4,
-        //                   currentLevel: 0,
-        //                   isCountTime: true,
-        //                 ),
-        //               ),
-        //             )),
-        //             style: KStyles.squaredButton(
-        //               Theme.of(context).colorScheme.primary,
-        //               textColor: Colors.white,
-        //             ),
-        //             child: Text("👾"),
-        //           ),
-        //           SizedBox(width: 5),
-        //           FittedBox(
-        //             child: Text("Moving Tap"),
-        //           ),
-        //         ],
-        //       ),
-        //       Column(
-        //         mainAxisSize: MainAxisSize.min,
-        //         crossAxisAlignment: CrossAxisAlignment.center,
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         children: [
-        //           ElevatedButton(
-        //             onPressed: () =>
-        //                 Navigator.of(context).push(MaterialPageRoute(
-        //               builder: (ctx) => KGameConsole(
-        //                 KGameController(
-        //                   gameID: KGameJumpUp.GAME_ID,
-        //                   gameName: KGameJumpUp.GAME_NAME,
-        //                   levelCount: 4,
-        //                   currentLevel: 0,
-        //                 ),
-        //               ),
-        //             )),
-        //             style: KStyles.squaredButton(
-        //               Theme.of(context).colorScheme.primary,
-        //               textColor: Colors.white,
-        //             ),
-        //             child: Text("🕹️"),
-        //           ),
-        //           SizedBox(width: 5),
-        //           FittedBox(
-        //             child: Text("Jump Up"),
-        //           ),
-        //         ],
-        //       ),
-        //       Column(
-        //         mainAxisSize: MainAxisSize.min,
-        //         crossAxisAlignment: CrossAxisAlignment.center,
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         children: [
-        //           ElevatedButton(
-        //             onPressed: () =>
-        //                 Navigator.of(context).push(MaterialPageRoute(
-        //               builder: (ctx) => KGameConsole(
-        //                 KGameController(
-        //                   gameID: KGameJumpOver.GAME_ID,
-        //                   gameName: KGameJumpOver.GAME_NAME,
-        //                   levelCount: 4,
-        //                   currentLevel: 0,
-        //                 ),
-        //               ),
-        //             )),
-        //             style: KStyles.squaredButton(
-        //               Theme.of(context).colorScheme.primary,
-        //               textColor: Colors.white,
-        //             ),
-        //             child: Text("👾"),
-        //           ),
-        //           SizedBox(width: 5),
-        //           FittedBox(
-        //             child: Text("Jump Over"),
-        //           ),
-        //         ],
-        //       ),
-        //       Column(
-        //         mainAxisSize: MainAxisSize.min,
-        //         crossAxisAlignment: CrossAxisAlignment.center,
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         children: [
-        //           ElevatedButton(
-        //             onPressed: () =>
-        //                 Navigator.of(context).push(MaterialPageRoute(
-        //               builder: (ctx) => KGameConsole(
-        //                 KGameController(
-        //                   gameID: KGameLetterTap.GAME_ID,
-        //                   gameName: KGameLetterTap.GAME_NAME,
-        //                   levelCount: 4,
-        //                   currentLevel: 0,
-        //                   answerType: 'letter',
-        //                   isCountTime: true,
-        //                 ),
-        //               ),
-        //             )),
-        //             style: KStyles.squaredButton(
-        //               Theme.of(context).colorScheme.primary,
-        //               textColor: Colors.white,
-        //             ),
-        //             child: Text("👾"),
-        //           ),
-        //           SizedBox(width: 5),
-        //           FittedBox(
-        //             child: Text("English Tap"),
-        //           ),
-        //         ],
-        //       ),
-        //       // Column(
-        //       //   mainAxisSize: MainAxisSize.min,
-        //       //   crossAxisAlignment: CrossAxisAlignment.center,
-        //       //   mainAxisAlignment: MainAxisAlignment.center,
-        //       //   children: [
-        //       //     ElevatedButton(
-        //       //       onPressed: () =>
-        //       //           Navigator.of(context).push(MaterialPageRoute(
-        //       //             builder: (ctx) => KGameRoom(
-        //       //               KGameController(
-        //       //                 gameID: KGameJumpMultiRow.GAME_ID,
-        //       //                 gameName: KGameJumpMultiRow.GAME_NAME,
-        //       //                 levelCount: 4,
-        //       //                 currentLevel: 0,
-        //       //               ),
-        //       //             ),
-        //       //           )),
-        //       //       style: KStyles.squaredButton(
-        //       //         Theme.of(context).colorScheme.primary,
-        //       //         textColor: Colors.white,
-        //       //       ),
-        //       //       child: Text("🏆"),
-        //       //     ),
-        //       //     SizedBox(width: 5),
-        //       //     FittedBox(
-        //       //       child: Text("Jump Multi Row"),
-        //       //     ),
-        //       //   ],
-        //       // ),
-        //       Column(
-        //         mainAxisSize: MainAxisSize.min,
-        //         crossAxisAlignment: CrossAxisAlignment.center,
-        //         mainAxisAlignment: MainAxisAlignment.center,
-        //         children: [
-        //           ElevatedButton(
-        //             onPressed: () =>
-        //                 Navigator.of(context).push(MaterialPageRoute(
-        //               builder: (ctx) => KGameConsole(
-        //                 KGameController(
-        //                   gameID: KGameShooting.GAME_ID,
-        //                   gameName: KGameShooting.GAME_NAME,
-        //                   levelCount: 4,
-        //                   currentLevel: 0,
-        //                 ),
-        //               ),
-        //             )),
-        //             style: ElevatedButton.styleFrom(
-        //               elevation: 0,
-        //               padding:
-        //                   EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-        //               primary: Colors.transparent,
-        //               onPrimary: Colors.transparent,
-        //               shape: RoundedRectangleBorder(
-        //                 borderRadius: BorderRadius.circular(4),
-        //                 side: BorderSide(color: Colors.transparent),
-        //               ),
-        //             ),
-        //             child: Image.asset(
-        //               KAssets.IMG_CANNON_BARREL,
-        //               height: 30,
-        //               width: 30,
-        //               package: 'app_core',
-        //             ),
-        //           ),
-        //           SizedBox(width: 5),
-        //           FittedBox(
-        //             child: Text("Shooting"),
-        //           ),
-        //         ],
-        //       ),
-        //       // Column(
-        //       //   mainAxisSize: MainAxisSize.min,
-        //       //   crossAxisAlignment: CrossAxisAlignment.center,
-        //       //   mainAxisAlignment: MainAxisAlignment.center,
-        //       //   children: [
-        //       //     ElevatedButton(
-        //       //       onPressed: () => onPlayMultiGame(null),
-        //       //       style: KStyles.squaredButton(
-        //       //         Theme.of(context).colorScheme.primary,
-        //       //         textColor: Colors.white,
-        //       //       ),
-        //       //       child: Text("🎮"),
-        //       //     ),
-        //       //     SizedBox(width: 5),
-        //       //     FittedBox(
-        //       //       child: Text("Multi Game"),
-        //       //     ),
-        //       //   ],
-        //       // ),
-        //     ],
-        //   ),
-        // ),
       ],
     );
 
@@ -1413,7 +961,17 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
     );
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          if (!KHostConfig.isReleaseMode)
+            IconButton(
+              onPressed: () => showGameSettingDialog(),
+              icon: Icon(
+                Icons.settings,
+              ),
+            ),
+        ],
+      ),
       body: SafeArea(child: body),
     );
   }

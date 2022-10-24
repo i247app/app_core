@@ -136,4 +136,8 @@ abstract class KPhrases {
   static String get noWifi => _klingo.yak("no_wifi");
 
   static String get resendCode => _klingo.yak("resend_code");
+
+  static String get preSchool => _klingo.yak("pre_school");
+
+  static String get kindergarten => _klingo.yak("kindergarten");
 }
