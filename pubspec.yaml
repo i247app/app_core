@@ -49,14 +49,14 @@ dependencies:
   flutter_barcode_scanner: ^2.0.0
 
   # Firebase
-  firebase_core: ^1.19.1
-  firebase_messaging: ^11.4.4 # ^10.0.0
+  firebase_core_platform_interface: 4.5.1
+  firebase_core: ^1.24.0
+  firebase_messaging: ^13.0.4 # ^11.4.4
 
   gallery_saver: 2.1.0 # +2.1.1 broken so far
   path_provider: ^2.0.1
   provider: ^6.0.2
 
-  # google_fonts: 2.2.0 # >=2.3.1 requires Flutter SDK >=2.10.0-0
   google_fonts: ^2.3.1
 
   # VoIP
