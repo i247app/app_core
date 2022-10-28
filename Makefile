@@ -4,6 +4,7 @@ models:
 	flutter packages pub run build_runner build --delete-conflicting-outputs
 
 pub: clean
+	rm pubspec.lock
 	flutter pub upgrade
 	flutter pub get
 
