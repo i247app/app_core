@@ -17,6 +17,7 @@ import 'package:app_core/app_core.dart';
 import 'package:wakelock/wakelock.dart';
 
 enum _CallPerspective { sender, receiver }
+
 enum _CallState { ws_error, init, waiting, in_progress, ended }
 
 class KVOIPCall extends StatefulWidget {
@@ -271,7 +272,7 @@ class _KVOIPCallState extends State<KVOIPCall>
   void releaseResourceIfNeed() {
     if (this.commManager != null && !this.commManager!.isDisposed) {
       this.commManager?.close();
-      KCallKitHelper.instance.endCall(this._uuid, "", "", "");
+      // KCallKitHelper.instance.endCall(this._uuid, "", "", "");
     }
   }
 
