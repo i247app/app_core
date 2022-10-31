@@ -196,7 +196,7 @@ abstract class KServerHandler {
       "req": "webrtc.call.notify",
       "notifyType": "voip",
       "refPUIDs": refPUIDs.where((p) => p != KSessionData.me?.puid).toList(),
-      "callID": callID,
+      "callID": "${callID}|${KSessionData.me?.puid}",
       "uuid": uuid,
       // "session_id": callID
     };

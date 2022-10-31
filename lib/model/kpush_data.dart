@@ -30,7 +30,7 @@ class KPushData {
 
   /// EXTRAS
   static const String OTHER_ID = "other_id";
-  static const String CALLER_NAME = "callName";
+  static const String CALLER_NAME = "caller_name";
   static const String UUID = "uuid";
   static const String CONFETTI_COUNT = "confettiCount";
   static const String MESSAGE = "message";
@@ -59,11 +59,23 @@ class KPushData {
   @JsonKey(name: OTHER_ID)
   String? otherId;
 
+  @JsonKey(name: UUID)
+  String? uuid;
+
+  @JsonKey(name: "caller_id")
+  int? callerId;
+
+  @JsonKey(name: "call_type")
+  int? callType;
+
+  @JsonKey(name: "session_id")
+  String? sessionId;
+
   @JsonKey(name: CALLER_NAME)
   String? callerName;
 
-  @JsonKey(name: UUID)
-  String? uuid;
+  @JsonKey(name: "call_opponents")
+  String? callOpponents;
 
   @JsonKey(name: CONFETTI_COUNT, toJson: zzz_itoa, fromJson: zzz_atoi)
   int? confettiCount;
