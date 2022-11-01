@@ -196,9 +196,14 @@ abstract class KServerHandler {
       "req": "webrtc.call.notify",
       "notifyType": "voip",
       "refPUIDs": refPUIDs.where((p) => p != KSessionData.me?.puid).toList(),
-      "callID": "${callID}|${KSessionData.me?.puid}",
+      "callID": "${callID}",
       "uuid": uuid,
-      // "session_id": callID
+      "call_type": 1,
+      "caller_id": int.parse(KSessionData.me!.puid!),
+      "caller_name": KSessionData.me?.fullName,
+      "call_opponents": "1",
+      "session_id": uuid,
+      "user_info": callID
     };
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }
