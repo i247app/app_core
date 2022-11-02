@@ -176,5 +176,7 @@
   "district": "District",
   "ward": "Ward",
   "no_wifi": "No WIFI Internet",
-  "resend_code": "Resend Code"
+  "resend_code": "Resend Code",
+  "kindergarten": "Kindergarten",
+  "pre_school": "Pre-School"
 }
