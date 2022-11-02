@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:app_core/app_core.dart';
@@ -203,7 +204,7 @@ abstract class KServerHandler {
       "caller_name": KSessionData.me?.fullName,
       "call_opponents": "1",
       "session_id": uuid,
-      "user_info": callID
+      "user_info": jsonEncode({"callID": callID})
     };
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }

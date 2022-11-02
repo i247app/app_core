@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kcall_control_stream_helper.dart';
 import 'package:app_core/helper/kcall_stream_helper.dart';
@@ -20,7 +22,9 @@ class KCallKitHelper {
 
   KCallKitHelper._internal();
 
-  Future<String?> getVoIPToken() async => ConnectycubeFlutterCallKit.getToken();
+  Future<String?> getVoIPToken() async => Platform.isAndroid
+      ? Future.value(null)
+      : ConnectycubeFlutterCallKit.getToken();
 
   Future<void> startListenSocket(String uuid, String callID) async {
     final deviceID = await KUtil.getDeviceID();
@@ -50,11 +54,11 @@ class KCallKitHelper {
     Future.delayed(Duration(seconds: 3), commManager?.close);
   }
 
-  Future onCallAccepted(String uuid, int callID) async {
+  Future onCallAccepted(String uuid, String callID) async {
     if (this.isInit) {
       KWebRTCHelper.displayCallScreen(
         uuid,
-        "${callID}",
+        callID,
         autoPickup: true,
         videoLogo: this.videoLogo,
       );
@@ -62,8 +66,8 @@ class KCallKitHelper {
       saveCallInfo(uuid, callID);
   }
 
-  Future onCallEnded(String uuid, int callID) async =>
-      sendEndCallSocket("${callID}");
+  Future onCallEnded(String uuid, String callID) async =>
+      sendEndCallSocket(callID);
 
   void showNotificationCallAndroid(String sessionId, int callType, int callId,
       String callerName, Set<int> opponentsIds) {
@@ -169,12 +173,14 @@ class KCallKitHelper {
     if (data != null && data.app == KPushData.APP_P2P_CALL_NOTIFY) {
       ConnectycubeFlutterCallKit.onCallRejectedWhenTerminated =
           (CallEvent callEvent) {
-        return onCallEnded(callEvent.sessionId, callEvent.callerId);
+        return onCallEnded(
+            callEvent.sessionId, callEvent.userInfo!["callID"] as String);
       };
 
       ConnectycubeFlutterCallKit.onCallAcceptedWhenTerminated =
           (CallEvent callEvent) {
-        return saveCallInfo(callEvent.sessionId, callEvent.callerId);
+        return saveCallInfo(
+            callEvent.sessionId, callEvent.userInfo!["callID"] as String);
       };
 
       // ConnectycubeFlutterCallKit.initMessagesHandler();
@@ -183,10 +189,10 @@ class KCallKitHelper {
     }
   }
 
-  Future<void> saveCallInfo(String uuid, int callId) async {
+  Future<void> saveCallInfo(String uuid, String callId) async {
     final callInfo = KVoipCallInfo()
       ..uuid = uuid
-      ..callID = "${callId}";
+      ..callID = callId;
     await KPrefHelper.put(VOIP_PREF_KEY, callInfo);
     print("CALL_KIT_HELPER: SAVED ID: $callId");
   }
@@ -264,9 +270,10 @@ class KCallKitHelper {
 
   /// Event Listener Callbacks for 'connectycube_flutter_call_kit'
   Future _onCallAccepted(CallEvent event) {
-    return onCallAccepted(event.sessionId, event.callerId);
+    return onCallAccepted(event.sessionId, event.userInfo!["callID"] as String);
   }
 
-  Future _onCallRejected(CallEvent event) =>
-      onCallEnded(event.sessionId, event.callerId);
+  Future _onCallRejected(CallEvent event) {
+    return onCallEnded(event.sessionId, event.userInfo!["callID"] as String);
+  }
 }
