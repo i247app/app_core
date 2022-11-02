@@ -5,22 +5,21 @@ import 'dart:math' as Math;
 import 'package:app_core/app_core.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:app_core/header/kassets.dart';
 import 'package:path_provider/path_provider.dart';
 
-class KWordGameIntro extends StatefulWidget {
+class KEggHeroIntroBackup extends StatefulWidget {
   final Function? onFinish;
 
-  const KWordGameIntro({this.onFinish});
+  const KEggHeroIntroBackup({this.onFinish});
 
   @override
-  _KWordGameIntroState createState() => _KWordGameIntroState();
+  _KEggHeroIntroState createState() => _KEggHeroIntroState();
 }
 
-class _KWordGameIntroState extends State<KWordGameIntro>
+class _KEggHeroIntroState extends State<KEggHeroIntroBackup>
     with TickerProviderStateMixin {
   Completer<AudioPlayer> cAudioPlayer = Completer();
   Completer<AudioPlayer> cBackgroundAudioPlayer = Completer();
@@ -35,10 +34,7 @@ class _KWordGameIntroState extends State<KWordGameIntro>
       _bouncingAnimationController,
       _barrelMovingAnimationController,
       _barrelHeroMovingAnimationController,
-      _barrelHeroSpinAnimationController,
-      _barrelSpinAnimationController,
-      _dropBounceAnimationController;
-  late SpringSimulation _dropBounceAnimationSimulation;
+      _barrelHeroSpinAnimationController;
 
   double initialPos = 1;
   double height = 0;
@@ -48,9 +44,8 @@ class _KWordGameIntroState extends State<KWordGameIntro>
   Timer? _timer;
   double heroHeight = 90;
   double heroWidth = 90;
-  bool showAdult = false;
+  bool isShooting = false;
   int eggBreakStep = 0;
-  String? heroUrl;
 
   int introShakeTime = 1;
 
@@ -58,44 +53,7 @@ class _KWordGameIntroState extends State<KWordGameIntro>
   void initState() {
     super.initState();
 
-    List<String> heroUrls = [
-      "https://pix1.s3.us-west-1.amazonaws.com/hero/tofu_chan_k1.png",
-      "https://pix1.s3.us-west-1.amazonaws.com/hero/duriman_k1.png",
-      "https://pix1.s3.us-west-1.amazonaws.com/hero/midori_k1.png",
-      "https://pix1.s3.us-west-1.amazonaws.com/hero/midori_k1.png",
-      "https://pix1.s3.us-west-1.amazonaws.com/hero/midori_k1.png",
-    ];
-    heroUrls.shuffle();
-    heroUrl = heroUrls.first;
-
     loadAudioAsset();
-
-    this._dropBounceAnimationSimulation = SpringSimulation(
-      SpringDescription(
-        mass: 1,
-        stiffness: 20,
-        damping: 6,
-      ),
-      0.0, // starting point
-      700.0, // ending point
-      0.2, // velocity
-    );
-    this._dropBounceAnimationController =
-        AnimationController(vsync: this, upperBound: 900.0)
-          ..addListener(() {
-            setState(() {});
-          })
-          ..addStatusListener((status) {
-            if (mounted && status == AnimationStatus.completed) {
-            } else if (mounted) {
-              Future.delayed(Duration(milliseconds: 1350), () {
-                if (mounted) {
-                  this._barrelMovingAnimationController.forward();
-                  this._barrelSpinAnimationController.repeat();
-                }
-              });
-            }
-          });
 
     _bouncingAnimationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 100))
@@ -106,16 +64,6 @@ class _KWordGameIntroState extends State<KWordGameIntro>
             } else if (status == AnimationStatus.dismissed) {
               this._barrelHeroMovingAnimationController.reverse();
               this._barrelHeroSpinAnimationController.repeat();
-              this.setState(() {
-                this.showAdult = true;
-              });
-              Future.delayed(Duration(milliseconds: 100), () {
-                if (mounted) {
-                  this
-                      ._dropBounceAnimationController
-                      .animateWith(this._dropBounceAnimationSimulation);
-                }
-              });
             }
           });
     _bouncingAnimation = Tween(begin: Offset(0, 0), end: Offset(0, -10.0))
@@ -130,10 +78,10 @@ class _KWordGameIntroState extends State<KWordGameIntro>
         if (introShakeTime > 0 && mounted) {
           if (status == AnimationStatus.completed) {
             if (introShakeTime - 1 == 0) {
-              // cBackgroundAudioPlayer.future.then((ap) {
-              //   ap.stop();
-              //   ap.release();
-              // });
+              cBackgroundAudioPlayer.future.then((ap) {
+                ap.stop();
+                ap.release();
+              });
               try {
                 final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
                 ap.play(correctAudioFileUri ?? "", isLocal: true);
@@ -162,22 +110,6 @@ class _KWordGameIntroState extends State<KWordGameIntro>
     ).animate(_shakeTheTopAnimationController);
 
     _barrelMovingAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 3000),
-      vsync: this,
-    )
-      ..addListener(() => setState(() {}))
-      ..addStatusListener((status) {
-        if (mounted && status == AnimationStatus.completed) {
-          if (this.widget.onFinish != null) this.widget.onFinish!();
-        } else if (mounted && status == AnimationStatus.dismissed) {}
-      });
-    _barrelMovingAnimation = new Tween(
-      begin: 0.0,
-      end: -2.5,
-    ).animate(new CurvedAnimation(
-        parent: _barrelMovingAnimationController, curve: Curves.linear));
-
-    _barrelHeroMovingAnimationController = AnimationController(
       duration: const Duration(milliseconds: 2750),
       vsync: this,
     )
@@ -193,10 +125,25 @@ class _KWordGameIntroState extends State<KWordGameIntro>
             // this.fire();
             this._shakeTheTopAnimationController.forward();
           });
+        } else if (mounted && status == AnimationStatus.dismissed) {}
+      });
+    _barrelMovingAnimation = new Tween(
+      begin: -2.0,
+      end: 0.0,
+    ).animate(new CurvedAnimation(
+        parent: _barrelMovingAnimationController, curve: Curves.linear));
+
+    _barrelHeroMovingAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 2750),
+      vsync: this,
+    )
+      ..addListener(() => setState(() {}))
+      ..addStatusListener((status) {
+        if (mounted && status == AnimationStatus.completed) {
         } else if (mounted && status == AnimationStatus.dismissed) {
           this._barrelHeroSpinAnimationController.stop();
           this._barrelHeroSpinAnimationController.reset();
-          // if (this.widget.onFinish != null) this.widget.onFinish!();
+          if (this.widget.onFinish != null) this.widget.onFinish!();
         }
       });
     _barrelHeroMovingAnimation = new Tween(
@@ -213,24 +160,16 @@ class _KWordGameIntroState extends State<KWordGameIntro>
             } else if (status == AnimationStatus.dismissed) {}
           });
 
-    _barrelSpinAnimationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500))
-          ..addListener(() => setState(() {}))
-          ..addStatusListener((status) {
-            if (mounted && status == AnimationStatus.completed) {
-            } else if (status == AnimationStatus.dismissed) {}
-          });
-
-    // this._barrelMovingAnimationController.forward();
+    this._barrelMovingAnimationController.forward();
     this._barrelHeroMovingAnimationController.forward();
 
-    // Future.delayed(Duration(milliseconds: 250), () {
-    //   try {
-    //     final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
-    //     ap.play(introAudioFileUri ?? "", isLocal: true);
-    //     cBackgroundAudioPlayer.complete(ap);
-    //   } catch (e) {}
-    // });
+    Future.delayed(Duration(milliseconds: 250), () {
+      try {
+        final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+        ap.play(introAudioFileUri ?? "", isLocal: true);
+        cBackgroundAudioPlayer.complete(ap);
+      } catch (e) {}
+    });
   }
 
   @override
@@ -239,17 +178,14 @@ class _KWordGameIntroState extends State<KWordGameIntro>
       ap.stop();
       ap.dispose();
     });
-    // cBackgroundAudioPlayer.future.then((ap) {
-    //   ap.stop();
-    //   ap.dispose();
-    // });
+    cBackgroundAudioPlayer.future.then((ap) {
+      ap.stop();
+      ap.dispose();
+    });
     _shakeTheTopAnimationController.dispose();
-    _bouncingAnimationController.dispose();
     _barrelMovingAnimationController.dispose();
     _barrelHeroMovingAnimationController.dispose();
     _barrelHeroSpinAnimationController.dispose();
-    _barrelSpinAnimationController.dispose();
-    _dropBounceAnimationController.dispose();
     super.dispose();
   }
 
@@ -281,25 +217,19 @@ class _KWordGameIntroState extends State<KWordGameIntro>
 
   @override
   Widget build(BuildContext context) {
-    final adultView = AnimatedOpacity(
-      duration: Duration(milliseconds: 200),
-      opacity: this.showAdult ? 1.0 : 0.0,
-      child: Transform.scale(
-        alignment: Alignment.bottomCenter,
-        scale: 0.5,
-        child: Transform.rotate(
-          angle: -this._barrelSpinAnimationController.value * 4 * Math.pi,
-          child: Image.network(
-            heroUrl!,
-            height: heroHeight,
-            errorBuilder: (context, error, stack) => Image.asset(
-              KAssets.IMG_HERO_EGG,
-              height: heroHeight,
-              package: 'app_core',
-            ),
-          ),
-        ),
-      ),
+    final eggStep1 = AnimatedOpacity(
+      duration: Duration(milliseconds: 700),
+      opacity: this.eggBreakStep == 0 ? 1.0 : 0.0,
+      child: this.eggBreakStep == 0
+          ? Transform.scale(
+              alignment: Alignment.bottomCenter,
+              scale: 0.5,
+              child: Image.asset(
+                KAssets.IMG_TAMAGO_1,
+                package: 'app_core',
+              ),
+            )
+          : Container(),
     );
 
     final body = Stack(
@@ -308,22 +238,25 @@ class _KWordGameIntroState extends State<KWordGameIntro>
         Align(
           alignment: Alignment(_barrelHeroMovingAnimation.value, 1),
           child: Transform.translate(
-            offset: _bouncingAnimation.value,
-            child: Container(
-              transform:
-                  Matrix4.rotationZ(_shakeTheTopAnimation.value * Math.pi),
-              transformAlignment: Alignment.bottomCenter,
-              width: heroWidth,
-              height: heroHeight,
-              child: Transform.rotate(
-                angle: -this._barrelHeroSpinAnimationController.value *
-                    4 *
-                    Math.pi,
-                child: Image.asset(
-                  KAssets.IMG_TAMAGO_CHAN,
-                  width: heroWidth,
-                  height: heroHeight,
-                  package: 'app_core',
+            offset: Offset(-heroWidth + 15, 0),
+            child: Transform.translate(
+              offset: _bouncingAnimation.value,
+              child: Container(
+                transform:
+                    Matrix4.rotationZ(_shakeTheTopAnimation.value * Math.pi),
+                transformAlignment: Alignment.bottomCenter,
+                width: heroWidth,
+                height: heroHeight,
+                child: Transform.rotate(
+                  angle: -this._barrelHeroSpinAnimationController.value *
+                      4 *
+                      Math.pi,
+                  child: Image.asset(
+                    KAssets.IMG_TAMAGO_CHAN,
+                    width: heroWidth,
+                    height: heroHeight,
+                    package: 'app_core',
+                  ),
                 ),
               ),
             ),
@@ -334,14 +267,7 @@ class _KWordGameIntroState extends State<KWordGameIntro>
           child: Container(
             width: heroWidth * 2,
             height: heroHeight * 2,
-            child: Container(
-              transform: Matrix4.translationValues(0.0, -700, 0.0),
-              child: Container(
-                transform: Matrix4.translationValues(
-                    0.0, this._dropBounceAnimationController.value, 0.0),
-                child: adultView,
-              ),
-            ),
+            child: eggStep1,
           ),
         ),
       ],
