@@ -120,10 +120,10 @@ class KCallKitHelper {
     KPushData? data;
     final messageData = message.data;
     messageData["call_type"] = messageData["call_type"] != null
-        ? int.parse(messageData["call_type"])
+        ? int.tryParse(messageData["call_type"])
         : null;
-    messageData["caller_id"] = messageData["call_type"] != null
-        ? int.parse(messageData["caller_id"])
+    messageData["caller_id"] = messageData["caller_id"] != null
+        ? int.tryParse(messageData["caller_id"])
         : null;
     try {
       data = KPushData.fromJson(Map<String, dynamic>.from(messageData));
@@ -154,7 +154,7 @@ class KCallKitHelper {
           data.callerName ?? "",
           (data.callOpponents ?? "")
               .split(",")
-              .map((item) => int.parse(item))
+              .map((item) => int.tryParse(item) ?? 0)
               .toSet(),
           data.userInfo ?? "");
     }
