@@ -77,6 +77,9 @@ class KPushData {
   @JsonKey(name: "call_opponents")
   String? callOpponents;
 
+  @JsonKey(name: "user_info")
+  String? userInfo;
+
   @JsonKey(name: CONFETTI_COUNT, toJson: zzz_itoa, fromJson: zzz_atoi)
   int? confettiCount;
 

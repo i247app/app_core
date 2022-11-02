@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_core/app_core.dart';
@@ -66,26 +67,22 @@ class KCallKitHelper {
       saveCallInfo(uuid, callID);
   }
 
-  Future onCallEnded(String uuid, String callID) async =>
-      sendEndCallSocket(callID);
+  Future onCallEnded(String uuid, String callID) async {
+    await startListenSocket(uuid, callID);
+    sendEndCallSocket(callID);
+  }
 
   void showNotificationCallAndroid(String sessionId, int callType, int callId,
-      String callerName, Set<int> opponentsIds) {
-    startListenSocket(sessionId, "${callId}");
-    // if (KWebRTCHelper.autoDisplayCallScreen) {
-    // final callEvent = CallEvent(
-    //   sessionId: callID,
-    //   callType: 1,
-    //   callerId: 0,
-    //   callerName: callName,
-    //   opponentsIds: [0].toSet(),
-    // );
+      String callerName, Set<int> opponentsIds, String userInfo) {
+    final userInfoMap = Map<String, String>.from(jsonDecode(userInfo));
+
     CallEvent callEvent = CallEvent(
         sessionId: sessionId,
         callType: callType,
         callerId: callId,
         callerName: callerName,
-        opponentsIds: opponentsIds);
+        opponentsIds: opponentsIds,
+        userInfo: userInfoMap);
     ConnectycubeFlutterCallKit.showCallNotification(callEvent);
   }
 
@@ -103,68 +100,33 @@ class KCallKitHelper {
       );
       KCallControlStreamHelper.broadcast(KCallType.foreground);
       KCallStreamHelper.broadcast(screen);
-      // return Navigator.of(context).push(MaterialPageRoute(
-      //   builder: (ctx) => KVOIPCall.asReceiver(
-      //     callInfo.callID!,
-      //     callInfo.uuid!,
-      //     autoPickup: true,
-      //     videoLogo: this.videoLogo,
-      //     chatroomCtrl: KChatroomController(),
-      //   ),
-      // ));
     }
     return Future.value(null);
   }
 
   void init({String? videoLogo}) {
     this.videoLogo = videoLogo;
-    // iosVoIPKit.onDidRejectIncomingCall = (
-    //   String uuid,
-    //   String callerId,
-    //   String receiverId,
-    //   String callerName,
-    // ) {
-    //   onCallEnded(uuid, callerId);
-    //   iosVoIPKit.endCall(
-    //     uuid: uuid,
-    //     callerId: callerId,
-    //     receiverId: receiverId,
-    //     callerName: callerName,
-    //   );
-    // };
-
-    // iosVoIPKit.onDidAcceptIncomingCall = (
-    //   String uuid,
-    //   String callerId,
-    //   String receiverId,
-    //   String callerName,
-    // ) {
-    //   onCallAccepted(uuid, callerId);
-    //   print('🎈 example: onDidAcceptIncomingCall $uuid, $callerId');
-    //   iosVoIPKit.acceptIncomingCall(callerState: CallStateType.calling);
-    //   iosVoIPKit.callConnected();
-    // };
-
-    // iosVoIPKit.onDidReceiveIncomingPush = (
-    //   String uuid,
-    //   String callerId,
-    //   String receiverId,
-    //   String callerName,
-    // ) {
-    //   print("CALL_KIT_HELPER: onDidReceiveIncomingPush $callerId");
-    //   startListenSocket(uuid, callerId);
-    // };
 
     ConnectycubeFlutterCallKit.instance.init(
       onCallAccepted: _onCallAccepted,
       onCallRejected: _onCallRejected,
     );
+
+    ConnectycubeFlutterCallKit.instance
+        .updateConfig(icon: "bird_green_logo", notificationIcon: "notif_icon");
   }
 
   void initBackground(RemoteMessage message) {
     KPushData? data;
+    final messageData = message.data;
+    messageData["call_type"] = messageData["call_type"] != null
+        ? int.parse(messageData["call_type"])
+        : null;
+    messageData["caller_id"] = messageData["call_type"] != null
+        ? int.parse(messageData["caller_id"])
+        : null;
     try {
-      data = KPushData.fromJson(Map<String, dynamic>.from(message.data));
+      data = KPushData.fromJson(Map<String, dynamic>.from(messageData));
     } catch (e) {
       print(e.toString());
     }
@@ -185,7 +147,16 @@ class KCallKitHelper {
 
       // ConnectycubeFlutterCallKit.initMessagesHandler();
       ConnectycubeFlutterCallKit.initEventsHandler();
-      // showNotificationCallAndroid(data.id ?? "", data.callerName ?? "");
+      showNotificationCallAndroid(
+          data.sessionId ?? "",
+          data.callType ?? 1,
+          data.callerId ?? 0,
+          data.callerName ?? "",
+          (data.callOpponents ?? "")
+              .split(",")
+              .map((item) => int.parse(item))
+              .toSet(),
+          data.userInfo ?? "");
     }
   }
 
@@ -217,17 +188,8 @@ class KCallKitHelper {
     String receiverId,
     String callerName,
   ) async {
-    // if (Platform.isAndroid) {
     ConnectycubeFlutterCallKit.reportCallEnded(sessionId: callerId);
     ConnectycubeFlutterCallKit.setOnLockScreenVisibility(isVisible: false);
-    // } else {
-    //   await iosVoIPKit.endCall(
-    //     uuid: uuid,
-    //     callerId: callerId,
-    //     callerName: callerName,
-    //     receiverId: receiverId,
-    //   );
-    // }
   }
 
   Future<void> endCall(
@@ -236,17 +198,8 @@ class KCallKitHelper {
     String receiverId,
     String callerName,
   ) async {
-    // if (Platform.isAndroid) {
     ConnectycubeFlutterCallKit.reportCallEnded(sessionId: uuid);
     ConnectycubeFlutterCallKit.setOnLockScreenVisibility(isVisible: false);
-    // } else {
-    //   await iosVoIPKit.endCall(
-    //     uuid: uuid,
-    //     callerId: callerId,
-    //     callerName: callerName,
-    //     receiverId: receiverId,
-    //   );
-    // }
   }
 
   Future<void> rejectCall(
@@ -255,17 +208,8 @@ class KCallKitHelper {
     String receiverId,
     String callerName,
   ) async {
-    // if (Platform.isAndroid) {
     ConnectycubeFlutterCallKit.reportCallEnded(sessionId: uuid);
     ConnectycubeFlutterCallKit.setOnLockScreenVisibility(isVisible: false);
-    // } else {
-    //   await iosVoIPKit.endCall(
-    //     uuid: uuid,
-    //     callerId: callerId,
-    //     callerName: callerName,
-    //     receiverId: receiverId,
-    //   );
-    // }
   }
 
   /// Event Listener Callbacks for 'connectycube_flutter_call_kit'
