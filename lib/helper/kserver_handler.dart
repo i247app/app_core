@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:app_core/app_core.dart';
@@ -196,8 +197,14 @@ abstract class KServerHandler {
       "req": "webrtc.call.notify",
       "notifyType": "voip",
       "refPUIDs": refPUIDs.where((p) => p != KSessionData.me?.puid).toList(),
-      "callID": callID,
+      "callID": "${callID}",
       "uuid": uuid,
+      "call_type": "1",
+      "caller_id": KSessionData.me!.puid!,
+      "caller_name": KSessionData.me?.fullName,
+      "call_opponents": "1",
+      "session_id": uuid,
+      "user_info": jsonEncode({"callID": callID})
     };
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }

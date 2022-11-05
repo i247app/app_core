@@ -7,6 +7,7 @@ import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:app_core/ui/voip/widget/kp2p_button_view.dart';
 import 'package:app_core/ui/voip/widget/kp2p_video_view.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
@@ -15,8 +16,10 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:uuid/uuid.dart';
 import 'package:app_core/app_core.dart';
 import 'package:wakelock/wakelock.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 enum _CallPerspective { sender, receiver }
+
 enum _CallState { ws_error, init, waiting, in_progress, ended }
 
 class KVOIPCall extends StatefulWidget {
@@ -851,13 +854,9 @@ class _KVOIPCallState extends State<KVOIPCall>
       children: [
         this.refAvatarURL == null && widget.videoLogo == null
             ? Icon(Icons.video_call, size: 300, color: Colors.green)
-            : FadeInImage(
-                placeholder: AssetImage(KAssets.IMG_TRANSPARENCY),
-                image: (this.refAvatarURL == null)
-                    ? Image.asset(widget.videoLogo!).image
-                    : NetworkImage(this.refAvatarURL!),
-                fit: BoxFit.cover,
-              ),
+            : (this.refAvatarURL == null)
+                ? Container()
+                : CachedNetworkImage(imageUrl: this.refAvatarURL!),
         Container(color: KStyles.black.withOpacity(0.8)),
         SafeArea(
           child: Column(

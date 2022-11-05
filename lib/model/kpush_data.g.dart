@@ -15,8 +15,13 @@ KPushData _$KPushDataFromJson(Map<String, dynamic> json) => KPushData()
   ..refID = json['refID'] as String?
   ..rem = json['rem'] as String?
   ..otherId = json['other_id'] as String?
-  ..callerName = json['callName'] as String?
   ..uuid = json['uuid'] as String?
+  ..callerId = json['caller_id'] as int?
+  ..callType = json['call_type'] as int?
+  ..sessionId = json['session_id'] as String?
+  ..callerName = json['caller_name'] as String?
+  ..callOpponents = json['call_opponents'] as String?
+  ..userInfo = json['user_info'] as String?
   ..confettiCount = zzz_atoi(json['confettiCount'] as String?)
   ..message = json['message'] as String?;
 
@@ -37,8 +42,13 @@ Map<String, dynamic> _$KPushDataToJson(KPushData instance) {
   writeNotNull('refID', instance.refID);
   writeNotNull('rem', instance.rem);
   writeNotNull('other_id', instance.otherId);
-  writeNotNull('callName', instance.callerName);
   writeNotNull('uuid', instance.uuid);
+  writeNotNull('caller_id', instance.callerId);
+  writeNotNull('call_type', instance.callType);
+  writeNotNull('session_id', instance.sessionId);
+  writeNotNull('caller_name', instance.callerName);
+  writeNotNull('call_opponents', instance.callOpponents);
+  writeNotNull('user_info', instance.userInfo);
   writeNotNull('confettiCount', zzz_itoa(instance.confettiCount));
   writeNotNull('message', instance.message);
   return val;

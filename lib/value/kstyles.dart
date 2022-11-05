@@ -126,14 +126,15 @@ abstract class KStyles {
       );
 
   /// Preset ButtonStyle
-  static ButtonStyle roundedButton(Color primary, {Color? textColor}) =>
+  static ButtonStyle roundedButton(Color primary,
+          {Color? textColor, double radius = 60}) =>
       ElevatedButton.styleFrom(
         padding: EdgeInsets.symmetric(vertical: 12),
         textStyle: roundedActionBtnText,
         primary: primary,
         onPrimary: textColor ?? roundedActionBtnText.color,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(60),
+          borderRadius: BorderRadius.circular(radius),
           side: BorderSide(color: Colors.transparent),
         ),
       );
