@@ -24,21 +24,21 @@ class _ScheduleKSessionData {
   final int index;
   final ScheduleSessionMode mode;
 
-  Chapter get chapter => this.schedule.textbooks!.first.chapters!.first;
+  Chapter get chapter => schedule.textbooks!.first.chapters!.first;
 
-  TBPage get page => this.chapter.pages![this.index];
+  TBPage get page => chapter.pages![index];
 
-  bool get isAtStart => (this.index + 0) <= 0;
+  bool get isAtStart => (index + 0) <= 0;
 
-  bool get isAtEnd => this.index >= (this.chapter.pages ?? []).length - 1;
+  bool get isAtEnd => index >= (chapter.pages ?? []).length - 1;
 
   bool get showLeftArrow =>
-      // this.mode == ScheduleSessionMode.master &&
-      !this.isAtStart;
+      // mode == ScheduleSessionMode.master &&
+      !isAtStart;
 
   bool get showRightArrow =>
-      // this.mode == ScheduleSessionMode.master &&
-      !this.isAtEnd;
+      // mode == ScheduleSessionMode.master &&
+      !isAtEnd;
 
   _ScheduleKSessionData({
     required this.schedule,
@@ -86,7 +86,7 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
 
   late StreamSubscription streamSub;
 
-  late _PanelMode panelMode = this.data.mode == ScheduleSessionMode.master
+  late _PanelMode panelMode = data.mode == ScheduleSessionMode.master
       ? _PanelMode.dashboard
       : _PanelMode.quiz; // _PanelMode.chat;
 
@@ -101,13 +101,13 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
     super.initState();
     SystemChrome.setPreferredOrientations(DeviceOrientation.values);
 
-    this.streamSub = KPushDataHelper.stream.listen(pushDataListen);
+    streamSub = KPushDataHelper.stream.listen(pushDataListen);
   }
 
   @override
   void dispose() {
     KScreenHelper.resetOrientation(context);
-    this.streamSub.cancel();
+    streamSub.cancel();
     super.dispose();
   }
 
@@ -116,14 +116,14 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
       case "lop.page.push":
         print("###### SETTING THE PAGE TO ${pushData.id} ######");
         setPage(KMathHelper.parseInt(pushData.id));
-        this.panelCtrl.close();
+        panelCtrl.close();
 
-        print("INDEX # ${this.data.index}");
-        debugPrint("PAGE ${KUtil.prettyJSON(this.data.page)}");
+        print("INDEX # ${data.index}");
+        debugPrint("PAGE ${KUtil.prettyJSON(data.page)}");
         break;
       case "lop.answer.prompt.notify":
         print("###### SHOW THE ANSWERS !!!! #####");
-        this.panelCtrl.open();
+        panelCtrl.open();
         break;
       case "lop.flash.notify":
         print("###### FLASH ${pushData.id} #####");
@@ -132,8 +132,7 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
   }
 
   void setPage(int newIndex) async {
-    if (newIndex < 0 || newIndex >= (this.data.chapter.pages ?? []).length)
-      return;
+    if (newIndex < 0 || newIndex >= (data.chapter.pages ?? []).length) return;
     pageCtrl.jumpToPage(newIndex);
   }
 
@@ -148,28 +147,28 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
   }
 
   void onPushSlideClick() => KServerHandler.pushCurrentPage(
-        pageIndex: this.data.index,
-        scheduleID: this.data.schedule.lopScheduleID ?? "",
+        pageIndex: data.index,
+        scheduleID: data.schedule.lopScheduleID ?? "",
       );
 
   void onStartQuizClick() =>
-      KServerHandler.startLopQuiz(this.data.schedule.lopScheduleID ?? "");
+      KServerHandler.startLopQuiz(data.schedule.lopScheduleID ?? "");
 
   void onPushEmojiClick(String emoji) => KServerHandler.pushFlashToLopSchedule(
-        scheduleID: this.data.schedule.lopScheduleID ?? "",
+        scheduleID: data.schedule.lopScheduleID ?? "",
         flashType: KFlash.TYPE_RAIN,
         mediaType: KFlash.MEDIA_EMOJI,
         flashValue: emoji,
       );
 
   void onPushHeroClick(String hero) => KServerHandler.pushFlashToLopSchedule(
-        scheduleID: this.data.schedule.lopScheduleID ?? "",
+        scheduleID: data.schedule.lopScheduleID ?? "",
         flashType: KFlash.TYPE_BANNER,
         mediaType: KFlash.MEDIA_HERO,
         flashValue: hero,
       );
 
-  void selectTab(_PanelMode mode) => setState(() => this.panelMode = mode);
+  void selectTab(_PanelMode mode) => setState(() => panelMode = mode);
 
   @override
   Widget build(BuildContext context) {
@@ -178,12 +177,12 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
       chapter: data.chapter,
     );
 
-    final chat = KChatroom(this.chatroomCtrl);
+    final chat = KChatroom(chatroomCtrl);
 
     final dashPageSelector = Row(
       children: [
         Visibility(
-          visible: this.data.showLeftArrow,
+          visible: data.showLeftArrow,
           maintainSize: true,
           maintainAnimation: true,
           maintainState: true,
@@ -194,12 +193,12 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
         ),
         Spacer(),
         Text(
-          "${this.data.index + 1} / ${this.data.chapter.pages?.length ?? "?"}",
+          "${data.index + 1} / ${data.chapter.pages?.length ?? "?"}",
           style: KStyles.normalText,
         ),
         Spacer(),
         Visibility(
-          visible: this.data.showRightArrow,
+          visible: data.showRightArrow,
           maintainSize: true,
           maintainAnimation: true,
           maintainState: true,
@@ -256,7 +255,7 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
           dashPageSelector,
           SizedBox(height: 6),
           dashPagePushButton,
-          if ((this.data.page.questions ?? []).isNotEmpty) ...[
+          if ((data.page.questions ?? []).isNotEmpty) ...[
             SizedBox(height: 6),
             dashQuizButton,
           ],
@@ -268,12 +267,12 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
     );
 
     final answerSection = _AnswerSection(
-      this.data,
-      onChoiceClick: (z) => onLessonChoiceClick(this.data.page, z),
+      data,
+      onChoiceClick: (z) => onLessonChoiceClick(data.page, z),
     );
 
     final panelContent;
-    switch (this.panelMode) {
+    switch (panelMode) {
       case _PanelMode.chat:
         panelContent = chat;
         break;
@@ -302,13 +301,13 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
     final background = Column(
       children: [
         Expanded(child: lessonView),
-        if (this.data.mode == ScheduleSessionMode.master) SizedBox(height: 100),
+        if (data.mode == ScheduleSessionMode.master) SizedBox(height: 100),
       ],
     );
 
     final content = SlidingUpPanel(
-      controller: this.panelCtrl,
-      minHeight: this.data.mode == ScheduleSessionMode.master ? 130 : 0,
+      controller: panelCtrl,
+      minHeight: data.mode == ScheduleSessionMode.master ? 130 : 0,
       maxHeight: 240,
       borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
       isDraggable: true,
@@ -361,11 +360,11 @@ class _AnswerSectionState extends State<_AnswerSection> {
   void didUpdateWidget(covariant _AnswerSection oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.data.page.pageID != widget.data.page.pageID)
-      setState(() => this.attempts.clear());
+      setState(() => attempts.clear());
   }
 
   void onAttemptAnswer(KAnswer a) {
-    setState(() => this.attempts.add(a));
+    setState(() => attempts.add(a));
     widget.onChoiceClick(a);
   }
 
@@ -379,7 +378,7 @@ class _AnswerSectionState extends State<_AnswerSection> {
             (c) => _AnswerButton(
               c,
               onClick: onAttemptAnswer,
-              attempts: this.attempts..remove(widget.data.page.title),
+              attempts: attempts..remove(widget.data.page.title),
             ),
           )
           .toList(),
@@ -397,12 +396,12 @@ class _AnswerButton extends StatelessWidget {
   final Set<KAnswer> attempts;
 
   bool get isWrong =>
-      !(this.answer.isCorrect ?? false) &&
-      this.attempts.map((a) => a.text).contains(this.answer.text);
+      !(answer.isCorrect ?? false) &&
+      attempts.map((a) => a.text).contains(answer.text);
 
   bool get isCorrect =>
-      (this.answer.isCorrect ?? false) &&
-      this.attempts.map((a) => a.text).contains(this.answer.text);
+      (answer.isCorrect ?? false) &&
+      attempts.map((a) => a.text).contains(answer.text);
 
   const _AnswerButton(
     this.answer, {
@@ -413,21 +412,21 @@ class _AnswerButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final body = Text(
-      this.answer.text ?? "## missing ##",
+      answer.text ?? "## missing ##",
       style: TextStyle(
-        color: (this.isWrong || this.isCorrect) ? Colors.white : Colors.black,
+        color: (isWrong || isCorrect) ? Colors.white : Colors.black,
       ),
     );
 
     return Container(
       width: 140,
       child: ElevatedButton(
-        onPressed: () => this.onClick(this.answer),
+        onPressed: () => onClick(answer),
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.all(6),
-          primary: this.isCorrect
+          primary: isCorrect
               ? KStyles.colorSuccess
-              : this.isWrong
+              : isWrong
                   ? KStyles.colorError
                   : Colors.white,
           shape: RoundedRectangleBorder(

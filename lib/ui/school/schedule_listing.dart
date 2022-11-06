@@ -28,9 +28,16 @@ class _ScheduleListingState extends State<ScheduleListing> {
       lopID: schedule.lopID ?? "",
       scheduleID: schedule.lopScheduleID ?? "",
     );
+
     if (response.isSuccess && (response.schedules ?? []).isNotEmpty) {
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (_) => ScheduleSessionViewer(response.schedules!.first)));
+      final schedule = response.schedules!.first;
+      if ((schedule.textbooks ?? []).isEmpty) {
+        KSnackBarHelper.error("Missing a textbook");
+        return;
+      } else {
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => ScheduleSessionViewer(schedule)));
+      }
     } else {
       KToastHelper.error("Failed to load course ${schedule.courseID}");
     }
