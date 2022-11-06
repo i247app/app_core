@@ -12,6 +12,7 @@ class LopSchedule extends Lop {
   static const String START_TIME = "startTime";
   static const String END_TIME = "endTime";
   static const String LOP_SCHEDULE_STATUS = "scheduleStatus";
+  static const String EXTERNAL_LINK = "externalLink";
 
   @JsonKey(name: LOP_SCHEDULE_ID)
   String? lopScheduleID;
@@ -24,6 +25,9 @@ class LopSchedule extends Lop {
 
   @JsonKey(name: LOP_SCHEDULE_STATUS)
   String? lopScheduleStatus;
+
+  @JsonKey(name: EXTERNAL_LINK)
+  String? externalLink;
 
   /// Methods
   @JsonKey(ignore: true)

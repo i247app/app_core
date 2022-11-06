@@ -140,4 +140,8 @@ abstract class KPhrases {
   static String get preSchool => _klingo.yak("pre_school");
 
   static String get kindergarten => _klingo.yak("kindergarten");
+
+  static String get cancel => "Cancel";
+
+  static String get ok => "Ok";
 }

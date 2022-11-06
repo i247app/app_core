@@ -9,6 +9,7 @@ import 'package:app_core/model/kanswer.dart';
 import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/model/khero.dart';
+import 'package:app_core/model/kobject.dart';
 import 'package:app_core/model/kquestion.dart';
 import 'package:app_core/model/lop_schedule.dart';
 import 'package:app_core/model/response/chat_add_members_response.dart';
@@ -679,7 +680,7 @@ abstract class KServerHandler {
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }
 
-  static Future<GetLopSchedulesResponse> getLopSchedules() async {
+  static Future<GetLopSchedulesResponse> listLopSchedules() async {
     final params = {
       "svc": "bird",
       "req": "lop.schedule.list",
@@ -688,7 +689,7 @@ abstract class KServerHandler {
         .then((data) => GetLopSchedulesResponse.fromJson(data));
   }
 
-  static Future<GetLopSchedulesResponse> getSchedule({
+  static Future<GetLopSchedulesResponse> getLopSchedule({
     required String lopID,
     required String scheduleID,
   }) async {
@@ -698,6 +699,17 @@ abstract class KServerHandler {
       "lopSchedule": LopSchedule()
         ..lopID = lopID
         ..lopScheduleID = scheduleID,
+    };
+    return TLSHelper.send(params)
+        .then((data) => GetLopSchedulesResponse.fromJson(data));
+  }
+
+  static Future<GetLopSchedulesResponse> modifyLopSchedule(
+      LopSchedule schedule) async {
+    final params = {
+      "svc": "bird",
+      "req": "lop.schedule.modify",
+      "lopSchedule": schedule,
     };
     return TLSHelper.send(params)
         .then((data) => GetLopSchedulesResponse.fromJson(data));

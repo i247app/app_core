@@ -20,12 +20,12 @@ class _ScheduleListingState extends State<ScheduleListing> {
   }
 
   void loadSchedules() async {
-    final response = await KServerHandler.getLopSchedules();
+    final response = await KServerHandler.listLopSchedules();
     setState(() => this.schedules = response.schedules ?? []);
   }
 
   void onScheduleClick(LopSchedule schedule, ScheduleSessionMode mode) async {
-    final response = await KServerHandler.getSchedule(
+    final response = await KServerHandler.getLopSchedule(
       lopID: schedule.lopID ?? "",
       scheduleID: schedule.lopScheduleID ?? "",
     );

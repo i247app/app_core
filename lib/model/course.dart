@@ -1,10 +1,11 @@
+import 'package:app_core/model/kobject.dart';
 import 'package:app_core/model/textbook.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'course.g.dart';
 
 @JsonSerializable()
-class Course {
+class Course extends KObject {
   static const String COURSE_ID = "courseID";
   static const String COURSE_TYPE = "courseType";
   static const String TITLE = "title";

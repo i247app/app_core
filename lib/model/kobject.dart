@@ -23,6 +23,7 @@ abstract class KObject {
   static const String KMESSAGE = "kmessage";
   static const String KCOUNT = "kcount";
 
+
   @JsonKey(name: DOMAIN)
   String? kdomain;
 
