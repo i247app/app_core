@@ -19,7 +19,7 @@ enum ScheduleSessionMode { master, slave }
 
 enum _PanelMode { chat, dashboard, quiz }
 
-class _ScheduleKSessionData {
+class _ScheduleSessionData {
   final LopSchedule schedule;
   final int index;
   final ScheduleSessionMode mode;
@@ -40,14 +40,14 @@ class _ScheduleKSessionData {
       // mode == ScheduleSessionMode.master &&
       !isAtEnd;
 
-  _ScheduleKSessionData({
+  _ScheduleSessionData({
     required this.schedule,
     required this.index,
     required this.mode,
   });
 }
 
-class ScheduleSessionViewer extends StatefulWidget {
+class ScheduleSessionView extends StatefulWidget {
   final LopSchedule schedule;
 
   ScheduleSessionMode get mode => (this
@@ -59,13 +59,13 @@ class ScheduleSessionViewer extends StatefulWidget {
       ? ScheduleSessionMode.slave
       : ScheduleSessionMode.master;
 
-  const ScheduleSessionViewer(this.schedule);
+  const ScheduleSessionView(this.schedule);
 
   @override
-  State<StatefulWidget> createState() => _ScheduleSessionViewerState();
+  State<StatefulWidget> createState() => _ScheduleSessionViewState();
 }
 
-class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
+class _ScheduleSessionViewState extends State<ScheduleSessionView> {
   final List<List<String>> emojis = [
     // ["₿", KFlash.VALUE_BITCOIN],
     ["😊", KFlash.VALUE_SMILEY],
@@ -90,7 +90,7 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
       ? _PanelMode.dashboard
       : _PanelMode.quiz; // _PanelMode.chat;
 
-  _ScheduleKSessionData get data => _ScheduleKSessionData(
+  _ScheduleSessionData get data => _ScheduleSessionData(
         schedule: widget.schedule,
         index: (pageCtrl.positions.isEmpty) ? 0 : pageCtrl.page?.toInt() ?? 0,
         mode: widget.mode,
@@ -342,7 +342,7 @@ class _ScheduleSessionViewerState extends State<ScheduleSessionViewer> {
 }
 
 class _AnswerSection extends StatefulWidget {
-  final _ScheduleKSessionData data;
+  final _ScheduleSessionData data;
   final Function(KAnswer) onChoiceClick;
 
   const _AnswerSection(this.data, {required this.onChoiceClick});

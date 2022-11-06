@@ -1,7 +1,8 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/lop_schedule.dart';
-import 'package:app_core/ui/school/schedule_session_viewer.dart';
+import 'package:app_core/ui/school/schedule_session_view.dart';
+import 'package:app_core/ui/school/schedule_view.dart';
 import 'package:flutter/material.dart';
 
 class ScheduleListing extends StatefulWidget {
@@ -31,13 +32,8 @@ class _ScheduleListingState extends State<ScheduleListing> {
 
     if (response.isSuccess && (response.schedules ?? []).isNotEmpty) {
       final schedule = response.schedules!.first;
-      if ((schedule.textbooks ?? []).isEmpty) {
-        KSnackBarHelper.error("Missing a textbook");
-        return;
-      } else {
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => ScheduleSessionViewer(schedule)));
-      }
+      final screen = ScheduleView(schedule);
+      Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
     } else {
       KToastHelper.error("Failed to load course ${schedule.courseID}");
     }
