@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class KMessageNotifer extends ChangeNotifier {
+class KMessageNotifier extends ChangeNotifier {
   bool _isNoticed = false;
 
   bool get isNoticed => _isNoticed;
