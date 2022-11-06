@@ -1,6 +1,7 @@
 import 'package:app_core/model/kobject.dart';
 import 'package:app_core/model/textbook.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:app_core/model/response/base_response.dart';
 
 part 'course.g.dart';
 

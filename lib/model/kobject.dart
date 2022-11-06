@@ -1,5 +1,6 @@
 import 'package:app_core/app_core.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:app_core/model/response/base_response.dart';
 
 abstract class KObject {
   static const String DOMAIN = "domain";
@@ -22,7 +23,6 @@ abstract class KObject {
   static const String KSTATUS = "kstatus";
   static const String KMESSAGE = "kmessage";
   static const String KCOUNT = "kcount";
-
 
   @JsonKey(name: DOMAIN)
   String? kdomain;
