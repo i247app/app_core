@@ -8,7 +8,6 @@ import 'package:app_core/provider/kmessage_notifier.dart';
 import 'package:app_core/style/kpalette_group.dart';
 import 'package:app_core/style/ktheme.dart';
 import 'package:app_core/ui/kicon/kicon_manager.dart';
-import 'package:app_core/ui/widget/kerror_view.dart';
 import 'package:draggable_widget/draggable_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -27,6 +26,7 @@ class KApp extends StatefulWidget {
   final Completer? initializer;
   final KTheme Function(KPaletteGroup, Widget)? customThemeBuilder;
   final StreamSubscription Function()? initGlobalListener;
+  final Widget Function(FlutterErrorDetails)? errorBuilder;
 
   const KApp({
     required this.home,
@@ -41,6 +41,7 @@ class KApp extends StatefulWidget {
     this.title = '',
     this.iconSet = const {},
     this.initializer,
+    this.errorBuilder,
   });
 
   @override
@@ -203,8 +204,10 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
     final masterApp = MaterialApp(
       debugShowCheckedModeBanner: false,
       builder: (_, __) {
-        ErrorWidget.builder =
-            (FlutterErrorDetails errorDetails) => KErrorView(errorDetails);
+        if (widget.errorBuilder != null) {
+          ErrorWidget.builder = widget.errorBuilder!;
+        }
+
         return Scaffold(
           resizeToAvoidBottomInset: false,
           key: widget.scaffoldKey,
@@ -218,7 +221,7 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => KMessageNotifer()),
+        ChangeNotifierProvider(create: (_) => KMessageNotifier()),
       ],
       child: masterApp,
     );
