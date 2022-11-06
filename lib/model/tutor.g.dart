@@ -16,6 +16,7 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..kmodifyID = json['modifyID'] as String?
   ..kmodifyDate = zzz_str2Date(json['modifyDate'] as String?)
   ..kisValid = json['isValid'] as String?
+  ..kattribute = json['kattribute'] as String?
   ..korderBy = json['orderBy'] as String?
   ..klimit = json['limit'] as String?
   ..koffset = json['offset'] as String?
@@ -125,6 +126,7 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('modifyID', instance.kmodifyID);
   writeNotNull('modifyDate', zzz_date2Str(instance.kmodifyDate));
   writeNotNull('isValid', instance.kisValid);
+  writeNotNull('kattribute', instance.kattribute);
   writeNotNull('orderBy', instance.korderBy);
   writeNotNull('limit', instance.klimit);
   writeNotNull('offset', instance.koffset);
