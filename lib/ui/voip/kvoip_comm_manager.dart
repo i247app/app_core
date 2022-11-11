@@ -639,8 +639,6 @@ class KVOIPCommManager {
     this._localStreams.add(mediaStream);
     mediaStream.getAudioTracks()[0].enableSpeakerphone(true);
 
-    pc.addStream(mediaStream);
-
     pc.onIceCandidate = (RTCIceCandidate candidate) {
       // print("adding ice candidate to peerID == $peerID");
       _wsSend('candidate', {
@@ -652,10 +650,19 @@ class KVOIPCommManager {
 
     pc.onIceConnectionState = (state) {};
 
-    pc.onAddStream = (MediaStream stream) {
-      this.onAddRemoteStream?.call(peerID, stream);
-      this._remoteStreams.add(stream);
+    // pc.onAddStream = (MediaStream stream) {
+    //   this.onAddRemoteStream?.call(peerID, stream);
+    //   this._remoteStreams.add(stream);
+    // };
+    // await pc.addStream(mediaStream);
+    pc.onTrack = (event) {
+      if (event.track.kind == 'video') {
+        onAddRemoteStream?.call(peerID, event.streams[0]);
+      }
     };
+    _localStream!.getTracks().forEach((track) async {
+      await pc.addTrack(track, _localStream!);
+    });
 
     pc.onRemoveStream = (MediaStream stream) {
       this.onRemoveRemoteStream?.call(peerID, stream);
