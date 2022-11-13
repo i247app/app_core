@@ -3,15 +3,8 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:app_core/app_core.dart';
-import 'package:app_core/helper/kdate_helper.dart';
-import 'package:app_core/helper/kdevice_id_helper.dart';
-import 'package:app_core/helper/khost_config.dart';
-import 'package:app_core/helper/klocale_helper.dart';
-import 'package:app_core/helper/kstring_helper.dart';
-import 'package:app_core/helper/ktablet_detector.dart';
 import 'package:app_core/model/kgig_address.dart';
 import 'package:app_core/model/krole.dart';
-import 'package:app_core/model/kuser.dart';
 import 'package:app_core/ui/wallet/wallet_transfer.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
