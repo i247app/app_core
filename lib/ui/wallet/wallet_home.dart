@@ -479,19 +479,23 @@ class _WalletHomeState extends State<WalletHome> {
       ),
     );
 
-    final withScaffold = Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor:
-            Theme.of(context).appBarTheme.backgroundColor?.withOpacity(0.8),
-        title: Text("Wallet"),
-        actions: actions,
-      ),
-      body: RefreshIndicator(
-        onRefresh: loadAllData,
-        child: SingleChildScrollView(child: body),
-      ),
-    );
+    final withScaffold = KEmbedManager.of(context).isEmbed
+        ? body
+        : Scaffold(
+            extendBodyBehindAppBar: true,
+            appBar: AppBar(
+              backgroundColor: Theme.of(context)
+                  .appBarTheme
+                  .backgroundColor
+                  ?.withOpacity(0.8),
+              title: Text("Wallet"),
+              actions: actions,
+            ),
+            body: RefreshIndicator(
+              onRefresh: loadAllData,
+              child: SingleChildScrollView(child: body),
+            ),
+          );
 
     return widget.isPartOfBubba ? withoutScaffold : withScaffold;
   }
