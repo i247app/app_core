@@ -1,5 +1,4 @@
 import 'package:app_core/helper/kwebrtc_helper.dart';
-import 'package:app_core/model/kuser.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
