@@ -6,10 +6,8 @@ abstract class KHostConfig {
   static final KHostInfo k4 = KHostInfo.raw("k4.kashin.io", 45503); // dvl2
   static final KHostInfo k3 = KHostInfo.raw("k3.kashin.io", 45503); // dvl
   static final KHostInfo k2 = KHostInfo.raw("k2.kashin.io", 45503); // qa
-  static final KHostInfo k1 =
-      KHostInfo.raw("k1.kashin.io", 55500); // same as prd
-  static final KHostInfo kex =
-      KHostInfo.raw("kex.kashin.io", 55500); // kex = prd
+  static final KHostInfo k1 = KHostInfo.raw("k1.kashin.io", 55500); //  prd
+  static final KHostInfo kex = KHostInfo.raw("kex.kashin.io", 55500); // prd
 
   static KHostInfo _currentHost = defaultHost;
 
