@@ -16,7 +16,6 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:uuid/uuid.dart';
 import 'package:app_core/app_core.dart';
 import 'package:wakelock/wakelock.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 enum _CallPerspective { sender, receiver }
 
