@@ -107,7 +107,7 @@ class KUserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var raw = null;
+    Widget? raw;
     if ((imageURL ?? "").isEmpty && (initial ?? "").isEmpty) {
       raw = placeholderImage;
     }
