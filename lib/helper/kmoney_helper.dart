@@ -57,7 +57,8 @@ abstract class KMoneyHelper {
     );
 
     if (showSymbol) {
-      final isSymbolAsPrefix = currencySymbol(currency) != currency;
+      final isSymbolAsPrefix =
+          currency != KMoney.VND; // currencySymbol(currency) != currency;
       return isSymbolAsPrefix
           ? "${currencySymbol(currency)} $formatAmt"
           : "$formatAmt ${currencySymbol(currency)}";
