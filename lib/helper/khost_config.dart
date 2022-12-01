@@ -9,9 +9,11 @@ abstract class KHostConfig {
   static final KHostInfo k1 = KHostInfo.raw("k1.kashin.io", 55500); //  prd
   static final KHostInfo kex = KHostInfo.raw("kex.kashin.io", 55500); // prd
 
+  static final KHostInfo alexK4 = KHostInfo.raw("k4.kashin.io", 45580);
+
   static KHostInfo _currentHost = defaultHost;
 
-  static KHostInfo get defaultHost => k4;
+  static KHostInfo get defaultHost => k4; //alexK4; //k4; //
 
   static bool get isReleaseMode => system.kReleaseMode;
 
