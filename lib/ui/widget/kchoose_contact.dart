@@ -202,7 +202,7 @@ class _SearchField extends StatelessWidget {
         inputDecorationTheme: InputDecorationTheme(border: InputBorder.none),
       ),
       child: TextField(
-        maxLength: 12,
+        maxLength: 50,
         keyboardType: TextInputType.text,
         focusNode: focusNode,
         textAlign: TextAlign.left,
@@ -314,6 +314,16 @@ class _ResultItem extends StatelessWidget {
           ),
     );
 
+    final idText = Text(
+      "ID: ${user.puid}",
+      style: Theme.of(context).textTheme.subtitle1?.copyWith(
+            color: Theme.of(context).primaryColorLight,
+          ),
+    );
+
+    final contactRow =
+        Row(children: [contactHandle, SizedBox(width: 8), idText]);
+
     final info = Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -323,7 +333,7 @@ class _ResultItem extends StatelessWidget {
           style: Theme.of(context).textTheme.subtitle1,
         ),
         SizedBox(height: 6),
-        contactHandle,
+        contactRow,
       ],
     );
 
