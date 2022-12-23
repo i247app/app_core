@@ -35,7 +35,7 @@ class KIconLabel extends StatelessWidget {
             fit: BoxFit.contain,
             package: 'app_core',
           )
-        : Icon(this.icon, size: this.assetSize);
+        : Icon(this.icon, size: this.assetSize, color: Theme.of(context).colorScheme.primary,);
 
     final image = !this.circleIcon
         ? rawIcon
