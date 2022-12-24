@@ -35,4 +35,3 @@ export 'hero/khero_training.dart';
 export 'hero/widget/khero_tap_intro.dart';
 export 'widget/fade_icon_button.dart';
 export 'widget/klottie.dart';
-export 'leads/krep_home.dart';
