@@ -104,7 +104,10 @@ class KAddress {
       prettryWard,
       prettryDistrict,
       city,
-    ].where((e) => e != null).join(", ");
+    ]
+        .where((element) => (element ?? "").isNotEmpty)
+        .where((e) => e != null)
+        .join(", ");
     return address;
   }
 

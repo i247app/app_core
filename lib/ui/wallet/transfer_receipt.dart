@@ -76,7 +76,8 @@ class _TransferReceiptState extends State<TransferReceipt> {
                   fit: BoxFit.contain,
                   child: Text(
                     KMoneyHelper.prettyMoney(
-                      amount: this.transaction!.amount ?? "",
+                      amount:
+                          "${double.tryParse(this.transaction!.amount ?? "0")?.abs()}",
                       currency: KMoney.VND,
                       showSymbol: false,
                     ),

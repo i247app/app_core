@@ -2,7 +2,7 @@ name: app_core
 
 description: App core package
 
-version: 1.1.167
+version: 1.1.174
 
 homepage: none
 
@@ -36,7 +36,7 @@ dependencies:
   # Location
   geolocator: ^7.0.3
   geocoding: ^2.0.4
-  google_maps_flutter: ^2.2.1
+  google_maps_flutter: ^2.2.3
   google_maps_webservice: ^0.0.20-nullsafety.5
   flutter_google_places: ^0.3.0
 
@@ -63,7 +63,7 @@ dependencies:
   connectycube_flutter_call_kit: 2.2.1
 
   # Flutter WebRTC
-  flutter_webrtc: 0.9.12 #0.6.3 # 0.5.8
+  flutter_webrtc: 0.9.17 #0.6.3 # 0.5.8
 
   flutter_ringtone_player: ^3.2.0
 

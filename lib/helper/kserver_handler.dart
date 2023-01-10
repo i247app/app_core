@@ -6,9 +6,11 @@ import 'package:app_core/model/bank_withdrawal.dart';
 import 'package:app_core/model/chapter.dart';
 import 'package:app_core/model/course.dart';
 import 'package:app_core/model/kanswer.dart';
+import 'package:app_core/model/kcheck_in.dart';
 import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/model/khero.dart';
+import 'package:app_core/model/klead.dart';
 import 'package:app_core/model/kquestion.dart';
 import 'package:app_core/model/lop_schedule.dart';
 import 'package:app_core/model/response/chat_add_members_response.dart';
@@ -21,6 +23,7 @@ import 'package:app_core/model/response/get_chats_response.dart';
 import 'package:app_core/model/response/get_credit_transactions_response.dart';
 import 'package:app_core/model/response/get_games_response.dart';
 import 'package:app_core/model/response/get_lop_schedules_response.dart';
+import 'package:app_core/model/response/get_sales_leads_response.dart';
 import 'package:app_core/model/response/get_scores_response.dart';
 import 'package:app_core/model/response/get_users_response.dart';
 import 'package:app_core/model/response/list_heroes_response.dart';
@@ -48,6 +51,15 @@ abstract class KServerHandler {
       "svc": "debug",
       "req": "log",
       key: value,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> echoGoogleCrash(String googleCrash) async {
+    final params = {
+      "svc": "echo",
+      "req": "echo.me",
+      "googleCrash": googleCrash,
     };
     return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
   }
@@ -803,5 +815,55 @@ abstract class KServerHandler {
         ..action = action,
     };
     return TLSHelper.send(params).then((data) => ShareResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> salesLeadsCheckin(KCheckIn checkIn) async {
+    final domain = await KUtil.getPackageName();
+    final params = {
+      "svc": "auth",
+      "req": "check.in",
+      "checkIn": checkIn..kdomain = domain,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> salesLeadsCheckinStatus(
+      KCheckIn checkIn) async {
+    final domain = await KUtil.getPackageName();
+    final params = {
+      "svc": "auth",
+      "req": "check.in.status",
+      "checkIn": checkIn..kdomain = domain,
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> createSalesLead({required KLead lead}) async {
+    final params = {
+      "svc": "biz",
+      "req": "sales.checkin",
+      "lead": lead.toJson(),
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<SimpleResponse> modifySalesLead({required KLead lead}) async {
+    final params = {
+      "svc": "biz",
+      "req": "modify.lead",
+      "lead": lead.toJson(),
+    };
+    return TLSHelper.send(params).then((data) => SimpleResponse.fromJson(data));
+  }
+
+  static Future<KGetSalesLeadsResponse> getSalesLeads(
+      {required KLead lead}) async {
+    final params = {
+      "svc": "biz",
+      "req": "get.leads",
+      "lead": lead.toJson(),
+    };
+    return TLSHelper.send(params)
+        .then((data) => KGetSalesLeadsResponse.fromJson(data));
   }
 }

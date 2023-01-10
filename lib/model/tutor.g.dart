@@ -103,10 +103,15 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
       .toList()
   ..activeDate = zzz_str2Date(json['activeDate'] as String?)
   ..tutorJoinDate = zzz_str2Date(json['tutorJoinDate'] as String?)
-  ..mathLevel = json['mathLevel'] as String?
-  ..vietLevel = json['vietLevel'] as String?
-  ..englishLevel = json['englishLevel'] as String?
-  ..canOnline = json['canOnline'] as bool?;
+  ..mathLevelMin = json['mathLevelMin'] as String?
+  ..mathLevelMax = json['mathLevelMax'] as String?
+  ..vietLevelMin = json['vietLevelMin'] as String?
+  ..vietLevelMax = json['vietLevelMax'] as String?
+  ..englishLevelMin = json['englishLevelMin'] as String?
+  ..englishLevelMax = json['englishLevelMax'] as String?
+  ..canOnline = json['canOnline'] as bool?
+  ..subjects =
+      (json['subjects'] as List<dynamic>?)?.map((e) => e as String).toList();
 
 Map<String, dynamic> _$TutorToJson(Tutor instance) {
   final val = <String, dynamic>{};
@@ -203,9 +208,13 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('userTags', instance.userTags?.map((e) => e.toJson()).toList());
   writeNotNull('activeDate', zzz_date2Str(instance.activeDate));
   writeNotNull('tutorJoinDate', zzz_date2Str(instance.tutorJoinDate));
-  writeNotNull('mathLevel', instance.mathLevel);
-  writeNotNull('vietLevel', instance.vietLevel);
-  writeNotNull('englishLevel', instance.englishLevel);
+  writeNotNull('mathLevelMin', instance.mathLevelMin);
+  writeNotNull('mathLevelMax', instance.mathLevelMax);
+  writeNotNull('vietLevelMin', instance.vietLevelMin);
+  writeNotNull('vietLevelMax', instance.vietLevelMax);
+  writeNotNull('englishLevelMin', instance.englishLevelMin);
+  writeNotNull('englishLevelMax', instance.englishLevelMax);
   writeNotNull('canOnline', instance.canOnline);
+  writeNotNull('subjects', instance.subjects);
   return val;
 }

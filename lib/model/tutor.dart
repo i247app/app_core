@@ -92,17 +92,29 @@ class Tutor extends KUser {
   @JsonKey(name: "tutorJoinDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
   DateTime? tutorJoinDate;
 
-  @JsonKey(name: "mathLevel")
-  String? mathLevel;
+  @JsonKey(name: "mathLevelMin")
+  String? mathLevelMin;
 
-  @JsonKey(name: "vietLevel")
-  String? vietLevel;
+  @JsonKey(name: "mathLevelMax")
+  String? mathLevelMax;
 
-  @JsonKey(name: "englishLevel")
-  String? englishLevel;
+  @JsonKey(name: "vietLevelMin")
+  String? vietLevelMin;
+
+  @JsonKey(name: "vietLevelMax")
+  String? vietLevelMax;
+
+  @JsonKey(name: "englishLevelMin")
+  String? englishLevelMin;
+
+  @JsonKey(name: "englishLevelMax")
+  String? englishLevelMax;
 
   @JsonKey(name: "canOnline")
   bool? canOnline;
+
+  @JsonKey(name: "subjects")
+  List<String>? subjects;
 
   Color get highlightColor {
     return Colors.white;
