@@ -12,7 +12,6 @@ part 'tutor.g.dart';
 class Tutor extends KUser {
   static const String TUTOR_ID = "tutorID";
   static const String IS_ONLINE = "isOnline";
-  static const String ONLINE_MODE = "onlineMode";
 
   static const String CAN_IN_PERSON = "canInPerson";
   static const String CAN_HEADSTART = "canHeadstart";
@@ -49,10 +48,6 @@ class Tutor extends KUser {
 
   @JsonKey(name: IS_ONLINE, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isOnline;
-
-  // Need to change later
-  @JsonKey(name: ONLINE_MODE, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
-  bool? onlineMode;
 
   @JsonKey(name: CAN_IN_PERSON, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canInPerson;

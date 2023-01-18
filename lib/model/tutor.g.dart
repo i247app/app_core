@@ -87,7 +87,6 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
       : Review.fromJson(json['rating'] as Map<String, dynamic>)
   ..tutorID = json['tutorID'] as String?
   ..isOnline = zzz_str2Bool(json['isOnline'] as String?)
-  ..onlineMode = zzz_str2Bool(json['onlineMode'] as String?)
   ..canInPerson = zzz_str2Bool(json['canInPerson'] as String?)
   ..canHeadstart = zzz_str2Bool(json['canHeadstart'] as String?)
   ..canEnglish = zzz_str2Bool(json['canEnglish'] as String?)
@@ -194,7 +193,6 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('rating', instance.review?.toJson());
   writeNotNull('tutorID', instance.tutorID);
   writeNotNull('isOnline', zzz_bool2Str(instance.isOnline));
-  writeNotNull('onlineMode', zzz_bool2Str(instance.onlineMode));
   writeNotNull('canInPerson', zzz_bool2Str(instance.canInPerson));
   writeNotNull('canHeadstart', zzz_bool2Str(instance.canHeadstart));
   writeNotNull('canEnglish', zzz_bool2Str(instance.canEnglish));
