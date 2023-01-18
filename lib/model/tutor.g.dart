@@ -88,12 +88,12 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..tutorID = json['tutorID'] as String?
   ..isOnline = json['isOnline'] as bool?
   ..onlineMode = zzz_str2Bool(json['onlineMode'] as String?)
-  ..canInPerson = json['canInPerson'] as bool?
-  ..canHeadstart = json['canHeadstart'] as bool?
-  ..canEnglish = json['canEnglish'] as bool?
-  ..canViet = json['canViet'] as bool?
-  ..isSkill = json['isSkill'] as bool?
-  ..isGenius = json['isGenius'] as bool?
+  ..canInPerson = zzz_str2Bool(json['canInPerson'] as String?)
+  ..canHeadstart = zzz_str2Bool(json['canHeadstart'] as String?)
+  ..canEnglish = zzz_str2Bool(json['canEnglish'] as String?)
+  ..canViet = zzz_str2Bool(json['canViet'] as String?)
+  ..isSkill = zzz_str2Bool(json['isSkill'] as String?)
+  ..isGenius = zzz_str2Bool(json['isGenius'] as String?)
   ..isKeepWorker = json['isKeepWorker'] as bool?
   ..isBlockWorker = json['isBlockWorker'] as bool?
   ..tutorStatus = json['tutorStatus'] as String?
@@ -109,7 +109,7 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..vietLevelMax = json['vietLevelMax'] as String?
   ..englishLevelMin = json['englishLevelMin'] as String?
   ..englishLevelMax = json['englishLevelMax'] as String?
-  ..canOnline = json['canOnline'] as bool?
+  ..canOnline = zzz_str2Bool(json['canOnline'] as String?)
   ..subjects =
       (json['subjects'] as List<dynamic>?)?.map((e) => e as String).toList();
 
@@ -195,12 +195,12 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('tutorID', instance.tutorID);
   writeNotNull('isOnline', instance.isOnline);
   writeNotNull('onlineMode', zzz_bool2Str(instance.onlineMode));
-  writeNotNull('canInPerson', instance.canInPerson);
-  writeNotNull('canHeadstart', instance.canHeadstart);
-  writeNotNull('canEnglish', instance.canEnglish);
-  writeNotNull('canViet', instance.canViet);
-  writeNotNull('isSkill', instance.isSkill);
-  writeNotNull('isGenius', instance.isGenius);
+  writeNotNull('canInPerson', zzz_bool2Str(instance.canInPerson));
+  writeNotNull('canHeadstart', zzz_bool2Str(instance.canHeadstart));
+  writeNotNull('canEnglish', zzz_bool2Str(instance.canEnglish));
+  writeNotNull('canViet', zzz_bool2Str(instance.canViet));
+  writeNotNull('isSkill', zzz_bool2Str(instance.isSkill));
+  writeNotNull('isGenius', zzz_bool2Str(instance.isGenius));
   writeNotNull('isKeepWorker', instance.isKeepWorker);
   writeNotNull('isBlockWorker', instance.isBlockWorker);
   writeNotNull('tutorStatus', instance.tutorStatus);
@@ -214,7 +214,7 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('vietLevelMax', instance.vietLevelMax);
   writeNotNull('englishLevelMin', instance.englishLevelMin);
   writeNotNull('englishLevelMax', instance.englishLevelMax);
-  writeNotNull('canOnline', instance.canOnline);
+  writeNotNull('canOnline', zzz_bool2Str(instance.canOnline));
   writeNotNull('subjects', instance.subjects);
   return val;
 }

@@ -53,22 +53,22 @@ class Tutor extends KUser {
   @JsonKey(name: ONLINE_MODE, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? onlineMode;
 
-  @JsonKey(name: CAN_IN_PERSON)
+  @JsonKey(name: CAN_IN_PERSON, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canInPerson;
 
-  @JsonKey(name: CAN_HEADSTART)
+  @JsonKey(name: CAN_HEADSTART, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canHeadstart;
 
-  @JsonKey(name: CAN_ENGLISH)
+  @JsonKey(name: CAN_ENGLISH, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canEnglish;
 
-  @JsonKey(name: CAN_VIET)
+  @JsonKey(name: CAN_VIET, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canViet;
 
-  @JsonKey(name: IS_SKILL)
+  @JsonKey(name: IS_SKILL, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isSkill;
 
-  @JsonKey(name: IS_GENIUS)
+  @JsonKey(name: IS_GENIUS, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isGenius;
 
   @JsonKey(name: IS_KEEP_WORKER)
@@ -110,7 +110,7 @@ class Tutor extends KUser {
   @JsonKey(name: "englishLevelMax")
   String? englishLevelMax;
 
-  @JsonKey(name: "canOnline")
+  @JsonKey(name: "canOnline", fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canOnline;
 
   @JsonKey(name: "subjects")
