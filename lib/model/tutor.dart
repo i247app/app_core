@@ -11,7 +11,6 @@ part 'tutor.g.dart';
 @JsonSerializable()
 class Tutor extends KUser {
   static const String TUTOR_ID = "tutorID";
-  static const String IS_ONLINE = "isOnline";
 
   static const String CAN_IN_PERSON = "canInPerson";
   static const String CAN_HEADSTART = "canHeadstart";
@@ -46,9 +45,6 @@ class Tutor extends KUser {
   @JsonKey(name: TUTOR_ID)
   String? tutorID;
 
-  @JsonKey(name: IS_ONLINE, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
-  bool? isOnline;
-
   @JsonKey(name: CAN_IN_PERSON, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canInPerson;
 
@@ -67,10 +63,10 @@ class Tutor extends KUser {
   @JsonKey(name: IS_GENIUS, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isGenius;
 
-  @JsonKey(name: IS_KEEP_WORKER)
+  @JsonKey(name: IS_KEEP_WORKER, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isKeepWorker;
 
-  @JsonKey(name: IS_BLOCK_WORKER)
+  @JsonKey(name: IS_BLOCK_WORKER, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isBlockWorker;
 
   @JsonKey(name: "tutorStatus")

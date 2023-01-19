@@ -148,7 +148,7 @@ abstract class KSessionData {
 
   static bool get isBizReady => userSession?.isBizReady ?? false;
 
-  static bool get isTutorOnline => userSession?.tutor?.isOnline ?? false;
+  static bool get isWorking => userSession?.tutor?.isWorking ?? false;
 
   static Tutor? get tutor => userSession?.tutor;
 
