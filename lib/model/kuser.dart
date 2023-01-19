@@ -15,6 +15,12 @@ class KUser extends KObject {
   static const String ACTION_REMOVE = "remove";
   static const String GIG_COUNT = "gigCount";
 
+  // static const String IS_ONLINE= "isOnline";
+  static const String IS_WORKING = "isWorking";
+
+  @JsonKey(name: IS_WORKING, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
+  bool? isWorking;
+
   @JsonKey(name: "action")
   String? action;
 

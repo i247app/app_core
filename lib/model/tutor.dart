@@ -11,8 +11,6 @@ part 'tutor.g.dart';
 @JsonSerializable()
 class Tutor extends KUser {
   static const String TUTOR_ID = "tutorID";
-  static const String IS_ONLINE = "isOnline";
-  static const String ONLINE_MODE = "onlineMode";
 
   static const String CAN_IN_PERSON = "canInPerson";
   static const String CAN_HEADSTART = "canHeadstart";
@@ -47,34 +45,28 @@ class Tutor extends KUser {
   @JsonKey(name: TUTOR_ID)
   String? tutorID;
 
-  @JsonKey(name: IS_ONLINE)
-  bool? isOnline;
-
-  @JsonKey(name: ONLINE_MODE, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
-  bool? onlineMode;
-
-  @JsonKey(name: CAN_IN_PERSON)
+  @JsonKey(name: CAN_IN_PERSON, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canInPerson;
 
-  @JsonKey(name: CAN_HEADSTART)
+  @JsonKey(name: CAN_HEADSTART, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canHeadstart;
 
-  @JsonKey(name: CAN_ENGLISH)
+  @JsonKey(name: CAN_ENGLISH, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canEnglish;
 
-  @JsonKey(name: CAN_VIET)
+  @JsonKey(name: CAN_VIET, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canViet;
 
-  @JsonKey(name: IS_SKILL)
+  @JsonKey(name: IS_SKILL, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isSkill;
 
-  @JsonKey(name: IS_GENIUS)
+  @JsonKey(name: IS_GENIUS, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isGenius;
 
-  @JsonKey(name: IS_KEEP_WORKER)
+  @JsonKey(name: IS_KEEP_WORKER, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isKeepWorker;
 
-  @JsonKey(name: IS_BLOCK_WORKER)
+  @JsonKey(name: IS_BLOCK_WORKER, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isBlockWorker;
 
   @JsonKey(name: "tutorStatus")
@@ -110,7 +102,7 @@ class Tutor extends KUser {
   @JsonKey(name: "englishLevelMax")
   String? englishLevelMax;
 
-  @JsonKey(name: "canOnline")
+  @JsonKey(name: "canOnline", fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canOnline;
 
   @JsonKey(name: "subjects")
