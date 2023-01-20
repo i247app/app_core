@@ -108,6 +108,7 @@ class Tutor extends KUser {
   @JsonKey(name: "subjects")
   List<String>? subjects;
 
+  @JsonKey(ignore: true)
   Color get highlightColor {
     return Colors.white;
     // if (userStatus == STATUS_BLOCK) {
@@ -125,6 +126,7 @@ class Tutor extends KUser {
     // }
   }
 
+  @JsonKey(ignore: true)
   Color? get iconColor {
     if (userStatus == STATUS_BLOCK) {
       return Colors.red;
@@ -141,6 +143,7 @@ class Tutor extends KUser {
     }
   }
 
+  @JsonKey(ignore: true)
   IconData? get icon {
     if (userStatus == STATUS_BLOCK) {
       return Icons.gpp_bad_outlined;
@@ -157,6 +160,7 @@ class Tutor extends KUser {
     }
   }
 
+  @JsonKey(ignore: true)
   double get highlightSize => isGenius != true || isSkill != true ? 10.0 : 1.0;
 
   /// Getters

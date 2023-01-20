@@ -64,6 +64,7 @@ abstract class BaseResponse {
   @JsonKey(name: KTOKEN)
   String? ktoken;
 
+  /// Methods
   @JsonKey(ignore: true)
   bool get isSuccess => this.kstatus == KCoreCode.SUCCESS;
 
