@@ -16,9 +16,14 @@ int? zzz_gigNavTryAtoi(dynamic num) {
 class KGigNav {
   static const String HOMEWORK = "homework";
   static const String HEADSTART = "headstart";
+  static const String MON_ENGLISH = "monEnglish";
+  static const String MON_VIET = "monViet";
+  static const String MON_MATH = "monMath";
+
   static const String BUDDY = "buddy";
   static const String TEACHER = "teacher";
   static const String EXPERT = "expert";
+
   static const String ONLINE = "online";
   static const String IN_PERSON = "inPerson";
 
@@ -35,6 +40,15 @@ class KGigNav {
 
   @JsonKey(name: HEADSTART, toJson: zzz_itoa, fromJson: zzz_gigNavTryAtoi)
   int? headstart;
+
+  @JsonKey(name: MON_ENGLISH, toJson: zzz_itoa, fromJson: zzz_gigNavTryAtoi)
+  int? monEnglish;
+
+  @JsonKey(name: MON_VIET, toJson: zzz_itoa, fromJson: zzz_gigNavTryAtoi)
+  int? monViet;
+
+  @JsonKey(name: MON_MATH, toJson: zzz_itoa, fromJson: zzz_gigNavTryAtoi)
+  int? monMath;
 
   @JsonKey(name: BUDDY, toJson: zzz_itoa, fromJson: zzz_gigNavTryAtoi)
   int? buddy;

@@ -9,6 +9,9 @@ part of 'kgig_nav.dart';
 KGigNav _$KGigNavFromJson(Map<String, dynamic> json) => KGigNav()
   ..homework = zzz_gigNavTryAtoi(json['homework'])
   ..headstart = zzz_gigNavTryAtoi(json['headstart'])
+  ..monEnglish = zzz_gigNavTryAtoi(json['monEnglish'])
+  ..monViet = zzz_gigNavTryAtoi(json['monViet'])
+  ..monMath = zzz_gigNavTryAtoi(json['monMath'])
   ..buddy = zzz_gigNavTryAtoi(json['buddy'])
   ..teacher = zzz_gigNavTryAtoi(json['teacher'])
   ..expert = zzz_gigNavTryAtoi(json['expert'])
@@ -29,6 +32,9 @@ Map<String, dynamic> _$KGigNavToJson(KGigNav instance) {
 
   writeNotNull('homework', zzz_itoa(instance.homework));
   writeNotNull('headstart', zzz_itoa(instance.headstart));
+  writeNotNull('monEnglish', zzz_itoa(instance.monEnglish));
+  writeNotNull('monViet', zzz_itoa(instance.monViet));
+  writeNotNull('monMath', zzz_itoa(instance.monMath));
   writeNotNull('buddy', zzz_itoa(instance.buddy));
   writeNotNull('teacher', zzz_itoa(instance.teacher));
   writeNotNull('expert', zzz_itoa(instance.expert));
