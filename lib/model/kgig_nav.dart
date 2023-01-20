@@ -22,6 +22,10 @@ class KGigNav {
   static const String ONLINE = "online";
   static const String IN_PERSON = "inPerson";
 
+  static const String TUTORING = "tutoring";
+  static const String ENGLISH = "english";
+  static const String VIET = "viet";
+
   static const int OFF = -1;
   static const int ON = 0;
   static const int READONLY = 1;
@@ -46,6 +50,15 @@ class KGigNav {
 
   @JsonKey(name: IN_PERSON, toJson: zzz_itoa, fromJson: zzz_gigNavTryAtoi)
   int? inPerson;
+
+  @JsonKey(name: TUTORING, toJson: zzz_itoa, fromJson: zzz_gigNavTryAtoi)
+  int? tutoring;
+
+  @JsonKey(name: ENGLISH, toJson: zzz_itoa, fromJson: zzz_gigNavTryAtoi)
+  int? english;
+
+  @JsonKey(name: VIET, toJson: zzz_itoa, fromJson: zzz_gigNavTryAtoi)
+  int? viet;
 
   // JSON
   KGigNav();
