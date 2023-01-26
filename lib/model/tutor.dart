@@ -39,6 +39,9 @@ class Tutor extends KUser {
   static const String IS_KEEP_WORKER = "isKeepWorker";
   static const String IS_BLOCK_WORKER = "isBlockWorker";
 
+  static const String TUTOR_TYPE_TEACHER = "TEACHER";
+  static const String TUTOR_TYPE_TUTOR = "TUTOR";
+
   @JsonKey(name: "rating")
   Review? review;
 
