@@ -72,8 +72,10 @@ abstract class KLocationHelper {
       return null;
   }
 
-  static Future<KLatLng?> getKLatLng(
-      {bool askForPermissions: true, bool askForEnableService: false}) async {
+  static Future<KLatLng?> getKLatLng({
+    bool askForPermissions = true,
+    bool askForEnableService = false,
+  }) async {
     if (_theCachedPosition == null) {
       final positionString = await KPrefHelper.get(KPrefHelper.CACHED_POSITION);
       if (positionString != null) {
@@ -104,7 +106,7 @@ abstract class KLocationHelper {
   }
 
   static Future<PermissionStatus?> askForPermission1({
-    bool askPermissionSetting: false,
+    bool askPermissionSetting = false,
     String? settingMessage,
   }) async {
     final result = await Geolocator.checkPermission();
