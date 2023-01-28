@@ -34,7 +34,7 @@ class KHostInfo {
   String toString() => "${this.hostname}:${this.port}";
 
   @override
-  int get hashCode => hashValues(this.hostname, this.port);
+  int get hashCode => Object.hash(this.hostname, this.port);
 
   @override
   bool operator ==(Object other) => this.hashCode == other.hashCode;
