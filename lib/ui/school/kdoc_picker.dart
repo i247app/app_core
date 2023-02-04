@@ -92,7 +92,7 @@ class _KDocPickerState extends State<KDocPicker> {
       }
 
       final picker = Picker(
-        adapter: PickerDataAdapter<String>(pickerdata: subjects),
+        adapter: PickerDataAdapter<String>(pickerData: subjects),
         hideHeader: true,
         itemExtent: 60,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
