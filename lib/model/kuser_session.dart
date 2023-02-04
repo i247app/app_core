@@ -4,6 +4,7 @@ import 'package:app_core/model/kapp_nav.dart';
 import 'package:app_core/model/kgig_nav.dart';
 import 'package:app_core/model/ksystem_host_data.dart';
 import 'package:app_core/model/kuser.dart';
+import 'package:app_core/model/response/base_response.dart';
 import 'package:app_core/model/tutor.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -54,22 +55,22 @@ class KUserSession {
   @JsonKey(name: HOST_DATA)
   KSystemHostData? hostData;
 
-  @JsonKey(name: IS_TUTOR_READY)
+  @JsonKey(name: IS_TUTOR_READY, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isTutorReady;
 
-  @JsonKey(name: IS_BIZ_READY)
+  @JsonKey(name: IS_BIZ_READY, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isBizReady;
 
-  @JsonKey(name: IS_CUSUP_READY)
+  @JsonKey(name: IS_CUSUP_READY, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isCusupReady;
 
-  @JsonKey(name: IS_DOMAIN_ADMIN_READY)
+  @JsonKey(name: IS_DOMAIN_ADMIN_READY, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isDomainAdminReady;
 
-  @JsonKey(name: IS_ADMIN_READY)
+  @JsonKey(name: IS_ADMIN_READY, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isAdminReady;
 
-  @JsonKey(name: IS_SUPER_ADMIN)
+  @JsonKey(name: IS_SUPER_ADMIN, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isSuperAdmin;
 
   @JsonKey(name: BUSINESS)
