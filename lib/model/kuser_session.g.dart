@@ -25,12 +25,12 @@ KUserSession _$KUserSessionFromJson(Map<String, dynamic> json) => KUserSession()
   ..hostData = json['hostData'] == null
       ? null
       : KSystemHostData.fromJson(json['hostData'] as Map<String, dynamic>)
-  ..isTutorReady = json['isTutorReady'] as bool?
-  ..isBizReady = json['isBizReady'] as bool?
-  ..isCusupReady = json['isCUSUPReady'] as bool?
-  ..isDomainAdminReady = json['isDomainAdminReady'] as bool?
-  ..isAdminReady = json['isAdminReady'] as bool?
-  ..isSuperAdmin = json['isSuperAdmin'] as bool?
+  ..isTutorReady = zzz_str2Bool(json['isTutorReady'] as String?)
+  ..isBizReady = zzz_str2Bool(json['isBizReady'] as String?)
+  ..isCusupReady = zzz_str2Bool(json['isCUSUPReady'] as String?)
+  ..isDomainAdminReady = zzz_str2Bool(json['isDomainAdminReady'] as String?)
+  ..isAdminReady = zzz_str2Bool(json['isAdminReady'] as String?)
+  ..isSuperAdmin = zzz_str2Bool(json['isSuperAdmin'] as String?)
   ..business = json['business'] == null
       ? null
       : Business.fromJson(json['business'] as Map<String, dynamic>)
@@ -55,12 +55,12 @@ Map<String, dynamic> _$KUserSessionToJson(KUserSession instance) {
   writeNotNull('user', instance.user?.toJson());
   writeNotNull('tutor', instance.tutor?.toJson());
   writeNotNull('hostData', instance.hostData?.toJson());
-  writeNotNull('isTutorReady', instance.isTutorReady);
-  writeNotNull('isBizReady', instance.isBizReady);
-  writeNotNull('isCUSUPReady', instance.isCusupReady);
-  writeNotNull('isDomainAdminReady', instance.isDomainAdminReady);
-  writeNotNull('isAdminReady', instance.isAdminReady);
-  writeNotNull('isSuperAdmin', instance.isSuperAdmin);
+  writeNotNull('isTutorReady', zzz_bool2Str(instance.isTutorReady));
+  writeNotNull('isBizReady', zzz_bool2Str(instance.isBizReady));
+  writeNotNull('isCUSUPReady', zzz_bool2Str(instance.isCusupReady));
+  writeNotNull('isDomainAdminReady', zzz_bool2Str(instance.isDomainAdminReady));
+  writeNotNull('isAdminReady', zzz_bool2Str(instance.isAdminReady));
+  writeNotNull('isSuperAdmin', zzz_bool2Str(instance.isSuperAdmin));
   writeNotNull('business', instance.business?.toJson());
   writeNotNull('businessMembers',
       instance.businessMembers?.map((e) => e.toJson()).toList());
