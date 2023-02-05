@@ -38,10 +38,11 @@ Duration? zzz_str2Dur(String? z) {
 
 // ignore: non_constant_identifier_names
 bool? zzz_str2Bool(String? z) =>
-    KStringHelper.parseBoolean(z ?? KStringHelper.FALSE);
+    z == null ? null : KStringHelper.parseBoolean(z);
 
 // ignore: non_constant_identifier_names
-String? zzz_bool2Str(bool? b) => b == null ? null : KStringHelper.toBooleanCode(b);
+String? zzz_bool2Str(bool? b) =>
+    b == null ? null : KStringHelper.toBooleanCode(b);
 
 // ignore: non_constant_identifier_names
 double? zzz_atod(String? z) => z == null ? null : double.tryParse(z);
