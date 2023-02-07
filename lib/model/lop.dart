@@ -1,7 +1,7 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kmath_helper.dart';
 import 'package:app_core/model/course.dart';
-import 'package:app_core/model/student.dart';
+import 'package:app_core/model/kstudent.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/model/textbook.dart';
 
@@ -40,7 +40,7 @@ class Lop extends Course {
   DateTime? endDate;
 
   @JsonKey(name: LOP_STUDENTS)
-  List<Student>? students;
+  List<KStudent>? students;
 
   @JsonKey(name: LOP_INSTRUCTORS)
   List<Tutor>? instructors;

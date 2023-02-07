@@ -4,10 +4,10 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/model/keducation.dart';
 import 'package:app_core/model/kaddress.dart';
 
-part 'student.g.dart';
+part 'kstudent.g.dart';
 
 @JsonSerializable()
-class Student extends KUser {
+class KStudent extends KUser {
   static const String LINK_STATUS_ACTIVE = "A";
   static const String LINK_STATUS_DISABLE = "D";
   static const List<List> GRADE_LEVELS = [
@@ -50,10 +50,10 @@ class Student extends KUser {
   String get prettyGradeLevel => gradeLevelToWord(int.parse(gradeLevel ?? "0"));
 
   // JSON
-  Student();
+  KStudent();
 
-  factory Student.fromKUser(KUser user) {
-    return Student()
+  factory KStudent.fromKUser(KUser user) {
+    return KStudent()
       ..puid = user.puid
       ..kunm = user.kunm
       ..phone = user.phone
@@ -74,8 +74,8 @@ class Student extends KUser {
       ..studentID = user.puid;
   }
 
-  factory Student.fromJson(Map<String, dynamic> json) =>
-      _$StudentFromJson(json);
+  factory KStudent.fromJson(Map<String, dynamic> json) =>
+      _$KStudentFromJson(json);
 
-  Map<String, dynamic> toJson() => _$StudentToJson(this);
+  Map<String, dynamic> toJson() => _$KStudentToJson(this);
 }
