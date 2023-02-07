@@ -2,7 +2,7 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/model/lop.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:app_core/model/textbook.dart';
-import 'package:app_core/model/student.dart';
+import 'package:app_core/model/kstudent.dart';
 
 part 'lop_schedule.g.dart';
 

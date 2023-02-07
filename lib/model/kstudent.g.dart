@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'student.dart';
+part of 'kstudent.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Student _$StudentFromJson(Map<String, dynamic> json) => Student()
+KStudent _$KStudentFromJson(Map<String, dynamic> json) => KStudent()
   ..kdomain = json['domain'] as String?
   ..kreportFlag = json['reportFlag'] as String?
   ..knote = json['note'] as String?
@@ -91,7 +91,7 @@ Student _$StudentFromJson(Map<String, dynamic> json) => Student()
   ..studentID = json['studentID'] as String?
   ..shortText = json['shortText'] as String?;
 
-Map<String, dynamic> _$StudentToJson(Student instance) {
+Map<String, dynamic> _$KStudentToJson(KStudent instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {
