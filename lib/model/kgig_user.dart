@@ -1,4 +1,6 @@
 import 'package:app_core/app_core.dart';
+import 'package:app_core/model/keducation.dart';
+import 'package:app_core/model/kaddress.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'kgig_user.g.dart';
