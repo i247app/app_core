@@ -28,6 +28,7 @@ class KGigNav {
   static const String IN_PERSON = "inPerson";
 
   static const String TUTORING = "tutoring";
+  static const String EXAM = "exam";
   static const String ENGLISH = "english";
   static const String VIET = "viet";
 
@@ -67,6 +68,9 @@ class KGigNav {
 
   @JsonKey(name: TUTORING, toJson: zzz_itoa, fromJson: zzz_gigNavTryAtoi)
   int? tutoring;
+
+  @JsonKey(name: EXAM, toJson: zzz_itoa, fromJson: zzz_gigNavTryAtoi)
+  int? exam;
 
   @JsonKey(name: ENGLISH, toJson: zzz_itoa, fromJson: zzz_gigNavTryAtoi)
   int? english;
