@@ -129,10 +129,10 @@ abstract class KStyles {
   static ButtonStyle roundedButton(Color primary,
           {Color? textColor, double radius = 60}) =>
       ElevatedButton.styleFrom(
+        foregroundColor: textColor ?? roundedActionBtnText.color,
+        backgroundColor: primary,
         padding: EdgeInsets.symmetric(vertical: 12),
         textStyle: roundedActionBtnText,
-        primary: primary,
-        onPrimary: textColor ?? roundedActionBtnText.color,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(radius),
           side: BorderSide(color: Colors.transparent),
@@ -141,10 +141,10 @@ abstract class KStyles {
 
   static ButtonStyle squaredButton(Color primary, {Color? textColor}) =>
       ElevatedButton.styleFrom(
+        foregroundColor: textColor ?? squaredActionBtnText.color,
+        backgroundColor: primary,
         padding: EdgeInsets.symmetric(vertical: 10, horizontal: 6),
         textStyle: squaredActionBtnText,
-        primary: primary,
-        onPrimary: textColor ?? squaredActionBtnText.color,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4),
           side: BorderSide(color: Colors.transparent),
@@ -195,63 +195,57 @@ abstract class KStyles {
   }
 
   static ThemeData themeDataBuilder(
-      KPaletteGroup paletteGroup, Brightness brightness) {
+    KPaletteGroup paletteGroup,
+    Brightness brightness,
+  ) {
     final palette = paletteGroup.getPaletteByBrightness(brightness);
     final textTheme = TextTheme(
-      headline1:
+      displayLarge:
           TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      headline2:
+      displayMedium:
           TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      headline4:
+      headlineMedium:
           TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      headline5:
+      headlineSmall:
           TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      headline6:
+      titleLarge:
           TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      subtitle1:
+      titleMedium:
           TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      subtitle2:
+      titleSmall:
           TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      bodyText1:
+      bodyLarge:
           TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      bodyText2:
+      bodyMedium:
           TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      caption: TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+      bodySmall:
+          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+      labelSmall:
+          TextStyle(color: palette.primary, fontWeight: FontWeight.w400),
     );
     return ThemeData(brightness: brightness).copyWith(
-      colorScheme: brightness == Brightness.dark
-          ? ColorScheme.dark(
-              primary: palette.schemePrimary,
-              secondary: palette.schemeSecondary,
-            )
-          : ColorScheme.light(
-              primary: palette.schemePrimary,
-              secondary: palette.schemeSecondary,
-            ),
-      backgroundColor: palette.contrasting,
       scaffoldBackgroundColor: palette.contrasting,
       primaryColor: palette.primary,
       primaryColorLight: palette.primaryLight,
-      errorColor: palette.error,
-      toggleableActiveColor: palette.active,
       textSelectionTheme:
           TextSelectionThemeData(cursorColor: palette.schemePrimary),
       iconTheme: IconThemeData(color: palette.primaryLight),
       primaryIconTheme: IconThemeData(color: palette.primaryLight),
       textTheme: TextTheme(
-        headline1: GoogleFonts.openSans(textStyle: textTheme.headline1),
-        headline2: GoogleFonts.openSans(textStyle: textTheme.headline2),
-        headline3: GoogleFonts.openSans(textStyle: textTheme.headline3),
-        headline4: GoogleFonts.openSans(textStyle: textTheme.headline4),
-        headline5: GoogleFonts.openSans(textStyle: textTheme.headline5),
-        headline6: GoogleFonts.openSans(textStyle: textTheme.headline6),
-        subtitle1: GoogleFonts.openSans(textStyle: textTheme.subtitle1),
-        subtitle2: GoogleFonts.openSans(textStyle: textTheme.subtitle2),
-        bodyText1: GoogleFonts.openSans(textStyle: textTheme.bodyText1),
-        bodyText2: GoogleFonts.openSans(textStyle: textTheme.bodyText2),
-        caption: GoogleFonts.openSans(textStyle: textTheme.caption),
-        button: GoogleFonts.openSans(textStyle: textTheme.button),
-        overline: GoogleFonts.openSans(textStyle: textTheme.overline),
+        displayLarge: GoogleFonts.openSans(textStyle: textTheme.displayLarge),
+        displayMedium: GoogleFonts.openSans(textStyle: textTheme.displayMedium),
+        displaySmall: GoogleFonts.openSans(textStyle: textTheme.displaySmall),
+        headlineMedium:
+            GoogleFonts.openSans(textStyle: textTheme.headlineMedium),
+        headlineSmall: GoogleFonts.openSans(textStyle: textTheme.headlineSmall),
+        titleLarge: GoogleFonts.openSans(textStyle: textTheme.titleLarge),
+        titleMedium: GoogleFonts.openSans(textStyle: textTheme.titleMedium),
+        titleSmall: GoogleFonts.openSans(textStyle: textTheme.titleSmall),
+        bodyLarge: GoogleFonts.openSans(textStyle: textTheme.bodyLarge),
+        bodyMedium: GoogleFonts.openSans(textStyle: textTheme.bodyMedium),
+        bodySmall: GoogleFonts.openSans(textStyle: textTheme.bodySmall),
+        labelLarge: GoogleFonts.openSans(textStyle: textTheme.labelLarge),
+        labelSmall: GoogleFonts.openSans(textStyle: textTheme.labelSmall),
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: palette.contrasting,
@@ -273,7 +267,7 @@ abstract class KStyles {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          primary: palette.active,
+          foregroundColor: palette.active,
           textStyle: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 16,
@@ -283,8 +277,8 @@ abstract class KStyles {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          primary: palette.schemePrimary,
-          onPrimary: Colors.white,
+          foregroundColor: Colors.white,
+          backgroundColor: palette.schemePrimary,
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(60),
@@ -322,6 +316,63 @@ abstract class KStyles {
         color: palette.contrasting,
         shadowColor: palette.primaryLight,
       ),
+      checkboxTheme: CheckboxThemeData(
+        fillColor: MaterialStateProperty.resolveWith<Color?>(
+            (Set<MaterialState> states) {
+          if (states.contains(MaterialState.disabled)) {
+            return null;
+          }
+          if (states.contains(MaterialState.selected)) {
+            return palette.active;
+          }
+          return null;
+        }),
+      ),
+      radioTheme: RadioThemeData(
+        fillColor: MaterialStateProperty.resolveWith<Color?>(
+            (Set<MaterialState> states) {
+          if (states.contains(MaterialState.disabled)) {
+            return null;
+          }
+          if (states.contains(MaterialState.selected)) {
+            return palette.active;
+          }
+          return null;
+        }),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: MaterialStateProperty.resolveWith<Color?>(
+            (Set<MaterialState> states) {
+          if (states.contains(MaterialState.disabled)) {
+            return null;
+          }
+          if (states.contains(MaterialState.selected)) {
+            return palette.active;
+          }
+          return null;
+        }),
+        trackColor: MaterialStateProperty.resolveWith<Color?>(
+            (Set<MaterialState> states) {
+          if (states.contains(MaterialState.disabled)) {
+            return null;
+          }
+          if (states.contains(MaterialState.selected)) {
+            return palette.active;
+          }
+          return null;
+        }),
+      ),
+      colorScheme: brightness == Brightness.dark
+          ? ColorScheme.dark(
+              primary: palette.schemePrimary,
+              secondary: palette.schemeSecondary,
+            )
+          : ColorScheme.light(
+              primary: palette.schemePrimary,
+              secondary: palette.schemeSecondary,
+            )
+              .copyWith(error: palette.error)
+              .copyWith(background: palette.contrasting),
     );
   }
 }

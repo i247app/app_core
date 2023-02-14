@@ -95,31 +95,6 @@ class KTheme extends KBaseTheme {
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       );
 
-  /// Preset ButtonStyle
-  ButtonStyle roundedButton(Color primary, {Color? textColor}) =>
-      ElevatedButton.styleFrom(
-        padding: EdgeInsets.symmetric(vertical: 12),
-        textStyle: roundedActionBtnText,
-        primary: primary,
-        onPrimary: textColor ?? roundedActionBtnText.color,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(60),
-          side: BorderSide(color: Colors.transparent),
-        ),
-      );
-
-  ButtonStyle squaredButton(Color primary, {Color? textColor}) =>
-      ElevatedButton.styleFrom(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-        textStyle: squaredActionBtnText,
-        primary: primary,
-        onPrimary: textColor ?? squaredActionBtnText.color,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
-          side: BorderSide(color: Colors.transparent),
-        ),
-      );
-
   /// Preset TextStyle
   TextStyle get defaultText => TextStyle();
 
