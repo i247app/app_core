@@ -37,7 +37,8 @@ KBroadcast _$KBroadcastFromJson(Map<String, dynamic> json) => KBroadcast()
   ..toAll = zzz_str2Bool(json['toAll'] as String?)
   ..broadcastStatus = json['broadcastStatus'] as String?
   ..recipients =
-      (json['recipients'] as List<dynamic>?)?.map((e) => e as String).toList();
+      (json['recipients'] as List<dynamic>?)?.map((e) => e as String).toList()
+  ..recipientType = json['recipientType'] as String?;
 
 Map<String, dynamic> _$KBroadcastToJson(KBroadcast instance) {
   final val = <String, dynamic>{};
@@ -78,5 +79,6 @@ Map<String, dynamic> _$KBroadcastToJson(KBroadcast instance) {
   writeNotNull('toAll', zzz_bool2Str(instance.toAll));
   writeNotNull('broadcastStatus', instance.broadcastStatus);
   writeNotNull('recipients', instance.recipients);
+  writeNotNull('recipientType', instance.recipientType);
   return val;
 }

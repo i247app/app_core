@@ -45,6 +45,9 @@ class KBroadcast extends KObject {
   @JsonKey(name: "recipients")
   List<String>? recipients;
 
+  @JsonKey(name: "recipientType")
+  String? recipientType;
+
   // JSON
   KBroadcast();
 
