@@ -24,8 +24,8 @@ class KBroadcast extends KObject {
   @JsonKey(name: "promoCode")
   String? promoCode;
 
-  @JsonKey(name: "reserveDate")
-  String? reserveDate;
+  @JsonKey(name: "reserveDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
+  DateTime? reserveDate;
 
   @JsonKey(name: "broadcastDate")
   String? broadcastDate;
