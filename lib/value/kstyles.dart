@@ -204,6 +204,8 @@ abstract class KStyles {
           TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
       displayMedium:
           TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
+      headlineLarge:
+          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
       headlineMedium:
           TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
       headlineSmall:
@@ -235,6 +237,7 @@ abstract class KStyles {
         displayLarge: GoogleFonts.openSans(textStyle: textTheme.displayLarge),
         displayMedium: GoogleFonts.openSans(textStyle: textTheme.displayMedium),
         displaySmall: GoogleFonts.openSans(textStyle: textTheme.displaySmall),
+        headlineLarge: GoogleFonts.openSans(textStyle: textTheme.headlineLarge),
         headlineMedium:
             GoogleFonts.openSans(textStyle: textTheme.headlineMedium),
         headlineSmall: GoogleFonts.openSans(textStyle: textTheme.headlineSmall),
