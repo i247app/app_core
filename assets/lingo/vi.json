@@ -57,7 +57,7 @@
   "get_started": "Bắt đầu nào",
   "guest_pls_reg_title": "Vui Lòng Đăng Ký",
   "guest_pls_reg_msg": "Các tính năng yêu cầu đăng ký. Vui lòng đăng ký để tiếp tục.",
-  "update": "Update",
+  "update": "Cập Nhật",
   "invalid_security_code": "Mã số không đúng",
   "security_code_expired": "Mã hết hạn",
   "min_6_chars": "Tối thiểu 6 ký tự",
@@ -179,5 +179,8 @@
   "no_wifi": "No WIFI Internet",
   "resend_code": "Resend Code",
   "kindergarten": "Mẫu Giáo",
-  "pre_school": "Mầm Non"
+  "pre_school": "Mầm Non",
+  "skip": "Bỏ Qua",
+  "new_update": "Cập nhật",
+  "update_content": "Cập nhận phiên bản"
 }

@@ -1,43 +1,61 @@
-import 'package:app_core/helper/khost_config.dart';
+import 'package:app_core/helper/ksession_data.dart';
+import 'package:app_core/value/kphrases.dart';
 import 'package:flutter/material.dart';
 import 'package:new_version/new_version.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-abstract class KCheckVersionHelper {
-  static const bool BLOCKED_BANNERS_AS_TOAST = false;
+abstract class KAppVersionHelper {
+  static final _versionPlugin = NewVersion();
 
-  static final _ckVersion = NewVersion();
+  static Future<VersionStatus?> getStatus() =>
+      _versionPlugin.getVersionStatus();
+
+  static Future<bool> isUpdateAvailable() async {
+    bool result;
+    try {
+      final status = await getStatus();
+      result = status!.canUpdate;
+    } catch (_) {
+      result = false;
+    }
+    return result;
+  }
+
+  static Future openStore() async {
+    final status = await getStatus();
+    final url = status?.appStoreLink;
+    if (url != null && await canLaunch(url)) launch(url);
+  }
 
   static Future<void> checkVersion(
-      BuildContext context, bool isAlwaysDialog) async {
-    final status = await _ckVersion.getVersionStatus();
-    if (!KHostConfig.isReleaseMode && status != null) {
-      print("version ${status.localVersion} store ${status.storeVersion}");
-    }
+    BuildContext context,
+    bool showDialogWhenNoUpdate,
+  ) async {
+    final status = await _versionPlugin.getVersionStatus();
 
     if (status != null && status.canUpdate) {
-      _ckVersion.showUpdateDialog(
+      _versionPlugin.showUpdateDialog(
         context: context,
         versionStatus: status,
-        dialogTitle: 'App Updates Available',
-        dialogText: 'Update to version ${status.storeVersion}',
-        updateButtonText: 'Update',
-        dismissButtonText: 'Later',
+        allowDismissal: !(KSessionData.userSession?.isForceUpdate ?? false),
+        dialogTitle: KPhrases.newUpdate,
+        dialogText: '${KPhrases.updateContent} ${status.storeVersion}',
+        updateButtonText: KPhrases.update,
+        dismissButtonText: KPhrases.skip,
       );
-    } else if (isAlwaysDialog) {
-      final dialogTitleWidget = Text("No Updates Available");
+    } else if (showDialogWhenNoUpdate) {
+      final dialogTitleWidget = Text("No Update Available");
       final dismissButtonTextWidget = Text("Ok");
-      final dismissAction =
-          () => Navigator.of(context, rootNavigator: true).pop();
 
-      showDialog(
+      return showDialog(
         context: context,
-        builder: (BuildContext context) {
+        builder: (ctx) {
           return AlertDialog(
             content: dialogTitleWidget,
             actions: <Widget>[
               TextButton(
                 child: dismissButtonTextWidget,
-                onPressed: dismissAction,
+                onPressed: () => Navigator.of(ctx).pop(),
               ),
             ],
           );

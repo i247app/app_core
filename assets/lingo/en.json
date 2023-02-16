@@ -178,5 +178,8 @@
   "no_wifi": "No WIFI Internet",
   "resend_code": "Resend Code",
   "kindergarten": "Kindergarten",
-  "pre_school": "Pre-School"
+  "pre_school": "Pre-School",
+  "skip": "Skip",
+  "new_update": "App Update",
+  "update_content": "Update to version"
 }
