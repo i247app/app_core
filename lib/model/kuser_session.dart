@@ -28,6 +28,7 @@ class KUserSession {
   static const String IS_DOMAIN_ADMIN_READY = "isDomainAdminReady";
   static const String IS_ADMIN_READY = "isAdminReady";
   static const String IS_SUPER_ADMIN = "isSuperAdmin";
+  static const String IS_FORCE_UPDATE = "isForceUpdate";
   static const String BUSINESS = "business";
   static const String BUSINESS_MEMBERS = "businessMembers";
 
@@ -72,6 +73,9 @@ class KUserSession {
 
   @JsonKey(name: IS_SUPER_ADMIN, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isSuperAdmin;
+
+  @JsonKey(name: IS_FORCE_UPDATE, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
+  bool? isForceUpdate;
 
   @JsonKey(name: BUSINESS)
   Business? business;

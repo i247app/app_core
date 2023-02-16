@@ -30,14 +30,15 @@ KBroadcast _$KBroadcastFromJson(Map<String, dynamic> json) => KBroadcast()
   ..title = json['title'] as String?
   ..message = json['message'] as String?
   ..promoCode = json['promoCode'] as String?
-  ..reserveDate = json['reserveDate'] as String?
+  ..reserveDate = zzz_str2Date(json['reserveDate'] as String?)
   ..broadcastDate = json['broadcastDate'] as String?
   ..count = json['count'] as String?
   ..isPaid = zzz_str2Bool(json['isPaid'] as String?)
   ..toAll = zzz_str2Bool(json['toAll'] as String?)
   ..broadcastStatus = json['broadcastStatus'] as String?
   ..recipients =
-      (json['recipients'] as List<dynamic>?)?.map((e) => e as String).toList();
+      (json['recipients'] as List<dynamic>?)?.map((e) => e as String).toList()
+  ..recipientType = json['recipientType'] as String?;
 
 Map<String, dynamic> _$KBroadcastToJson(KBroadcast instance) {
   final val = <String, dynamic>{};
@@ -71,12 +72,13 @@ Map<String, dynamic> _$KBroadcastToJson(KBroadcast instance) {
   writeNotNull('title', instance.title);
   writeNotNull('message', instance.message);
   writeNotNull('promoCode', instance.promoCode);
-  writeNotNull('reserveDate', instance.reserveDate);
+  writeNotNull('reserveDate', zzz_date2Str(instance.reserveDate));
   writeNotNull('broadcastDate', instance.broadcastDate);
   writeNotNull('count', instance.count);
   writeNotNull('isPaid', zzz_bool2Str(instance.isPaid));
   writeNotNull('toAll', zzz_bool2Str(instance.toAll));
   writeNotNull('broadcastStatus', instance.broadcastStatus);
   writeNotNull('recipients', instance.recipients);
+  writeNotNull('recipientType', instance.recipientType);
   return val;
 }

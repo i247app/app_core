@@ -31,6 +31,7 @@ KUserSession _$KUserSessionFromJson(Map<String, dynamic> json) => KUserSession()
   ..isDomainAdminReady = zzz_str2Bool(json['isDomainAdminReady'] as String?)
   ..isAdminReady = zzz_str2Bool(json['isAdminReady'] as String?)
   ..isSuperAdmin = zzz_str2Bool(json['isSuperAdmin'] as String?)
+  ..isForceUpdate = zzz_str2Bool(json['isForceUpdate'] as String?)
   ..business = json['business'] == null
       ? null
       : Business.fromJson(json['business'] as Map<String, dynamic>)
@@ -61,6 +62,7 @@ Map<String, dynamic> _$KUserSessionToJson(KUserSession instance) {
   writeNotNull('isDomainAdminReady', zzz_bool2Str(instance.isDomainAdminReady));
   writeNotNull('isAdminReady', zzz_bool2Str(instance.isAdminReady));
   writeNotNull('isSuperAdmin', zzz_bool2Str(instance.isSuperAdmin));
+  writeNotNull('isForceUpdate', zzz_bool2Str(instance.isForceUpdate));
   writeNotNull('business', instance.business?.toJson());
   writeNotNull('businessMembers',
       instance.businessMembers?.map((e) => e.toJson()).toList());
