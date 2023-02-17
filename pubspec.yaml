@@ -126,6 +126,12 @@ flutter:
     - assets/json/
     - assets/audio/
     - assets/lingo/
+  fonts:
+    - family: Apercu
+      fonts:
+        - asset: fonts/ApercuRegular.ttf
+        - asset: fonts/ApercuBold.ttf
+          weight: bold
 #
 # For details regarding assets in packages, see
 # https://flutter.dev/assets-and-images/#from-packages

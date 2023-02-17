@@ -90,8 +90,10 @@ abstract class KStyles {
   static final double headerFontSize = fontSizeLarge;
 
   /// Fonts
-  static final String fontComfortaa = "Comfortaa";
-  static final String fontQuicksand = "Quicksand";
+  static final String fontApercu = "Apercu";
+
+  // static final String fontComfortaa = "Comfortaa";
+  // static final String fontQuicksand = "Quicksand";
 
   static InputDecoration get roundedInputStyle => InputDecoration(
         fillColor: KThemeService.isDarkMode() ? Colors.white30 : Colors.black12,
@@ -199,33 +201,13 @@ abstract class KStyles {
     Brightness brightness,
   ) {
     final palette = paletteGroup.getPaletteByBrightness(brightness);
-    final textTheme = TextTheme(
-      displayLarge:
-          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      displayMedium:
-          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      headlineLarge:
-          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      headlineMedium:
-          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      headlineSmall:
-          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      titleLarge:
-          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      titleMedium:
-          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      titleSmall:
-          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      bodyLarge:
-          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      bodyMedium:
-          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      bodySmall:
-          TextStyle(color: palette.primary, fontWeight: FontWeight.normal),
-      labelSmall:
-          TextStyle(color: palette.primary, fontWeight: FontWeight.w400),
+    final baseTextTheme = GoogleFonts.cabin(
+      // fontFamily: fontApercu,
+      color: palette.primary,
+      fontWeight: FontWeight.normal,
     );
-    return ThemeData(brightness: brightness).copyWith(
+    return ThemeData(
+      brightness: brightness,
       scaffoldBackgroundColor: palette.contrasting,
       primaryColor: palette.primary,
       primaryColorLight: palette.primaryLight,
@@ -234,21 +216,22 @@ abstract class KStyles {
       iconTheme: IconThemeData(color: palette.primaryLight),
       primaryIconTheme: IconThemeData(color: palette.primaryLight),
       textTheme: TextTheme(
-        displayLarge: GoogleFonts.openSans(textStyle: textTheme.displayLarge),
-        displayMedium: GoogleFonts.openSans(textStyle: textTheme.displayMedium),
-        displaySmall: GoogleFonts.openSans(textStyle: textTheme.displaySmall),
-        headlineLarge: GoogleFonts.openSans(textStyle: textTheme.headlineLarge),
-        headlineMedium:
-            GoogleFonts.openSans(textStyle: textTheme.headlineMedium),
-        headlineSmall: GoogleFonts.openSans(textStyle: textTheme.headlineSmall),
-        titleLarge: GoogleFonts.openSans(textStyle: textTheme.titleLarge),
-        titleMedium: GoogleFonts.openSans(textStyle: textTheme.titleMedium),
-        titleSmall: GoogleFonts.openSans(textStyle: textTheme.titleSmall),
-        bodyLarge: GoogleFonts.openSans(textStyle: textTheme.bodyLarge),
-        bodyMedium: GoogleFonts.openSans(textStyle: textTheme.bodyMedium),
-        bodySmall: GoogleFonts.openSans(textStyle: textTheme.bodySmall),
-        labelLarge: GoogleFonts.openSans(textStyle: textTheme.labelLarge),
-        labelSmall: GoogleFonts.openSans(textStyle: textTheme.labelSmall),
+        displayLarge: baseTextTheme.copyWith(fontWeight: FontWeight.bold),
+        displayMedium: baseTextTheme.copyWith(),
+        displaySmall: baseTextTheme.copyWith(),
+        headlineLarge: baseTextTheme.copyWith(fontWeight: FontWeight.bold),
+        headlineMedium: baseTextTheme.copyWith(),
+        headlineSmall: baseTextTheme.copyWith(),
+        titleLarge: baseTextTheme.copyWith(fontWeight: FontWeight.bold),
+        titleMedium: baseTextTheme.copyWith(),
+        titleSmall: baseTextTheme.copyWith(),
+        bodyLarge: baseTextTheme.copyWith(fontWeight: FontWeight.bold),
+        bodyMedium: baseTextTheme.copyWith(),
+        bodySmall: baseTextTheme.copyWith(),
+        labelLarge: baseTextTheme.copyWith(),
+        labelSmall: baseTextTheme.copyWith(
+          fontWeight: FontWeight.w400,
+        ),
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: palette.contrasting,
