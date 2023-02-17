@@ -144,4 +144,12 @@ abstract class KPhrases {
   static String get cancel => "Cancel";
 
   static String get ok => "Ok";
+
+  static String get newUpdate => _klingo.yak("new_update");
+
+  static String get updateContent => _klingo.yak("update_content");
+
+  static String get skip => _klingo.yak("skip");
+
+  static String get update => _klingo.yak("update");
 }
