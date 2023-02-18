@@ -12,6 +12,7 @@ class KChatMessage {
   static const String CONTENT_TYPE_IMAGE = "image";
   static const String CONTENT_TYPE_VIDEO_CALL_EVENT = "video.call.event";
   static const String CONTENT_TYPE_CHAPTER = "chapter";
+  static const String CONTENT_TYPE_LINK = "link";
 
   static const String APP_CONTENT_CHAT = "chat";
   static const String APP_CONTENT_GIG = "gig";

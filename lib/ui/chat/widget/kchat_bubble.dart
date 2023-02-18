@@ -1,6 +1,7 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/chapter.dart';
+import 'package:app_core/model/klink_helper.dart';
 import 'package:app_core/ui/school/widget/kdoc_screen.dart';
 import 'package:app_core/ui/school/widget/kdoc_view.dart';
 import 'package:app_core/ui/widget/kimage_viewer.dart';
@@ -204,12 +205,26 @@ class KChatBubble extends StatelessWidget {
     final content;
     switch (msg.messageType ?? "") {
       case KChatMessage.CONTENT_TYPE_TEXT:
+        bool isLink;
+        try {
+          isLink = Uri.parse(msg.message ?? "").isAbsolute;
+        } catch (_) {
+          isLink = false;
+        }
+
+        final innerText = Text(
+          msg.message ?? "",
+          style:
+              theme.textTheme.subtitle1!.copyWith(color: chatForegroundColor),
+        );
+
         content = wrapWithChatBubble(
-          Text(
-            msg.message ?? "",
-            style:
-                theme.textTheme.subtitle1!.copyWith(color: chatForegroundColor),
-          ),
+          isLink
+              ? InkWell(
+                  onTap: () => KLinkHelper.openLink(msg.message ?? ""),
+                  child: innerText,
+                )
+              : innerText,
           chatBGColor,
         );
         break;
