@@ -35,6 +35,12 @@ class KLead extends KObject {
   static const String BY_ID = "byID";
   static const String BY_DATE = "byDate";
   static const String ADDRESSES = "addresses";
+  // customer chot info
+  static const String CHOT_DATE = "chotDate";
+  static const String CHOT_STATUS = "chotStatus";
+
+  static const String CHOT_STATUS_YES = "Y";
+  static const String CHOT_STATUS_NO = "N";
 
   static const String STATUS_YES = "YES";
   static const String STATUS_NO = "NO";
@@ -103,6 +109,12 @@ class KLead extends KObject {
 
   @JsonKey(name: ADDRESSES)
   List<KAddress>? addresses;
+
+  @JsonKey(name: CHOT_DATE, fromJson: zzz_str2Date, toJson: zzz_date2Str)
+  DateTime? chotDate;
+
+  @JsonKey(name: CHOT_STATUS)
+  String? chotStatus;
 
   // JSON
   KLead();
