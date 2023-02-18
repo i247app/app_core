@@ -2,7 +2,6 @@ import 'package:app_core/model/kaddress.dart';
 import 'package:app_core/model/klat_lng.dart';
 import 'package:app_core/model/kobject.dart';
 import 'package:app_core/model/response/base_response.dart';
-import 'package:get/utils.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'klead.g.dart';
@@ -35,6 +34,7 @@ class KLead extends KObject {
   static const String GRADE = "grade";
   static const String BY_ID = "byID";
   static const String BY_DATE = "byDate";
+  static const String ADDRESSES = "addresses";
 
   static const String STATUS_YES = "YES";
   static const String STATUS_NO = "NO";
@@ -101,18 +101,8 @@ class KLead extends KObject {
   @JsonKey(name: BY_DATE, fromJson: zzz_str2Date, toJson: zzz_date2Str)
   DateTime? byDate;
 
-  /// Methods
-  List<KAddress> get addresses => [address]
-      .map((e) => KAddress()..addressLine1 = e)
-      .cast<KAddress>()
-      .toList();
-
-  set addresses(List<KAddress> addresses) {
-    var first = addresses.firstWhereOrNull((_) => true);
-    if (first != null && first.runtimeType == String) {
-      address = first as String;
-    }
-  }
+  @JsonKey(name: ADDRESSES)
+  List<KAddress>? addresses;
 
   // JSON
   KLead();
