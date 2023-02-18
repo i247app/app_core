@@ -131,7 +131,7 @@ flutter:
       fonts:
         - asset: fonts/ApercuRegular.ttf
         - asset: fonts/ApercuBold.ttf
-          weight: bold
+#          weight: bold
 #
 # For details regarding assets in packages, see
 # https://flutter.dev/assets-and-images/#from-packages
