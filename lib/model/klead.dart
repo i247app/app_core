@@ -10,6 +10,18 @@ part 'klead.g.dart';
 class KLead extends KObject {
   static const String ACTION_LIST = "list";
 
+  static const String CHOT_STATUS_YES = "Y";
+  static const String CHOT_STATUS_PENDING = "P";
+  static const String CHOT_STATUS_MAYBE = "M";
+  static const String CHOT_STATUS_NO = "N";
+
+  static const String LEAD_STATUS_OPEN = "OPEN";
+  static const String LEAD_STATUS_CLOSE = "CLOSE";
+
+  static const String LEAD_TYPE_CUSTOMER = "CUSTOMER";
+  static const String LEAD_TYPE_TUTOR = "TUTOR";
+  static const String LEAD_TYPE_TEACHER = "TEACHER";
+
   static const String LEAD_INTEREST_HOMEWORK = "DAY_KEM";
   static const String LEAD_INTEREST_EXAM_TUTORING = "LUYEN_THI";
   static const String LEAD_INTEREST_GRADE = "LOP";
@@ -38,14 +50,16 @@ class KLead extends KObject {
   // customer chot info
   static const String CHOT_DATE = "chotDate";
   static const String CHOT_STATUS = "chotStatus";
-
-  static const String CHOT_STATUS_YES = "Y";
-  static const String CHOT_STATUS_NO = "N";
+  //
+  // static const String CHOT_STATUS_YES = "Y";
+  // static const String CHOT_STATUS_NO = "N";
 
   static const String STATUS_YES = "YES";
   static const String STATUS_NO = "NO";
   static const String STATUS_FOLLOW_UP = "FOLLOW_UP";
   static const String STATUS_NONE = "NONE";
+  static const String PRIORITY = "leadPriority";
+  static const String LEAD_TYPE = "leadType";
 
   @JsonKey(name: LEAD_ID)
   String? id;
@@ -115,6 +129,12 @@ class KLead extends KObject {
 
   @JsonKey(name: CHOT_STATUS)
   String? chotStatus;
+
+  @JsonKey(name: PRIORITY)
+  String? priority;
+
+  @JsonKey(name: LEAD_TYPE)
+  String? leadType;
 
   // JSON
   KLead();
