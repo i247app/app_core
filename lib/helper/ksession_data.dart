@@ -176,7 +176,7 @@ abstract class KSessionData {
 
   static BusinessMember? get activeMember => userSession?.getActiveMember();
 
-  static String get activeStoreID => activeStore?.storeID ?? "";
+  static String? get activeStoreID => activeStore?.storeID;
 
   static bool get isDomainAdmin => userSession?.isDomainAdminReady ?? false;
   static bool get isAdmin => userSession?.isAdminReady ?? false;

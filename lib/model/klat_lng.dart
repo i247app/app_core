@@ -1,8 +1,7 @@
 import 'package:app_core/helper/kstring_helper.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'klat_lng.g.dart';
@@ -36,7 +35,7 @@ class KLatLng {
   String toString() => "${this.lat},${this.lng}";
 
   @override
-  int get hashCode => hashValues(this.lat, this.lng);
+  int get hashCode => Object.hash(this.lat, this.lng);
 
   @override
   bool operator ==(Object other) => this.hashCode == other.hashCode;
