@@ -126,7 +126,7 @@ class KLead extends KObject {
   @JsonKey(name: CHOT_STATUS)
   String? chotStatus;
 
-  @JsonKey(name: LEAD_PRIORITY, toJson: zzz_itoa, fromJson: zzz_atoi)
+  @JsonKey(name: LEAD_PRIORITY)
   int? leadPriority;
 
   @JsonKey(name: LEAD_TYPE)
