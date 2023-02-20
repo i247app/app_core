@@ -32,12 +32,13 @@ class KNumberPad extends StatelessWidget {
   final int decimals;
 
   KNumberPad({
+    Key? key,
     required this.controller,
     required this.onReturn,
     this.onTextChange,
     this.style = KNumberPadStyle.ORIGINAL,
     this.decimals = 2,
-  });
+  }) : super(key: key);
 
   void _qwertyHandler() => this.onReturn.call();
 
