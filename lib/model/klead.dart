@@ -27,22 +27,21 @@ class KLead extends KObject {
   static const String LEAD_INTEREST_GRADE = "LOP";
 
   static const String LEAD_ID = "leadID";
-  static const String OWNER_ID = "ownerID";
-  static const String CONTACT_ID = "contactID";
+  static const String ASSIGN_ID = "assignID";
+  static const String PUID = "puid";
   static const String BUSINESS_NAME = "businessName";
-  static const String CONTACT_NAME = "contactName";
-  static const String PHONE_NUMBER = "fone";
-  static const String PHONE_NUMBER_CODE = "foneCode";
+  static const String NAME = "name";
+  static const String FONE = "fone";
+  static const String FONE_CODE = "foneCode";
   static const String EMAIL = "email";
-  static const String ADDRESS = "addressLine";
+  static const String ADDRESS_LINE = "addressLine";
   static const String LAT_LNG = "latLng";
   static const String LEAD_NOTE = "leadNote";
   static const String LEAD_STATUS = "leadStatus";
   static const String LEAD_DATE = "leadDate";
-  static const String KUID = "kuid";
   static const String INTERESTS = "interests";
   static const String USER_TYPE = "userType";
-  static const String GIG_MEDIUM = "mediumType";
+  static const String MEDIUM_TYPE = "mediumType";
   static const String GRADE = "grade";
   static const String BY_ID = "byID";
   static const String BY_DATE = "byDate";
@@ -64,29 +63,29 @@ class KLead extends KObject {
   @JsonKey(name: LEAD_ID)
   String? id;
 
-  @JsonKey(name: OWNER_ID)
-  String? ownerID;
+  @JsonKey(name: ASSIGN_ID)
+  String? assignID;
 
-  @JsonKey(name: CONTACT_ID)
-  String? contactID;
+  @JsonKey(name: PUID)
+  String? puid;
 
   @JsonKey(name: BUSINESS_NAME)
   String? businessName;
 
-  @JsonKey(name: CONTACT_NAME)
-  String? contactName;
+  @JsonKey(name: NAME)
+  String? name;
 
-  @JsonKey(name: PHONE_NUMBER)
-  String? phoneNumber;
+  @JsonKey(name: FONE)
+  String? fone;
 
-  @JsonKey(name: PHONE_NUMBER_CODE)
-  String? phoneNumberCode;
+  @JsonKey(name: FONE_CODE)
+  String? foneCode;
 
   @JsonKey(name: EMAIL)
   String? email;
 
-  @JsonKey(name: ADDRESS)
-  String? address;
+  @JsonKey(name: ADDRESS_LINE)
+  String? addressLine;
 
   @JsonKey(name: LEAD_NOTE)
   String? leadNote;
@@ -97,14 +96,11 @@ class KLead extends KObject {
   @JsonKey(name: LEAD_DATE)
   String? leadDate;
 
-  @JsonKey(name: KUID)
-  String? kuid;
-
   @JsonKey(name: USER_TYPE)
   String? userType;
 
-  @JsonKey(name: GIG_MEDIUM)
-  String? gigMedium;
+  @JsonKey(name: MEDIUM_TYPE)
+  String? mediumType;
 
   @JsonKey(name: GRADE)
   String? grade;

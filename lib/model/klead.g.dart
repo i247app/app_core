@@ -25,20 +25,19 @@ KLead _$KLeadFromJson(Map<String, dynamic> json) => KLead()
   ..kmessage = json['kmessage'] as String?
   ..kcount = json['kcount'] as String?
   ..id = json['leadID'] as String?
-  ..ownerID = json['ownerID'] as String?
-  ..contactID = json['contactID'] as String?
+  ..assignID = json['assignID'] as String?
+  ..puid = json['puid'] as String?
   ..businessName = json['businessName'] as String?
-  ..contactName = json['contactName'] as String?
-  ..phoneNumber = json['fone'] as String?
-  ..phoneNumberCode = json['foneCode'] as String?
+  ..name = json['name'] as String?
+  ..fone = json['fone'] as String?
+  ..foneCode = json['foneCode'] as String?
   ..email = json['email'] as String?
-  ..address = json['addressLine'] as String?
+  ..addressLine = json['addressLine'] as String?
   ..leadNote = json['leadNote'] as String?
   ..leadStatus = json['leadStatus'] as String?
   ..leadDate = json['leadDate'] as String?
-  ..kuid = json['kuid'] as String?
   ..userType = json['userType'] as String?
-  ..gigMedium = json['mediumType'] as String?
+  ..mediumType = json['mediumType'] as String?
   ..grade = json['grade'] as String?
   ..latLng = json['latLng'] == null
       ? null
@@ -82,20 +81,19 @@ Map<String, dynamic> _$KLeadToJson(KLead instance) {
   writeNotNull('kmessage', instance.kmessage);
   writeNotNull('kcount', instance.kcount);
   writeNotNull('leadID', instance.id);
-  writeNotNull('ownerID', instance.ownerID);
-  writeNotNull('contactID', instance.contactID);
+  writeNotNull('assignID', instance.assignID);
+  writeNotNull('puid', instance.puid);
   writeNotNull('businessName', instance.businessName);
-  writeNotNull('contactName', instance.contactName);
-  writeNotNull('fone', instance.phoneNumber);
-  writeNotNull('foneCode', instance.phoneNumberCode);
+  writeNotNull('name', instance.name);
+  writeNotNull('fone', instance.fone);
+  writeNotNull('foneCode', instance.foneCode);
   writeNotNull('email', instance.email);
-  writeNotNull('addressLine', instance.address);
+  writeNotNull('addressLine', instance.addressLine);
   writeNotNull('leadNote', instance.leadNote);
   writeNotNull('leadStatus', instance.leadStatus);
   writeNotNull('leadDate', instance.leadDate);
-  writeNotNull('kuid', instance.kuid);
   writeNotNull('userType', instance.userType);
-  writeNotNull('mediumType', instance.gigMedium);
+  writeNotNull('mediumType', instance.mediumType);
   writeNotNull('grade', instance.grade);
   writeNotNull('latLng', instance.latLng?.toJson());
   writeNotNull('interests', instance.interests);
