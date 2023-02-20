@@ -133,8 +133,8 @@ flutter:
         - asset: fonts/ApercuBold.ttf
     - family: UberMove
       fonts:
-        - asset: fonts/UberMoveMedium.ttf
-        - asset: fonts/UberMoveBold.ttf
+        - asset: fonts/UberMoveMedium.otf
+        - asset: fonts/UberMoveBold.otf
 
 
 #

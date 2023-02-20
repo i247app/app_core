@@ -204,6 +204,7 @@ abstract class KStyles {
     final baseTextTheme =
         // GoogleFonts.cabin()
         TextStyle().copyWith(
+      package: 'app_core',
       fontFamily: fontUberMove,
       color: palette.primary,
       fontWeight: FontWeight.normal,
