@@ -58,7 +58,7 @@ class KLead extends KObject {
   static const String STATUS_NO = "NO";
   static const String STATUS_FOLLOW_UP = "FOLLOW_UP";
   static const String STATUS_NONE = "NONE";
-  static const String PRIORITY = "leadPriority";
+  static const String LEAD_PRIORITY = "leadPriority";
   static const String LEAD_TYPE = "leadType";
 
   @JsonKey(name: LEAD_ID)
@@ -130,8 +130,8 @@ class KLead extends KObject {
   @JsonKey(name: CHOT_STATUS)
   String? chotStatus;
 
-  @JsonKey(name: PRIORITY, toJson: zzz_itoa, fromJson: zzz_atoi)
-  int? priority;
+  @JsonKey(name: LEAD_PRIORITY, toJson: zzz_itoa, fromJson: zzz_atoi)
+  int? leadPriority;
 
   @JsonKey(name: LEAD_TYPE)
   String? leadType;
