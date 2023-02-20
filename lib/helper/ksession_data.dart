@@ -50,10 +50,11 @@ abstract class KSessionData {
     try {
       Position? position = KLocationHelper.cachedPosition;
       if (position != null) {
-        List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+            position.latitude, position.longitude);
         countryCode = placemarks.first.isoCountryCode;
       }
-    } catch(ex) {}
+    } catch (ex) {}
 
     if (KStringHelper.isExist(countryCode)) {
       setCountryCode(countryCode);
@@ -93,7 +94,7 @@ abstract class KSessionData {
   static Future setup(KSessionInitData data) async {
     try {
       getCountryCode();
-    } catch(ex) {}
+    } catch (ex) {}
     if (data.initSessionToken != null) {
       KSessionData.setSessionToken(data.initSessionToken);
       KSessionData.setUserSession(data.initUserSession);
@@ -170,16 +171,18 @@ abstract class KSessionData {
       ? activeBusiness!.stores!.first
       : null; // should be only one??
 
-  static String get activeTokenName => activeBusiness?.tokenName ?? "";
+  static String? get activeTokenName => activeBusiness?.tokenName;
 
-  static String get activeBUID => activeBusiness?.buid ?? "";
+  static String? get activeBUID => activeBusiness?.buid;
 
   static BusinessMember? get activeMember => userSession?.getActiveMember();
 
   static String? get activeStoreID => activeStore?.storeID;
 
   static bool get isDomainAdmin => userSession?.isDomainAdminReady ?? false;
+
   static bool get isAdmin => userSession?.isAdminReady ?? false;
+
   static bool get isSuperAdmin => userSession?.isSuperAdmin ?? false;
 
   static bool get isBizAdmin =>
