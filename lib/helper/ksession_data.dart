@@ -24,7 +24,7 @@ abstract class KSessionData {
   static String? _fcmToken;
   static String? _voipToken;
   static KUserSession? kUserSession;
-  static void Function(KSessionInitData)? _postSetupHook;
+  static Future Function(KSessionInitData)? _postSetupHook;
 
   // // // // // system
   static bool get hasActiveSession => getSessionToken() != null;
@@ -86,11 +86,11 @@ abstract class KSessionData {
       KHostConfig.hostInfo
           .copyWith(port: KHostConfig.isReleaseMode ? 9443 : 9090);
 
-  static void setPostSetupHook(void Function(KSessionInitData) fn) =>
+  static void setPostSetupHook(Future Function(KSessionInitData) fn) =>
       _postSetupHook = fn;
 
   /// Setup the session data
-  static void setup(KSessionInitData data) {
+  static Future setup(KSessionInitData data) async {
     try {
       getCountryCode();
     } catch(ex) {}
@@ -103,7 +103,7 @@ abstract class KSessionData {
       KPrefHelper.put(KPrefHelper.CACHED_USER, data.initUserSession?.user);
 
       // Allow clients (Chao & Schoolbird) to run code post SessionData setup
-      _postSetupHook?.call(data);
+      await _postSetupHook?.call(data);
     }
   }
 
