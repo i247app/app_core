@@ -26,15 +26,13 @@ class BooleanDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
-          style: TextButton.styleFrom(primary: Theme.of(context).primaryColor),
+          style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).primaryColor),
           child: Text(noText ?? "No"),
         ),
         ElevatedButton(
           onPressed: () => Navigator.of(context).pop(true),
-          style: ElevatedButton.styleFrom(
-            primary: yesColor,
-            onPrimary: Colors.white,
-          ),
+          style: KStyles.squaredButton(yesColor),
           child: Text(yesText ?? "Yes", style: KStyles.normalText),
         ),
       ],
