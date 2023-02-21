@@ -51,7 +51,7 @@ KLead _$KLeadFromJson(Map<String, dynamic> json) => KLead()
       .toList()
   ..chotDate = zzz_str2Date(json['chotDate'] as String?)
   ..chotStatus = json['chotStatus'] as String?
-  ..leadPriority = json['leadPriority'] as int?
+  ..leadPriority = zzz_atoi(json['leadPriority'] as String?)
   ..leadType = json['leadType'] as String?;
 
 Map<String, dynamic> _$KLeadToJson(KLead instance) {
@@ -103,7 +103,7 @@ Map<String, dynamic> _$KLeadToJson(KLead instance) {
       'addresses', instance.addresses?.map((e) => e.toJson()).toList());
   writeNotNull('chotDate', zzz_date2Str(instance.chotDate));
   writeNotNull('chotStatus', instance.chotStatus);
-  writeNotNull('leadPriority', instance.leadPriority);
+  writeNotNull('leadPriority', zzz_itoa(instance.leadPriority));
   writeNotNull('leadType', instance.leadType);
   return val;
 }
