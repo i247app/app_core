@@ -9,6 +9,8 @@ part 'klead.g.dart';
 @JsonSerializable()
 class KLead extends KObject {
   static const String ACTION_LIST = "list";
+  static const String ACTION_ADD = "add";
+  static const String ACTION_MODIFY = "modify";
 
   static const String CHOT_STATUS_YES = "Y";
   static const String CHOT_STATUS_PENDING = "P";

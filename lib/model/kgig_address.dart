@@ -30,12 +30,12 @@ class KGigAddress extends KAddress {
       ..addressType = address.addressType
       ..addressLine1 = address.addressLine1
       ..addressLine2 = address.addressLine2
-      ..fullAddressLine = address.fullAddressLine
-      ..name = address.name
+      ..addressLine = address.addressLine
+      ..placeName = address.placeName
       ..ward = address.ward
       ..district = address.district
       ..city = address.city
-      ..state = address.state
+      ..stateCode = address.stateCode
       ..zipCode = address.zipCode
       ..countryCode = address.countryCode
       ..latLng = address.latLng

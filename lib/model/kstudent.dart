@@ -58,7 +58,7 @@ class KStudent extends KUser {
       ..kunm = user.kunm
       ..phone = user.phone
       ..phoneCode = user.phoneCode
-      ..fullAddress = user.fullAddress
+      ..addressLine = user.addressLine
       ..email = user.email
       ..firstName = user.firstName
       ..middleName = user.middleName

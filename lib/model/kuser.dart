@@ -39,8 +39,8 @@ class KUser extends KObject {
   @JsonKey(name: "foneCode")
   String? phoneCode;
 
-  @JsonKey(name: "fullAddressLine")
-  String? fullAddress;
+  @JsonKey(name: "addressLine")
+  String? addressLine;
 
   @JsonKey(name: "email")
   String? email;
@@ -82,7 +82,7 @@ class KUser extends KObject {
   String? city;
 
   @JsonKey(name: "stateCode")
-  String? state;
+  String? stateCode;
 
   @deprecated
   @JsonKey(name: "zipCode")

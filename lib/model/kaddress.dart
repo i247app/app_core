@@ -15,13 +15,13 @@ class KAddress {
   static const String ADDRESS_LINE2 = "addressLine2";
   static const String DISTRICT = "district";
   static const String CITY = "city";
-  static const String STATE = "state";
+  static const String STATE_CODE = "stateCode";
   static const String ZIP_CODE = "zipCode";
   static const String COUNTRY_CODE = "countryCode";
   static const String LAT_LNG = "latLng";
   static const String ADDRESS_STATUS = "addressStatus";
-  static const String FULL_ADDRESS_LINE = "fullAddressLine";
-  static const String NAME = "name";
+  static const String ADDRESS_LINE = "addressLine";
+  static const String PLACE_NAME = "placeName";
   static const String WARD = "ward";
   static const String PLACE_ID = "placeID";
 
@@ -43,11 +43,11 @@ class KAddress {
   @JsonKey(name: ADDRESS_LINE2)
   String? addressLine2;
 
-  @JsonKey(name: FULL_ADDRESS_LINE)
-  String? fullAddressLine;
+  @JsonKey(name: ADDRESS_LINE)
+  String? addressLine;
 
-  @JsonKey(name: NAME)
-  String? name;
+  @JsonKey(name: PLACE_NAME)
+  String? placeName;
 
   @JsonKey(name: WARD)
   String? ward;
@@ -58,8 +58,8 @@ class KAddress {
   @JsonKey(name: CITY)
   String? city;
 
-  @JsonKey(name: STATE)
-  String? state;
+  @JsonKey(name: STATE_CODE)
+  String? stateCode;
 
   @JsonKey(name: ZIP_CODE)
   String? zipCode;
@@ -130,11 +130,11 @@ class KAddress {
     return KAddress()
       ..addressLine1 = user.address1
       ..addressLine2 = user.address2
-      ..fullAddressLine = user.fullAddress
+      ..addressLine = user.addressLine
       ..ward = user.ward
       ..district = user.district
       ..city = user.city
-      ..state = user.state
+      ..stateCode = user.stateCode
       ..zipCode = user.zip
       ..countryCode = user.countryCode
       ..latLng = user.currentLatLng;

@@ -866,4 +866,14 @@ abstract class KServerHandler {
     return TLSHelper.send(params)
         .then((data) => KGetSalesLeadsResponse.fromJson(data));
   }
+
+  static Future<KGetSalesLeadsResponse> leadAction(KLead lead) async {
+    final params = {
+      "svc": "biz",
+      "req": "lead.action",
+      "lead": lead
+    };
+    return TLSHelper.send(params)
+        .then((data) => KGetSalesLeadsResponse.fromJson(data));
+  }
 }

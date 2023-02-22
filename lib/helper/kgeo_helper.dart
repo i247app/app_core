@@ -104,8 +104,8 @@ abstract class KGeoHelper {
 
     final address = KAddress();
     address.placeID = place.placeId;
-    address.fullAddressLine = place.formattedAddress;
-    address.name = place.name;
+    address.addressLine = place.formattedAddress;
+    address.placeName = place.name;
 
     for (AddressComponent component in place.addressComponents) {
       final componentType = component.types.first;
@@ -141,7 +141,7 @@ abstract class KGeoHelper {
     address.addressLine1 = streetAddress ?? address1;
     if (address.countryCode == KLocaleHelper.COUNTRY_US) {
       address.city = locality;
-      address.state = region;
+      address.stateCode = region;
       address.zipCode = postalCode ?? address.zipCode;
     } else {
       address.ward = extendedAddress;
@@ -166,8 +166,8 @@ abstract class KGeoHelper {
 
     final address = KAddress();
     address.placeID = place.placeId;
-    address.fullAddressLine = place.description;
-    address.name = place.structuredFormatting?.mainText;
+    address.addressLine = place.description;
+    address.placeName = place.structuredFormatting?.mainText;
     address.addressLine1 = place.structuredFormatting?.mainText;
     final terms = place.terms;
     final termsCount = terms.length;
@@ -206,7 +206,7 @@ abstract class KGeoHelper {
     try {
       final address = KGigAddress();
       address.placeID = place.placeId;
-      address.fullAddressLine = place.formattedAddress;
+      address.addressLine = place.formattedAddress;
 
       final components = (place.formattedAddress ?? "").split(", ");
 
@@ -237,7 +237,7 @@ abstract class KGeoHelper {
       address.ward = KUtil.removeIgnoreStrings(
           address.ward ?? "", KUtil.ignoreAddressWords);
       address.addressLine1 = components.first;
-      address.name = components.first;
+      address.placeName = components.first;
       address.latLng = KLatLng.fromLocation(place.geometry.location);
 
       return address;

@@ -13,12 +13,12 @@ KGigAddress _$KGigAddressFromJson(Map<String, dynamic> json) => KGigAddress()
   ..addressType = json['addressType'] as String?
   ..addressLine1 = json['addressLine1'] as String?
   ..addressLine2 = json['addressLine2'] as String?
-  ..fullAddressLine = json['fullAddressLine'] as String?
-  ..name = json['name'] as String?
+  ..addressLine = json['addressLine'] as String?
+  ..placeName = json['placeName'] as String?
   ..ward = json['ward'] as String?
   ..district = json['district'] as String?
   ..city = json['city'] as String?
-  ..state = json['state'] as String?
+  ..stateCode = json['stateCode'] as String?
   ..zipCode = json['zipCode'] as String?
   ..countryCode = json['countryCode'] as String?
   ..addressStatus = json['addressStatus'] as String?
@@ -44,12 +44,12 @@ Map<String, dynamic> _$KGigAddressToJson(KGigAddress instance) {
   writeNotNull('addressType', instance.addressType);
   writeNotNull('addressLine1', instance.addressLine1);
   writeNotNull('addressLine2', instance.addressLine2);
-  writeNotNull('fullAddressLine', instance.fullAddressLine);
-  writeNotNull('name', instance.name);
+  writeNotNull('addressLine', instance.addressLine);
+  writeNotNull('placeName', instance.placeName);
   writeNotNull('ward', instance.ward);
   writeNotNull('district', instance.district);
   writeNotNull('city', instance.city);
-  writeNotNull('state', instance.state);
+  writeNotNull('stateCode', instance.stateCode);
   writeNotNull('zipCode', instance.zipCode);
   writeNotNull('countryCode', instance.countryCode);
   writeNotNull('addressStatus', instance.addressStatus);
