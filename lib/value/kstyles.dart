@@ -205,7 +205,7 @@ abstract class KStyles {
         // GoogleFonts.cabin()
         TextStyle().copyWith(
       package: 'app_core',
-      fontFamily: fontUberMove,
+      fontFamily: fontApercu, // fontFamily: fontUberMove,
       color: palette.primary,
       fontWeight: FontWeight.normal,
     );
