@@ -24,7 +24,7 @@ class KLead extends KObject {
   static const String LEAD_TYPE_CUSTOMER = "CUSTOMER";
   static const String LEAD_TYPE_TUTOR = "TUTOR";
   static const String LEAD_TYPE_TEACHER = "TEACHER";
-  static const String LEAD_TYPE_USER = "GUEST";
+  static const String LEAD_TYPE_USER = "USER";
 
   static const String LEAD_INTEREST_HOMEWORK = "DAY_KEM";
   static const String LEAD_INTEREST_EXAM_TUTORING = "LUYEN_THI";
