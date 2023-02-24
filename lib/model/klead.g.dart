@@ -26,6 +26,9 @@ KLead _$KLeadFromJson(Map<String, dynamic> json) => KLead()
   ..kcount = json['kcount'] as String?
   ..id = json['leadID'] as String?
   ..assignID = json['assignID'] as String?
+  ..assignUser = json['assignUser'] == null
+      ? null
+      : KUser.fromJson(json['assignUser'] as Map<String, dynamic>)
   ..puid = json['puid'] as String?
   ..businessName = json['businessName'] as String?
   ..name = json['name'] as String?
@@ -82,6 +85,7 @@ Map<String, dynamic> _$KLeadToJson(KLead instance) {
   writeNotNull('kcount', instance.kcount);
   writeNotNull('leadID', instance.id);
   writeNotNull('assignID', instance.assignID);
+  writeNotNull('assignUser', instance.assignUser?.toJson());
   writeNotNull('puid', instance.puid);
   writeNotNull('businessName', instance.businessName);
   writeNotNull('name', instance.name);

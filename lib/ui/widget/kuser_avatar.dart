@@ -1,4 +1,5 @@
 import 'package:app_core/app_core.dart';
+import 'package:app_core/style/ktheme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,7 @@ class KUserAvatar extends StatelessWidget {
   final Color? iconColor;
   final bool? showOnlineStatus;
   final bool? isOnline;
+  final bool? showBorder;
   final Function? onFinishLoaded;
 
   Image get placeholderImage =>
@@ -36,6 +38,7 @@ class KUserAvatar extends StatelessWidget {
     this.showOnlineStatus,
     this.isOnline,
     this.onFinishLoaded,
+    this.showBorder = false,
   });
 
   factory KUserAvatar.fromUser(
@@ -49,6 +52,7 @@ class KUserAvatar extends StatelessWidget {
     Color? iconColor,
     bool? showOnlineStatus,
     bool? isOnline,
+    bool? showBorder,
     Function? onFinishLoaded,
   }) =>
       KUserAvatar(
@@ -64,6 +68,7 @@ class KUserAvatar extends StatelessWidget {
         highlightSize: highlightSize,
         highlightColor: highlightColor,
         onFinishLoaded: onFinishLoaded,
+        showBorder: showBorder,
       );
 
   factory KUserAvatar.fromChatMember(KChatMember? member, {double? size}) =>
@@ -155,6 +160,11 @@ class KUserAvatar extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(size ?? 100),
+          border: (showBorder ?? false)
+              ? Border.all(
+                  color: Theme.of(context).colorScheme.primary,
+                )
+              : null,
         ),
         child: ClipOval(child: raw ?? placeholderImage),
       ),
