@@ -3,6 +3,7 @@ import 'package:app_core/style/kpalette.dart';
 import 'package:app_core/style/kpalette_group.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // set _brightness to set default dark/light
 // _brightness > brightnessTheme > themeColor > palette
@@ -202,7 +203,7 @@ abstract class KStyles {
   ) {
     final palette = paletteGroup.getPaletteByBrightness(brightness);
     final baseTextTheme =
-        // GoogleFonts.cabin()
+        // GoogleFonts.cabin().copyWith(
         TextStyle().copyWith(
       package: 'app_core',
       fontFamily: fontApercu, // fontFamily: fontUberMove,

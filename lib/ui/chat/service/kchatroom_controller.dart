@@ -2,6 +2,8 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:flutter/widgets.dart';
 
+enum KChatMedia { CAMERA, GALLERY, TEXT, THUMB }
+
 class KChatroomController extends ValueNotifier<KChatroomData> {
   static const int MAX_MESSAGE_COUNT = 100;
 
@@ -9,6 +11,8 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
   final String? _refApp;
   final String? _refID;
   final List<KChatMember>? _members;
+  final void Function(KChatMessage)? sendOverrideCallback;
+  final List<KChatMedia>? allowedMedia;
 
   String? get _smartChatID => this._chatID ?? this.value.chatID;
 
@@ -18,9 +22,16 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
 
   List<KChatMember>? get _smartMembers => this._members ?? this.value.members;
 
-  List<KChatMember>? members() {
-    return _smartMembers;
-  }
+  bool get isCameraAllowed => allowedMedia?.contains(KChatMedia.CAMERA) ?? true;
+
+  bool get isGalleryAllowed =>
+      allowedMedia?.contains(KChatMedia.GALLERY) ?? true;
+
+  bool get isTextAllowed => allowedMedia?.contains(KChatMedia.TEXT) ?? true;
+
+  bool get isThumbAllowed => allowedMedia?.contains(KChatMedia.THUMB) ?? true;
+
+  List<KChatMember>? members() => _smartMembers;
 
   KChatMessage get messageTemplate => KChatMessage()
     ..chatID = this._smartChatID
@@ -35,6 +46,8 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
     String? refApp,
     String? refID,
     List<KChatMember>? members,
+    this.sendOverrideCallback,
+    this.allowedMedia,
   })  : this._chatID = chatID,
         this._refApp = refApp,
         this._refID = refID,
@@ -172,6 +185,11 @@ class KChatroomController extends ValueNotifier<KChatroomData> {
     // print("CHAT CTRL - inserting message locally localID:${message.localID}");
     this.value.messages?.insert(0, message);
     notifyListeners();
+
+    if (sendOverrideCallback != null) {
+      sendOverrideCallback?.call(message);
+      return Future.value();
+    }
 
     // print("CHAT CTRL - sending message by API");
     final fut = (this.value.chatID ?? "").isNotEmpty

@@ -24,6 +24,7 @@ class KChatroom extends StatefulWidget {
   final bool isReadOnly;
   final bool isSupport;
   final bool isEnableTakePhoto;
+  final bool ignorePapa;
   final List<String>? preTexts;
   final Function()? onSelectDoc;
 
@@ -32,6 +33,7 @@ class KChatroom extends StatefulWidget {
     this.isReadOnly = false,
     this.isSupport = false,
     this.isEnableTakePhoto = true,
+    this.ignorePapa = false,
     this.onSelectDoc,
     this.preTexts,
   });
@@ -53,7 +55,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
   bool get hasSaidHiToPapa =>
       chatMessages.where((cm) => cm.puid == KSessionData.me?.puid).isNotEmpty;
 
-  bool get shouldSayHiToPapa => !this.hasSaidHiToPapa;
+  bool get shouldSayHiToPapa => !widget.ignorePapa && !hasSaidHiToPapa;
 
   KUser? get refUser => (widget.controller.members() ?? [])
       .firstWhereOrNull((m) => m.puid != KSessionData.me!.puid)
@@ -109,14 +111,15 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
 
   void onAddGalleryImageClick() async {
     final result = await KPhotoHelper.gallery();
-    if (result.status == KPhotoStatus.permission_error)
+    if (result.status == KPhotoStatus.permission_error) {
       showDialog(
         context: context,
         builder: (ctx) =>
             KOpenSettingsDialog(body: "Photo permissions are required"),
       );
-    else
+    } else {
       widget.controller.sendImage(result);
+    }
   }
 
   void onAddCameraImageClick() async {
@@ -157,7 +160,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
             children: [
               Text(
                 "${KPhrases.sayHiToX} ${widget.isSupport ? "customer support" : refUser?.firstName}",
-                style: theme.textTheme.headline4,
+                style: theme.textTheme.headlineMedium,
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 14),
@@ -174,12 +177,13 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
     final chatListing = ListView.builder(
       padding: EdgeInsets.all(4),
       reverse: true,
-      itemCount: (this.chatMessages).length + (this.shouldSayHiToPapa ? 1 : 0),
+      itemCount: (this.chatMessages).length + (shouldSayHiToPapa ? 1 : 0),
       shrinkWrap: true,
       primary: false,
       itemBuilder: (_, i) {
         final isFirstItem = i == this.chatMessages.length;
         if (this.shouldSayHiToPapa && isFirstItem) {
+          print("widget.ignorePapa - ${widget.ignorePapa}");
           return sayHiToPapaBtn;
         } else {
           final prev = i == 0 ? null : this.chatMessages[i - 1];
@@ -237,7 +241,7 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
               padding: EdgeInsets.all(10),
               child: Text(
                 "Session has ended",
-                style: theme.textTheme.bodyText1,
+                style: theme.textTheme.bodyLarge,
               ),
             ),
         ],
@@ -292,8 +296,9 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (widget.isEnableTakePhoto) addCameraButton,
-          addImageButton,
+          if (widget.isEnableTakePhoto && widget.controller.isCameraAllowed)
+            addCameraButton,
+          if (widget.controller.isGalleryAllowed) addImageButton,
           if (widget.onSelectDoc != null) addTextbookButton,
           SizedBox(width: 2),
           Expanded(
@@ -328,7 +333,9 @@ class _KChatroomState extends State<KChatroom> with WidgetsBindingObserver {
             ),
           ),
           SizedBox(width: 2),
-          messageCtrl.text.isEmpty ? sendLikeButton : sendMessageButton,
+          (messageCtrl.text.isEmpty && widget.controller.isThumbAllowed)
+              ? sendLikeButton
+              : sendMessageButton,
         ],
       ),
     );
