@@ -31,7 +31,7 @@ class _KUserPickerState extends State<KUserPicker> {
     );
 
     if (result != null) {
-      final trueValue = result?.puid != null ? result : null;
+      final trueValue = result.puid != null ? result : null;
       widget.onChange?.call(trueValue);
     }
   }
