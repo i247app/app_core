@@ -1,6 +1,7 @@
 import 'package:app_core/model/kaddress.dart';
 import 'package:app_core/model/klat_lng.dart';
 import 'package:app_core/model/kobject.dart';
+import 'package:app_core/model/kuser.dart';
 import 'package:app_core/model/response/base_response.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -23,6 +24,7 @@ class KLead extends KObject {
   static const String LEAD_TYPE_CUSTOMER = "CUSTOMER";
   static const String LEAD_TYPE_TUTOR = "TUTOR";
   static const String LEAD_TYPE_TEACHER = "TEACHER";
+  static const String LEAD_TYPE_USER = "USER";
 
   static const String LEAD_INTEREST_HOMEWORK = "DAY_KEM";
   static const String LEAD_INTEREST_EXAM_TUTORING = "LUYEN_THI";
@@ -30,6 +32,7 @@ class KLead extends KObject {
 
   static const String LEAD_ID = "leadID";
   static const String ASSIGN_ID = "assignID";
+  static const String ASSIGN_USER = "assignUser";
   static const String PUID = "puid";
   static const String BUSINESS_NAME = "businessName";
   static const String NAME = "name";
@@ -48,9 +51,11 @@ class KLead extends KObject {
   static const String BY_ID = "byID";
   static const String BY_DATE = "byDate";
   static const String ADDRESSES = "addresses";
+
   // customer chot info
   static const String CHOT_DATE = "chotDate";
   static const String CHOT_STATUS = "chotStatus";
+
   //
   // static const String CHOT_STATUS_YES = "Y";
   // static const String CHOT_STATUS_NO = "N";
@@ -67,6 +72,9 @@ class KLead extends KObject {
 
   @JsonKey(name: ASSIGN_ID)
   String? assignID;
+
+  @JsonKey(name: ASSIGN_USER)
+  KUser? assignUser;
 
   @JsonKey(name: PUID)
   String? puid;
