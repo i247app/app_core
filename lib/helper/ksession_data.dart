@@ -24,7 +24,7 @@ abstract class KSessionData {
   static String? _fcmToken;
   static String? _voipToken;
   static KUserSession? kUserSession;
-  static Future Function(KSessionInitData)? _postSetupHook;
+  static Future? Function(KSessionInitData)? _postSetupHook;
 
   // // // // // system
   static bool get hasActiveSession => getSessionToken() != null;
@@ -87,7 +87,7 @@ abstract class KSessionData {
       KHostConfig.hostInfo
           .copyWith(port: KHostConfig.isReleaseMode ? 9443 : 9090);
 
-  static void setPostSetupHook(Future Function(KSessionInitData) fn) =>
+  static void setPostSetupHook(Future? Function(KSessionInitData) fn) =>
       _postSetupHook = fn;
 
   /// Setup the session data
