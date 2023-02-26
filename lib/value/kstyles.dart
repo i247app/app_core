@@ -3,7 +3,6 @@ import 'package:app_core/style/kpalette.dart';
 import 'package:app_core/style/kpalette_group.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 // set _brightness to set default dark/light
 // _brightness > brightnessTheme > themeColor > palette
@@ -260,7 +259,8 @@ abstract class KStyles {
           foregroundColor: palette.active,
           textStyle: TextStyle(
             fontWeight: FontWeight.w600,
-            fontSize: 16,
+            // fontSize: 16,
+            fontSize: 14,
             letterSpacing: 1.5,
           ),
         ),
@@ -271,13 +271,15 @@ abstract class KStyles {
           backgroundColor: palette.schemePrimary,
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(60),
+            // borderRadius: BorderRadius.circular(60),
+            borderRadius: BorderRadius.circular(6),
             side: BorderSide(color: Colors.transparent),
           ),
           textStyle: TextStyle(
             color: palette.primary,
             fontWeight: FontWeight.w600,
-            fontSize: 16,
+            // fontSize: 16,
+            fontSize: 14,
             letterSpacing: 1.5,
           ),
         ),
