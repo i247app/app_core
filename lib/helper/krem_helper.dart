@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:app_core/helper/kglobals.dart';
 import 'package:app_core/helper/kscan_helper.dart';
-import 'package:app_core/rem/mgr/krem_manager.dart';
 import 'package:app_core/rem/krem.dart';
+import 'package:app_core/rem/mgr/krem_manager.dart';
 
 abstract class KREMHelper {
   /// Run string through REM
@@ -34,9 +34,10 @@ abstract class KREMHelper {
     KScanResult result = await KScanHelper.scan();
     if (result.status == KScanStatus.ok &&
         result.data != null &&
-        from(dispatcher, result.data!) != null)
+        from(dispatcher, result.data!) != null) {
       await from(dispatcher, result.data!)!.call(kNavigatorKey.currentState!);
-    else
+    } else {
       print(result.status);
+    }
   }
 }

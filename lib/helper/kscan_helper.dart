@@ -23,8 +23,7 @@ abstract class KScanHelper {
     Future<KScanResult> result =
         Future.value(KScanResult(status: KScanStatus.unknown));
 
-    PermissionStatus permission = await Permission.camera.status;
-
+    final permission = await Permission.camera.status;
     if (permission == PermissionStatus.granted) {
       result = _scan();
     } else if (permission == PermissionStatus.denied) {
@@ -33,11 +32,13 @@ abstract class KScanHelper {
         Permission.camera,
       ].request();
 
-      if (permissionResult[Permission.camera] == PermissionStatus.granted)
+      if (permissionResult[Permission.camera] == PermissionStatus.granted) {
         result = _scan();
-      else if (permissionResult[Permission.camera] == PermissionStatus.denied)
+      } else if (permissionResult[Permission.camera] ==
+          PermissionStatus.denied) {
         result =
             Future.value(KScanResult(status: KScanStatus.permissions_error));
+      }
     }
     return result;
   }
@@ -45,9 +46,14 @@ abstract class KScanHelper {
   /// PRIVATE
   static Future<KScanResult> _scan() async {
     final data = await FlutterBarcodeScanner.scanBarcode(
-        "#ff6666", "Cancel", false, ScanMode.QR);
+      "#ff6666",
+      "Cancel",
+      false,
+      ScanMode.QR,
+    );
     return KScanResult(
-        data: data == "-1" ? null : data,
-        status: data == "-1" ? KScanStatus.unknown : KScanStatus.ok);
+      data: data == "-1" ? null : data,
+      status: data == "-1" ? KScanStatus.unknown : KScanStatus.ok,
+    );
   }
 }
