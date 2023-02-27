@@ -51,6 +51,10 @@ class KLead extends KObject {
   static const String BY_ID = "byID";
   static const String BY_DATE = "byDate";
   static const String ADDRESSES = "addresses";
+  static const String BUOI = "buoi";
+  static const String PHUT = "phut";
+  static const String GOI = "goi";
+  static const String START_DATE = "startDate";
 
   // customer chot info
   static const String CHOT_DATE = "chotDate";
@@ -141,6 +145,18 @@ class KLead extends KObject {
 
   @JsonKey(name: LEAD_TYPE)
   String? leadType;
+
+  @JsonKey(name: BUOI, fromJson: zzz_atoi, toJson: zzz_itoa)
+  int? buoi;
+
+  @JsonKey(name: PHUT, fromJson: zzz_atoi, toJson: zzz_itoa)
+  int? phut;
+
+  @JsonKey(name: GOI)
+  String? goi;
+
+  @JsonKey(name: START_DATE, fromJson: zzz_str2Date, toJson: zzz_date2Str)
+  DateTime? startDate;
 
   // JSON
   KLead();
