@@ -16,7 +16,6 @@ abstract class KLocationHelper {
   static Position? _theCachedPosition;
   static Completer<bool>? _dialogCompleter;
   static bool _isAsking = false;
-  static bool _firstAsk = true;
 
   static Position? get cachedPosition {
     hasPermission().then((bool yes) {
@@ -85,7 +84,7 @@ abstract class KLocationHelper {
     Position? position;
     if (askForPermissions || (await hasPermission())) {
       if (askForPermissions && !(await hasPermission())) {
-        final result = await askForPermission1();
+        final result = await askForPermissionAlt();
         if (result != PermissionStatus.granted) return null;
       }
       if (!(await hasServiceEnabled()) && !askForEnableService) {
@@ -105,7 +104,7 @@ abstract class KLocationHelper {
     }
   }
 
-  static Future<PermissionStatus?> askForPermission1({
+  static Future<PermissionStatus?> askForPermissionAlt({
     bool askPermissionSetting = false,
     String? settingMessage,
   }) async {
