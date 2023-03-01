@@ -7,6 +7,8 @@ class KMoney {
   static const String VND = "VND";
   static const String CHAO = "CHAO";
 
+  static const String DONG_SYMBOL = "₫";
+
   final String amount;
   final int decimals; // TODO how many decimal places are available
   final String currency;
@@ -72,7 +74,7 @@ abstract class KMoneyHelper {
     final symbol;
     switch (currency) {
       case KMoney.VND:
-        symbol = "₫";
+        symbol = KMoney.DONG_SYMBOL;
         break;
       case KMoney.USD:
         symbol = "\$";
