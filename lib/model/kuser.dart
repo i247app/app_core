@@ -192,8 +192,10 @@ class KUser extends KObject {
 
   @JsonKey(ignore: true)
   String get contactName {
-    if (kunm == null) return fullName ?? "";
-    return "@$kunm $fullName";
+    if (kunm == null) {
+      return fullName ?? "";
+    }
+    return "@$kunm - $fullName";
   }
 
   // TODO - fix reward user (non-regis phone only)
