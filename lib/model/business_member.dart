@@ -1,7 +1,7 @@
 import 'package:app_core/app_core.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:app_core/model/keducation.dart';
 import 'package:app_core/model/kaddress.dart';
+import 'package:app_core/model/keducation.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part 'business_member.g.dart';
 
@@ -60,9 +60,13 @@ class BusinessMember extends KUser {
 
   @JsonKey(ignore: true)
   String get fullName =>
-      phone ??
+      // phone ??
       KUtil.prettyName(
-          fnm: firstName ?? "", mnm: middleName ?? "", lnm: lastName ?? "") ??
+        fnm: firstName ?? "",
+        mnm: middleName ?? "",
+        lnm: lastName ?? "",
+      ) ??
+      phone ??
       "";
 
   // JSON
