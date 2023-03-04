@@ -17,7 +17,7 @@ import 'package:url_launcher/url_launcher.dart';
 abstract class KGeoHelper {
   static const String API_HIT_COUNT_PREF_KEY = "_google_api_hit_count";
 
-  static int gcnt = 0;
+  static int _gcnt = 0;
 
   static const List<String> CITY_ADDR_COMP_TYPES = [
     "administrative_area_level_1"
@@ -250,7 +250,7 @@ abstract class KGeoHelper {
   static Future<List<KGigAddress>?> getGigAddressesFromLatLng(
       KLatLng latLng) async {
     try {
-      print("[${gcnt}] geo_helper.getGigAddressesFromLatLng");
+      print("[${_gcnt}] geo_helper.getGigAddressesFromLatLng");
 
       final List<GeocodingResult> results = await KGoogleHelper.lookupLatLng2(
           KLatLng.raw(latLng.lat!, latLng.lng!));
@@ -260,7 +260,7 @@ abstract class KGeoHelper {
         final List<KGigAddress> addresses = [];
 
         for (int i = 0; i < results.length; i++) {
-          print("[${gcnt}] geo_helper.getGigAddressesFromLatLng lookupPlaceID");
+          print("[${_gcnt}] geo_helper.getGigAddressesFromLatLng lookupPlaceID");
 
           final GeocodingResult geocodingResult = results[i];
           final KGigAddress? address = geocodingToGigAddress(geocodingResult);
