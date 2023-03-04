@@ -1,3 +1,4 @@
+import 'package:app_core/app_core.dart';
 import 'package:app_core/ui/school/widget/self_study_view.dart';
 import 'package:flutter/material.dart';
 
@@ -83,7 +84,9 @@ class _DuolingoLessonPlanState extends State<DuolingoLessonPlan> {
 
     final body = listing;
 
-    return Scaffold(appBar: AppBar(), body: body);
+    return KEmbedManager.of(context).isEmbed
+        ? body
+        : Scaffold(appBar: AppBar(), body: body);
   }
 }
 
