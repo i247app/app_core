@@ -215,7 +215,7 @@ class KChatBubble extends StatelessWidget {
         final innerText = Text(
           msg.message ?? "",
           style:
-              theme.textTheme.subtitle1!.copyWith(color: chatForegroundColor),
+              theme.textTheme.titleMedium!.copyWith(color: chatForegroundColor),
         );
 
         content = wrapWithChatBubble(
@@ -270,7 +270,7 @@ class KChatBubble extends StatelessWidget {
                   Flexible(
                     child: Text(
                       "Video call from ${this.msg.user?.firstName ?? "user"}",
-                      style: theme.textTheme.subtitle1!
+                      style: theme.textTheme.titleMedium!
                           .copyWith(color: chatForegroundColor),
                     ),
                   ),
@@ -279,7 +279,7 @@ class KChatBubble extends StatelessWidget {
               SizedBox(height: 4),
               Text(
                 "${KUtil.prettyDate(this.msg.messageDate, showTime: true)}",
-                style: theme.textTheme.caption!
+                style: theme.textTheme.bodySmall!
                     .copyWith(color: chatForegroundColor),
               ),
             ],
@@ -315,7 +315,7 @@ class KChatBubble extends StatelessWidget {
                           }
                           return "$linkText";
                         }.call(),
-                        style: theme.textTheme.subtitle1!
+                        style: theme.textTheme.titleMedium!
                             .copyWith(color: chatForegroundColor),
                       ),
                     ),
@@ -324,7 +324,7 @@ class KChatBubble extends StatelessWidget {
                 SizedBox(height: 4),
                 Text(
                   "${KUtil.prettyDate(msg.messageDate, showTime: true)}",
-                  style: theme.textTheme.caption!
+                  style: theme.textTheme.bodySmall!
                       .copyWith(color: chatForegroundColor),
                 ),
               ],
@@ -337,12 +337,12 @@ class KChatBubble extends StatelessWidget {
         content = Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.error, color: theme.errorColor),
+            Icon(Icons.error, color: theme.colorScheme.error),
             SizedBox(width: 4),
             Text(
               "An error occurred",
               style:
-                  theme.textTheme.bodyText1!.copyWith(color: theme.errorColor),
+                  theme.textTheme.bodyLarge!.copyWith(color: theme.colorScheme.error),
             ),
           ],
         );
@@ -400,7 +400,7 @@ class KChatBubble extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Text(
                     KUtil.timeAgo(this.msg.messageDate),
-                    style: theme.textTheme.bodyText2,
+                    style: theme.textTheme.bodyMedium,
                   ),
                 ),
               ),

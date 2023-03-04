@@ -141,7 +141,7 @@ class _KChatListScreenState extends State<KChatListScreen> {
             child: Text(
               "Chats",
               style:
-                  Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 20),
+                  Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 20),
               textAlign: TextAlign.start,
             ),
           ),

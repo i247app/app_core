@@ -46,10 +46,10 @@ abstract class KGeoHelper {
       }
     }
 
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else if (await canLaunch(urlAppleMaps)) {
-      await launch(urlAppleMaps);
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else if (await canLaunchUrl(Uri.parse(urlAppleMaps))) {
+      await launchUrl(Uri.parse(urlAppleMaps));
     } else {
       throw 'Could not launch $url';
     }

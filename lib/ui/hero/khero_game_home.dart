@@ -166,7 +166,8 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
     final overlay = Stack(
       fit: StackFit.expand,
       children: [
-        Container(color: Theme.of(context).backgroundColor.withOpacity(0)),
+        Container(
+            color: Theme.of(context).colorScheme.background.withOpacity(0)),
         Align(
           alignment: Alignment.topCenter,
           child: view,
@@ -208,11 +209,11 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       ),
                     )),
                     style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.transparent,
+                      backgroundColor: Colors.transparent,
                       elevation: 0,
                       padding:
                           EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                      primary: Colors.transparent,
-                      onPrimary: Colors.transparent,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4),
                         side: BorderSide(color: Colors.transparent),
@@ -254,11 +255,11 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       ),
                     )),
                     style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.transparent,
+                      backgroundColor: Colors.transparent,
                       elevation: 0,
                       padding:
                           EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                      primary: Colors.transparent,
-                      onPrimary: Colors.transparent,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4),
                         side: BorderSide(color: Colors.transparent),
@@ -308,11 +309,11 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       ),
                     )),
                     style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.transparent,
+                      backgroundColor: Colors.transparent,
                       elevation: 0,
                       padding:
                           EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                      primary: Colors.transparent,
-                      onPrimary: Colors.transparent,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4),
                         side: BorderSide(color: Colors.transparent),
@@ -355,11 +356,11 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                       ),
                     )),
                     style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.transparent,
+                      backgroundColor: Colors.transparent,
                       elevation: 0,
                       padding:
                           EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                      primary: Colors.transparent,
-                      onPrimary: Colors.transparent,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4),
                         side: BorderSide(color: Colors.transparent),
@@ -410,11 +411,11 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                         ),
                       )),
                       style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.transparent,
+                        backgroundColor: Colors.transparent,
                         elevation: 0,
                         padding:
                             EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                        primary: Colors.transparent,
-                        onPrimary: Colors.transparent,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4),
                           side: BorderSide(color: Colors.transparent),

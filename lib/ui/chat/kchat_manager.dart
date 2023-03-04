@@ -196,7 +196,7 @@ class _KChatManagerState extends State<KChatManager> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text("Group name:",
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: Theme.of(context).textTheme.titleMedium,
                         textAlign: TextAlign.left),
                     SizedBox(height: 8),
                     TextFormField(

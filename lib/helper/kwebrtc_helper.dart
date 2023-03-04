@@ -19,8 +19,12 @@ abstract class KWebRTCHelper {
         Permission.microphone,
       ];
 
-  static Future displayCallScreen(String uuid, String callID,
-      {bool autoPickup: false, String? videoLogo}) {
+  static Future displayCallScreen(
+    String uuid,
+    String callID, {
+    bool autoPickup = false,
+    String? videoLogo,
+  }) {
     Future fut;
     if (KStringHelper.isExist(callID)) {
       fut = (() async {

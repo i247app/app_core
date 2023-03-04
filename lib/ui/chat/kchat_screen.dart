@@ -275,7 +275,7 @@ class _KChatScreenState extends State<KChatScreen> {
                     onTap: onManagerMember,
                     child: Text(
                       this.chatroomCtrl.value.chatTitle ?? "Chat",
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headlineSmall,
                     ),
                   ),
                 ),

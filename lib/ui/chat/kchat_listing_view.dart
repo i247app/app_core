@@ -122,7 +122,7 @@ class _ChatListEntry extends StatelessWidget {
       children: [
         Text(
           this.chat.title,
-          style: Theme.of(context).textTheme.subtitle1,
+          style: Theme.of(context).textTheme.titleMedium,
           overflow: TextOverflow.ellipsis,
         ),
         SizedBox(height: 6),
@@ -132,7 +132,7 @@ class _ChatListEntry extends StatelessWidget {
             Flexible(
               child: Text(
                 this.chat.previewMessage ?? "-",
-                style: Theme.of(context).textTheme.bodyText2,
+                style: Theme.of(context).textTheme.bodyMedium,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -153,7 +153,7 @@ class _ChatListEntry extends StatelessWidget {
           SizedBox(width: 16),
           Text(
             KUtil.timeAgo(this.chat.activeDate ?? ""),
-            style: Theme.of(context).textTheme.bodyText2,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
         ]),
       ),

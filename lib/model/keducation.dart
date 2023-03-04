@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:json_annotation/json_annotation.dart';
 
 part 'keducation.g.dart';
@@ -24,7 +22,7 @@ class KEducation {
   /// Methods
   @override
   int get hashCode =>
-      hashValues(this.puid, this.schoolName, this.degree, this.year);
+      Object.hash(this.puid, this.schoolName, this.degree, this.year);
 
   @override
   bool operator ==(other) => this.hashCode == other.hashCode;

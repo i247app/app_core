@@ -87,7 +87,7 @@ class _KHeroesState extends State<KHeroBasicPicker> {
 
     final nothingHere = Text(
       "No heroes found",
-      style: Theme.of(context).textTheme.bodyText1,
+      style: Theme.of(context).textTheme.bodyLarge,
     );
 
     final content = this.heroes != null && this.heroes!.isEmpty
@@ -166,7 +166,7 @@ class _HeroGridItem extends StatelessWidget {
         SizedBox(height: 2),
         Text(
           KHeroHelper.isEgg(this.hero) ? "Egg" : this.hero.name ?? "?",
-          style: Theme.of(context).textTheme.bodyText1,
+          style: Theme.of(context).textTheme.bodyLarge,
         ),
       ],
     );
@@ -224,11 +224,11 @@ class _HeroDetailState extends State<_HeroDetail> {
       this.displayName ?? "",
       style: Theme.of(context)
           .textTheme
-          .headline6!
+          .titleLarge!
           .copyWith(fontWeight: FontWeight.bold),
     );
 
-    final bioStyle = Theme.of(context).textTheme.bodyText1;
+    final bioStyle = Theme.of(context).textTheme.bodyLarge;
 
     final bio = widget.hero?.isEgg ?? false
         ? KStopwatchLabel(

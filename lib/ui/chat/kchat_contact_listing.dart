@@ -93,7 +93,7 @@ class _KChatContactListingState extends State<KChatContactListing> {
         child: Text(
           "Nothing found!",
           textAlign: TextAlign.center,
-          style: theme.textTheme.bodyText1,
+          style: theme.textTheme.bodyLarge,
         ),
       );
     else
@@ -135,7 +135,7 @@ class _KChatContactListingState extends State<KChatContactListing> {
           Row(
             children: [
               BackButton(),
-              Text("Choose Users", style: theme.textTheme.subtitle1),
+              Text("Choose Users", style: theme.textTheme.titleMedium),
               Spacer(),
               doneButton,
             ],
@@ -187,7 +187,7 @@ class _SearchField extends StatelessWidget {
         showCursor: true,
         onTap: this.onTap,
         readOnly: this.readOnly,
-        style: Theme.of(context).textTheme.bodyText1,
+        style: Theme.of(context).textTheme.bodyLarge,
         decoration: InputDecoration(
           hintText: "Type a name or phone number",
           counterText: "",
@@ -212,7 +212,7 @@ class _SearchField extends StatelessWidget {
                       su.fullName ?? su.contactName,
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText1
+                          .bodyLarge
                           ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(width: 6),
