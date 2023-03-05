@@ -1,12 +1,12 @@
 import 'package:collection/src/iterable_extensions.dart';
 import 'package:flutter/widgets.dart';
 
-extension KList<T> on List<T> {
+extension KList<T> on Iterable<T> {
   /// Insert an element 't' between each list item
   List<T> intersperse(T t, {bool addToEnd = false}) {
     final result = <T>[];
     for (int i = 0; i < this.length; i++) {
-      result.add(this[i]);
+      result.add(this.elementAt(i));
       final isLastItem = i == (this.length - 1);
       if (!isLastItem || addToEnd) result.add(t);
     }
@@ -14,18 +14,21 @@ extension KList<T> on List<T> {
   }
 
   /// Remove duplicates
-  Iterable<T> unique(dynamic Function(T) extractor) => map(
-          (e) => extractor(e)) // extract IDs
-      .toSet() // remove duplicates
-      .map((e1) =>
+  Iterable<T> unique(dynamic Function(T) extractor) =>
+      map(
+              (e) => extractor(e)) // extract IDs
+          .toSet() // remove duplicates
+          .map((e1) =>
           firstWhereOrNull((e2) => e1 == extractor(e2))) // pick 1 matching item
-      .where((e) => e != null) // remove nulls
-      .cast<T>();
+          .where((e) => e != null) // remove nulls
+          .cast<T>();
 }
 
 extension KWidget<T> on State<StatefulWidget> {
   bool isKeyboardVisible() {
-    final insets = MediaQuery.of(this.context).viewInsets;
+    final insets = MediaQuery
+        .of(this.context)
+        .viewInsets;
     return insets.bottom != 0;
   }
 
