@@ -24,6 +24,7 @@ abstract class KUtil {
     "Phường",
     "Quận"
   ];
+
   static String get buildVersion => KUtil._buildVersion ?? "";
 
   static String get buildNumber => KUtil._buildNumber ?? "";
@@ -792,5 +793,12 @@ abstract class KUtil {
     const _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     return List.generate(len, (index) => _chars[r.nextInt(_chars.length)])
         .join();
+  }
+
+  static String getAvatarLetters() {
+    final user = KSessionData.me ?? KUser();
+    final firstLetter = (user.firstName ?? "?").substring(0, 1).toUpperCase();
+    final lastLetter = (user.lastName ?? " ").substring(0, 1).toUpperCase();
+    return "$firstLetter$lastLetter".trim();
   }
 }
