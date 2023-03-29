@@ -50,6 +50,7 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..countryCode = json['countryCode'] as String?
   ..displayImg = json['displayImg'] as String?
   ..avatarURL = json['avatar'] as String?
+  ..videoURL = json['vurl'] as String?
   ..avatarImageData = json['avatarData'] as String?
   ..heroAvatarURL = json['heroAvatar'] as String?
   ..gradeLevel = json['gradeLevel'] as String?
@@ -164,6 +165,7 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('countryCode', instance.countryCode);
   writeNotNull('displayImg', instance.displayImg);
   writeNotNull('avatar', instance.avatarURL);
+  writeNotNull('vurl', instance.videoURL);
   writeNotNull('avatarData', instance.avatarImageData);
   writeNotNull('heroAvatar', instance.heroAvatarURL);
   writeNotNull('gradeLevel', instance.gradeLevel);

@@ -103,6 +103,9 @@ class KUser extends KObject {
   @JsonKey(name: "avatar")
   String? avatarURL;
 
+  @JsonKey(name: "vurl")
+  String? videoURL;
+
   @JsonKey(name: "avatarData")
   String? avatarImageData;
 
