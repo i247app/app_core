@@ -86,7 +86,7 @@ KGigUser _$KGigUserFromJson(Map<String, dynamic> json) => KGigUser()
   ..distance = zzz_atod(json['distance'] as String?)
   ..billDate = zzz_str2Date(json['billDate'] as String?)
   ..billGigs = json['billGigs'] as String?
-  ..billDuration = json['billDuration'] as String?
+  ..billDuration = zzz_str2Dur(json['billDuration'] as String?)
   ..billAmount = json['billAmount'] as String?
   ..billNote = json['billNote'] as String?
   ..billPayDate = zzz_str2Date(json['billPayDate'] as String?)
@@ -175,7 +175,7 @@ Map<String, dynamic> _$KGigUserToJson(KGigUser instance) {
   writeNotNull('distance', zzz_dtoa(instance.distance));
   writeNotNull('billDate', zzz_date2Str(instance.billDate));
   writeNotNull('billGigs', instance.billGigs);
-  writeNotNull('billDuration', instance.billDuration);
+  writeNotNull('billDuration', zzz_dur2Str(instance.billDuration));
   writeNotNull('billAmount', instance.billAmount);
   writeNotNull('billNote', instance.billNote);
   writeNotNull('billPayDate', zzz_date2Str(instance.billPayDate));

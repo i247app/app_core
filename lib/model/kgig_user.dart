@@ -13,8 +13,8 @@ class KGigUser extends KUser {
   @JsonKey(name: "billGigs")
   String? billGigs;
 
-  @JsonKey(name: "billDuration")
-  String? billDuration;
+  @JsonKey(name: "billDuration", fromJson: zzz_str2Dur, toJson: zzz_dur2Str)
+  Duration? billDuration;
 
   @JsonKey(name: "billAmount")
   String? billAmount;
