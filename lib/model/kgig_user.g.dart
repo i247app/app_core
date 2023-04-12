@@ -83,7 +83,15 @@ KGigUser _$KGigUserFromJson(Map<String, dynamic> json) => KGigUser()
       ? null
       : KLatLng.fromJson(json['latLng'] as Map<String, dynamic>)
   ..linkStatus = json['linkStatus'] as String?
-  ..distance = zzz_atod(json['distance'] as String?);
+  ..distance = zzz_atod(json['distance'] as String?)
+  ..billDate = zzz_str2Date(json['billDate'] as String?)
+  ..billGigs = json['billGigs'] as String?
+  ..billDuration = json['billDuration'] as String?
+  ..billAmount = json['billAmount'] as String?
+  ..billNote = json['billNote'] as String?
+  ..billPayDate = zzz_str2Date(json['billPayDate'] as String?)
+  ..billPayAmount = json['billPayAmount'] as String?
+  ..billPayNote = json['billPayNote'] as String?;
 
 Map<String, dynamic> _$KGigUserToJson(KGigUser instance) {
   final val = <String, dynamic>{};
@@ -165,5 +173,13 @@ Map<String, dynamic> _$KGigUserToJson(KGigUser instance) {
   writeNotNull('latLng', instance.currentLatLng?.toJson());
   writeNotNull('linkStatus', instance.linkStatus);
   writeNotNull('distance', zzz_dtoa(instance.distance));
+  writeNotNull('billDate', zzz_date2Str(instance.billDate));
+  writeNotNull('billGigs', instance.billGigs);
+  writeNotNull('billDuration', instance.billDuration);
+  writeNotNull('billAmount', instance.billAmount);
+  writeNotNull('billNote', instance.billNote);
+  writeNotNull('billPayDate', zzz_date2Str(instance.billPayDate));
+  writeNotNull('billPayAmount', instance.billPayAmount);
+  writeNotNull('billPayNote', instance.billPayNote);
   return val;
 }

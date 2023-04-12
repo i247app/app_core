@@ -7,6 +7,30 @@ part 'kgig_user.g.dart';
 
 @JsonSerializable()
 class KGigUser extends KUser {
+  @JsonKey(name: "billDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
+  DateTime? billDate;
+
+  @JsonKey(name: "billGigs")
+  String? billGigs;
+
+  @JsonKey(name: "billDuration")
+  String? billDuration;
+
+  @JsonKey(name: "billAmount")
+  String? billAmount;
+
+  @JsonKey(name: "billNote")
+  String? billNote;
+
+  @JsonKey(name: "billPayDate", fromJson: zzz_str2Date, toJson: zzz_date2Str)
+  DateTime? billPayDate;
+
+  @JsonKey(name: "billPayAmount")
+  String? billPayAmount;
+
+  @JsonKey(name: "billPayNote")
+  String? billPayNote;
+
   // JSON
   KGigUser();
 
