@@ -1,5 +1,5 @@
 import 'package:app_core/app_core.dart';
-import 'package:app_core/value/kphrases.dart';
+import 'package:app_core/lingo/kphrases.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'kaddress.g.dart';

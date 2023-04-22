@@ -1,6 +1,6 @@
 import 'package:app_core/header/kcore_code.dart';
 import 'package:app_core/helper/helper.dart';
-import 'package:app_core/value/kphrases.dart';
+import 'package:app_core/lingo/kphrases.dart';
 
 abstract class KValidateHelper {
   static String messageFromCode(int? status) {

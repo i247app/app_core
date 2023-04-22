@@ -2,7 +2,7 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/lop_schedule.dart';
 import 'package:app_core/ui/school/schedule_session_view.dart';
-import 'package:app_core/value/kphrases.dart';
+import 'package:app_core/lingo/kphrases.dart';
 import 'package:flutter/material.dart';
 
 class ScheduleView extends StatefulWidget {

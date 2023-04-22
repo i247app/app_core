@@ -7,7 +7,7 @@ import 'package:app_core/helper/kutil.dart';
 import 'package:app_core/ui/kbank_picker.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/profile_input.dart';
-import 'package:app_core/value/kphrases.dart';
+import 'package:app_core/lingo/kphrases.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
 

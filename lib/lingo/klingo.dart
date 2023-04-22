@@ -37,6 +37,8 @@ class KLingo {
         final dictRawString = await rootBundle.loadString(fullPath);
         final Map<String, dynamic> dictMap = json.decode(dictRawString);
         _wordMaps[dict.language] = dictMap.cast<String, String>();
+
+        print("KLingo - loading ${dict.language}");
       }
       // final enJsonString = await rootBundle.loadString(enLangFile);
       // final viJsonString = await rootBundle.loadString(viLangFile);

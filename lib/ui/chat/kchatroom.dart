@@ -15,7 +15,7 @@ import 'package:app_core/ui/chat/widget/kchat_bubble.dart';
 import 'package:app_core/ui/chat/widget/kuser_view.dart';
 import 'package:app_core/ui/widget/dialog/kopen_settings_dialog.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
-import 'package:app_core/value/kphrases.dart';
+import 'package:app_core/lingo/kphrases.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 

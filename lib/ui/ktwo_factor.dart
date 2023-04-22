@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/knotice_data.dart';
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/value/kphrases.dart';
+import 'package:app_core/lingo/kphrases.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';

@@ -6,7 +6,7 @@ import 'package:app_core/model/kuser.dart';
 import 'package:app_core/ui/chat/widget/kuser_view.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
-import 'package:app_core/value/kphrases.dart';
+import 'package:app_core/lingo/kphrases.dart';
 import 'package:flutter/material.dart';
 
 enum KContactType { reward, transfer, other }

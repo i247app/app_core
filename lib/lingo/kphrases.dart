@@ -1,5 +1,5 @@
 import 'package:app_core/app_core.dart';
-import 'package:app_core/helper/klingo.dart';
+import 'package:app_core/lingo/klingo.dart';
 
 abstract class KPhrases {
   static late final KLingo _klingo;

@@ -1,5 +1,5 @@
 import 'package:app_core/helper/ksession_data.dart';
-import 'package:app_core/value/kphrases.dart';
+import 'package:app_core/lingo/kphrases.dart';
 import 'package:flutter/material.dart';
 import 'package:new_version/new_version.dart';
 import 'package:url_launcher/url_launcher.dart';

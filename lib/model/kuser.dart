@@ -2,7 +2,7 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/model/kaddress.dart';
 import 'package:app_core/model/keducation.dart';
 import 'package:app_core/model/kobject.dart';
-import 'package:app_core/value/kphrases.dart';
+import 'package:app_core/lingo/kphrases.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'kuser.g.dart';

@@ -6,7 +6,7 @@ import 'package:app_core/model/chapter.dart';
 import 'package:app_core/model/textbook.dart';
 import 'package:app_core/ui/school/widget/kdoc_screen.dart';
 import 'package:app_core/ui/school/widget/kdoc_view.dart';
-import 'package:app_core/value/kphrases.dart';
+import 'package:app_core/lingo/kphrases.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 

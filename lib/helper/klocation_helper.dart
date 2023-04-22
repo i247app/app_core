@@ -7,7 +7,7 @@ import 'package:app_core/helper/kpref_helper.dart';
 import 'package:app_core/model/klat_lng.dart';
 import 'package:app_core/ui/widget/dialog/klocation_permission_info_dialog.dart';
 import 'package:app_core/ui/widget/open_settings_dialog.dart';
-import 'package:app_core/value/kphrases.dart';
+import 'package:app_core/lingo/kphrases.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';

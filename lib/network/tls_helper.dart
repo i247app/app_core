@@ -5,7 +5,7 @@ import 'dart:typed_data';
 
 import 'package:app_core/app_core.dart';
 import 'package:app_core/network/kpacket_header.dart';
-import 'package:app_core/value/kphrases.dart';
+import 'package:app_core/lingo/kphrases.dart';
 import 'package:flutter/foundation.dart';
 
 abstract class TLSHelper {

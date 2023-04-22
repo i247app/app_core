@@ -1,4 +1,4 @@
-import 'package:app_core/value/kphrases.dart';
+import 'package:app_core/lingo/kphrases.dart';
 import 'package:app_core/value/kstyles.dart';
 import 'package:flutter/material.dart';
 

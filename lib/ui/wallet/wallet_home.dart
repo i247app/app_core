@@ -15,7 +15,7 @@ import 'package:app_core/ui/wallet/widget/credit_token_picker.dart';
 import 'package:app_core/ui/wallet/widget/kcredit_banner.dart';
 import 'package:app_core/ui/wallet/widget/krole_picker.dart';
 import 'package:app_core/ui/widget/kqr_viewer.dart';
-import 'package:app_core/value/kphrases.dart';
+import 'package:app_core/lingo/kphrases.dart';
 import 'package:flutter/material.dart';
 
 class WalletHome extends StatefulWidget {
