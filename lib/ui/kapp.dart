@@ -155,6 +155,7 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
         ),
       ),
     );
+
     final button = FloatingActionButton(
       onPressed: () {
         KCallControlStreamHelper.broadcast(KCallType.foreground);
