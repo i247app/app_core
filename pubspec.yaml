@@ -28,7 +28,7 @@ dependencies:
   json_annotation: ^4.5.0
   fluttertoast: ^8.1.2
   local_auth: ^1.1.6
-  new_version: ^0.2.0
+  new_version_plus: ^0.0.9 # new_version deprecated
   flutter_local_notifications: ^6.1.0
   flutter_slidable: ^0.6.0
   draggable_widget: ^2.0.0
