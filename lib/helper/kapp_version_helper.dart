@@ -1,11 +1,11 @@
 import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/lingo/kphrases.dart';
 import 'package:flutter/material.dart';
-import 'package:new_version/new_version.dart';
+import 'package:new_version_plus/new_version_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 abstract class KAppVersionHelper {
-  static final _versionPlugin = NewVersion();
+  static final _versionPlugin = NewVersionPlus();
 
   static Future<VersionStatus?> getStatus() =>
       _versionPlugin.getVersionStatus();
