@@ -134,9 +134,7 @@ abstract class KSessionData {
     // MOTDHelper.reset();
     // HomePortal.homeViewCount = 0; // determine if motd appears
 
-    // if (_sessionGeneration != null) {
     _sessionGenerationID = null;
-    // }
 
     // common
     KSessionData.setUserSession(null);
