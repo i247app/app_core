@@ -8,7 +8,7 @@ abstract class KBiometricHelper {
   static final LocalAuthentication localAuth = LocalAuthentication();
 
   static Future<bool> isAvailable() async {
-    bool canCheckBiometrics = await localAuth.canCheckBiometrics;
+    final canCheckBiometrics = await localAuth.canCheckBiometrics;
     final hasAvailableMethods =
         await localAuth.getAvailableBiometrics().then((r) => r.isNotEmpty);
     return canCheckBiometrics && hasAvailableMethods;
@@ -19,7 +19,7 @@ abstract class KBiometricHelper {
     return result.contains(BiometricType.face);
   }
 
-  static Future<bool> isfingerprintAvailable() async {
+  static Future<bool> isFingerprintAvailable() async {
     final result = await localAuth.getAvailableBiometrics();
     return result.contains(BiometricType.fingerprint);
   }
