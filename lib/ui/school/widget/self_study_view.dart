@@ -100,71 +100,100 @@ class _SelfStudyViewState extends State<SelfStudyView> {
 
   @override
   Widget build(BuildContext context) {
-    final prompt = this.currentQuestion == null
+    final quizView = currentQuestion == null
         ? Container()
-        : _PromptView(this.currentQuestion!);
-
-    final choices = this.currentQuestion == null
-        ? Container()
-        : Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: this._randomizedChoices.length >= 2
-                    ? [
-                        _ChoiceButton(
-                          this._randomizedChoices[0],
-                          onClick: onAnswerClick,
-                          isTtsEnabled: this.isTtsEnabled,
-                          attemptedChoices: this._incorrectChoices,
-                        ),
-                        _ChoiceButton(
-                          this._randomizedChoices[1],
-                          onClick: onAnswerClick,
-                          isTtsEnabled: this.isTtsEnabled,
-                          attemptedChoices: this._incorrectChoices,
-                        ),
-                      ]
-                    : [],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: this._randomizedChoices.length >= 4
-                    ? [
-                        _ChoiceButton(
-                          this._randomizedChoices[2],
-                          onClick: onAnswerClick,
-                          isTtsEnabled: this.isTtsEnabled,
-                          attemptedChoices: this._incorrectChoices,
-                        ),
-                        _ChoiceButton(
-                          this._randomizedChoices[3],
-                          onClick: onAnswerClick,
-                          isTtsEnabled: this.isTtsEnabled,
-                          attemptedChoices: this._incorrectChoices,
-                        ),
-                      ]
-                    : [],
-              ),
-            ],
-          );
-
-    final problemDisplay = this.currentQuestion == null
-        ? Container()
-        : Column(
-            children: [
-              Expanded(child: Center(child: prompt)),
-              Expanded(child: choices),
-            ],
+        : _Quiz(
+            currentQuestion: currentQuestion!,
+            randomizedChoices: _randomizedChoices,
+            onAnswerClick: onAnswerClick,
+            isTtsEnabled: isTtsEnabled,
+            incorrectChoices: _incorrectChoices,
           );
 
     final body = this._questions == null
         ? Container()
         : this._questions!.isEmpty
             ? Center(child: Text("Nothing to study yet"))
-            : problemDisplay;
+            : quizView;
+
+    return body;
+  }
+}
+
+class _Quiz extends StatelessWidget {
+  final KQuestion currentQuestion;
+  final List<KAnswer> randomizedChoices;
+  final Function(KAnswer) onAnswerClick;
+  final bool isTtsEnabled;
+  final Set<KAnswer> incorrectChoices;
+
+  const _Quiz({
+    Key? key,
+    required this.currentQuestion,
+    required this.randomizedChoices,
+    required this.onAnswerClick,
+    required this.isTtsEnabled,
+    required this.incorrectChoices,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final prompt = _PromptView(
+      this.currentQuestion,
+      isTtsEnabled: isTtsEnabled,
+    );
+
+    final choices = Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: this.randomizedChoices.length >= 2
+              ? [
+                  _ChoiceButton(
+                    this.randomizedChoices[0],
+                    onClick: onAnswerClick,
+                    isTtsEnabled: this.isTtsEnabled,
+                    attemptedChoices: this.incorrectChoices,
+                  ),
+                  _ChoiceButton(
+                    this.randomizedChoices[1],
+                    onClick: onAnswerClick,
+                    isTtsEnabled: this.isTtsEnabled,
+                    attemptedChoices: this.incorrectChoices,
+                  ),
+                ]
+              : [],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: this.randomizedChoices.length >= 4
+              ? [
+                  _ChoiceButton(
+                    this.randomizedChoices[2],
+                    onClick: onAnswerClick,
+                    isTtsEnabled: this.isTtsEnabled,
+                    attemptedChoices: this.incorrectChoices,
+                  ),
+                  _ChoiceButton(
+                    this.randomizedChoices[3],
+                    onClick: onAnswerClick,
+                    isTtsEnabled: this.isTtsEnabled,
+                    attemptedChoices: this.incorrectChoices,
+                  ),
+                ]
+              : [],
+        ),
+      ],
+    );
+
+    final body = Column(
+      children: [
+        Expanded(child: Center(child: prompt)),
+        Expanded(child: choices),
+      ],
+    );
 
     return body;
   }
@@ -230,13 +259,13 @@ class _ChoiceButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () => this.onClick(this.answer),
         style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.all(6),
-          primary: this.isWrong
+          foregroundColor: Theme.of(context).primaryColor,
+          backgroundColor: this.isWrong
               ? Colors.red
               : this.isCorrect
                   ? Colors.green
-                  : Theme.of(context).backgroundColor,
-          onPrimary: Theme.of(context).primaryColor,
+                  : Theme.of(context).colorScheme.background,
+          padding: EdgeInsets.all(6),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
             side: BorderSide(color: KStyles.grey),
@@ -266,7 +295,7 @@ class _PromptView extends StatelessWidget {
           ),
           child: Text(
             this.question.text ?? "",
-            style: Theme.of(context).textTheme.headline4,
+            style: Theme.of(context).textTheme.headlineMedium,
           ),
         );
         break;
