@@ -33,6 +33,8 @@ abstract class TLSHelper {
   }) async {
     final int reqID = _reqCount++;
     final String apiName = "${inputData['svc']}:${inputData['req']}";
+    final sessGen = KSessionData.getSessionGeneration();
+
     print(apiName);
     hostInfo ??= KHostConfig.hostInfo;
 
@@ -106,14 +108,21 @@ abstract class TLSHelper {
       );
     }
 
-    // Store response token if local one is different
+    // Store response token if local one is different AND same session gen
     final result = decodedAnswer ?? jsonDecode(answer);
-    if (KStringHelper.isExist(result["ktoken"]) &&
-        KSessionData.getSessionToken() != result["ktoken"] &&
-        ((inputData['req'] == 'login' &&
-                KStringHelper.isExist(KSessionData.getSessionToken())) ||
-            (KStringHelper.isEmpty(KSessionData.getSessionToken())))) {
-      KSessionData.setSessionToken(result["ktoken"]);
+    if (sessGen == KSessionData.getSessionGeneration() &&
+        KSessionData.getSessionGeneration() != null) {
+      print("T L S :::: sessGen = $sessGen");
+      print(
+          "T L S :::: KSessionData.getSessionGeneration() = ${KSessionData.getSessionGeneration()}");
+
+      if (KStringHelper.isExist(result["ktoken"]) &&
+          KSessionData.getSessionToken() != result["ktoken"] &&
+          ((inputData['req'] == 'login' &&
+                  KStringHelper.isExist(KSessionData.getSessionToken())) ||
+              (KStringHelper.isEmpty(KSessionData.getSessionToken())))) {
+        KSessionData.setSessionToken(result["ktoken"]);
+      }
     }
 
     // Replace stack with Splash in case of BAD SESSION response

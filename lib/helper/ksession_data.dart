@@ -1,3 +1,4 @@
+import 'package:app_core/app_core.dart';
 import 'package:app_core/header/ksession_init_data.dart';
 import 'package:app_core/helper/kcall_kit_helper.dart';
 import 'package:app_core/helper/kfcm_helper.dart';
@@ -25,6 +26,7 @@ abstract class KSessionData {
   static String? _voipToken;
   static KUserSession? kUserSession;
   static Future? Function(KSessionInitData)? _postSetupHook;
+  static String? _sessionGenerationID;
 
   // // // // // system
   static bool get hasActiveSession => getSessionToken() != null;
@@ -64,6 +66,8 @@ abstract class KSessionData {
 
   static Future<void> clearSessionToken() async {
     KSessionData.kSessionToken = null;
+    print(
+        "% % % CLEAR SESSION TOKEN - KPrefHelper.remove(KPrefHelper.KTOKEN) % % %");
     await KPrefHelper.remove(KPrefHelper.KTOKEN);
   }
 
@@ -94,8 +98,10 @@ abstract class KSessionData {
   static Future setup(KSessionInitData data) async {
     try {
       getCountryCode();
-    } catch (ex) {}
+    } catch (_) {}
+
     if (data.initSessionToken != null) {
+      _sessionGenerationID ??= KUtil.buildRandomString(8);
       KSessionData.setSessionToken(data.initSessionToken);
       KSessionData.setUserSession(data.initUserSession);
       KPrefHelper.put(KPrefHelper.KTOKEN, data.initSessionToken);
@@ -128,10 +134,16 @@ abstract class KSessionData {
     // MOTDHelper.reset();
     // HomePortal.homeViewCount = 0; // determine if motd appears
 
+    // if (_sessionGeneration != null) {
+    _sessionGenerationID = null;
+    // }
+
     // common
     KSessionData.setUserSession(null);
     return KSessionData.clearSessionToken();
   }
+
+  static String? getSessionGeneration() => _sessionGenerationID;
 
   // // // // // user
   static KUserSession? getUserSession() => kUserSession;
