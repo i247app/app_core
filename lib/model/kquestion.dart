@@ -15,6 +15,7 @@ class KQuestion {
   static const String TEXT = "text";
   static const String MEDIA_URL = "mediaURL"; // kquestion image or video
   static const String MEDIA_TYPE = "mediaType"; // image | video
+  static const String TAGS = "tags";
   static const String ANSWERS = "answers";
   static const String REVIEWS = "reviews";
   static const String IS_GEN_ANSWER = "isGenAnswer";
@@ -40,6 +41,9 @@ class KQuestion {
 
   @JsonKey(name: MEDIA_TYPE)
   String? mediaType; // image | video
+
+  @JsonKey(name: TAGS)
+  List<String>? tags;
 
   @JsonKey(name: ANSWERS)
   List<KAnswer>? answers;
