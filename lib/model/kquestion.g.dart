@@ -13,6 +13,7 @@ KQuestion _$KQuestionFromJson(Map<String, dynamic> json) => KQuestion()
   ..text = json['text'] as String?
   ..mediaURL = json['mediaURL'] as String?
   ..mediaType = json['mediaType'] as String?
+  ..tags = (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList()
   ..answers = (json['answers'] as List<dynamic>?)
       ?.map((e) => KAnswer.fromJson(e as Map<String, dynamic>))
       .toList()
@@ -33,6 +34,7 @@ Map<String, dynamic> _$KQuestionToJson(KQuestion instance) {
   writeNotNull('text', instance.text);
   writeNotNull('mediaURL', instance.mediaURL);
   writeNotNull('mediaType', instance.mediaType);
+  writeNotNull('tags', instance.tags);
   writeNotNull('answers', instance.answers?.map((e) => e.toJson()).toList());
   writeNotNull('isGenAnswer', zzz_bool2Str(instance.isGenAnswer));
   return val;
