@@ -51,9 +51,9 @@ abstract class KSessionData {
   }
 
   static Future<void> clearSessionToken() async {
+    print("KSessionDate.clearSessionToken ${KSessionData.kSessionToken}");
     KSessionData.kSessionToken = null;
-    print(
-        "% % % CLEAR SESSION TOKEN - KPrefHelper.remove(KPrefHelper.KTOKEN) % % %");
+    print("KSessionDate.clearSessionToken remove ktoken from storage");
     await KPrefHelper.remove(KPrefHelper.KTOKEN);
   }
 
