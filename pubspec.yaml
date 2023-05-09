@@ -53,7 +53,7 @@ dependencies:
   firebase_core: ^1.24.0
   firebase_messaging: ^13.0.4 # ^11.4.4
 
-  gallery_saver: 2.1.0 # +2.1.1 broken so far
+  gallery_saver: 2.3.2 #2.1.0 # +2.1.1 broken so far
   path_provider: ^2.0.1
   provider: ^6.0.2
 
