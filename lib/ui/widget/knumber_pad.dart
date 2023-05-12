@@ -412,7 +412,7 @@ class _BackspaceKey extends StatelessWidget {
     if (_NumpadStyleManager.of(context).style == KNumberPadStyle.ORIGINAL) {
       theIcon = Icon(
         Icons.backspace_outlined,
-        color: Theme.of(context).accentColor,
+        color: Theme.of(context).colorScheme.primary,
       );
     } else {
       theIcon = Icon(
@@ -444,7 +444,7 @@ class _QwertyKey extends StatelessWidget {
       flex: flex,
       child: _BaseKey(
         onClick: this.onQwerty,
-        child: Icon(Icons.check, color: Theme.of(context).accentColor),
+        child: Icon(Icons.check, color: Theme.of(context).colorScheme.primary),
       ),
     );
   }
