@@ -28,7 +28,7 @@ class KQRViewer extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 16),
-              QrImage(data: jsonEncode(qrData), backgroundColor: Colors.white),
+              QrImageView(data: jsonEncode(qrData), backgroundColor: Colors.white),
               SizedBox(height: 16),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
