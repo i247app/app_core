@@ -41,7 +41,6 @@ class _WalletTransferState extends State<WalletTransfer> {
 
   void Function()? get actionButtonHandler {
     final amount = double.tryParse(amountCtrl.text) ?? 0;
-    selectedUser = widget.user;
 
     if (amount > (double.tryParse(balanceAmount ?? "0") ?? 0) || amount == 0) {
       return null;
@@ -54,6 +53,7 @@ class _WalletTransferState extends State<WalletTransfer> {
   void initState() {
     super.initState();
 
+    selectedUser = widget.user;
     loadBalance();
 
     amountCtrl.text = "0";
