@@ -952,7 +952,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
       children: [
         if (!this.isShowIntro) content,
         if (this.isShowIntro) ...[
-          Container(color: Theme.of(context).backgroundColor.withOpacity(1)),
+          // Container(color: Theme.of(context).backgroundColor.withOpacity(1)),
           KEggHatchNewShortIntro(
               onFinish: () => setState(() => this.isShowIntro = false)),
           GestureDetector(

@@ -357,9 +357,11 @@ class _KHeroHomeState extends State<KHeroHome> {
         if (this.isShowIntro) ...[
           Container(color: Theme.of(context).backgroundColor.withOpacity(1)),
           KEggHatchNewShortIntro(
-              onFinish: () => setState(() => this.isShowIntro = false)),
+            onFinish: () => setState(() => this.isShowIntro = false),
+          ),
           GestureDetector(
-              onTap: () => setState(() => this.isShowIntro = false)),
+            onTap: () => setState(() => this.isShowIntro = false),
+          ),
         ],
         if (this.isHatchingHero) IgnorePointer(),
       ],

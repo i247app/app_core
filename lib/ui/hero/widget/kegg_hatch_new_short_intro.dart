@@ -20,7 +20,7 @@ class KEggHatchNewShortIntro extends StatefulWidget {
 }
 
 class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   Completer<AudioPlayer> cAudioPlayer = Completer();
   Completer<AudioPlayer> cBackgroundAudioPlayer = Completer();
   String? correctAudioFileUri;
@@ -52,6 +52,8 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
 
     loadAudioAsset();
 
@@ -111,15 +113,15 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
             Future.delayed(
                 Duration(milliseconds: introShakeTime - 1 > 0 ? 1000 : 500),
                 () {
-                  if (mounted) {
-                    if (introShakeTime - 1 > 0) {
-                      this._shakeTheTopAnimationController.forward();
-                    } else {
-                      this._bouncingAnimationController.forward();
-                    }
-                    if (introShakeTime > 0)
-                      this.setState(() => introShakeTime = introShakeTime - 1);
-                  }
+              if (mounted) {
+                if (introShakeTime - 1 > 0) {
+                  this._shakeTheTopAnimationController.forward();
+                } else {
+                  this._bouncingAnimationController.forward();
+                }
+                if (introShakeTime > 0)
+                  this.setState(() => introShakeTime = introShakeTime - 1);
+              }
             });
           }
         }
@@ -192,6 +194,7 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     cAudioPlayer.future.then((ap) {
       ap.stop();
       ap.dispose();
@@ -205,6 +208,34 @@ class _KEggHatchNewShortIntroState extends State<KEggHatchNewShortIntro>
     _barrelHeroMovingAnimationController.dispose();
     _barrelHeroSpinAnimationController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      cAudioPlayer.future.then((ap) {
+        if (ap.state == PlayerState.PLAYING) {
+          ap.pause();
+        }
+      });
+      cBackgroundAudioPlayer.future.then((ap) {
+        if (ap.state == PlayerState.PLAYING) {
+          ap.pause();
+        }
+      });
+    } else if (state == AppLifecycleState.resumed) {
+      cAudioPlayer.future.then((ap) {
+        if (ap.state == PlayerState.PAUSED) {
+          ap.resume();
+        }
+      });
+      cBackgroundAudioPlayer.future.then((ap) {
+        if (ap.state == PlayerState.PAUSED) {
+          ap.resume();
+        }
+      });
+    }
   }
 
   void loadAudioAsset() async {
