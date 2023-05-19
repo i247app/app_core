@@ -7,6 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 abstract class KPrefHelper {
   static const String TAG = 'KPrefHelper';
 
+  static const String BUILD_NUMBER = 'build_number';
   static const String KTOKEN = 'session_token';
   static const String PUSH_TOKEN = 'push_token';
   static const String LAST_LOGIN = 'last_login';
@@ -54,6 +55,10 @@ abstract class KPrefHelper {
     } catch (_) {}
     return result as T?;
   }
+
+  static Future<void> removeAll() async {
+    await _instance.removeAll();
+  }
 }
 
 /// Helper class to intelligently switch between plugins
@@ -73,5 +78,9 @@ class _PrefAdapter {
 
   Future<void> remove(String key) async {
     await _plugin.delete(key: "$SS_PREFIX/$key");
+  }
+
+  Future<void> removeAll() async {
+    await _plugin.deleteAll();
   }
 }
