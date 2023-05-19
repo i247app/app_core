@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:barcode_scan2/barcode_scan2.dart';
+import 'package:barcode_scan2/platform_wrapper.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 enum KScanStatus {
@@ -45,15 +46,18 @@ abstract class KScanHelper {
 
   /// PRIVATE
   static Future<KScanResult> _scan() async {
-    final data = await FlutterBarcodeScanner.scanBarcode(
-      "#ff6666",
-      "Cancel",
-      false,
-      ScanMode.QR,
+    final data = await BarcodeScanner.scan(
+      options: ScanOptions(
+        strings: {
+          'cancel': 'Cancel',
+        },
+        restrictFormat: [BarcodeFormat.qr],
+        autoEnableFlash: false,
+      ),
     );
     return KScanResult(
-      data: data == "-1" ? null : data,
-      status: data == "-1" ? KScanStatus.unknown : KScanStatus.ok,
+      data: data.rawContent == "-1" ? null : data.rawContent,
+      status: data.rawContent == "-1" ? KScanStatus.unknown : KScanStatus.ok,
     );
   }
 }

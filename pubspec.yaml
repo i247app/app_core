@@ -46,7 +46,7 @@ dependencies:
   image_picker: ^0.8.5
 
   # QR code scan
-  flutter_barcode_scanner: ^2.0.0
+  barcode_scan2: ^4.2.4
 
   # Firebase
   firebase_core_platform_interface: 4.5.1
