@@ -19,8 +19,8 @@ KGigNav _$KGigNavFromJson(Map<String, dynamic> json) => KGigNav()
   ..inPerson = zzz_gigNavTryAtoi(json['inPerson'])
   ..tutoring = zzz_gigNavTryAtoi(json['tutoring'])
   ..exam = zzz_gigNavTryAtoi(json['exam'])
-  ..english = zzz_gigNavTryAtoi(json['english'])
-  ..viet = zzz_gigNavTryAtoi(json['viet']);
+  ..english = zzz_gigNavTryAtoi(json['chitEN'])
+  ..viet = zzz_gigNavTryAtoi(json['chitVN']);
 
 Map<String, dynamic> _$KGigNavToJson(KGigNav instance) {
   final val = <String, dynamic>{};
@@ -43,7 +43,7 @@ Map<String, dynamic> _$KGigNavToJson(KGigNav instance) {
   writeNotNull('inPerson', zzz_itoa(instance.inPerson));
   writeNotNull('tutoring', zzz_itoa(instance.tutoring));
   writeNotNull('exam', zzz_itoa(instance.exam));
-  writeNotNull('english', zzz_itoa(instance.english));
-  writeNotNull('viet', zzz_itoa(instance.viet));
+  writeNotNull('chitEN', zzz_itoa(instance.english));
+  writeNotNull('chitVN', zzz_itoa(instance.viet));
   return val;
 }

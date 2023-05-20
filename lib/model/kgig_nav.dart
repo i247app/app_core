@@ -29,8 +29,8 @@ class KGigNav {
 
   static const String TUTORING = "tutoring";
   static const String EXAM = "exam";
-  static const String ENGLISH = "english";
-  static const String VIET = "viet";
+  static const String ENGLISH = "chitEN";
+  static const String VIET = "chitVN";
 
   static const int OFF = -1;
   static const int ON = 0;
