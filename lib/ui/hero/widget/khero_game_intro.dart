@@ -21,7 +21,7 @@ class KGameIntro extends StatefulWidget {
   _KGameIntroState createState() => _KGameIntroState();
 }
 
-class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
+class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin, WidgetsBindingObserver {
   Completer<AudioPlayer> cAudioPlayer = Completer();
   Completer<AudioPlayer> cBackgroundAudioPlayer = Completer();
   String? shootingAudioFileUri;
@@ -59,6 +59,8 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
 
     loadAudioAsset();
 
@@ -236,8 +238,37 @@ class _KGameIntroState extends State<KGameIntro> with TickerProviderStateMixin {
       ap.stop();
       ap.dispose();
     });
+    WidgetsBinding.instance.removeObserver(this);
     // TODO: implement dispose
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      cAudioPlayer.future.then((ap) {
+        if (ap.state == PlayerState.PLAYING) {
+          ap.pause();
+        }
+      });
+      cBackgroundAudioPlayer.future.then((ap) {
+        if (ap.state == PlayerState.PLAYING) {
+          ap.pause();
+        }
+      });
+    } else if (state == AppLifecycleState.resumed) {
+      cAudioPlayer.future.then((ap) {
+        if (ap.state == PlayerState.PAUSED) {
+          ap.resume();
+        }
+      });
+      cBackgroundAudioPlayer.future.then((ap) {
+        if (ap.state == PlayerState.PAUSED) {
+          ap.resume();
+        }
+      });
+    }
   }
 
   void loadAudioAsset() async {

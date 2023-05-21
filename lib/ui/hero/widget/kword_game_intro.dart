@@ -21,7 +21,7 @@ class KWordGameIntro extends StatefulWidget {
 }
 
 class _KWordGameIntroState extends State<KWordGameIntro>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   Completer<AudioPlayer> cAudioPlayer = Completer();
   Completer<AudioPlayer> cBackgroundAudioPlayer = Completer();
   String? correctAudioFileUri;
@@ -57,6 +57,8 @@ class _KWordGameIntroState extends State<KWordGameIntro>
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
 
     List<String> heroUrls = [
       "https://pix1.s3.us-west-1.amazonaws.com/hero/tofu_chan_k1.png",
@@ -239,10 +241,10 @@ class _KWordGameIntroState extends State<KWordGameIntro>
       ap.stop();
       ap.dispose();
     });
-    // cBackgroundAudioPlayer.future.then((ap) {
-    //   ap.stop();
-    //   ap.dispose();
-    // });
+    cBackgroundAudioPlayer.future.then((ap) {
+      ap.stop();
+      ap.dispose();
+    });
     _shakeTheTopAnimationController.dispose();
     _bouncingAnimationController.dispose();
     _barrelMovingAnimationController.dispose();
@@ -250,7 +252,36 @@ class _KWordGameIntroState extends State<KWordGameIntro>
     _barrelHeroSpinAnimationController.dispose();
     _barrelSpinAnimationController.dispose();
     _dropBounceAnimationController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      cAudioPlayer.future.then((ap) {
+        if (ap.state == PlayerState.PLAYING) {
+          ap.pause();
+        }
+      });
+      cBackgroundAudioPlayer.future.then((ap) {
+        if (ap.state == PlayerState.PLAYING) {
+          ap.pause();
+        }
+      });
+    } else if (state == AppLifecycleState.resumed) {
+      cAudioPlayer.future.then((ap) {
+        if (ap.state == PlayerState.PAUSED) {
+          ap.resume();
+        }
+      });
+      cBackgroundAudioPlayer.future.then((ap) {
+        if (ap.state == PlayerState.PAUSED) {
+          ap.resume();
+        }
+      });
+    }
   }
 
   void loadAudioAsset() async {

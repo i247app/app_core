@@ -21,7 +21,7 @@ class KEggHeroIntro extends StatefulWidget {
 }
 
 class _KEggHeroIntroState extends State<KEggHeroIntro>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   Completer<AudioPlayer> cAudioPlayer = Completer();
   Completer<AudioPlayer> cBackgroundAudioPlayer = Completer();
   String? correctAudioFileUri;
@@ -61,6 +61,8 @@ class _KEggHeroIntroState extends State<KEggHeroIntro>
   @override
   void initState() {
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
 
     List<String> heroUrls = [
       "https://pix1.s3.us-west-1.amazonaws.com/hero/tofu_chan_k1.png",
@@ -235,7 +237,37 @@ class _KEggHeroIntroState extends State<KEggHeroIntro>
     _barrelMovingAnimationController.dispose();
     _barrelHeroMovingAnimationController.dispose();
     _barrelHeroSpinAnimationController.dispose();
+
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      cAudioPlayer.future.then((ap) {
+        if (ap.state == PlayerState.PLAYING) {
+          ap.pause();
+        }
+      });
+      cBackgroundAudioPlayer.future.then((ap) {
+        if (ap.state == PlayerState.PLAYING) {
+          ap.pause();
+        }
+      });
+    } else if (state == AppLifecycleState.resumed) {
+      cAudioPlayer.future.then((ap) {
+        if (ap.state == PlayerState.PAUSED) {
+          ap.resume();
+        }
+      });
+      cBackgroundAudioPlayer.future.then((ap) {
+        if (ap.state == PlayerState.PAUSED) {
+          ap.resume();
+        }
+      });
+    }
   }
 
   void loadAudioAsset() async {
