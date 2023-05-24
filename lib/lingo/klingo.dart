@@ -38,7 +38,7 @@ class KLingo {
         final Map<String, dynamic> dictMap = json.decode(dictRawString);
         _wordMaps[dict.language] = dictMap.cast<String, String>();
 
-        print("KLingo - loading ${dict.language}");
+        print("KLingo.load ${package ?? "app"} ${dict.language} dict");
       }
       // final enJsonString = await rootBundle.loadString(enLangFile);
       // final viJsonString = await rootBundle.loadString(viLangFile);
@@ -55,9 +55,9 @@ class KLingo {
       // _localizationMap = masterJsonMap
       //     .map((k, v) => MapEntry<String, String>(k, v.toString()));
 
-      print("KLingo - Loaded!");
+      // print("KLingo.load ${package ?? "app"} dict loaded!");
     } catch (e) {
-      print("KLingo LOAD EXCEPTION");
+      print("KLingo.load LOAD EXCEPTION");
       print(e.toString());
     }
   }
