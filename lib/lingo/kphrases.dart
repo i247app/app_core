@@ -25,6 +25,7 @@ abstract class KPhrases {
     );
     await _klingo.load(package: 'app_core');
     _isInit = true;
+    print("KPhrases.init load app_core lingo");
   }
 
   /// Localized strings
