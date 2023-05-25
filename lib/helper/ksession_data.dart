@@ -155,7 +155,7 @@ abstract class KSessionData {
   static bool get isSplashMode =>
       (userSession?.appCoreAppNav?.splashMode ?? KAppNav.ON) == KAppNav.ON;
 
-  static bool get isGuest => userSession == null;
+  static bool get isGuest => false; // userSession == null;
 
   // // // // // app
   static List<BusinessMember>? get businessMembers =>
