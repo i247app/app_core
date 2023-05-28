@@ -66,13 +66,13 @@ class KLingo {
     String? dictOfResult;
     String? v;
     try {
-      final defaultWordMap = _wordMaps[_currentLang]!;
-      final fallbackWordMap = _wordMaps[fallbackLanguage]!;
-      if (defaultWordMap.containsKey(name)) {
+      final defaultWordMap = _wordMaps[_currentLang];
+      final fallbackWordMap = _wordMaps[fallbackLanguage];
+      if (defaultWordMap != null && defaultWordMap.containsKey(name)) {
         // First check in default dictionary
         v = defaultWordMap[name];
         dictOfResult = _currentLang;
-      } else if (fallbackWordMap.containsKey(name)) {
+      } else if (fallbackWordMap != null && fallbackWordMap.containsKey(name)) {
         // Then check in fallback dictionary
         v = fallbackWordMap[name];
         dictOfResult = fallbackLanguage;
@@ -88,7 +88,7 @@ class KLingo {
         }
       }
     } catch (e) {
-      print(e.toString());
+      print("lingo error: ${e.toString()}");
       v = null;
     }
 
