@@ -94,8 +94,9 @@ abstract class TLSHelper {
     } finally {
       // Try to close the socket no matter what
       try {
-        if (socketResource != null)
+        if (socketResource != null) {
           KSocketManager.releaseSocket(socketResource);
+        }
       } catch (e) {}
     }
     if (isDebug) {
@@ -187,8 +188,9 @@ abstract class TLSHelper {
     if (_cachedDefaultReqData.isEmpty) {
       for (MapEntry<String, Future<Object?> Function()> entry
           in staticDataBuilders.entries) {
-        if (!_cachedDefaultReqData.containsKey(entry.key))
+        if (!_cachedDefaultReqData.containsKey(entry.key)) {
           _cachedDefaultReqData[entry.key] = await entry.value();
+        }
       }
     }
 
@@ -209,10 +211,10 @@ abstract class TLSHelper {
     return {...data, "metadata": data};
   }
 
-  static String compactLog(String message) {
+  static String _compactLog(String message) {
     final data = jsonDecode(message);
-    String? kstatus = data["kstatus"];
-    String? kmessage = data["kmessage"];
+    final kstatus = data["kstatus"];
+    final kmessage = data["kmessage"];
 
     return "#COMPACT " +
         ({
@@ -222,10 +224,15 @@ abstract class TLSHelper {
             .toString();
   }
 
-  static void _log(int reqID, String tag, String apiName, String message,
-      {bool ignoreBlacklist = false}) {
+  static void _log(
+    int reqID,
+    String tag,
+    String apiName,
+    String message, {
+    bool ignoreBlacklist = false,
+  }) {
     final displayMessage = logBlacklist.contains(apiName) && !ignoreBlacklist
-        ? compactLog(message)
+        ? _compactLog(message)
         : KUtil.prettyJSON(message);
     debugPrint('[$reqID] $tag $apiName - $displayMessage');
   }
@@ -250,12 +257,14 @@ abstract class TLSHelper {
       responseBytes.addAll(bytes);
 
       // Read in the header
-      if (responseHeader == null)
+      if (responseHeader == null) {
         responseHeader = KPacketHeader.fromBytes(bytes.sublist(0, 16));
+      }
 
       // Only complete the completer once ALL bytes are read
-      if (responseHeader?.bodyAndHeaderLength == responseBytes.length)
+      if (responseHeader?.bodyAndHeaderLength == responseBytes.length) {
         respCompleter.complete();
+      }
     });
 
     // Write my message on the socket

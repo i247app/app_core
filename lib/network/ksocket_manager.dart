@@ -30,7 +30,9 @@ abstract class KSocketManager {
     hostInfo ??= KHostConfig.hostInfo;
 
     // Create map entry if needed
-    if (!_sockets.containsKey(hostInfo)) _sockets[hostInfo] = [];
+    if (!_sockets.containsKey(hostInfo)) {
+      _sockets[hostInfo] = [];
+    }
 
     // Check if sockets are empty
     if (_sockets[hostInfo] != null && _sockets[hostInfo]!.isEmpty) {
