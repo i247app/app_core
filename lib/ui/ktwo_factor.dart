@@ -64,7 +64,9 @@ class _KTwoFactorState extends State<KTwoFactor> {
     super.initState();
 
     // Auto send code if requested
-    if (shouldAutoSendPin) Future.delayed(Duration(seconds: 1), sendCode);
+    if (shouldAutoSendPin) {
+      Future.delayed(Duration(seconds: 1), sendCode);
+    }
   }
 
   @override
@@ -84,7 +86,9 @@ class _KTwoFactorState extends State<KTwoFactor> {
       final isAllowed = await Permission.notification.isGranted;
       if (isAllowed) {
         final status = await Permission.notification.request();
-        if (status != PermissionStatus.granted) print("Permissions denied");
+        if (status != PermissionStatus.granted) {
+          print("Permissions denied");
+        }
       }
 
       final response = await KServerHandler.send2FACode(
@@ -103,13 +107,17 @@ class _KTwoFactorState extends State<KTwoFactor> {
         timer = Timer.periodic(
           Duration(seconds: 1),
           (timer) {
-            if (lastSendCodeDate == null) return;
+            if (lastSendCodeDate == null) {
+              return;
+            }
 
             setState(() {});
 
             final now = DateTime.now();
             if (lastSendCodeDate!.isBefore(now.subtract(resendCodeCooldown))) {
-              if (mounted) setState(() => sendCodeEnabled = true);
+              if (mounted) {
+                setState(() => sendCodeEnabled = true);
+              }
               timer.cancel();
             }
           },
