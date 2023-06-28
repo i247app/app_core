@@ -104,6 +104,8 @@ dependencies:
 
   syncfusion_flutter_sliders: ^20.2.50
 
+  slider_captcha: ^1.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
