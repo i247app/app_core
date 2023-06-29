@@ -40,6 +40,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'games/kgame_count.dart';
 import 'games/kgame_multi.dart';
 
 class KGameConsole extends StatefulWidget {
@@ -827,10 +828,10 @@ class _KGameConsoleState extends State<KGameConsole>
       case KGameSpeechTap.GAME_ID:
       case KGameSpeechMovingTap.GAME_ID:
       case KGameTap.GAME_ID:
+      case KGameCount.GAME_ID:
       case KGameMovingTap.GAME_ID:
       case KGameLetterTap.GAME_ID:
       case KGameJumpMultiRow.GAME_ID:
-
       default:
         return "packages/app_core/assets/audio/music_arcade_loop.mp3";
     }
@@ -858,6 +859,12 @@ class _KGameConsoleState extends State<KGameConsole>
         );
       case KGameJumpOver.GAME_ID:
         return KGameJumpOver(
+          controller: gameController,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
+      case KGameCount.GAME_ID:
+        return KGameCount(
           controller: gameController,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
@@ -954,6 +961,7 @@ class _KGameConsoleState extends State<KGameConsole>
       case KGameMovingTap.GAME_ID:
       case KGameLetterTap.GAME_ID:
       case KGameTap.GAME_ID:
+      case KGameCount.GAME_ID:
         return true;
       default:
         return true;
