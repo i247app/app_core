@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as Math;
 
@@ -78,17 +79,7 @@ class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
 
   int get eggReceive => gameData.eggReceive ?? 0;
 
-  List<String> correctOrderAnswers = [
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9"
-  ];
+  List<String> correctOrderAnswers = [];
   List<String> answers = [];
   List<String> hiddenAnswers = [];
 
@@ -158,7 +149,7 @@ class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
     ).animate(new CurvedAnimation(
         parent: _moveUpAnimationController, curve: Curves.bounceOut));
 
-    randomBoxPosition();
+    getAnswers();
   }
 
   @override
@@ -174,12 +165,46 @@ class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  void getAnswers() {
+    Math.Random rand = new Math.Random();
+    int totalNumber = 0;
+    switch (widget.controller.value.currentLevel) {
+      case 0:
+        totalNumber = 3;
+        break;
+      case 1:
+        totalNumber = 6;
+        break;
+      case 2:
+        totalNumber = 9;
+        break;
+    }
+    int diff = ((totalNumber - 1)/2).ceil();
+    int seedNumber = rand.nextInt(97 - diff) + diff + 1;
+    print("widget.controller.value.currentLevel ${seedNumber}");
+
+    int startNumber = seedNumber - diff;
+    int endNumber = startNumber + totalNumber - 1;
+
+    this.setState(() {
+      for (int i = startNumber; i <= endNumber; i++) {
+        correctOrderAnswers.add(i.toString());
+      }
+    });
+
+    print("widget.controller.value.currentLevel ${startNumber} ${endNumber}");
+    this.randomBoxPosition();
+  }
+
   void randomBoxPosition() {
     Math.Random rand = new Math.Random();
     this.setState(() {
       barrierValues =
           correctOrderAnswers.map((e) => KAnswer()..text = e).toList();
       barrierValues.shuffle();
+      while(jsonEncode(barrierValues.map((e) => e.text).toList()) == jsonEncode(correctOrderAnswers) || jsonEncode(barrierValues.map((e) => e.text).toList().reversed) == jsonEncode(correctOrderAnswers)) {
+        barrierValues.shuffle();
+      }
 
       for (int i = 0; i < barrierValues.length; i++) {
         double posX = rand.nextDouble() * 1.6 - 0.8;
@@ -453,10 +478,7 @@ class _Barrier extends StatelessWidget {
                   offset: Offset(0, -60 * (starY ?? 0)),
                   child: AnimatedOpacity(
                     duration: Duration(milliseconds: 250),
-                    opacity:
-                        (isShowStar ?? false)
-                            ? 1
-                            : 0,
+                    opacity: (isShowStar ?? false) ? 1 : 0,
                     child: Icon(
                       Icons.star,
                       color: Colors.amberAccent,

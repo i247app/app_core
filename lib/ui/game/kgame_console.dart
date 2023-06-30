@@ -568,8 +568,8 @@ class _KGameConsoleState extends State<KGameConsole>
     try {
       if (level != null) {
         if (level < levelCount &&
-            (rightAnswerCount / questions.length) >=
-                levelHardness[currentLevel]) {
+            ( (rightAnswerCount / questions.length) >=
+                levelHardness[currentLevel] || gameData.gameID == KGameCount.GAME_ID)) {
           gameController.value.currentLevel = level;
           await gameController.loadGame();
 

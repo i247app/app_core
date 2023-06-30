@@ -93,7 +93,7 @@ class KGameLevelMapItem extends StatelessWidget {
               ),
             ),
           ),
-          if (isReached && rate != null)
+          if (isReached && rate != null && rate! >= 0)
             Align(
               alignment: Alignment.topCenter,
               child: FittedBox(
