@@ -2,7 +2,7 @@ name: app_core
 
 description: App core package
 
-version: 1.1.232
+version: 1.1.234
 
 homepage: none
 
@@ -103,6 +103,8 @@ dependencies:
   flutter_easyloading: ^3.0.5
 
   syncfusion_flutter_sliders: ^20.2.50
+
+  slider_captcha: ^1.0.0
 
 dev_dependencies:
   flutter_test:
