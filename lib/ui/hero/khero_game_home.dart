@@ -24,6 +24,7 @@ import 'package:app_core/ui/hero/widget/kegg_hatch_new_short_intro.dart';
 import 'package:flutter/material.dart';
 
 import '../game/games/kgame_count.dart';
+import '../game/games/kgame_grid_count.dart';
 import '../game/widget/kgame_setting_dialog.dart';
 
 class KHeroGameHome extends StatefulWidget {
@@ -918,7 +919,6 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
               ],
             ),
           ),
-
           SizedBox(
             height: 32,
           ),
@@ -935,21 +935,21 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                     ElevatedButton(
                       onPressed: () =>
                           Navigator.of(context).push(MaterialPageRoute(
-                        builder: (ctx) => KGameConsole(
-                          KGameController(
-                            gameID: KGameCount.GAME_ID,
-                            gameName: KGameCount.GAME_NAME,
-                            currentLevel: 0,
-                            isCountTime: true,
-                          ),
-                        ),
-                      )),
+                            builder: (ctx) => KGameConsole(
+                              KGameController(
+                                gameID: KGameCount.GAME_ID,
+                                gameName: KGameCount.GAME_NAME,
+                                currentLevel: 0,
+                                isCountTime: true,
+                              ),
+                            ),
+                          )),
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.transparent,
                         backgroundColor: Colors.transparent,
                         elevation: 0,
                         padding:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                        EdgeInsets.symmetric(vertical: 10, horizontal: 6),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4),
                           side: BorderSide(color: Colors.transparent),
@@ -968,6 +968,53 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                     SizedBox(width: 5),
                     FittedBox(
                       child: Text("Order"),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  width: 64,
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () =>
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => KGameConsole(
+                              KGameController(
+                                gameID: KGameGridCount.GAME_ID,
+                                gameName: KGameGridCount.GAME_NAME,
+                                currentLevel: 0,
+                                isCountTime: true,
+                              ),
+                            ),
+                          )),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.transparent,
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                        padding:
+                        EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                          side: BorderSide(color: Colors.transparent),
+                        ),
+                      ),
+                      child: SizedBox(
+                        width: ICON_WIDTH,
+                        height: ICON_HEIGHT,
+                        child: Image.asset(
+                          KAssets.IMG_GAME_SHOOTING,
+                          fit: BoxFit.contain,
+                          package: 'app_core',
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 5),
+                    FittedBox(
+                      child: Text("Order Grid"),
                     ),
                   ],
                 ),

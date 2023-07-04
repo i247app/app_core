@@ -41,6 +41,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'games/kgame_count.dart';
+import 'games/kgame_grid_count.dart';
 import 'games/kgame_multi.dart';
 
 class KGameConsole extends StatefulWidget {
@@ -568,8 +569,10 @@ class _KGameConsoleState extends State<KGameConsole>
     try {
       if (level != null) {
         if (level < levelCount &&
-            ( (rightAnswerCount / questions.length) >=
-                levelHardness[currentLevel] || gameData.gameID == KGameCount.GAME_ID)) {
+            ((rightAnswerCount / questions.length) >=
+                    levelHardness[currentLevel] ||
+                [KGameCount.GAME_ID, KGameGridCount.GAME_ID]
+                    .contains(gameData.gameID))) {
           gameController.value.currentLevel = level;
           await gameController.loadGame();
 
@@ -829,6 +832,7 @@ class _KGameConsoleState extends State<KGameConsole>
       case KGameSpeechMovingTap.GAME_ID:
       case KGameTap.GAME_ID:
       case KGameCount.GAME_ID:
+      case KGameGridCount.GAME_ID:
       case KGameMovingTap.GAME_ID:
       case KGameLetterTap.GAME_ID:
       case KGameJumpMultiRow.GAME_ID:
@@ -859,6 +863,12 @@ class _KGameConsoleState extends State<KGameConsole>
         );
       case KGameJumpOver.GAME_ID:
         return KGameJumpOver(
+          controller: gameController,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
+      case KGameGridCount.GAME_ID:
+        return KGameGridCount(
           controller: gameController,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
@@ -962,6 +972,7 @@ class _KGameConsoleState extends State<KGameConsole>
       case KGameLetterTap.GAME_ID:
       case KGameTap.GAME_ID:
       case KGameCount.GAME_ID:
+      case KGameGridCount.GAME_ID:
         return true;
       default:
         return true;

@@ -14,15 +14,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
-class KGameCount extends StatefulWidget {
-  static const GAME_ID = "511";
-  static const GAME_NAME = "count";
+class KGameGridCount extends StatefulWidget {
+  static const GAME_ID = "517";
+  static const GAME_NAME = "grid_count";
 
   final KGameController controller;
   final KHero? hero;
   final Function? onFinishLevel;
 
-  const KGameCount({
+  const KGameGridCount({
     Key? key,
     this.hero,
     this.onFinishLevel,
@@ -30,31 +30,35 @@ class KGameCount extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _KGameCountState createState() => _KGameCountState();
+  _KGameGridCountState createState() => _KGameGridCountState();
 }
 
-class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
+class _KGameGridCountState extends State<KGameGridCount>
+    with TickerProviderStateMixin {
   AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
 
+  late Animation<Color?> _correctBlinkingAnimation, _incorrectBlinkingAnimation;
   late Animation<Offset> _bouncingAnimation;
   late Animation<double> _moveUpAnimation, _heroScaleAnimation;
 
   late AnimationController _heroScaleAnimationController,
       _bouncingAnimationController,
       _moveUpAnimationController,
-      _spinAnimationController;
+      _spinAnimationController,
+      _correctBlinkingAnimationController,
+      _incorrectBlinkingAnimationController;
 
   KGameData get gameData => widget.controller.value;
 
   bool isWrongAnswer = false;
   int? spinningHeroIndex;
   int? currentShowStarIndex;
+  int? correctAnswerIndex;
+  int? incorrectAnswerIndex;
   bool isAnswering = false;
   bool isPlaySound = false;
-  List<double> barrierX = [];
-  List<double> barrierY = [];
   List<KAnswer> barrierValues = [];
 
   bool get isStart => gameData.isStart ?? false;
@@ -88,6 +92,42 @@ class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
     super.initState();
 
     loadAudioAsset();
+
+    _correctBlinkingAnimationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 150))
+          ..addListener(() => setState(() {}));
+    _correctBlinkingAnimation =
+        ColorTween(begin: Colors.green, end: Colors.orange).animate(
+            CurvedAnimation(
+                parent: _correctBlinkingAnimationController,
+                curve: Curves.bounceInOut));
+    _correctBlinkingAnimationController.addStatusListener((status) {
+      if (mounted) {
+        if (status == AnimationStatus.completed) {
+          _correctBlinkingAnimationController.reverse();
+        } else if (status == AnimationStatus.dismissed) {
+          _correctBlinkingAnimationController.forward();
+        }
+      }
+    });
+
+    _incorrectBlinkingAnimationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 150))
+          ..addListener(() => setState(() {}));
+    _incorrectBlinkingAnimation =
+        ColorTween(begin: Colors.red, end: Colors.orange).animate(
+            CurvedAnimation(
+                parent: _incorrectBlinkingAnimationController,
+                curve: Curves.bounceInOut));
+    _incorrectBlinkingAnimationController.addStatusListener((status) {
+      if (mounted) {
+        if (status == AnimationStatus.completed) {
+          _incorrectBlinkingAnimationController.reverse();
+        } else if (status == AnimationStatus.dismissed) {
+          _incorrectBlinkingAnimationController.forward();
+        }
+      }
+    });
 
     _heroScaleAnimationController = AnimationController(
       duration: const Duration(milliseconds: 0),
@@ -158,6 +198,8 @@ class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
     _bouncingAnimationController.dispose();
     _moveUpAnimationController.dispose();
     _spinAnimationController.dispose();
+    _incorrectBlinkingAnimationController.dispose();
+    _correctBlinkingAnimationController.dispose();
 
     audioPlayer.dispose();
 
@@ -166,25 +208,8 @@ class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
   }
 
   void getAnswers() {
-    Math.Random rand = new Math.Random();
-    int totalNumber = 0;
-    switch (widget.controller.value.currentLevel) {
-      case 0:
-        totalNumber = 3;
-        break;
-      case 1:
-        totalNumber = 6;
-        break;
-      case 2:
-        totalNumber = 9;
-        break;
-    }
-    int diff = ((totalNumber - 1)/2).ceil();
-    int seedNumber = rand.nextInt(97 - diff) + diff + 1;
-    print("widget.controller.value.currentLevel ${seedNumber}");
-
-    int startNumber = seedNumber - diff;
-    int endNumber = startNumber + totalNumber - 1;
+    int startNumber = 1;
+    int endNumber = 9;
 
     this.setState(() {
       for (int i = startNumber; i <= endNumber; i++) {
@@ -192,7 +217,8 @@ class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
       }
     });
 
-    print("widget.controller.value.currentLevel ${startNumber} ${endNumber}");
+    print(
+        "widget.controller.value.currentLevel ${startNumber} ${endNumber} ${correctOrderAnswers}");
     this.randomBoxPosition();
   }
 
@@ -201,16 +227,14 @@ class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
     this.setState(() {
       barrierValues =
           correctOrderAnswers.map((e) => KAnswer()..text = e).toList();
-      barrierValues.shuffle();
-      while(jsonEncode(barrierValues.map((e) => e.text).toList()) == jsonEncode(correctOrderAnswers) || jsonEncode(barrierValues.map((e) => e.text).toList().reversed.toList()) == jsonEncode(correctOrderAnswers)) {
+      if ((widget.controller.value.currentLevel ?? 0) > 0) {
         barrierValues.shuffle();
-      }
-
-      for (int i = 0; i < barrierValues.length; i++) {
-        double posX = rand.nextDouble() * 1.6 - 0.8;
-        double posY = rand.nextDouble() * 1.6 - 0.8;
-        barrierX.add(posX);
-        barrierY.add(posY);
+        while (jsonEncode(barrierValues.map((e) => e.text).toList()) ==
+                jsonEncode(correctOrderAnswers) ||
+            jsonEncode(barrierValues.map((e) => e.text).toList().reversed.toList()) ==
+                jsonEncode(correctOrderAnswers)) {
+          barrierValues.shuffle();
+        }
       }
     });
   }
@@ -291,7 +315,11 @@ class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
       }
       this.setState(() {
         isWrongAnswer = false;
+        correctAnswerIndex = answerIndex;
       });
+
+      this._correctBlinkingAnimationController.reset();
+      this._correctBlinkingAnimationController.forward();
 
       this.setState(() {
         answers.add(answer.text!);
@@ -300,8 +328,11 @@ class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
       Future.delayed(Duration(milliseconds: 500), () {
         if (mounted) {
           this.setState(() {
+            spinningHeroIndex = null;
             currentShowStarIndex = null;
+            correctAnswerIndex = null;
           });
+          this._correctBlinkingAnimationController.reset();
           Future.delayed(Duration(milliseconds: 500), () {
             if (mounted) {
               this._moveUpAnimationController.reset();
@@ -328,6 +359,11 @@ class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
         }
       });
     } else {
+      this.setState(() {
+        incorrectAnswerIndex = answerIndex;
+      });
+      this._incorrectBlinkingAnimationController.reset();
+      this._incorrectBlinkingAnimationController.forward();
       widget.controller.value.result = false;
       widget.controller.value.point = point > 0 ? point - 1 : 0;
       if (!isWrongAnswer) {
@@ -341,6 +377,16 @@ class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
           this.setState(() {
             isAnswering = false;
           });
+
+          Future.delayed(Duration(milliseconds: 250), () {
+            if (mounted) {
+              this.setState(() {
+                spinningHeroIndex = null;
+                incorrectAnswerIndex = null;
+              });
+              this._incorrectBlinkingAnimationController.reset();
+            }
+          });
         }
       });
     }
@@ -352,7 +398,7 @@ class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
     final body = Stack(
       fit: StackFit.expand,
       children: [
-        if (barrierValues.length > 0 && barrierY.length == barrierX.length && barrierValues.length == barrierX.length)
+        if (barrierValues.length > 0)
           Align(
             alignment: Alignment.center,
             child: Container(
@@ -366,39 +412,26 @@ class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
                 mainAxisSpacing: 5,
                 children: List.generate(
                   barrierValues.length,
-                  (i) => Container(
-                    child: Stack(
-                      children: [
-                        AnimatedOpacity(
-                          opacity: hiddenAnswers
-                                      .indexOf(barrierValues[i].text ?? "") >
-                                  -1
-                              ? 0
-                              : 1,
-                          duration: Duration(milliseconds: 250),
-                          child: _Barrier(
-                            onTap: (KAnswer answer) =>
-                                handlePickAnswer(answer, i),
-                            barrierX: barrierX[i],
-                            barrierY: barrierY[i],
-                            answer: barrierValues[i],
-                            rotateAngle: spinningHeroIndex == i
-                                ? -this._spinAnimationController.value *
-                                    4 *
-                                    Math.pi
-                                : 0,
-                            bouncingAnimation: spinningHeroIndex == i
-                                ? _bouncingAnimation.value
-                                : Offset(0, 0),
-                            scaleAnimation: spinningHeroIndex == i
-                                ? _heroScaleAnimation
-                                : null,
-                            starY: _moveUpAnimation.value,
-                            isShowStar: currentShowStarIndex == i,
-                          ),
-                        ),
-                      ],
-                    ),
+                  (i) => _Barrier(
+                    onTap: (KAnswer answer) => handlePickAnswer(answer, i),
+                    answer: barrierValues[i],
+                    rotateAngle: spinningHeroIndex == i
+                        ? -this._spinAnimationController.value * 4 * Math.pi
+                        : 0,
+                    bouncingAnimation: spinningHeroIndex == i
+                        ? _bouncingAnimation.value
+                        : Offset(0, 0),
+                    scaleAnimation:
+                        spinningHeroIndex == i ? _heroScaleAnimation : null,
+                    colorAnimation: correctAnswerIndex == i
+                        ? _correctBlinkingAnimation.value
+                        : (incorrectAnswerIndex == i
+                            ? _incorrectBlinkingAnimation.value
+                            : null),
+                    starY: _moveUpAnimation.value,
+                    isShowStar: currentShowStarIndex == i,
+                    isCorrect:
+                        hiddenAnswers.indexOf(barrierValues[i].text ?? "") > -1,
                   ),
                 ),
               ),
@@ -412,92 +445,101 @@ class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
 }
 
 class _Barrier extends StatelessWidget {
-  final double barrierX;
-  final double barrierY;
   final double rotateAngle;
   final Animation<double>? scaleAnimation;
   final KAnswer answer;
   final Offset bouncingAnimation;
   final double? starY;
   final bool? isShowStar;
+  final bool? isCorrect;
+  final Color? colorAnimation;
   final Function(KAnswer value) onTap;
 
   _Barrier({
-    required this.barrierX,
-    required this.barrierY,
     required this.rotateAngle,
     this.scaleAnimation,
     required this.answer,
     required this.bouncingAnimation,
     this.starY,
     this.isShowStar,
+    this.isCorrect,
     required this.onTap,
+    this.colorAnimation,
   });
 
   @override
   Widget build(context) {
-    final box = InkWell(
-      onTap: () {
-        onTap(answer);
-      },
-      child: Container(
-        width: 80,
-        height: 80,
-        decoration: BoxDecoration(
-          color: Color(0xff2c1c44),
-          borderRadius: BorderRadius.circular(5),
-        ),
-        child: FittedBox(
-          child: Text(
-            "${this.answer.text}",
-            textScaleFactor: 1.0,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 60,
-            ),
+    final box = Container(
+      width: 80,
+      height: 80,
+      child: FittedBox(
+        child: Text(
+          "${this.answer.text}",
+          textScaleFactor: 1.0,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 60,
           ),
         ),
       ),
     );
 
-    return Align(
-      alignment: Alignment(barrierX, barrierY),
+    return InkWell(
+      onTap: (isCorrect ?? false)
+          ? null
+          : () {
+              onTap(answer);
+            },
       child: Container(
-        width: 80,
-        height: 80,
-        child: Stack(
-          fit: StackFit.expand,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: (isCorrect ?? false)
+              ? Colors.green
+              : (colorAnimation ?? Colors.orange),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Align(
-              alignment: Alignment.topCenter,
-              child: Transform.translate(
-                offset: Offset(0, 0),
-                child: Transform.translate(
-                  offset: Offset(0, -60 * (starY ?? 0)),
-                  child: AnimatedOpacity(
-                    duration: Duration(milliseconds: 250),
-                    opacity: (isShowStar ?? false) ? 1 : 0,
-                    child: Icon(
-                      Icons.star,
-                      color: Colors.amberAccent,
-                      size: 50,
+            Container(
+              width: 80,
+              height: 80,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Align(
+                    alignment: Alignment.topCenter,
+                    child: Transform.translate(
+                      offset: Offset(0, 0),
+                      child: Transform.translate(
+                        offset: Offset(0, -60 * (starY ?? 0)),
+                        child: AnimatedOpacity(
+                          duration: Duration(milliseconds: 250),
+                          opacity: (isShowStar ?? false) ? 1 : 0,
+                          child: Icon(
+                            Icons.star,
+                            color: Colors.amberAccent,
+                            size: 50,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            Transform.translate(
-              offset: bouncingAnimation,
-              child: Transform.rotate(
-                angle: rotateAngle,
-                child: scaleAnimation != null
-                    ? (ScaleTransition(
-                        scale: scaleAnimation!,
-                        child: box,
-                      ))
-                    : box,
+                  Transform.translate(
+                    offset: bouncingAnimation,
+                    child: Transform.rotate(
+                      angle: rotateAngle,
+                      child: scaleAnimation != null
+                          ? (ScaleTransition(
+                              scale: scaleAnimation!,
+                              child: box,
+                            ))
+                          : box,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
