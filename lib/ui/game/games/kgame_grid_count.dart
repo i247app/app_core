@@ -14,6 +14,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../../widget/kflip_card/kflip_card.dart';
+import '../../widget/kflip_card/kflip_card_controller.dart';
+
 class KGameGridCount extends StatefulWidget {
   static const GAME_ID = "517";
   static const GAME_NAME = "grid_count";
@@ -49,6 +52,7 @@ class _KGameGridCountState extends State<KGameGridCount>
       _spinAnimationController,
       _correctBlinkingAnimationController,
       _incorrectBlinkingAnimationController;
+  List<KFlipCardController> _flipCardControllers = [];
 
   KGameData get gameData => widget.controller.value;
 
@@ -86,6 +90,13 @@ class _KGameGridCountState extends State<KGameGridCount>
   List<String> correctOrderAnswers = [];
   List<String> answers = [];
   List<String> hiddenAnswers = [];
+  List<String> displayAnswers = [];
+  List<String> tmpDisplayAnswers = [];
+
+  // int hardLevel = 2;
+  // int shuffleLevel = 1;
+  int hardLevel = 0;
+  int shuffleLevel = 0;
 
   @override
   void initState() {
@@ -214,12 +225,85 @@ class _KGameGridCountState extends State<KGameGridCount>
     this.setState(() {
       for (int i = startNumber; i <= endNumber; i++) {
         correctOrderAnswers.add(i.toString());
+        _flipCardControllers.add(KFlipCardController());
       }
     });
 
     print(
         "widget.controller.value.currentLevel ${startNumber} ${endNumber} ${correctOrderAnswers}");
     this.randomBoxPosition();
+    this.displayQuestion();
+  }
+
+  void displayQuestion() async {
+    if ((widget.controller.value.currentLevel ?? 0) == hardLevel) {
+      int currentAnswerIndex = displayAnswers.length;
+      int totalDisplayAnswer = 3;
+      print(this.barrierValues.length - this.displayAnswers.length);
+      if (this.barrierValues.length - this.displayAnswers.length <=
+          totalDisplayAnswer) {
+        totalDisplayAnswer =
+            this.barrierValues.length - this.displayAnswers.length;
+      } else {
+        print("closeTempDisplayAnswers");
+        await closeTempDisplayAnswers();
+      }
+      this.setState(() {
+        this.tmpDisplayAnswers = [];
+        if (totalDisplayAnswer > 0) {
+          for (int i = 0; i < totalDisplayAnswer; i++) {
+            if (i == 0) {
+              this
+                  .tmpDisplayAnswers
+                  .add(correctOrderAnswers[currentAnswerIndex]);
+            } else {
+              final barrierValuesFiltered =
+                  this.barrierValues.where((barrierValue) {
+                return !this.displayAnswers.contains(barrierValue.text!) &&
+                    !this.tmpDisplayAnswers.contains(barrierValue.text!);
+              }).toList();
+              final answer = barrierValuesFiltered[
+                  Math.Random().nextInt(barrierValuesFiltered.length)];
+              this.tmpDisplayAnswers.add(answer.text!);
+            }
+          }
+        }
+      });
+      if (this.barrierValues.length - this.displayAnswers.length >= 3) {
+        print("openTempDisplayAnswers");
+        await openTempDisplayAnswers();
+      }
+    }
+  }
+
+  Future<void> closeTempDisplayAnswers() async {
+    List<Future> futures = [];
+    final tempDisplayAnswersToClose = tmpDisplayAnswers
+        .where((answer) => displayAnswers.indexOf(answer) == -1)
+        .toList();
+
+    for (int i = 0; i < tempDisplayAnswersToClose.length; i++) {
+      int answerIndex = barrierValues.indexWhere(
+          (barrierValue) => barrierValue.text == tempDisplayAnswersToClose[i]);
+      if (answerIndex > -1) {
+        futures.add(
+            _flipCardControllers[answerIndex].flip(targetSide: KCardSide.back));
+      }
+    }
+    await Future.wait(futures);
+  }
+
+  Future<void> openTempDisplayAnswers() async {
+    List<Future> futures = [];
+    for (int i = 0; i < tmpDisplayAnswers.length; i++) {
+      int answerIndex = barrierValues.indexWhere(
+          (barrierValue) => barrierValue.text == tmpDisplayAnswers[i]);
+      if (answerIndex > -1) {
+        futures.add(_flipCardControllers[answerIndex]
+            .flip(targetSide: KCardSide.front));
+      }
+    }
+    await Future.wait(futures);
   }
 
   void randomBoxPosition() {
@@ -227,11 +311,15 @@ class _KGameGridCountState extends State<KGameGridCount>
     this.setState(() {
       barrierValues =
           correctOrderAnswers.map((e) => KAnswer()..text = e).toList();
-      if ((widget.controller.value.currentLevel ?? 0) > 0) {
+      if ((widget.controller.value.currentLevel ?? 0) >= shuffleLevel) {
         barrierValues.shuffle();
         while (jsonEncode(barrierValues.map((e) => e.text).toList()) ==
                 jsonEncode(correctOrderAnswers) ||
-            jsonEncode(barrierValues.map((e) => e.text).toList().reversed.toList()) ==
+            jsonEncode(barrierValues
+                    .map((e) => e.text)
+                    .toList()
+                    .reversed
+                    .toList()) ==
                 jsonEncode(correctOrderAnswers)) {
           barrierValues.shuffle();
         }
@@ -300,6 +388,9 @@ class _KGameGridCountState extends State<KGameGridCount>
     this._spinAnimationController.forward();
 
     if (isTrueAnswer) {
+      this.setState(() {
+        this.displayAnswers.add(answer.text!);
+      });
       widget.controller.value.result = true;
       widget.controller.value.point = point + 5;
 
@@ -327,6 +418,7 @@ class _KGameGridCountState extends State<KGameGridCount>
 
       Future.delayed(Duration(milliseconds: 500), () {
         if (mounted) {
+          this.displayQuestion();
           this.setState(() {
             spinningHeroIndex = null;
             currentShowStarIndex = null;
@@ -415,6 +507,13 @@ class _KGameGridCountState extends State<KGameGridCount>
                   (i) => _Barrier(
                     onTap: (KAnswer answer) => handlePickAnswer(answer, i),
                     answer: barrierValues[i],
+                    flipCardController: _flipCardControllers[i],
+                    flipCardSide:
+                        (widget.controller.value.currentLevel ?? 0) == hardLevel
+                            ? (tmpDisplayAnswers.contains(barrierValues[i].text)
+                                ? KCardSide.front
+                                : KCardSide.back)
+                            : KCardSide.front,
                     rotateAngle: spinningHeroIndex == i
                         ? -this._spinAnimationController.value * 4 * Math.pi
                         : 0,
@@ -454,6 +553,8 @@ class _Barrier extends StatelessWidget {
   final bool? isCorrect;
   final Color? colorAnimation;
   final Function(KAnswer value) onTap;
+  final KFlipCardController? flipCardController;
+  final KCardSide? flipCardSide;
 
   _Barrier({
     required this.rotateAngle,
@@ -465,6 +566,8 @@ class _Barrier extends StatelessWidget {
     this.isCorrect,
     required this.onTap,
     this.colorAnimation,
+    this.flipCardController,
+    this.flipCardSide,
   });
 
   @override
@@ -492,57 +595,72 @@ class _Barrier extends StatelessWidget {
           : () {
               onTap(answer);
             },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          color: (isCorrect ?? false)
-              ? Colors.green
-              : (colorAnimation ?? Colors.orange),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              width: 80,
-              height: 80,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Transform.translate(
-                      offset: Offset(0, 0),
+      child: KFlipCard(
+        flipOnTouch: false,
+        controller: flipCardController,
+        fill: KFill.back,
+        direction: Axis.horizontal,
+        initialSide: flipCardSide ?? KCardSide.front,
+        front: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: (isCorrect ?? false)
+                ? Colors.green
+                : (colorAnimation ?? Colors.orange),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 80,
+                height: 80,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Align(
+                      alignment: Alignment.topCenter,
                       child: Transform.translate(
-                        offset: Offset(0, -60 * (starY ?? 0)),
-                        child: AnimatedOpacity(
-                          duration: Duration(milliseconds: 250),
-                          opacity: (isShowStar ?? false) ? 1 : 0,
-                          child: Icon(
-                            Icons.star,
-                            color: Colors.amberAccent,
-                            size: 50,
+                        offset: Offset(0, 0),
+                        child: Transform.translate(
+                          offset: Offset(0, -60 * (starY ?? 0)),
+                          child: AnimatedOpacity(
+                            duration: Duration(milliseconds: 250),
+                            opacity: (isShowStar ?? false) ? 1 : 0,
+                            child: Icon(
+                              Icons.star,
+                              color: Colors.amberAccent,
+                              size: 50,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  Transform.translate(
-                    offset: bouncingAnimation,
-                    child: Transform.rotate(
-                      angle: rotateAngle,
-                      child: scaleAnimation != null
-                          ? (ScaleTransition(
-                              scale: scaleAnimation!,
-                              child: box,
-                            ))
-                          : box,
+                    Transform.translate(
+                      offset: bouncingAnimation,
+                      child: Transform.rotate(
+                        angle: rotateAngle,
+                        child: scaleAnimation != null
+                            ? (ScaleTransition(
+                                scale: scaleAnimation!,
+                                child: box,
+                              ))
+                            : box,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
+        ),
+        back: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: (isCorrect ?? false)
+                ? Colors.green
+                : (colorAnimation ?? Colors.orange),
+          ),
         ),
       ),
     );
