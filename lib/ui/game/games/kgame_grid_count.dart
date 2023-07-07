@@ -12,11 +12,9 @@ import 'package:app_core/ui/game/service/kgame_data.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:path_provider/path_provider.dart';
-
-import '../../widget/kflip_card/kflip_card.dart';
-import '../../widget/kflip_card/kflip_card_controller.dart';
+import 'package:app_core/ui/widget/kflip_card/kflip_card.dart';
+import 'package:app_core/ui/widget/kflip_card/kflip_card_controller.dart';
 
 class KGameGridCount extends StatefulWidget {
   static const GAME_ID = "517";
@@ -94,10 +92,12 @@ class _KGameGridCountState extends State<KGameGridCount>
   List<String> displayAnswers = [];
   List<String> tmpDisplayAnswers = [];
 
+  // int hardShuffleLevel = 3;
   // int hardLevel = 2;
   // int shuffleLevel = 1;
-  int hardLevel = 2;
-  int shuffleLevel = 1;
+  int hardShuffleLevel = 0;
+  int hardLevel = 0;
+  int shuffleLevel = 0;
 
   @override
   void initState() {
@@ -233,11 +233,11 @@ class _KGameGridCountState extends State<KGameGridCount>
     print(
         "widget.controller.value.currentLevel ${startNumber} ${endNumber} ${correctOrderAnswers}");
     this.randomBoxPosition();
-    this.displayQuestion();
+    this.displayQuestion(isStartup: true);
   }
 
-  void displayQuestion() async {
-    if ((widget.controller.value.currentLevel ?? 0) == hardLevel) {
+  void displayQuestion({bool isStartup = false}) async {
+    if ((widget.controller.value.currentLevel ?? 0) >= hardLevel) {
       int currentAnswerIndex = displayAnswers.length;
       int totalDisplayAnswer = 3;
       if (this.barrierValues.length - this.displayAnswers.length <=
@@ -267,6 +267,10 @@ class _KGameGridCountState extends State<KGameGridCount>
           }
         }
       });
+      if (!isStartup &&
+          (widget.controller.value.currentLevel ?? 0) >= hardShuffleLevel) {
+        this.randomBoxPosition();
+      }
       await openTempDisplayAnswers();
     }
   }
@@ -304,19 +308,45 @@ class _KGameGridCountState extends State<KGameGridCount>
   void randomBoxPosition() {
     Math.Random rand = new Math.Random();
     this.setState(() {
-      barrierValues =
-          correctOrderAnswers.map((e) => KAnswer()..text = e).toList();
-      if ((widget.controller.value.currentLevel ?? 0) >= shuffleLevel) {
-        barrierValues.shuffle();
-        while (jsonEncode(barrierValues.map((e) => e.text).toList()) ==
-                jsonEncode(correctOrderAnswers) ||
-            jsonEncode(barrierValues
-                    .map((e) => e.text)
-                    .toList()
-                    .reversed
-                    .toList()) ==
-                jsonEncode(correctOrderAnswers)) {
+      if (barrierValues.length == 0) {
+        barrierValues =
+            correctOrderAnswers.map((e) => KAnswer()..text = e).toList();
+        if ((widget.controller.value.currentLevel ?? 0) >= shuffleLevel) {
           barrierValues.shuffle();
+          while (jsonEncode(barrierValues.map((e) => e.text).toList()) ==
+                  jsonEncode(correctOrderAnswers) ||
+              jsonEncode(barrierValues
+                      .map((e) => e.text)
+                      .toList()
+                      .reversed
+                      .toList()) ==
+                  jsonEncode(correctOrderAnswers)) {
+            barrierValues.shuffle();
+          }
+        }
+      } else {
+        List<String> _pickedAnswers = [
+          ...answers,
+        ];
+        for (int i = 0; i < barrierValues.length; i++) {
+          final barrierValue = barrierValues[i];
+          print("_answersFiltered ${_pickedAnswers}");
+          if (!answers.contains(barrierValue.text!)) {
+            final _answersFiltered = correctOrderAnswers
+                .where((answer) => !_pickedAnswers.contains(answer))
+                .toList();
+            print("_answersFiltered ${_answersFiltered}");
+            String _textAnswer =
+                _answersFiltered[rand.nextInt(_answersFiltered.length)];
+            if (_answersFiltered.length > 1) {
+              while (barrierValue.text == _textAnswer) {
+                _textAnswer =
+                    _answersFiltered[rand.nextInt(_answersFiltered.length)];
+              }
+            }
+            barrierValues[i].text = _textAnswer;
+            _pickedAnswers.add(_textAnswer);
+          }
         }
       }
     });
@@ -504,7 +534,7 @@ class _KGameGridCountState extends State<KGameGridCount>
                     answer: barrierValues[i],
                     flipCardController: _flipCardControllers[i],
                     flipCardSide:
-                        (widget.controller.value.currentLevel ?? 0) == hardLevel
+                        (widget.controller.value.currentLevel ?? 0) >= hardLevel
                             ? (tmpDisplayAnswers.contains(barrierValues[i].text)
                                 ? KCardSide.front
                                 : KCardSide.back)
