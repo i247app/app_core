@@ -96,8 +96,8 @@ class _KGameGridCountState extends State<KGameGridCount>
 
   // int hardLevel = 2;
   // int shuffleLevel = 1;
-  int hardLevel = 0;
-  int shuffleLevel = 0;
+  int hardLevel = 2;
+  int shuffleLevel = 1;
 
   @override
   void initState() {
