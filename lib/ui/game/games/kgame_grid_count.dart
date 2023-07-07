@@ -12,6 +12,7 @@ import 'package:app_core/ui/game/service/kgame_data.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../widget/kflip_card/kflip_card.dart';
@@ -239,15 +240,12 @@ class _KGameGridCountState extends State<KGameGridCount>
     if ((widget.controller.value.currentLevel ?? 0) == hardLevel) {
       int currentAnswerIndex = displayAnswers.length;
       int totalDisplayAnswer = 3;
-      print(this.barrierValues.length - this.displayAnswers.length);
       if (this.barrierValues.length - this.displayAnswers.length <=
           totalDisplayAnswer) {
         totalDisplayAnswer =
             this.barrierValues.length - this.displayAnswers.length;
-      } else {
-        print("closeTempDisplayAnswers");
-        await closeTempDisplayAnswers();
       }
+      await closeTempDisplayAnswers();
       this.setState(() {
         this.tmpDisplayAnswers = [];
         if (totalDisplayAnswer > 0) {
@@ -269,10 +267,7 @@ class _KGameGridCountState extends State<KGameGridCount>
           }
         }
       });
-      if (this.barrierValues.length - this.displayAnswers.length >= 3) {
-        print("openTempDisplayAnswers");
-        await openTempDisplayAnswers();
-      }
+      await openTempDisplayAnswers();
     }
   }
 
@@ -590,7 +585,7 @@ class _Barrier extends StatelessWidget {
     );
 
     return InkWell(
-      onTap: (isCorrect ?? false)
+      onTap: (isCorrect ?? false) || flipCardSide == KCardSide.back
           ? null
           : () {
               onTap(answer);
