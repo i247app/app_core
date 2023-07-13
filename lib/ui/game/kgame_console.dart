@@ -13,6 +13,7 @@ import 'package:app_core/ui/game/games/kgame_jump_up.dart';
 import 'package:app_core/ui/game/games/kgame_letter_tap.dart';
 import 'package:app_core/ui/game/games/kgame_moving_tap.dart';
 import 'package:app_core/ui/game/games/kgame_multi_letter.dart';
+import 'package:app_core/ui/game/games/kgame_pick_number.dart';
 import 'package:app_core/ui/game/games/kgame_shooting.dart';
 import 'package:app_core/ui/game/games/kgame_speech_letter_moving_tap.dart';
 import 'package:app_core/ui/game/games/kgame_speech_letter_tap.dart';
@@ -571,8 +572,11 @@ class _KGameConsoleState extends State<KGameConsole>
         if (level < levelCount &&
             ((rightAnswerCount / questions.length) >=
                     levelHardness[currentLevel] ||
-                [KGameCount.GAME_ID, KGameGridCount.GAME_ID]
-                    .contains(gameData.gameID))) {
+                [
+                  KGameCount.GAME_ID,
+                  KGameGridCount.GAME_ID,
+                  KGamePickNumber.GAME_ID
+                ].contains(gameData.gameID))) {
           gameController.value.currentLevel = level;
           await gameController.loadGame();
 
@@ -832,6 +836,7 @@ class _KGameConsoleState extends State<KGameConsole>
       case KGameSpeechMovingTap.GAME_ID:
       case KGameTap.GAME_ID:
       case KGameCount.GAME_ID:
+      case KGamePickNumber.GAME_ID:
       case KGameGridCount.GAME_ID:
       case KGameMovingTap.GAME_ID:
       case KGameLetterTap.GAME_ID:
@@ -869,6 +874,12 @@ class _KGameConsoleState extends State<KGameConsole>
         );
       case KGameGridCount.GAME_ID:
         return KGameGridCount(
+          controller: gameController,
+          hero: widget.hero,
+          onFinishLevel: onFinishLevel,
+        );
+      case KGamePickNumber.GAME_ID:
+        return KGamePickNumber(
           controller: gameController,
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
@@ -973,6 +984,7 @@ class _KGameConsoleState extends State<KGameConsole>
       case KGameTap.GAME_ID:
       case KGameCount.GAME_ID:
       case KGameGridCount.GAME_ID:
+      case KGamePickNumber.GAME_ID:
         return true;
       default:
         return true;
