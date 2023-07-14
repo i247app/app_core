@@ -26,7 +26,9 @@ class KPacketHeader {
 
   static KPacketHeader fromBytes(List<int> bytes) {
     // Header length sanity check
-    if (bytes.length != 16) throw MalformedPacket();
+    if (bytes.length != 16) {
+      throw MalformedPacket();
+    }
 
     final bodyLengthBytes = bytes.sublist(2, 6);
     final keepAliveBytes = bytes.sublist(6, 10);
