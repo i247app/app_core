@@ -5,6 +5,7 @@ import 'package:app_core/ui/game/games/kgame_jump_up.dart';
 import 'package:app_core/ui/game/games/kgame_moving_tap.dart';
 import 'package:app_core/ui/game/games/kgame_multi.dart';
 import 'package:app_core/ui/game/games/kgame_multi_letter.dart';
+import 'package:app_core/ui/game/games/kgame_pick_number.dart';
 import 'package:app_core/ui/game/games/kgame_shooting.dart';
 import 'package:app_core/ui/game/games/kgame_tap.dart';
 import 'package:app_core/ui/game/games/kgame_word.dart';
@@ -1018,6 +1019,107 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                     ),
                   ],
                 ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 32,
+          ),
+          Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () =>
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => KGameConsole(
+                              KGameController(
+                                gameID: KGamePickNumber.GAME_ID,
+                                gameAppID: KGamePickNumber.GAME_APP_ID,
+                                gameName: KGamePickNumber.GAME_NAME,
+                                currentLevel: 0,
+                                isCountTime: true,
+                              ),
+                            ),
+                          )),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.transparent,
+                        backgroundColor: Colors.transparent,
+                        elevation: 0,
+                        padding:
+                        EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                          side: BorderSide(color: Colors.transparent),
+                        ),
+                      ),
+                      child: SizedBox(
+                        width: ICON_WIDTH,
+                        height: ICON_HEIGHT,
+                        child: Image.asset(
+                          KAssets.IMG_GAME_WORD_FORTUNE,
+                          fit: BoxFit.contain,
+                          package: 'app_core',
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 5),
+                    FittedBox(
+                      child: Text("Pick Number"),
+                    ),
+                  ],
+                ),
+                // SizedBox(
+                //   width: 64,
+                // ),
+                // Column(
+                //   mainAxisSize: MainAxisSize.min,
+                //   crossAxisAlignment: CrossAxisAlignment.center,
+                //   mainAxisAlignment: MainAxisAlignment.center,
+                //   children: [
+                //     ElevatedButton(
+                //       onPressed: () =>
+                //           Navigator.of(context).push(MaterialPageRoute(
+                //             builder: (ctx) => KGameConsole(
+                //               KGameController(
+                //                 gameID: KGameShooting.GAME_ID,
+                //                 gameName: KGameShooting.GAME_NAME,
+                //                 currentLevel: 0,
+                //               ),
+                //             ),
+                //           )),
+                //       style: ElevatedButton.styleFrom(
+                //         foregroundColor: Colors.transparent,
+                //         backgroundColor: Colors.transparent,
+                //         elevation: 0,
+                //         padding:
+                //         EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                //         shape: RoundedRectangleBorder(
+                //           borderRadius: BorderRadius.circular(4),
+                //           side: BorderSide(color: Colors.transparent),
+                //         ),
+                //       ),
+                //       child: SizedBox(
+                //         width: ICON_WIDTH,
+                //         height: ICON_HEIGHT,
+                //         child: Image.asset(
+                //           KAssets.IMG_GAME_SHOOTING,
+                //           fit: BoxFit.contain,
+                //           package: 'app_core',
+                //         ),
+                //       ),
+                //     ),
+                //     SizedBox(width: 5),
+                //     FittedBox(
+                //       child: Text("+Shooting"),
+                //     ),
+                //   ],
+                // ),
               ],
             ),
           ),
