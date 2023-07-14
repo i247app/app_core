@@ -108,7 +108,10 @@ class _KGamePickNumberState extends State<KGamePickNumber>
 
   int showPyramidLevel = 1;
   int hardLevel = 2;
-  bool get isShowPyramid => (widget.controller.value.currentLevel ?? 0) >= showPyramidLevel;
+  int superHardLevel = 3;
+
+  bool get isShowPyramid =>
+      (widget.controller.value.currentLevel ?? 0) >= showPyramidLevel;
 
   @override
   void initState() {
@@ -199,9 +202,26 @@ class _KGamePickNumberState extends State<KGamePickNumber>
               Future.delayed(Duration(milliseconds: 50), () {
                 if (mounted) {
                   this.setState(() {
-                    if (!answers
-                        .contains(barrierValues[spinningAnswerIndex!].text)) {
-                      wrongSelectedWordIndex.add(spinningAnswerIndex);
+                    if ((widget.controller.value.currentLevel ?? 0) <
+                        superHardLevel) {
+                      print(answers);
+                      print(barrierValues[spinningAnswerIndex!].text);
+                      print(answers.indexOf(
+                          barrierValues[spinningAnswerIndex!].text!));
+                      if (!answers.contains(
+                              barrierValues[spinningAnswerIndex!].text) ||
+                          answers.indexOf(
+                                  barrierValues[spinningAnswerIndex!].text!) <
+                              answers.length - 1) {
+                        wrongSelectedWordIndex.add(spinningAnswerIndex);
+                      }
+                    } else {
+                      print(answers);
+                      print(barrierValues[spinningAnswerIndex!].text);
+                      if (answers
+                          .contains(barrierValues[spinningAnswerIndex!].text)) {
+                        wrongSelectedWordIndex.add(spinningAnswerIndex);
+                      }
                     }
                     spinningAnswerIndex = null;
                   });
@@ -261,6 +281,9 @@ class _KGamePickNumberState extends State<KGamePickNumber>
     int totalDisplayAnswer = 3;
     if ((widget.controller.value.currentLevel ?? 0) >= hardLevel) {
       totalDisplayAnswer = 5;
+    }
+    if ((widget.controller.value.currentLevel ?? 0) >= superHardLevel) {
+      totalDisplayAnswer = correctOrderAnswers.length;
     }
 
     int currentAnswerIndex = answers.length;
@@ -360,7 +383,8 @@ class _KGamePickNumberState extends State<KGamePickNumber>
       return;
     }
 
-    bool isTrueAnswer = correctOrderAnswers.indexOf(answer.text!) == answers.length;
+    bool isTrueAnswer =
+        correctOrderAnswers.indexOf(answer.text!) == answers.length;
 
     if (!isPlaySound) {
       this.setState(() {
@@ -422,7 +446,8 @@ class _KGamePickNumberState extends State<KGamePickNumber>
                 if (widget.onFinishLevel != null) {
                   widget.onFinishLevel!();
                 }
-              } else {
+              } else if ((widget.controller.value.currentLevel ?? 0) <
+                  superHardLevel) {
                 this.getListAnswer();
               }
 
