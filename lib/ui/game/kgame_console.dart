@@ -13,6 +13,7 @@ import 'package:app_core/ui/game/games/kgame_jump_up.dart';
 import 'package:app_core/ui/game/games/kgame_letter_tap.dart';
 import 'package:app_core/ui/game/games/kgame_moving_tap.dart';
 import 'package:app_core/ui/game/games/kgame_multi_letter.dart';
+import 'package:app_core/ui/game/games/kgame_multi_number.dart';
 import 'package:app_core/ui/game/games/kgame_pick_number.dart';
 import 'package:app_core/ui/game/games/kgame_shooting.dart';
 import 'package:app_core/ui/game/games/kgame_speech_letter_moving_tap.dart';
@@ -575,7 +576,8 @@ class _KGameConsoleState extends State<KGameConsole>
                 [
                   KGameCount.GAME_ID,
                   KGameGridCount.GAME_ID,
-                  KGamePickNumber.GAME_ID
+                  KGamePickNumber.GAME_ID,
+                  KGameMultiNumber.GAME_ID,
                 ].contains(gameData.gameID))) {
           gameController.value.currentLevel = level;
           await gameController.loadGame();
@@ -838,6 +840,7 @@ class _KGameConsoleState extends State<KGameConsole>
       case KGameCount.GAME_ID:
       case KGamePickNumber.GAME_ID:
       case KGameGridCount.GAME_ID:
+      case KGameMultiNumber.GAME_ID:
       case KGameMovingTap.GAME_ID:
       case KGameLetterTap.GAME_ID:
       case KGameJumpMultiRow.GAME_ID:
@@ -938,6 +941,21 @@ class _KGameConsoleState extends State<KGameConsole>
           hero: widget.hero,
           onFinishLevel: onFinishLevel,
         );
+      case KGameMultiNumber.GAME_ID:
+        {
+          if (currentLevel <= 1) {
+            return KGameGridCount(
+              controller: gameController,
+              hero: widget.hero,
+              onFinishLevel: onFinishLevel,
+            );
+          }
+          return KGamePickNumber(
+            controller: gameController,
+            hero: widget.hero,
+            onFinishLevel: onFinishLevel,
+          );
+        }
       case KGameMulti.GAME_ID:
         {
           if (currentLevel == 0 || currentLevel == 2) {
@@ -984,6 +1002,7 @@ class _KGameConsoleState extends State<KGameConsole>
       case KGameTap.GAME_ID:
       case KGameCount.GAME_ID:
       case KGameGridCount.GAME_ID:
+      case KGameMultiNumber.GAME_ID:
       case KGamePickNumber.GAME_ID:
         return true;
       default:

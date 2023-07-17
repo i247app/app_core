@@ -4,6 +4,7 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/ui/game/games/kgame_count.dart';
 import 'package:app_core/ui/game/games/kgame_grid_count.dart';
+import 'package:app_core/ui/game/games/kgame_multi_number.dart';
 import 'package:app_core/ui/game/games/kgame_pick_number.dart';
 import 'package:flutter/widgets.dart';
 import 'kgame_data.dart';
@@ -78,6 +79,9 @@ class KGameController extends ValueNotifier<KGameData> {
         }
         if ([KGameGridCount.GAME_ID, KGamePickNumber.GAME_ID].contains(this.value.gameID)) {
           this.value.maxLevel = 4;
+        }
+        if ([KGameMultiNumber.GAME_ID].contains(this.value.gameID)) {
+          this.value.maxLevel = 6;
         }
         this.value.levelCount = (this.value.maxLevel ?? 0) > 0 ? this.value.maxLevel : 1;
         if (this.value.maxLevel != 0 && this.value.levelIconAssets.length != (this.value.levelCount ?? 0)) {

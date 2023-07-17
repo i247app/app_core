@@ -106,9 +106,10 @@ class _KGamePickNumberState extends State<KGamePickNumber>
 
   int correctTwinkleTime = 2;
 
-  int showPyramidLevel = 1;
+  int showPyramidLevel = 4;
   int hardLevel = 2;
-  int superHardLevel = 3;
+  int superHardLevel = 6;
+  List<int> hardLevels = [3, 5];
 
   bool get isShowPyramid =>
       (widget.controller.value.currentLevel ?? 0) >= showPyramidLevel;
@@ -279,7 +280,7 @@ class _KGamePickNumberState extends State<KGamePickNumber>
 
   void getListAnswer() {
     int totalDisplayAnswer = 3;
-    if ((widget.controller.value.currentLevel ?? 0) >= hardLevel) {
+    if (hardLevels.contains(widget.controller.value.currentLevel ?? 0)) {
       totalDisplayAnswer = 5;
     }
     if ((widget.controller.value.currentLevel ?? 0) >= superHardLevel) {

@@ -5,6 +5,7 @@ import 'package:app_core/ui/game/games/kgame_jump_up.dart';
 import 'package:app_core/ui/game/games/kgame_moving_tap.dart';
 import 'package:app_core/ui/game/games/kgame_multi.dart';
 import 'package:app_core/ui/game/games/kgame_multi_letter.dart';
+import 'package:app_core/ui/game/games/kgame_multi_number.dart';
 import 'package:app_core/ui/game/games/kgame_pick_number.dart';
 import 'package:app_core/ui/game/games/kgame_shooting.dart';
 import 'package:app_core/ui/game/games/kgame_tap.dart';
@@ -923,160 +924,112 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
           SizedBox(
             height: 32,
           ),
-          // if (!KHostConfig.isReleaseMode)
+          // // if (!KHostConfig.isReleaseMode)
+          // Container(
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.center,
+          //     children: [
+          //       Column(
+          //         mainAxisSize: MainAxisSize.min,
+          //         crossAxisAlignment: CrossAxisAlignment.center,
+          //         mainAxisAlignment: MainAxisAlignment.center,
+          //         children: [
+          //           ElevatedButton(
+          //             onPressed: () =>
+          //                 Navigator.of(context).push(MaterialPageRoute(
+          //                   builder: (ctx) => KGameConsole(
+          //                     KGameController(
+          //                       gameID: KGameCount.GAME_ID,
+          //                       gameName: KGameCount.GAME_NAME,
+          //                       currentLevel: 0,
+          //                       isCountTime: true,
+          //                     ),
+          //                   ),
+          //                 )),
+          //             style: ElevatedButton.styleFrom(
+          //               foregroundColor: Colors.transparent,
+          //               backgroundColor: Colors.transparent,
+          //               elevation: 0,
+          //               padding:
+          //               EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+          //               shape: RoundedRectangleBorder(
+          //                 borderRadius: BorderRadius.circular(4),
+          //                 side: BorderSide(color: Colors.transparent),
+          //               ),
+          //             ),
+          //             child: SizedBox(
+          //               width: ICON_WIDTH,
+          //               height: ICON_HEIGHT,
+          //               child: Image.asset(
+          //                 KAssets.IMG_GAME_TAP,
+          //                 fit: BoxFit.contain,
+          //                 package: 'app_core',
+          //               ),
+          //             ),
+          //           ),
+          //           SizedBox(width: 5),
+          //           FittedBox(
+          //             child: Text("Order"),
+          //           ),
+          //         ],
+          //       ),
+          //       SizedBox(
+          //         width: 64,
+          //       ),
+          //       Column(
+          //         mainAxisSize: MainAxisSize.min,
+          //         crossAxisAlignment: CrossAxisAlignment.center,
+          //         mainAxisAlignment: MainAxisAlignment.center,
+          //         children: [
+          //           ElevatedButton(
+          //             onPressed: () =>
+          //                 Navigator.of(context).push(MaterialPageRoute(
+          //                   builder: (ctx) => KGameConsole(
+          //                     KGameController(
+          //                       gameID: KGameGridCount.GAME_ID,
+          //                       gameName: KGameGridCount.GAME_NAME,
+          //                       currentLevel: 0,
+          //                       isCountTime: true,
+          //                     ),
+          //                   ),
+          //                 )),
+          //             style: ElevatedButton.styleFrom(
+          //               foregroundColor: Colors.transparent,
+          //               backgroundColor: Colors.transparent,
+          //               elevation: 0,
+          //               padding:
+          //               EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+          //               shape: RoundedRectangleBorder(
+          //                 borderRadius: BorderRadius.circular(4),
+          //                 side: BorderSide(color: Colors.transparent),
+          //               ),
+          //             ),
+          //             child: SizedBox(
+          //               width: ICON_WIDTH,
+          //               height: ICON_HEIGHT,
+          //               child: Image.asset(
+          //                 KAssets.IMG_GAME_SHOOTING,
+          //                 fit: BoxFit.contain,
+          //                 package: 'app_core',
+          //               ),
+          //             ),
+          //           ),
+          //           SizedBox(width: 5),
+          //           FittedBox(
+          //             child: Text("Order Grid"),
+          //           ),
+          //         ],
+          //       ),
+          //     ],
+          //   ),
+          // ),
+          // SizedBox(
+          //   height: 32,
+          // ),
           Container(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () =>
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) => KGameConsole(
-                              KGameController(
-                                gameID: KGameCount.GAME_ID,
-                                gameName: KGameCount.GAME_NAME,
-                                currentLevel: 0,
-                                isCountTime: true,
-                              ),
-                            ),
-                          )),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.transparent,
-                        backgroundColor: Colors.transparent,
-                        elevation: 0,
-                        padding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                          side: BorderSide(color: Colors.transparent),
-                        ),
-                      ),
-                      child: SizedBox(
-                        width: ICON_WIDTH,
-                        height: ICON_HEIGHT,
-                        child: Image.asset(
-                          KAssets.IMG_GAME_TAP,
-                          fit: BoxFit.contain,
-                          package: 'app_core',
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 5),
-                    FittedBox(
-                      child: Text("Order"),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  width: 64,
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () =>
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) => KGameConsole(
-                              KGameController(
-                                gameID: KGameGridCount.GAME_ID,
-                                gameName: KGameGridCount.GAME_NAME,
-                                currentLevel: 0,
-                                isCountTime: true,
-                              ),
-                            ),
-                          )),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.transparent,
-                        backgroundColor: Colors.transparent,
-                        elevation: 0,
-                        padding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                          side: BorderSide(color: Colors.transparent),
-                        ),
-                      ),
-                      child: SizedBox(
-                        width: ICON_WIDTH,
-                        height: ICON_HEIGHT,
-                        child: Image.asset(
-                          KAssets.IMG_GAME_SHOOTING,
-                          fit: BoxFit.contain,
-                          package: 'app_core',
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 5),
-                    FittedBox(
-                      child: Text("Order Grid"),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 32,
-          ),
-          Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () =>
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (ctx) => KGameConsole(
-                              KGameController(
-                                gameID: KGamePickNumber.GAME_ID,
-                                gameAppID: KGamePickNumber.GAME_APP_ID,
-                                gameName: KGamePickNumber.GAME_NAME,
-                                currentLevel: 0,
-                                isCountTime: true,
-                              ),
-                            ),
-                          )),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.transparent,
-                        backgroundColor: Colors.transparent,
-                        elevation: 0,
-                        padding:
-                        EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                          side: BorderSide(color: Colors.transparent),
-                        ),
-                      ),
-                      child: SizedBox(
-                        width: ICON_WIDTH,
-                        height: ICON_HEIGHT,
-                        child: Image.asset(
-                          KAssets.IMG_GAME_WORD_FORTUNE,
-                          fit: BoxFit.contain,
-                          package: 'app_core',
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 5),
-                    FittedBox(
-                      child: Text("Pick Number"),
-                    ),
-                  ],
-                ),
-                // SizedBox(
-                //   width: 64,
-                // ),
                 // Column(
                 //   mainAxisSize: MainAxisSize.min,
                 //   crossAxisAlignment: CrossAxisAlignment.center,
@@ -1087,9 +1040,11 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                 //           Navigator.of(context).push(MaterialPageRoute(
                 //             builder: (ctx) => KGameConsole(
                 //               KGameController(
-                //                 gameID: KGameShooting.GAME_ID,
-                //                 gameName: KGameShooting.GAME_NAME,
+                //                 gameID: KGamePickNumber.GAME_ID,
+                //                 gameAppID: KGamePickNumber.GAME_APP_ID,
+                //                 gameName: KGamePickNumber.GAME_NAME,
                 //                 currentLevel: 0,
+                //                 isCountTime: true,
                 //               ),
                 //             ),
                 //           )),
@@ -1108,7 +1063,7 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                 //         width: ICON_WIDTH,
                 //         height: ICON_HEIGHT,
                 //         child: Image.asset(
-                //           KAssets.IMG_GAME_SHOOTING,
+                //           KAssets.IMG_GAME_WORD_FORTUNE,
                 //           fit: BoxFit.contain,
                 //           package: 'app_core',
                 //         ),
@@ -1116,10 +1071,59 @@ class _KHeroGameHomeState extends State<KHeroGameHome> {
                 //     ),
                 //     SizedBox(width: 5),
                 //     FittedBox(
-                //       child: Text("+Shooting"),
+                //       child: Text("Pick Number"),
                 //     ),
                 //   ],
                 // ),
+                // SizedBox(
+                //   width: 64,
+                // ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () =>
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (ctx) => KGameConsole(
+                              KGameController(
+                                gameID: KGameMultiNumber.GAME_ID,
+                                gameAppID: KGameMultiNumber.GAME_APP_ID,
+                                gameName: KGameMultiNumber.GAME_NAME,
+                                currentLevel: 0,
+                                answerType: 'number',
+                                // isCountTime: true,
+                              ),
+                            ),
+                          )),
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        padding:
+                        EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+                        primary: Colors.transparent,
+                        onPrimary: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                          side: BorderSide(color: Colors.transparent),
+                        ),
+                      ),
+                      child: SizedBox(
+                        width: ICON_WIDTH,
+                        height: ICON_HEIGHT,
+                        child: Image.asset(
+                          KAssets.IMG_GAME_TAP_MOVING,
+                          fit: BoxFit.contain,
+                          package: 'app_core',
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 5),
+                    FittedBox(
+                      child: Text("Count Number"),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

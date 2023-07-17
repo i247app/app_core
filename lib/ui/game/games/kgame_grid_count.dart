@@ -92,8 +92,10 @@ class _KGameGridCountState extends State<KGameGridCount>
   List<String> displayAnswers = [];
   List<String> tmpDisplayAnswers = [];
 
-  int hardShuffleLevel = 3;
-  int hardLevel = 2;
+  // int hardShuffleLevel = 3;
+  // int hardLevel = 2;
+  int hardShuffleLevel = 1;
+  int hardLevel = 1;
   int shuffleLevel = 1;
 
   @override
