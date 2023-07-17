@@ -133,6 +133,8 @@ flutter:
       fonts:
         - asset: fonts/ApercuRegular.ttf
         - asset: fonts/ApercuBold.ttf
+        - asset: fonts/ApercuItalic.otf
+          style: italic
     - family: UberMove
       fonts:
         - asset: fonts/UberMoveMedium.otf
