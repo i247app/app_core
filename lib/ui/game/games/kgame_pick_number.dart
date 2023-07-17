@@ -97,7 +97,7 @@ class _KGamePickNumberState extends State<KGamePickNumber>
 
   KQuestion get currentQuestion => gameData.currentQuestion;
 
-  List<int> questionRows = [2, 3, 4];
+  List<int> questionRows = [1, 2, 3, 3];
   List<String> correctOrderAnswers = [];
   List<String> answers = [];
   List<int?> wrongSelectedWordIndex = [];
@@ -520,7 +520,14 @@ class _KGamePickNumberState extends State<KGamePickNumber>
                                 width: boxSize,
                                 height: boxSize,
                                 decoration: BoxDecoration(
-                                  color: answers.contains(barrierValues[i].text!) ? Colors.orange : Color(0xff2c1c44),
+                                  color: answers.contains(
+                                              barrierValues[i].text!) &&
+                                          (widget.controller.value
+                                                      .currentLevel ??
+                                                  0) >=
+                                              superHardLevel
+                                      ? Colors.orange
+                                      : Color(0xff2c1c44),
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                                 child: FittedBox(
