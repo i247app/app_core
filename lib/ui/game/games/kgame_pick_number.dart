@@ -97,7 +97,7 @@ class _KGamePickNumberState extends State<KGamePickNumber>
 
   KQuestion get currentQuestion => gameData.currentQuestion;
 
-  List<int> questionRows = [2, 3, 4];
+  List<int> questionRows = [1, 2, 3, 3];
   List<String> correctOrderAnswers = [];
   List<String> answers = [];
   List<int?> wrongSelectedWordIndex = [];
@@ -206,8 +206,8 @@ class _KGamePickNumberState extends State<KGamePickNumber>
                         superHardLevel) {
                       print(answers);
                       print(barrierValues[spinningAnswerIndex!].text);
-                      print(answers.indexOf(
-                          barrierValues[spinningAnswerIndex!].text!));
+                      print(answers
+                          .indexOf(barrierValues[spinningAnswerIndex!].text!));
                       if (!answers.contains(
                               barrierValues[spinningAnswerIndex!].text) ||
                           answers.indexOf(
@@ -216,12 +216,12 @@ class _KGamePickNumberState extends State<KGamePickNumber>
                         wrongSelectedWordIndex.add(spinningAnswerIndex);
                       }
                     } else {
-                      print(answers);
-                      print(barrierValues[spinningAnswerIndex!].text);
-                      if (answers
-                          .contains(barrierValues[spinningAnswerIndex!].text)) {
-                        wrongSelectedWordIndex.add(spinningAnswerIndex);
-                      }
+                      // print(answers);
+                      // print(barrierValues[spinningAnswerIndex!].text);
+                      // if (answers
+                      //     .contains(barrierValues[spinningAnswerIndex!].text)) {
+                      //   wrongSelectedWordIndex.add(spinningAnswerIndex);
+                      // }
                     }
                     spinningAnswerIndex = null;
                   });
@@ -504,8 +504,10 @@ class _KGamePickNumberState extends State<KGamePickNumber>
                     (i) => wrongSelectedWordIndex.contains(i)
                         ? SizedBox()
                         : GestureDetector(
-                            onTap: () =>
-                                this.handlePickAnswer(barrierValues[i], i),
+                            onTap: answers.contains(barrierValues[i].text!)
+                                ? null
+                                : () =>
+                                    this.handlePickAnswer(barrierValues[i], i),
                             child: Transform.rotate(
                               angle: spinningAnswerIndex == i
                                   ? -this._spinAnimationController.value *
@@ -518,7 +520,14 @@ class _KGamePickNumberState extends State<KGamePickNumber>
                                 width: boxSize,
                                 height: boxSize,
                                 decoration: BoxDecoration(
-                                  color: Color(0xff2c1c44),
+                                  color: answers.contains(
+                                              barrierValues[i].text!) &&
+                                          (widget.controller.value
+                                                      .currentLevel ??
+                                                  0) >=
+                                              superHardLevel
+                                      ? Colors.orange
+                                      : Color(0xff2c1c44),
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                                 child: FittedBox(
