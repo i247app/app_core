@@ -97,7 +97,8 @@ class _KGamePickNumberState extends State<KGamePickNumber>
 
   KQuestion get currentQuestion => gameData.currentQuestion;
 
-  List<int> questionRows = [1, 2, 3, 3];
+  List<int> questionRows = [4, 5];
+  List<int> pyramidQuestionRows = [1, 2, 3, 3];
   List<String> correctOrderAnswers = [];
   List<String> answers = [];
   List<int?> wrongSelectedWordIndex = [];
@@ -589,22 +590,26 @@ class _KGamePickNumberState extends State<KGamePickNumber>
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.symmetric(horizontal: 0, vertical: 15),
               child: Column(
-                children: List.generate(isShowPyramid ? questionRows.length : 1,
-                    (index) {
+                children: List.generate(
+                    isShowPyramid
+                        ? pyramidQuestionRows.length
+                        : questionRows.length, (index) {
+                  final rows =
+                      isShowPyramid ? pyramidQuestionRows : questionRows;
                   int startIndex = index > 0
-                      ? questionRows
+                      ? rows
                           .take(index)
                           .reduce((value, element) => value + element)
                       : 0;
-                  int endIndex = questionRows
+                  int endIndex = rows
                           .take(index + 1)
                           .reduce((value, element) => value + element) -
                       1;
 
-                  if (!isShowPyramid) {
-                    startIndex = 0;
-                    endIndex = correctOrderAnswers.length - 1;
-                  }
+                  // if (!isShowPyramid) {
+                  //   startIndex = 0;
+                  //   endIndex = correctOrderAnswers.length - 1;
+                  // }
 
                   if (startIndex < 0 ||
                       endIndex >= correctOrderAnswers.length) {
