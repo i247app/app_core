@@ -440,7 +440,7 @@ class _KGameGridCountState extends State<KGameGridCount>
         answers.add(answer.text!);
       });
 
-      Future.delayed(Duration(milliseconds: 500), () {
+      Future.delayed(Duration(milliseconds: 300), () {
         if (mounted) {
           this.displayQuestion();
           this.setState(() {
@@ -449,7 +449,7 @@ class _KGameGridCountState extends State<KGameGridCount>
             correctAnswerIndex = null;
           });
           this._correctBlinkingAnimationController.reset();
-          Future.delayed(Duration(milliseconds: 500), () {
+          Future.delayed(Duration(milliseconds: 50), () {
             if (mounted) {
               this._moveUpAnimationController.reset();
 
