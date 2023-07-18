@@ -107,7 +107,7 @@ class _KGameHomeState extends State<KGameHome> {
                   ),
                   SizedBox(width: 5),
                   FittedBox(
-                    child: Text("Count"),
+                    child: Text("Numbers"),
                   ),
                 ],
               ),
