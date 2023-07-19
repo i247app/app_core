@@ -17,6 +17,7 @@ KStudent _$KStudentFromJson(Map<String, dynamic> json) => KStudent()
   ..kmodifyDate = zzz_str2Date(json['modifyDate'] as String?)
   ..kisValid = json['isValid'] as String?
   ..kattribute = json['kattribute'] as String?
+  ..kvalue = json['kvalue'] as String?
   ..korderBy = json['orderBy'] as String?
   ..klimit = json['limit'] as String?
   ..koffset = json['offset'] as String?
@@ -111,6 +112,7 @@ Map<String, dynamic> _$KStudentToJson(KStudent instance) {
   writeNotNull('modifyDate', zzz_date2Str(instance.kmodifyDate));
   writeNotNull('isValid', instance.kisValid);
   writeNotNull('kattribute', instance.kattribute);
+  writeNotNull('kvalue', instance.kvalue);
   writeNotNull('orderBy', instance.korderBy);
   writeNotNull('limit', instance.klimit);
   writeNotNull('offset', instance.koffset);
