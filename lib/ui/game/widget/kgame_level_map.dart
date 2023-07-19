@@ -178,6 +178,7 @@ class _KGameLevelMapState extends State<KGameLevelMap> {
               (index) => PointModel(
                 70,
                 KGameLevelMapItem(
+                  eggReceive: gameData.eggReceive,
                   levelText: "${index + 1}",
                   levelIcon: levelIconAssets[index],
                   level: index,
