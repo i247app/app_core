@@ -15,6 +15,7 @@ abstract class KObject {
   static const String IS_VALID = "isValid";
 
   static const String ACTION = "action"; // arbitrary uses - deactivate
+  static const String VALUE = "kvalue";
   static const String ATTRIBUTE = "kattribute";
 
   static const String ORDER_BY = "orderBy";
@@ -57,6 +58,9 @@ abstract class KObject {
 
   @JsonKey(name: ATTRIBUTE)
   String? kattribute;
+
+  @JsonKey(name: VALUE)
+  String? kvalue;
 
   @JsonKey(name: ORDER_BY)
   String? korderBy;
