@@ -203,11 +203,9 @@ class KUser extends KObject {
 
   // TODO - fix reward user (non-regis phone only)
   String? get fullName =>
-      KUtil.prettyName(
-          fnm: firstName ?? "", mnm: middleName ?? "", lnm: lastName ?? "") ??
-      phone;
+      KUtil.prettyName(fnm: firstName, mnm: middleName, lnm: lastName) ?? phone;
 
-  String? get prettryDistrict {
+  String? get prettyDistrict {
     // Check if district not contains one of item in KUtil.ignoreAddressWords list then add Quận before it
     if (district != null && district!.isNotEmpty) {
       if (KUtil.ignoreAddressWords.any((word) => district!.contains(word))) {
@@ -219,7 +217,7 @@ class KUser extends KObject {
     return district;
   }
 
-  String? get prettryWard {
+  String? get prettyWard {
     // Check if district not contains one of item in KUtil.ignoreAddressWords list then add Quận before it
     if (ward != null && ward!.isNotEmpty) {
       if (KUtil.ignoreAddressWords.any((word) => ward!.contains(word))) {
@@ -233,8 +231,8 @@ class KUser extends KObject {
 
   String get area {
     final address = [
-      prettryWard,
-      prettryDistrict,
+      prettyWard,
+      prettyDistrict,
       city,
     ].where((e) => e != null).join(", ");
     return address;

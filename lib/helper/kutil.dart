@@ -193,26 +193,30 @@ abstract class KUtil {
 
   // TODO VN - last, middle first else first middle last
   static String? prettyName({String? fnm, String? mnm, String? lnm}) {
-    if (fnm == null && mnm == null && lnm == null) return null;
+    if (fnm == null && mnm == null && lnm == null) {
+      return null;
+    }
 
     String? title;
     try {
-      title = KSessionData.me!.countryCode == KLocaleHelper.COUNTRY_VN
+      title = KSessionData.me?.countryCode == KLocaleHelper.COUNTRY_VN
           ? KStringHelper.capitalize(lnm ?? "")
           : KStringHelper.capitalize(fnm ?? "");
 
-      if (!KStringHelper.isEmpty(mnm))
+      if (!KStringHelper.isEmpty(mnm)) {
         title += " " + KStringHelper.capitalize(mnm ?? "");
-      if (!KStringHelper.isEmpty(lnm))
+      }
+      if (!KStringHelper.isEmpty(lnm)) {
         title += " " +
-            (KSessionData.me!.countryCode == KLocaleHelper.COUNTRY_VN
+            (KSessionData.me?.countryCode == KLocaleHelper.COUNTRY_VN
                 ? KStringHelper.capitalize(fnm ?? "")
                 : KStringHelper.capitalize(lnm ?? ""));
+      }
     } catch (e) {
-      title = null;
+      title = "ERROR ${e.toString()}";
     }
     if (title == "") {
-      return null;
+      return null; // "TITLE WAS BLANK";
     }
     return title;
   }
