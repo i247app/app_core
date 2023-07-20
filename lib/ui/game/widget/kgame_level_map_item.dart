@@ -3,6 +3,7 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 
 class KGameLevelMapItem extends StatelessWidget {
+  final int? eggReceive;
   final String? levelText;
   final int? level;
   final int? currentLevel;
@@ -11,6 +12,7 @@ class KGameLevelMapItem extends StatelessWidget {
   final int? rate;
 
   KGameLevelMapItem({
+    this.eggReceive,
     this.levelText,
     this.levelIcon,
     this.level,
@@ -21,9 +23,10 @@ class KGameLevelMapItem extends StatelessWidget {
 
   bool get isCurrent => (level ?? 0) == (currentLevel ?? 0);
 
-  bool get isReached => (level ?? 0) <= (currentLevel ?? 0);
+  bool get isReached =>
+      (level ?? 0) <= (currentLevel ?? 0) || (level ?? 0) <= (eggReceive ?? 0);
 
-  bool get isPassed => isReached && rate != null && rate! != null;
+  bool get isPassed => isReached && rate != null;
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +129,7 @@ class KGameLevelMapItem extends StatelessWidget {
           ? AvatarGlow(
               glowColor: Colors.yellowAccent, endRadius: 40.0, child: levelItem)
           : levelItem,
-      onTap: () => onTap != null && (level ?? 0) <= (currentLevel ?? 0)
+      onTap: () => onTap != null && isReached
           ? onTap!()
           : null,
     );
