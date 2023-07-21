@@ -32,7 +32,9 @@ class BooleanDialog extends StatelessWidget {
         ),
         ElevatedButton(
           onPressed: () => Navigator.of(context).pop(true),
-          style: KStyles.squaredButton(yesColor),
+          style: KStyles.squaredButton(yesColor).copyWith(
+              padding: MaterialStateProperty.all(
+                  EdgeInsets.symmetric(horizontal: 14))),
           child: Text(yesText ?? "Yes", style: KStyles.normalText),
         ),
       ],
