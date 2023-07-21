@@ -18,6 +18,7 @@ KLead _$KLeadFromJson(Map<String, dynamic> json) => KLead()
   ..kisValid = json['isValid'] as String?
   ..action = json['action'] as String?
   ..kattribute = json['kattribute'] as String?
+  ..kvalue = json['kvalue'] as String?
   ..korderBy = json['orderBy'] as String?
   ..klimit = json['limit'] as String?
   ..koffset = json['offset'] as String?
@@ -81,6 +82,7 @@ Map<String, dynamic> _$KLeadToJson(KLead instance) {
   writeNotNull('isValid', instance.kisValid);
   writeNotNull('action', instance.action);
   writeNotNull('kattribute', instance.kattribute);
+  writeNotNull('kvalue', instance.kvalue);
   writeNotNull('orderBy', instance.korderBy);
   writeNotNull('limit', instance.klimit);
   writeNotNull('offset', instance.koffset);
