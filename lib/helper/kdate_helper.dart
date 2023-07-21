@@ -65,7 +65,9 @@ abstract class KDateHelper {
   static String? to20FSP(DateTime? date, {bool toUTC = true}) {
     try {
       date ??= DateTime.now();
-      if (toUTC) date = date.toUtc();
+      if (toUTC) {
+        date = date.toUtc();
+      }
       String convertD = date.toString();
       String year = convertD.substring(0, 4);
       String month = convertD.substring(5, 7);
