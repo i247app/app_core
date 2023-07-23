@@ -67,17 +67,18 @@ abstract class BaseResponse {
 
   /// Methods
   @JsonKey(ignore: true)
-  bool get isSuccess => this.kstatus == KCoreCode.SUCCESS;
+  bool get isSuccess => kstatus == KCoreCode.SUCCESS;
 
   @JsonKey(ignore: true)
-  bool get isNoData => this.kstatus == KCoreCode.NO_DATA;
+  bool get isNoData => kstatus == KCoreCode.NO_DATA;
 
   @JsonKey(ignore: true)
-  bool get isError => !this.isSuccess; // NOTE - includes 'isNoData'
+  bool get isError => !isSuccess; // NOTE - includes 'isNoData'
 
   @JsonKey(ignore: true)
-  bool get isStrictError => this.isError && !this.isNoData;
+  bool get isStrictError => isError && !isNoData;
 
   @JsonKey(ignore: true)
-  String get prettyMessage => KValidateHelper.messageFromCode(this.kstatus);
+  String get prettyMessage =>
+      kmessage ?? KValidateHelper.messageFromCode(kstatus);
 }
