@@ -19,6 +19,7 @@ class KGameController extends ValueNotifier<KGameData> {
     bool? isSpeechGame,
     bool? isCountTime,
     bool? isUniqueAnswer,
+    bool? isSkipIntro,
   }) : super(KGameData(
           gameID: gameID,
           gameAppID: gameAppID,
@@ -28,6 +29,7 @@ class KGameController extends ValueNotifier<KGameData> {
           answerType: answerType,
           isCountTime: isCountTime,
           isUniqueAnswer: isUniqueAnswer,
+          isSkipIntro: isSkipIntro,
         ));
 
   void notify() {
@@ -70,24 +72,26 @@ class KGameController extends ValueNotifier<KGameData> {
     if (response.isSuccess &&
         response.games != null &&
         response.games!.length > 0) {
-
       this.value.game = response.games![0];
       if (this.value.currentLevel == 0) {
         this.value.maxLevel = this.value.game?.maxLevel ?? 0;
         if ([KGameCount.GAME_ID].contains(this.value.gameID)) {
           this.value.maxLevel = 3;
         }
-        if ([KGameGridCount.GAME_ID, KGamePickNumber.GAME_ID].contains(this.value.gameID)) {
+        if ([KGameGridCount.GAME_ID, KGamePickNumber.GAME_ID]
+            .contains(this.value.gameID)) {
           this.value.maxLevel = 4;
         }
         if ([KGameMultiNumber.GAME_ID].contains(this.value.gameID)) {
           this.value.maxLevel = 6;
         }
-        this.value.levelCount = (this.value.maxLevel ?? 0) > 0 ? this.value.maxLevel : 1;
-        if (this.value.maxLevel != 0 && this.value.levelIconAssets.length != (this.value.levelCount ?? 0)) {
+        this.value.levelCount =
+            (this.value.maxLevel ?? 0) > 0 ? this.value.maxLevel : 1;
+        if (this.value.maxLevel != 0 &&
+            this.value.levelIconAssets.length != (this.value.levelCount ?? 0)) {
           this.value.levelIconAssets = List.generate(
             this.value.levelCount ?? 0,
-                (index) => [
+            (index) => [
               KAssets.BULLET_BALL_GREEN,
               KAssets.BULLET_BALL_BLUE,
               KAssets.BULLET_BALL_ORANGE,
@@ -95,8 +99,14 @@ class KGameController extends ValueNotifier<KGameData> {
             ][Math.Random().nextInt(4)],
           );
         }
-        if (this.value.maxLevel != 0 && this.value.levelPlayTimes.length != (this.value.levelCount ?? 0)) this.value.levelPlayTimes = List.generate(this.value.levelCount ?? 0, (_) => 0);
-        if (this.value.maxLevel != 0 && this.value.rates.length != (this.value.levelCount ?? 0)) this.value.rates = List.generate(this.value.levelCount ?? 0, (_) => null);
+        if (this.value.maxLevel != 0 &&
+            this.value.levelPlayTimes.length != (this.value.levelCount ?? 0))
+          this.value.levelPlayTimes =
+              List.generate(this.value.levelCount ?? 0, (_) => 0);
+        if (this.value.maxLevel != 0 &&
+            this.value.rates.length != (this.value.levelCount ?? 0))
+          this.value.rates =
+              List.generate(this.value.levelCount ?? 0, (_) => null);
       }
       this.value.currentQuestionIndex = 0;
     } else {

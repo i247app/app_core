@@ -139,6 +139,8 @@ class _KGameConsoleState extends State<KGameConsole>
 
   List<String> get levelIconAssets => gameData.levelIconAssets;
 
+  bool get isSkipIntro => gameData.isSkipIntro ?? false;
+
   List<String> languageLabels = [];
   List<String> languageValues = [];
 
@@ -1686,7 +1688,7 @@ class _KGameConsoleState extends State<KGameConsole>
                 fit: BoxFit.cover,
               ),
             ),
-            child: isShowIntro
+            child: isShowIntro && !isSkipIntro
                 ? gameIntro
                 : Stack(
                     fit: StackFit.expand,

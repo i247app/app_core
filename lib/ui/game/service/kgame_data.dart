@@ -32,20 +32,21 @@ class KGameData {
   bool? isLoading;
   bool? isSpeechGame;
   bool? isCountTime;
+  bool? isSkipIntro;
   List<String> levelIconAssets = [];
 
   bool get isInitializing => this.game == null;
 
   List<double> get levelHardness => List.generate(
         this.levelCount ?? 0,
-        (index) =>
-        (index *
-            ((1 - (baseLevelHardness ?? DEFAULT_BASE_LEVEL_HARDNESS)) /
-                ((this.levelCount != null && this.levelCount! > 1
-                    ? this.levelCount!
-                    : 2) -
-                    1)) +
-            (baseLevelHardness ?? DEFAULT_BASE_LEVEL_HARDNESS)).toPrecision(1),
+        (index) => (index *
+                    ((1 - (baseLevelHardness ?? DEFAULT_BASE_LEVEL_HARDNESS)) /
+                        ((this.levelCount != null && this.levelCount! > 1
+                                ? this.levelCount!
+                                : 2) -
+                            1)) +
+                (baseLevelHardness ?? DEFAULT_BASE_LEVEL_HARDNESS))
+            .toPrecision(1),
       );
 
   List<int?> rates = [];
@@ -94,5 +95,6 @@ class KGameData {
     this.isCountTime = false,
     this.isMuted = false,
     this.isUniqueAnswer = false,
+    this.isSkipIntro = false,
   });
 }
