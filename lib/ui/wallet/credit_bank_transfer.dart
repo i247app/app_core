@@ -61,7 +61,8 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
     try {
       if ((KSessionData.me?.bankName ?? "") != bankName ||
           (KSessionData.me?.bankAccName ?? "") != accountNameCtrl.text ||
-          (KSessionData.me?.bankAccNumber ?? "") != bankAccountNumberCtrl.text) {
+          (KSessionData.me?.bankAccNumber ?? "") !=
+              bankAccountNumberCtrl.text) {
         final response = await KServerHandler.modifyUserBank(
           bankID: bankID,
           bankName: bankName,
@@ -106,7 +107,7 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
           isSuccess: false,
         );
       }
-    } catch(ex) {}
+    } catch (ex) {}
     setState(() {
       this.isSubmitting = false;
     });

@@ -70,13 +70,17 @@ abstract class BaseResponse {
   bool get isSuccess => kstatus == KCoreCode.SUCCESS;
 
   @JsonKey(ignore: true)
+  bool get isNotSuccess => !isSuccess;
+
+  @JsonKey(ignore: true)
   bool get isNoData => kstatus == KCoreCode.NO_DATA;
 
+  @deprecated
   @JsonKey(ignore: true)
   bool get isError => !isSuccess; // NOTE - includes 'isNoData'
 
   @JsonKey(ignore: true)
-  bool get isStrictError => isError && !isNoData;
+  bool get isStrictError => !isSuccess && !isNoData;
 
   @JsonKey(ignore: true)
   String get prettyMessage =>

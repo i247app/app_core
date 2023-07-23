@@ -26,6 +26,10 @@ abstract class KObject {
   static const String KMESSAGE = "kmessage";
   static const String KCOUNT = "kcount";
 
+  static const String VALUE_YES = "yes";
+  static const String VALUE_NO = "no";
+
+
   @JsonKey(name: DOMAIN)
   String? kdomain;
 
