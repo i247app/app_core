@@ -67,8 +67,9 @@ abstract class KLocationHelper {
     }
     // return Geolocator.requestPermission()
     //     .then((_) => Permission.location.status);
-    else
+    else {
       return null;
+    }
   }
 
   static Future<KLatLng?> getKLatLng({
