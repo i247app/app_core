@@ -36,10 +36,17 @@ class _KChatScreenState extends State<KChatScreen> {
   late final StreamSubscription streamCallControl;
 
   List<KChatMember> get members =>
-      this.chatroomCtrl.value.members ?? widget.members ?? [];
+      chatroomCtrl.value.members ?? widget.members ?? [];
 
   bool get isVideoCallEnabled =>
       !KHostConfig.isReleaseMode || this.members.length <= 2;
+
+  String get smartTitle =>
+      chatroomCtrl.value.chatTitle ??
+      widget.title ??
+      (widget.isSupport
+          ? "Support"
+          : (members.isNotEmpty ? members.first.firstName ?? "" : "Chat"));
 
   @override
   void initState() {
@@ -241,8 +248,7 @@ class _KChatScreenState extends State<KChatScreen> {
         appBar: AppBar(
           title: InkWell(
             onTap: onManagerMember,
-            child: Text(chatroomCtrl.value.chatTitle ??
-                (widget.isSupport ? "Support" : "Chat")),
+            child: Text(smartTitle),
           ),
           actions: <Widget>[
             if (this.isVideoCallEnabled && !KCallKitHelper.instance.isCalling)
