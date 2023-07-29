@@ -16,10 +16,7 @@ class SwipeRoute extends PageRouteBuilder {
             final end = Offset.zero;
             final tween = Tween(begin: begin, end: end);
             final offsetAnimation = animation.drive(tween);
-            return SlideTransition(
-              position: offsetAnimation,
-              child: child,
-            );
+            return SlideTransition(position: offsetAnimation, child: child);
           },
         );
 }
