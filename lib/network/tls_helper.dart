@@ -177,7 +177,7 @@ abstract class TLSHelper {
       "deviceName": () async => await KUtil.getDeviceName(),
       "deviceNumber": () async => await KUtil.getDeviceID(),
       "tz": () async => await KUtil.getTimezoneName(),
-      "utcOffset": () async => await KUtil.getTimezonOffset(),
+      "utcOffset": () async => await KUtil.getTimezoneOffset(),
       "locale": () async => KUtil.localeName(),
       "language": () async => KUtil.localeName().split("_")[0],
       "domain": () async => await KUtil.getPackageName(),

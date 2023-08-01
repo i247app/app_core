@@ -36,8 +36,8 @@ abstract class KUtil {
     return now.timeZoneName;
   }
 
-  // Get timezone offet with hours and minutes format hh:mm
-  static String getTimezonOffset() {
+  // Get timezone offset with hours and minutes format hh:mm
+  static String getTimezoneOffset() {
     final DateTime now = DateTime.now();
     final offsetString = now.timeZoneOffset.toString();
     final parts = offsetString.split(":");
