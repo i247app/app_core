@@ -18,6 +18,7 @@ abstract class KLocalNotifHelper {
   static final Map<String, int> _blockedBannersDepth = {
     KPushData.APP_GIG_NOTIFY: 1,
     KPushData.APP_GIG_ASSIGN: 1,
+    KPushData.APP_GIG_STANDBY_ASSIGN: 1,
     KPushData.APP_GIG_BOOK: 1,
     KPushData.APP_SESSION_NOTIFY: 1,
     KPushData.APP_PUSH_PING_NOTIFY: 1,

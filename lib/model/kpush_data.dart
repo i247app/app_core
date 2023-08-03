@@ -17,7 +17,8 @@ class KPushData {
   static const String PUSH_TYPE_DATA = "data";
 
   static const String APP_GIG_NOTIFY = "gig.tutor.notify";
-  static const String APP_GIG_ASSIGN = "gig.tutor.assign";
+  static const String APP_GIG_ASSIGN = "gig.gig.assign";
+  static const String APP_GIG_STANDBY_ASSIGN = "gig.standby.assign";
   static const String APP_GIG_BOOK = "gig.tutor.book";
   static const String APP_GIG_GPS = "gig.tutor.gps";
   static const String APP_CHAT_NOTIFY = "chat.notify";
