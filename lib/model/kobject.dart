@@ -29,6 +29,7 @@ abstract class KObject {
   static const String VALUE_YES = "yes";
   static const String VALUE_NO = "no";
 
+  static const String KNAME = "kname";
 
   @JsonKey(name: DOMAIN)
   String? kdomain;
@@ -83,4 +84,7 @@ abstract class KObject {
 
   @JsonKey(name: KCOUNT)
   String? kcount;
+
+  @JsonKey(name: KNAME)
+  String? kname;
 }
