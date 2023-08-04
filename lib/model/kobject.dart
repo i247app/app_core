@@ -15,12 +15,19 @@ abstract class KObject {
   static const String IS_VALID = "isValid";
 
   static const String ACTION = "action"; // arbitrary uses - deactivate
-  static const String VALUE = "kvalue";
-  static const String ATTRIBUTE = "kattribute";
+  static const String KVALUE = "kvalue";
+  static const String KATTRIBUTE = "kattribute";
 
-  static const String ORDER_BY = "orderBy";
-  static const String LIMIT = "limit";
-  static const String OFFSET = "offset";
+  static const String KTAGS = "ktags";
+  static const String KFTS = "kfts";
+  static const String KRANKING = "kranking";
+  static const String KRANGE = "krange";
+
+  static const String STATUSES = "statuses";
+
+  static const String KORDER_BY = "korderBy";
+  static const String KLIMIT = "klimit";
+  static const String KOFFSET = "koffset";
 
   static const String KSTATUS = "kstatus";
   static const String KMESSAGE = "kmessage";
@@ -61,19 +68,34 @@ abstract class KObject {
   @JsonKey(name: ACTION)
   String? action;
 
-  @JsonKey(name: ATTRIBUTE)
+  @JsonKey(name: KATTRIBUTE)
   String? kattribute;
 
-  @JsonKey(name: VALUE)
+  @JsonKey(name: KVALUE)
   String? kvalue;
 
-  @JsonKey(name: ORDER_BY)
+  @JsonKey(name: KTAGS)
+  String? ktags;
+
+  @JsonKey(name: KFTS)
+  String? kfts;
+
+  @JsonKey(name: KRANKING)
+  String? kranking;
+
+  @JsonKey(name: KRANGE)
+  String? krange;
+
+  @JsonKey(name: STATUSES)
+  List<String>? statuses;
+
+  @JsonKey(name: KORDER_BY)
   String? korderBy;
 
-  @JsonKey(name: LIMIT)
+  @JsonKey(name: KLIMIT)
   String? klimit;
 
-  @JsonKey(name: OFFSET)
+  @JsonKey(name: KOFFSET)
   String? koffset;
 
   @JsonKey(name: KSTATUS)
