@@ -91,7 +91,7 @@ class KHero {
   String? keo;
 
   @JsonKey(name: HERO_STATUS)
-  String? status;
+  String? heroStatus;
 
   /// Methods
 

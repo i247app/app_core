@@ -26,7 +26,7 @@ KHero _$KHeroFromJson(Map<String, dynamic> json) => KHero()
   ..bua = json['bua'] as String?
   ..bao = json['bao'] as String?
   ..keo = json['keo'] as String?
-  ..status = json['heroStatus'] as String?;
+  ..heroStatus = json['heroStatus'] as String?;
 
 Map<String, dynamic> _$KHeroToJson(KHero instance) {
   final val = <String, dynamic>{};
@@ -56,6 +56,6 @@ Map<String, dynamic> _$KHeroToJson(KHero instance) {
   writeNotNull('bua', instance.bua);
   writeNotNull('bao', instance.bao);
   writeNotNull('keo', instance.keo);
-  writeNotNull('heroStatus', instance.status);
+  writeNotNull('heroStatus', instance.heroStatus);
   return val;
 }
