@@ -94,7 +94,7 @@ class _ScheduleViewState extends State<ScheduleView> {
     });
 
     final response = await KServerHandler.modifyLopSchedule(theSchedule
-      ..action = "modify"
+      ..kaction = "modify"
       ..externalLink = externalLink);
     if (response.isSuccess && (response.schedules ?? []).isNotEmpty) {
       setState(() {

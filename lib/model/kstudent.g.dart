@@ -32,7 +32,7 @@ KStudent _$KStudentFromJson(Map<String, dynamic> json) => KStudent()
   ..kcount = json['kcount'] as String?
   ..kname = json['kname'] as String?
   ..isWorking = zzz_str2Bool(json['isWorking'] as String?)
-  ..action = json['action'] as String?
+  ..kaction = json['action'] as String?
   ..gigCount = json['gigCount'] as String?
   ..puid = json['puid'] as String?
   ..kunm = json['kunm'] as String?
@@ -133,7 +133,7 @@ Map<String, dynamic> _$KStudentToJson(KStudent instance) {
   writeNotNull('kcount', instance.kcount);
   writeNotNull('kname', instance.kname);
   writeNotNull('isWorking', zzz_bool2Str(instance.isWorking));
-  writeNotNull('action', instance.action);
+  writeNotNull('action', instance.kaction);
   writeNotNull('gigCount', instance.gigCount);
   writeNotNull('puid', instance.puid);
   writeNotNull('kunm', instance.kunm);

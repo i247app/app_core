@@ -14,7 +14,7 @@ abstract class KObject {
   static const String MODIFY_DATE = "modifyDate";
   static const String IS_VALID = "isValid";
 
-  static const String ACTION = "action"; // arbitrary uses - deactivate
+  static const String KACTION = "kaction"; // arbitrary uses - deactivate
   static const String KVALUE = "kvalue";
   static const String KATTRIBUTE = "kattribute";
 
@@ -65,8 +65,8 @@ abstract class KObject {
   @JsonKey(name: IS_VALID)
   String? kisValid;
 
-  @JsonKey(name: ACTION)
-  String? action;
+  @JsonKey(name: KACTION)
+  String? kaction;
 
   @JsonKey(name: KATTRIBUTE)
   String? kattribute;

@@ -22,7 +22,7 @@ class KUser extends KObject {
   bool? isWorking;
 
   @JsonKey(name: "action")
-  String? action;
+  String? kaction;
 
   @JsonKey(name: GIG_COUNT)
   String? gigCount;

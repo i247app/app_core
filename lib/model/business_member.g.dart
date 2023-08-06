@@ -33,7 +33,7 @@ BusinessMember _$BusinessMemberFromJson(Map<String, dynamic> json) =>
       ..kcount = json['kcount'] as String?
       ..kname = json['kname'] as String?
       ..isWorking = zzz_str2Bool(json['isWorking'] as String?)
-      ..action = json['action'] as String?
+      ..kaction = json['action'] as String?
       ..gigCount = json['gigCount'] as String?
       ..kunm = json['kunm'] as String?
       ..phone = json['fone'] as String?
@@ -135,7 +135,7 @@ Map<String, dynamic> _$BusinessMemberToJson(BusinessMember instance) {
   writeNotNull('kcount', instance.kcount);
   writeNotNull('kname', instance.kname);
   writeNotNull('isWorking', zzz_bool2Str(instance.isWorking));
-  writeNotNull('action', instance.action);
+  writeNotNull('action', instance.kaction);
   writeNotNull('gigCount', instance.gigCount);
   writeNotNull('kunm', instance.kunm);
   writeNotNull('fone', instance.phone);
