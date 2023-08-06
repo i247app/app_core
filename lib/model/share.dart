@@ -1,10 +1,12 @@
 import 'package:app_core/app_core.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'kobject.dart';
+
 part 'share.g.dart';
 
 @JsonSerializable()
-class Share {
+class Share extends KObject {
   @JsonKey(name: "ssID")
   String? ssID;
 
@@ -20,8 +22,8 @@ class Share {
   @JsonKey(name: "role")
   String? role;
 
-  @JsonKey(name: "action")
-  String? action;
+  // @JsonKey(name: "action")
+  // String? action;
 
   @JsonKey(name: "refPUID")
   String? refPUID;

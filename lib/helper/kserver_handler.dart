@@ -799,7 +799,7 @@ abstract class KServerHandler {
     String? textbookID,
     String? chapterID,
     String? role,
-    String? action,
+    String? kaction,
   }) async {
     final params = {
       "svc": "share",
@@ -812,7 +812,7 @@ abstract class KServerHandler {
         ..textbookID = textbookID
         ..chapterID = chapterID
         ..role = role
-        ..action = action,
+        ..kaction = kaction,
     };
     return TLSHelper.send(params).then((data) => ShareResponse.fromJson(data));
   }
