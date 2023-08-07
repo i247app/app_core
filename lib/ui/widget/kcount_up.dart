@@ -5,7 +5,7 @@ class KCountUp extends StatefulWidget {
   final double end;
   final int precision;
   final Curve curve;
-  final Duration duration;
+  final Duration? duration;
   final TextStyle? style;
   final TextAlign? textAlign;
   final TextDirection? textDirection;
@@ -26,7 +26,7 @@ class KCountUp extends StatefulWidget {
     required this.end,
     this.precision = 0,
     this.curve = Curves.linear,
-    this.duration = const Duration(milliseconds: 250),
+    this.duration,
     this.style,
     this.textAlign,
     this.textDirection,
@@ -62,7 +62,7 @@ class _KCountUpState extends State<KCountUp> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(duration: widget.duration, vsync: this);
+    _controller = AnimationController(duration: widget.duration ?? Duration(milliseconds: 250), vsync: this);
     _latestBegin = widget.begin;
     _latestEnd = widget.end;
   }
