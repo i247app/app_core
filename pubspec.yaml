@@ -57,7 +57,7 @@ dependencies:
   path_provider: ^2.0.1
   provider: ^6.0.2
 
-  google_fonts: ^2.3.1
+  google_fonts: 4.0.3
 
   # VoIP
   connectycube_flutter_call_kit: 2.2.1
