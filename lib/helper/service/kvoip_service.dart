@@ -12,6 +12,7 @@ abstract class KVoipService {
     print("###### KVoipService.removeContext id=$id");
     _voipContexts[id]?.close();
     _voipContexts.remove(id);
+    return _voipContexts[id];
   }
 
   static KVoipContext? getContext(String id) => _voipContexts[id];
