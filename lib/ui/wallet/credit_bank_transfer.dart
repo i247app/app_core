@@ -71,8 +71,8 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
         );
         if (response.kstatus != KCoreCode.SUCCESS) {
           KSnackBarHelper.show(
-            text: response.kmessage ?? "",
-            isSuccess: false,
+            response.kmessage ?? "",
+            level: SnackBarLevel.error,
           );
           setState(() {
             this.isSubmitting = false;
@@ -96,15 +96,14 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
       if (response.kstatus == KCoreCode.SUCCESS &&
           (response.transactions?.length ?? 0) > 0) {
         final transaction = response.transactions![0];
-
         if (hasModifyBank) {
           await KSessionData.reload();
         }
         Navigator.of(context).pop(transaction);
       } else {
         KSnackBarHelper.show(
-          text: response.kmessage ?? "",
-          isSuccess: false,
+          response.kmessage ?? "",
+          level: SnackBarLevel.error,
         );
       }
     } catch (ex) {}

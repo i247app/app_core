@@ -6,8 +6,8 @@ enum SnackBarLevel { error, warning, success }
 
 abstract class KSnackBarHelper {
   /// Display a standardized Snackbar
-  static ScaffoldFeatureController show({
-    required String text,
+  static ScaffoldFeatureController show(
+    String text, {
     GlobalKey<ScaffoldState>? key,
     SnackBarLevel level = SnackBarLevel.success,
     @Deprecated(
@@ -42,23 +42,23 @@ abstract class KSnackBarHelper {
 
   /// Show an error snackbar
   static ScaffoldFeatureController error([String? text]) => show(
-        key: kScaffoldKey,
-        text: text ?? "An error occur",
+        text ?? "An error occur",
         level: SnackBarLevel.error,
+        key: kScaffoldKey,
       );
 
   /// Show an error snackbar
   static ScaffoldFeatureController warning([String? text]) => show(
-        key: kScaffoldKey,
-        text: text ?? "Confirmed",
+        text ?? "Confirmed",
         level: SnackBarLevel.warning,
+        key: kScaffoldKey,
       );
 
   /// Show a success snackbar
   static ScaffoldFeatureController success([String? text]) => show(
-        key: kScaffoldKey,
-        text: text ?? "Success",
+        text ?? "Success",
         level: SnackBarLevel.success,
+        key: kScaffoldKey,
       );
 
   /// Display generic success message
