@@ -6,7 +6,6 @@ import 'dart:math' as Math;
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/kanswer.dart';
 import 'package:app_core/model/khero.dart';
-import 'package:app_core/model/kquestion.dart';
 import 'package:app_core/ui/game/service/kgame_controller.dart';
 import 'package:app_core/ui/game/service/kgame_data.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -179,7 +178,7 @@ class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
         totalNumber = 9;
         break;
     }
-    int diff = ((totalNumber - 1)/2).ceil();
+    int diff = ((totalNumber - 1) / 2).ceil();
     int seedNumber = rand.nextInt(97 - diff) + diff + 1;
     print("widget.controller.value.currentLevel ${seedNumber}");
 
@@ -202,7 +201,14 @@ class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
       barrierValues =
           correctOrderAnswers.map((e) => KAnswer()..text = e).toList();
       barrierValues.shuffle();
-      while(jsonEncode(barrierValues.map((e) => e.text).toList()) == jsonEncode(correctOrderAnswers) || jsonEncode(barrierValues.map((e) => e.text).toList().reversed.toList()) == jsonEncode(correctOrderAnswers)) {
+      while (jsonEncode(barrierValues.map((e) => e.text).toList()) ==
+              jsonEncode(correctOrderAnswers) ||
+          jsonEncode(barrierValues
+                  .map((e) => e.text)
+                  .toList()
+                  .reversed
+                  .toList()) ==
+              jsonEncode(correctOrderAnswers)) {
         barrierValues.shuffle();
       }
 
@@ -352,7 +358,9 @@ class _KGameCountState extends State<KGameCount> with TickerProviderStateMixin {
     final body = Stack(
       fit: StackFit.expand,
       children: [
-        if (barrierValues.length > 0 && barrierY.length == barrierX.length && barrierValues.length == barrierX.length)
+        if (barrierValues.length > 0 &&
+            barrierY.length == barrierX.length &&
+            barrierValues.length == barrierX.length)
           Align(
             alignment: Alignment.center,
             child: Container(
