@@ -62,6 +62,15 @@ abstract class KSnackBarHelper {
       );
 
   /// Display generic success message
-  static ScaffoldFeatureController fromResponse(BaseResponse response) =>
-      (response.isSuccess ? success : error).call(response.prettyMessage);
+  static ScaffoldFeatureController fromResponse(BaseResponse response) {
+    ScaffoldFeatureController Function([String?]) func;
+    if (response.isSuccess) {
+      func = success;
+    } else if (response.isNoData) {
+      func = warning;
+    } else {
+      func = error;
+    }
+    return func.call(response.prettyMessage);
+  }
 }
