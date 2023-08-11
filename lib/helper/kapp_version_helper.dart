@@ -33,6 +33,10 @@ abstract class KAppVersionHelper {
   ) async {
     final status = await _versionPlugin.getVersionStatus();
 
+    // print("+++ isForceUpdate? - ${KSessionData.userSession?.isForceUpdate}");
+    // print(
+    //     "+++ !(KSessionData.userSession?.isForceUpdate ?? true) - ${!(KSessionData.userSession?.isForceUpdate ?? true)}");
+
     if (status != null && status.canUpdate) {
       _versionPlugin.showUpdateDialog(
         context: context,
