@@ -13,6 +13,8 @@ abstract class KAction {
 
   static const String SUBMIT = "submit";
   static const String APPLY = "apply";
+  static const String JOIN = "join";
+  static const String UNJOIN = "unjoin";
 
   static const String MARK = "mark";
   static const String CHECK = "check";
