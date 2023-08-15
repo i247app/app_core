@@ -135,7 +135,7 @@ class KAddress {
       ..district = user.district
       ..city = user.city
       ..stateCode = user.stateCode
-      ..zipCode = user.zip
+      ..zipCode = user.zipCode
       ..countryCode = user.countryCode
       ..latLng = user.currentLatLng;
   }

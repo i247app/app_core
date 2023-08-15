@@ -14,6 +14,11 @@ class KUser extends KObject {
   static const String ACTION_MODIFY = "modify";
   static const String ACTION_REMOVE = "remove";
   static const String GIG_COUNT = "gigCount";
+  static const String PUID = "puid";
+  static const String KUNM = "kunm";
+  static const String FONE = "fone";
+  static const String FONE_CODE = "foneCode";
+  static const String EMAIL = "email";
 
   // static const String IS_ONLINE= "isOnline";
   static const String IS_WORKING = "isWorking";
@@ -24,22 +29,19 @@ class KUser extends KObject {
   @JsonKey(name: GIG_COUNT)
   String? gigCount;
 
-  @JsonKey(name: "puid")
+  @JsonKey(name: PUID)
   String? puid;
 
-  @JsonKey(name: "kunm")
+  @JsonKey(name: KUNM)
   String? kunm;
 
-  @JsonKey(name: "fone")
+  @JsonKey(name: FONE)
   String? phone;
 
-  @JsonKey(name: "foneCode")
+  @JsonKey(name: FONE_CODE)
   String? phoneCode;
 
-  @JsonKey(name: "addressLine")
-  String? addressLine;
-
-  @JsonKey(name: "email")
+  @JsonKey(name: EMAIL)
   String? email;
 
   @JsonKey(name: "firstName")
@@ -69,6 +71,10 @@ class KUser extends KObject {
   /*
    * Address
    */
+
+  @JsonKey(name: "addressLine")
+  String? addressLine;
+
   @JsonKey(name: "addressLine1")
   String? address1;
 
@@ -81,9 +87,8 @@ class KUser extends KObject {
   @JsonKey(name: "stateCode")
   String? stateCode;
 
-  @deprecated
   @JsonKey(name: "zipCode")
-  String? zip;
+  String? zipCode;
 
   @JsonKey(name: "ward")
   String? ward;

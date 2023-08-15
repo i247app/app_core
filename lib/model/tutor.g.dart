@@ -38,7 +38,6 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..kunm = json['kunm'] as String?
   ..phone = json['fone'] as String?
   ..phoneCode = json['foneCode'] as String?
-  ..addressLine = json['addressLine'] as String?
   ..email = json['email'] as String?
   ..firstName = json['firstName'] as String?
   ..middleName = json['middleName'] as String?
@@ -48,11 +47,12 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..parentName = json['parentName'] as String?
   ..parentEmail = json['parentEmail'] as String?
   ..parentPhone = json['parentPhone'] as String?
+  ..addressLine = json['addressLine'] as String?
   ..address1 = json['addressLine1'] as String?
   ..address2 = json['addressLine2'] as String?
   ..city = json['city'] as String?
   ..stateCode = json['stateCode'] as String?
-  ..zip = json['zipCode'] as String?
+  ..zipCode = json['zipCode'] as String?
   ..ward = json['ward'] as String?
   ..district = json['district'] as String?
   ..countryCode = json['countryCode'] as String?
@@ -160,7 +160,6 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('kunm', instance.kunm);
   writeNotNull('fone', instance.phone);
   writeNotNull('foneCode', instance.phoneCode);
-  writeNotNull('addressLine', instance.addressLine);
   writeNotNull('email', instance.email);
   writeNotNull('firstName', instance.firstName);
   writeNotNull('middleName', instance.middleName);
@@ -170,11 +169,12 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('parentName', instance.parentName);
   writeNotNull('parentEmail', instance.parentEmail);
   writeNotNull('parentPhone', instance.parentPhone);
+  writeNotNull('addressLine', instance.addressLine);
   writeNotNull('addressLine1', instance.address1);
   writeNotNull('addressLine2', instance.address2);
   writeNotNull('city', instance.city);
   writeNotNull('stateCode', instance.stateCode);
-  writeNotNull('zipCode', instance.zip);
+  writeNotNull('zipCode', instance.zipCode);
   writeNotNull('ward', instance.ward);
   writeNotNull('district', instance.district);
   writeNotNull('countryCode', instance.countryCode);
