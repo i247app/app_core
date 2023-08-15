@@ -21,9 +21,6 @@ class KUser extends KObject {
   @JsonKey(name: IS_WORKING, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isWorking;
 
-  @JsonKey(name: "action")
-  String? kaction;
-
   @JsonKey(name: GIG_COUNT)
   String? gigCount;
 
