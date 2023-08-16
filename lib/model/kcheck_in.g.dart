@@ -41,7 +41,10 @@ KCheckIn _$KCheckInFromJson(Map<String, dynamic> json) => KCheckIn()
       : KLatLng.fromJson(json['latLng'] as Map<String, dynamic>)
   ..minutePerSession = json['minutePerSession'] as int?
   ..checkInDate = zzz_str2Date(json['checkInDate'] as String?)
-  ..checkInStatus = json['checkInStatus'] as String?;
+  ..checkInStatus = json['checkInStatus'] as String?
+  ..address = json['address'] == null
+      ? null
+      : KGigAddress.fromJson(json['address'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$KCheckInToJson(KCheckIn instance) {
   final val = <String, dynamic>{};
@@ -84,5 +87,6 @@ Map<String, dynamic> _$KCheckInToJson(KCheckIn instance) {
   writeNotNull('minutePerSession', instance.minutePerSession);
   writeNotNull('checkInDate', zzz_date2Str(instance.checkInDate));
   writeNotNull('checkInStatus', instance.checkInStatus);
+  writeNotNull('address', instance.address?.toJson());
   return val;
 }
