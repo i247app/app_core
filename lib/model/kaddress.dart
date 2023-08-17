@@ -128,8 +128,8 @@ class KAddress {
 
   factory KAddress.fromKUser(KUser user) {
     return KAddress()
-      ..addressLine1 = user.address1
-      ..addressLine2 = user.address2
+      ..addressLine1 = user.addressLine1
+      ..addressLine2 = user.addressLine2
       ..addressLine = user.addressLine
       ..ward = user.ward
       ..district = user.district

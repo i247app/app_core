@@ -76,10 +76,10 @@ class KUser extends KObject {
   String? addressLine;
 
   @JsonKey(name: "addressLine1")
-  String? address1;
+  String? addressLine1;
 
   @JsonKey(name: "addressLine2")
-  String? address2;
+  String? addressLine2;
 
   @JsonKey(name: "city")
   String? city;
@@ -245,10 +245,10 @@ class KUser extends KObject {
       return this.addresses!.first.prettyAddress;
     }
     final area = this.area;
-    if (area.contains(this.address1 ?? "")) {
+    if (area.contains(this.addressLine1 ?? "")) {
       return area;
     } else {
-      return "${this.address1}, $area";
+      return "${this.addressLine1}, $area";
     }
   }
 

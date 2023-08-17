@@ -141,7 +141,10 @@ abstract class KSessionData {
 
   static KUser? get me => userSession?.user;
 
-  static bool get isApprovedTutor => userSession?.isTutorReady ?? false;
+  static bool get isTutor => userSession?.isTutorReady ?? false;
+
+  static bool get isVerifiedTutor =>
+      isTutor && KSessionData.tutor?.tutorStatus == Tutor.STATUS_ACTIVE;
 
   static bool get isBizReady => userSession?.isBizReady ?? false;
 
