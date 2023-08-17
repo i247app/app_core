@@ -67,8 +67,8 @@ class KStudent extends KUser {
       ..parentName = user.parentName
       ..parentEmail = user.parentEmail
       ..parentPhone = user.parentPhone
-      ..address1 = user.address1
-      ..address2 = user.address2
+      ..addressLine1 = user.addressLine1
+      ..addressLine2 = user.addressLine2
       ..city = user.city
       ..linkStatus = user.linkStatus
       ..studentID = user.puid;
