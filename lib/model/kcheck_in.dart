@@ -3,6 +3,8 @@ import 'package:app_core/model/kobject.dart';
 import 'package:app_core/model/response/base_response.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'kgig_address.dart';
+
 part 'kcheck_in.g.dart';
 
 @JsonSerializable()
@@ -30,6 +32,9 @@ class KCheckIn extends KObject {
 
   @JsonKey(name: "checkInStatus")
   String? checkInStatus;
+
+  @JsonKey(name: "address")
+  KGigAddress? address;
 
   // JSON
   KCheckIn();
