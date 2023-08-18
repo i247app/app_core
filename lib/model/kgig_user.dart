@@ -31,6 +31,9 @@ class KGigUser extends KUser {
   @JsonKey(name: "billPayNote")
   String? billPayNote;
 
+  @JsonKey(name: "tierRate")
+  String? tierRate;
+
   // JSON
   KGigUser();
 
