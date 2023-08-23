@@ -334,9 +334,8 @@ class KShootingGameScreen extends StatefulWidget {
 
 class KShootingGameScreenState extends State<KShootingGameScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
-  AudioPlayer backgroundAudioPlayer =
-      AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
-  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer backgroundAudioPlayer = AudioPlayer();
+  AudioPlayer audioPlayer = AudioPlayer();
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
   String? shootingAudioFileUri;
@@ -742,7 +741,8 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
 
   void loadAudioAsset() async {
     try {
-      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.LOOP);
+      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.loop);
+      await backgroundAudioPlayer.setPlayerMode(PlayerMode.mediaPlayer);
 
       Directory tempDir = await getTemporaryDirectory();
 
@@ -790,7 +790,8 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
   void fire() async {
     if (!isShooting && bulletsY.length < 3) {
       try {
-        await audioPlayer.play(shootingAudioFileUri ?? "", isLocal: true);
+        await audioPlayer.play(DeviceFileSource(shootingAudioFileUri ?? ""),
+            mode: PlayerMode.lowLatency);
       } catch (e) {}
       if (!_barrelScaleAnimationController.isAnimating) {
         _barrelScaleAnimationController.forward();
@@ -854,9 +855,11 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
   void playSound(bool isTrueAnswer) async {
     try {
       if (isTrueAnswer) {
-        await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
+        await audioPlayer.play(DeviceFileSource(correctAudioFileUri ?? ""),
+            mode: PlayerMode.lowLatency);
       } else {
-        await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
+        await audioPlayer.play(DeviceFileSource(wrongAudioFileUri ?? ""),
+            mode: PlayerMode.lowLatency);
       }
     } catch (e) {}
     this.setState(() {
@@ -1031,11 +1034,12 @@ class KShootingGameScreenState extends State<KShootingGameScreen>
         });
       }
 
-      if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+      if (backgroundAudioPlayer.state != PlayerState.playing) {
         this.setState(() {
           this.isBackgroundSoundPlaying = true;
         });
-        backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
+        backgroundAudioPlayer
+            .play(DeviceFileSource(backgroundAudioFileUri ?? ""));
       }
     }
   }

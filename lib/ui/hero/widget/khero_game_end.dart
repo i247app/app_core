@@ -75,8 +75,9 @@ class _KHeroGameEndState extends State<KHeroGameEnd>
       Future.delayed(Duration(milliseconds: 500), () {
         if (!isMuted) {
           try {
-            final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
-            ap.play(winAudioFileUri ?? "", isLocal: true);
+            final ap = AudioPlayer();
+            ap.play(DeviceFileSource(winAudioFileUri ?? ""),
+                mode: PlayerMode.mediaPlayer);
             cBackgroundAudioPlayer.complete(ap);
           } catch (e) {}
         }

@@ -20,7 +20,7 @@ class KHeroTraining extends StatefulWidget {
 
 class _KHeroTrainingState extends State<KHeroTraining>
     with TickerProviderStateMixin {
-  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer audioPlayer = AudioPlayer();
   String? correctAudioFileUri;
 
   late Animation<double> _scaleAnimation;
@@ -151,7 +151,8 @@ class _KHeroTrainingState extends State<KHeroTraining>
   void playSound(bool isTrueAnswer) async {
     try {
       if (isTrueAnswer) {
-        await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
+        await audioPlayer.play(DeviceFileSource(correctAudioFileUri ?? ""),
+            mode: PlayerMode.lowLatency);
       } else {}
     } catch (e) {}
     this.setState(() {

@@ -128,8 +128,9 @@ class _KEggHeroIntroState extends State<KEggHeroIntro>
                 ap.release();
               });
               try {
-                final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
-                ap.play(correctAudioFileUri ?? "", isLocal: true);
+                final ap = AudioPlayer();
+                ap.play(DeviceFileSource(correctAudioFileUri ?? ""),
+                    mode: PlayerMode.lowLatency);
                 cAudioPlayer.complete(ap);
                 this.setState(() {
                   this.eggBreakStep = 1;
@@ -213,8 +214,9 @@ class _KEggHeroIntroState extends State<KEggHeroIntro>
 
     Future.delayed(Duration(milliseconds: 250), () {
       try {
-        final ap = AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
-        ap.play(introAudioFileUri ?? "", isLocal: true);
+        final ap = AudioPlayer();
+        ap.play(DeviceFileSource(introAudioFileUri ?? ""),
+            mode: PlayerMode.mediaPlayer);
         cBackgroundAudioPlayer.complete(ap);
       } catch (e) {}
     });
@@ -247,23 +249,23 @@ class _KEggHeroIntroState extends State<KEggHeroIntro>
     if (state == AppLifecycleState.inactive ||
         state == AppLifecycleState.paused) {
       cAudioPlayer.future.then((ap) {
-        if (ap.state == PlayerState.PLAYING) {
+        if (ap.state == PlayerState.playing) {
           ap.pause();
         }
       });
       cBackgroundAudioPlayer.future.then((ap) {
-        if (ap.state == PlayerState.PLAYING) {
+        if (ap.state == PlayerState.playing) {
           ap.pause();
         }
       });
     } else if (state == AppLifecycleState.resumed) {
       cAudioPlayer.future.then((ap) {
-        if (ap.state == PlayerState.PAUSED) {
+        if (ap.state == PlayerState.paused) {
           ap.resume();
         }
       });
       cBackgroundAudioPlayer.future.then((ap) {
-        if (ap.state == PlayerState.PAUSED) {
+        if (ap.state == PlayerState.paused) {
           ap.resume();
         }
       });
@@ -273,7 +275,7 @@ class _KEggHeroIntroState extends State<KEggHeroIntro>
   void loadAudioAsset() async {
     try {
       cBackgroundAudioPlayer.future
-          .then((ap) => ap.setReleaseMode(ReleaseMode.LOOP));
+          .then((ap) => ap.setReleaseMode(ReleaseMode.loop));
 
       Directory tempDir = await getTemporaryDirectory();
 
