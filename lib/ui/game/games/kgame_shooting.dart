@@ -35,11 +35,11 @@ class KGameShooting extends StatefulWidget {
 
 class _KGameShootingState extends State<KGameShooting>
     with TickerProviderStateMixin {
-  AudioPlayer audioPlayer = AudioPlayer();
-  AudioPlayer audioPlayer1 = AudioPlayer();
-  AudioPlayer audioPlayer2 = AudioPlayer();
-  AudioPlayer audioPlayer3 = AudioPlayer();
-  AudioPlayer audioPlayer4 = AudioPlayer();
+  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer audioPlayer1 = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer audioPlayer2 = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer audioPlayer3 = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer audioPlayer4 = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
 
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
@@ -375,7 +375,7 @@ class _KGameShootingState extends State<KGameShooting>
     if (!isShooting && bulletsY.length < 4) {
       if (!isMuted) {
         try {
-          audioPlayer.play(DeviceFileSource(shootingAudioFileUri ?? ""), mode: PlayerMode.lowLatency);
+          audioPlayer.play(shootingAudioFileUri ?? "", isLocal: true);
         } catch (e) {}
       }
       if (!_barrelScaleAnimationController.isAnimating) {
@@ -428,26 +428,26 @@ class _KGameShootingState extends State<KGameShooting>
       try {
         switch (numberOfBullets) {
           case 1:
-            await audioPlayer1.play(DeviceFileSource(bling ?? ""), mode: PlayerMode.lowLatency);
+            await audioPlayer1.play(bling ?? "", isLocal: true);
             break;
           case 2:
-            await audioPlayer1.play(DeviceFileSource(bling2x ?? ""), mode: PlayerMode.lowLatency);
+            await audioPlayer1.play(bling2x ?? "", isLocal: true);
             break;
           case 3:
             if (isTrueAnswer) {
-              await audioPlayer2.play(DeviceFileSource(blingUp3x ?? ""), mode: PlayerMode.lowLatency);
+              await audioPlayer2.play(blingUp3x ?? "", isLocal: true);
             } else {
-              await audioPlayer2.play(DeviceFileSource(blingDown3x ?? ""), mode: PlayerMode.lowLatency);
+              await audioPlayer2.play(blingDown3x ?? "", isLocal: true);
             }
             break;
           default:
-            await audioPlayer4.play(DeviceFileSource(bling ?? ""), mode: PlayerMode.lowLatency);
+            await audioPlayer4.play(bling ?? "", isLocal: true);
             break;
         }
         if (isTrueAnswer) {
-          await audioPlayer.play(DeviceFileSource(correctAudioFileUri ?? ""), mode: PlayerMode.lowLatency);
+          audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
         } else {
-          await audioPlayer.play(DeviceFileSource(wrongAudioFileUri ?? ""), mode: PlayerMode.lowLatency);
+          audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
         }
       } catch (e) {}
     }

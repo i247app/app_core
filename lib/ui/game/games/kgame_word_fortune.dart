@@ -36,7 +36,7 @@ class KGameWordFortune extends StatefulWidget {
 
 class _KGameWordFortuneState extends State<KGameWordFortune>
     with TickerProviderStateMixin {
-  AudioPlayer audioPlayer = AudioPlayer();
+  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
 
@@ -276,11 +276,9 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
     if (!isMuted) {
       try {
         if (isTrueAnswer) {
-          await audioPlayer.play(DeviceFileSource(correctAudioFileUri ?? ""),
-              mode: PlayerMode.lowLatency);
+          await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
         } else {
-          await audioPlayer.play(DeviceFileSource(wrongAudioFileUri ?? ""),
-              mode: PlayerMode.lowLatency);
+          await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
         }
       } catch (e) {}
     }
@@ -479,16 +477,16 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
                   ),
                   // child: FittedBox(
                   //   fit: BoxFit.scaleDown,
-                  child: Text(
-                    "${currentQuestion.text ?? ""}",
-                    maxLines: 2,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24,
-                      color: Colors.black,
+                    child: Text(
+                      "${currentQuestion.text ?? ""}",
+                      maxLines: 2,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                        color: Colors.black,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
                   // ),
                 ),
                 SizedBox(
@@ -498,8 +496,7 @@ class _KGameWordFortuneState extends State<KGameWordFortune>
                   alignment: WrapAlignment.center,
                   children: List.generate(
                     barrierValues.length,
-                    (i) => selectedWordIndex.contains(i) ||
-                            wrongSelectedWordIndex.contains(i)
+                    (i) => selectedWordIndex.contains(i) || wrongSelectedWordIndex.contains(i)
                         ? SizedBox()
                         : GestureDetector(
                             onTap: () =>

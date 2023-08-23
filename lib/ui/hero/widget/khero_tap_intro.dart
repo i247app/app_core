@@ -31,7 +31,7 @@ class KHeroTapIntro extends StatefulWidget {
 
 class _KHeroTapIntroState extends State<KHeroTapIntro>
     with TickerProviderStateMixin {
-  AudioPlayer audioPlayer = AudioPlayer();
+  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
 
@@ -375,11 +375,9 @@ class _KHeroTapIntroState extends State<KHeroTapIntro>
   void playSound(bool isTrueAnswer) async {
     try {
       if (isTrueAnswer) {
-        await audioPlayer.play(DeviceFileSource(correctAudioFileUri ?? ""),
-            mode: PlayerMode.lowLatency);
+        await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
       } else {
-        await audioPlayer.play(DeviceFileSource(wrongAudioFileUri ?? ""),
-            mode: PlayerMode.lowLatency);
+        await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
       }
     } catch (e) {}
     this.setState(() {

@@ -32,7 +32,7 @@ class KGameTap extends StatefulWidget {
 }
 
 class _KGameTapState extends State<KGameTap> with TickerProviderStateMixin {
-  AudioPlayer audioPlayer = AudioPlayer();
+  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
 
@@ -224,9 +224,9 @@ class _KGameTapState extends State<KGameTap> with TickerProviderStateMixin {
     if (!isMuted) {
       try {
         if (isTrueAnswer) {
-          await audioPlayer.play(DeviceFileSource(correctAudioFileUri ?? ""), mode: PlayerMode.lowLatency);
+          await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
         } else {
-          await audioPlayer.play(DeviceFileSource(wrongAudioFileUri ?? ""), mode: PlayerMode.lowLatency);
+          await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
         }
       } catch (e) {}
     }

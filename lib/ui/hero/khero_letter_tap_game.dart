@@ -337,8 +337,9 @@ class KLetterTapGameScreen extends StatefulWidget {
 class KLetterTapGameScreenState extends State<KLetterTapGameScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   static const GAME_NAME = "shooting_game";
-  AudioPlayer backgroundAudioPlayer = AudioPlayer();
-  AudioPlayer audioPlayer = AudioPlayer();
+  AudioPlayer backgroundAudioPlayer =
+      AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
   String? backgroundAudioFileUri;
@@ -692,20 +693,18 @@ class KLetterTapGameScreenState extends State<KLetterTapGameScreen>
         });
       }
 
-      if (backgroundAudioPlayer.state != PlayerState.playing) {
+      if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
         this.setState(() {
           this.isBackgroundSoundPlaying = true;
         });
-        backgroundAudioPlayer
-            .play(DeviceFileSource(backgroundAudioFileUri ?? ""));
+        backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
       }
     }
   }
 
   void loadAudioAsset() async {
     try {
-      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.loop);
-      await backgroundAudioPlayer.setPlayerMode(PlayerMode.mediaPlayer);
+      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.LOOP);
 
       Directory tempDir = await getTemporaryDirectory();
 
@@ -741,11 +740,9 @@ class KLetterTapGameScreenState extends State<KLetterTapGameScreen>
   void playSound(bool isTrueAnswer) async {
     try {
       if (isTrueAnswer) {
-        await audioPlayer.play(DeviceFileSource(correctAudioFileUri ?? ""),
-            mode: PlayerMode.lowLatency);
+        await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
       } else {
-        await audioPlayer.play(DeviceFileSource(wrongAudioFileUri ?? ""),
-            mode: PlayerMode.lowLatency);
+        await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
       }
     } catch (e) {}
     this.setState(() {

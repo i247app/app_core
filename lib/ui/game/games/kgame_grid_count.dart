@@ -37,7 +37,7 @@ class KGameGridCount extends StatefulWidget {
 
 class _KGameGridCountState extends State<KGameGridCount>
     with TickerProviderStateMixin {
-  AudioPlayer audioPlayer = AudioPlayer();
+  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
 
@@ -379,9 +379,9 @@ class _KGameGridCountState extends State<KGameGridCount>
     if (!isMuted) {
       try {
         if (isTrueAnswer) {
-          await audioPlayer.play(DeviceFileSource(correctAudioFileUri ?? ""), mode: PlayerMode.lowLatency);
+          await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
         } else {
-          await audioPlayer.play(DeviceFileSource(wrongAudioFileUri ?? ""), mode: PlayerMode.lowLatency);
+          await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
         }
       } catch (e) {}
     }
