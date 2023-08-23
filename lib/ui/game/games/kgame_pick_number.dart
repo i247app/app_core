@@ -36,7 +36,7 @@ class KGamePickNumber extends StatefulWidget {
 
 class _KGamePickNumberState extends State<KGamePickNumber>
     with TickerProviderStateMixin {
-  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer audioPlayer = AudioPlayer();
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
 
@@ -341,9 +341,9 @@ class _KGamePickNumberState extends State<KGamePickNumber>
     if (!isMuted) {
       try {
         if (isTrueAnswer) {
-          await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
+          await audioPlayer.play(DeviceFileSource(correctAudioFileUri ?? ""), mode: PlayerMode.lowLatency);
         } else {
-          await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
+          await audioPlayer.play(DeviceFileSource(wrongAudioFileUri ?? ""), mode: PlayerMode.lowLatency);
         }
       } catch (e) {}
     }

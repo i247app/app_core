@@ -6,12 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 abstract class KAudioHelper {
-  static AudioPlayer _audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  static AudioPlayer _audioPlayer = AudioPlayer();
 
   /// Play an audio file
-  static Future<int> playAsset(String asset) async {
+  static Future<void> playAsset(String asset) async {
     final file = await _getImageFileFromAssets(asset);
-    return _audioPlayer.play(file.path, isLocal: true);
+    return _audioPlayer.play(DeviceFileSource(file.path), mode: PlayerMode.lowLatency);
   }
 
   static Future<File> _getImageFileFromAssets(String path) async {
