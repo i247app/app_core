@@ -49,9 +49,9 @@ dependencies:
   barcode_scan2: ^4.2.4
 
   # Firebase
-  firebase_core_platform_interface: 4.5.1
-  firebase_core: ^1.24.0
-  firebase_messaging: ^13.0.4 # ^11.4.4
+  firebase_core_platform_interface: ^4.8.0
+  firebase_core: ^2.15.1
+  firebase_messaging: ^14.6.6 # ^11.4.4
 
   gallery_saver: 2.3.2 #2.1.0 # +2.1.1 broken so far
   path_provider: ^2.0.1
@@ -60,10 +60,10 @@ dependencies:
   google_fonts: 4.0.3
 
   # VoIP
-  connectycube_flutter_call_kit: 2.2.1
+  connectycube_flutter_call_kit: 2.3.0
 
   # Flutter WebRTC
-  flutter_webrtc: 0.9.27 #0.6.3 # 0.5.8
+  flutter_webrtc: 0.9.40 #0.6.3 # 0.5.8
 
   flutter_ringtone_player: ^3.2.0
 
