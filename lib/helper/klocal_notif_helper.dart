@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:app_core/helper/khost_config.dart';
@@ -50,25 +51,34 @@ abstract class KLocalNotifHelper {
 
   static Future<void> setupLocalNotifications(
     String androidIcon, {
-    SelectNotificationCallback? onSelectNotification,
+    DidReceiveNotificationResponseCallback? onSelectNotification,
   }) async {
     print("fcm_helper => setupLocalNotifications fired");
 
+    if (Platform.isAndroid) {
+      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+          FlutterLocalNotificationsPlugin();
+      flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.requestPermission();
+    }
+
     _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     final android = AndroidInitializationSettings(androidIcon);
-    final ios = IOSInitializationSettings();
+    final ios = DarwinInitializationSettings();
     final platform = InitializationSettings(android: android, iOS: ios);
 
     await _flutterLocalNotificationsPlugin!.initialize(
       platform,
-      onSelectNotification: onSelectNotification,
+      onDidReceiveNotificationResponse: onSelectNotification,
     );
   }
 
   static void showNotification(
     KFullNotification msg, {
     required String androidIcon,
-    SelectNotificationCallback? onSelectNotification,
+    DidReceiveNotificationResponseCallback? onSelectNotification,
     bool obeyBlacklist = false,
   }) async {
     final KNotifData? notif = msg.notification;
@@ -88,14 +98,14 @@ abstract class KLocalNotifHelper {
     final android = AndroidNotificationDetails(
       "91512",
       "chao",
-      "chao",
+      channelDescription: "chao",
       importance: Importance.max,
       priority: Priority.max,
       enableLights: true,
       enableVibration: true,
     );
 
-    final iOS = IOSNotificationDetails(
+    final iOS = DarwinNotificationDetails(
       presentAlert: true,
       presentBadge: true,
       presentSound: true,

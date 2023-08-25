@@ -6,10 +6,10 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/model/kgig_address.dart';
 import 'package:app_core/model/krole.dart';
 import 'package:app_core/ui/wallet/wallet_transfer.dart';
-import 'package:device_info/device_info.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 abstract class KUtil {
@@ -50,14 +50,14 @@ abstract class KUtil {
     return Platform.isAndroid ? (await deviceInfo.androidInfo).brand : 'Apple';
   }
 
-  static Future<String> getDeviceModel() async {
+  static Future<String?> getDeviceModel() async {
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     return Platform.isAndroid
         ? (await deviceInfo.androidInfo).model
         : (await deviceInfo.iosInfo).name;
   }
 
-  static Future<String> getDeviceVersion() async {
+  static Future<String?> getDeviceVersion() async {
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     return Platform.isAndroid
         ? (await deviceInfo.androidInfo).version.release
@@ -105,7 +105,9 @@ abstract class KUtil {
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     return KTabletDetector.isTablet(MediaQuery.of(context)) ||
         (Platform.isIOS &&
-            (await deviceInfo.iosInfo).name.toLowerCase().contains("ipad"));
+            ((await deviceInfo.iosInfo).name ?? '')
+                .toLowerCase()
+                .contains("ipad"));
   }
 
   static String prettyXFRDescription({String? lineType, String? xfrType}) {

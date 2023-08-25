@@ -19,9 +19,10 @@ dependencies:
   # Core
   async: ^2.6.1
   url_launcher: ^6.0.4 # ^5.0.2
-  device_info: ^2.0.1
-  package_info: ^2.0.0
-  permission_handler: ^7.2.0
+  device_info_plus: ^8.2.2
+  package_info_plus: ^3.1.2
+  android_id: ^0.3.4
+  permission_handler: ^10.4.3
   timeago: ^3.1.0
   intl: ^0.18.1
   flutter_secure_storage: ^4.2.0
@@ -29,7 +30,7 @@ dependencies:
   fluttertoast: ^8.2.1
   local_auth: ^2.1.6
   new_version_plus: ^0.0.9 # new_version deprecated
-  flutter_local_notifications: ^6.1.0
+  flutter_local_notifications: ^15.1.1
   flutter_slidable: ^0.6.0
   draggable_widget: ^2.0.0
 
@@ -67,7 +68,7 @@ dependencies:
 
   flutter_ringtone_player: ^3.2.0
 
-  wakelock: 0.6.2 # 0.5.6 # ^0.5.1
+  wakelock: ^0.6.2 # 0.5.6 # ^0.5.1
   uuid: ^3.0.4
 
   # Vietnamese language parsing
@@ -96,7 +97,7 @@ dependencies:
   flutter_picker: ^2.1.0
   wheel_chooser: ^1.1.2 # ^1.1.0 is buggy
 
-  xml: ^5.1.2
+  xml: ^6.3.0
 
   avatar_glow: ^2.0.2
 
