@@ -19,8 +19,6 @@ class KChatListingView extends StatefulWidget {
 }
 
 class _KChatListingViewState extends State<KChatListingView> {
-  final SlidableController slideCtrl = SlidableController();
-
   late StreamSubscription streamSub;
 
   List<KChat>? get chats => widget.controller.value.chats;
@@ -67,28 +65,34 @@ class _KChatListingViewState extends State<KChatListingView> {
 
         return Slidable(
           key: Key(chat.chatID ?? ""),
-          controller: slideCtrl,
-          actionPane: SlidableDrawerActionPane(),
-          actionExtentRatio: 0.25,
           child: _ChatListEntry(
             chat,
             onClick: this.widget.onChatClick == null
                 ? (_) {}
                 : this.widget.onChatClick!,
           ),
-          dismissal: SlidableDismissal(
-            child: SlidableDrawerDismissal(),
-            onDismissed: (actionType) =>
-                this.widget.controller.removeChat(i, chat),
-          ),
-          secondaryActions: <Widget>[
-            IconSlideAction(
-              caption: 'Delete',
-              color: Colors.red,
-              icon: Icons.delete,
-              onTap: () => this.widget.controller.removeChat(i, chat),
+          startActionPane: ActionPane(
+            motion: DrawerMotion(),
+            dismissible: DismissiblePane(
+              onDismissed: () {
+                this.widget.controller.removeChat(i, chat);
+              },
             ),
-          ],
+            children: [],
+          ),
+          endActionPane: ActionPane(
+            motion: DrawerMotion(),
+            extentRatio: 0.2,
+            children: [
+              SlidableAction(
+                label: 'Delete',
+                backgroundColor: Colors.red,
+                icon: Icons.delete,
+                onPressed: (context) => this.widget.controller.removeChat(i, chat),
+                padding: EdgeInsets.symmetric(horizontal: 2),
+              ),
+            ],
+          ),
         );
       },
     );

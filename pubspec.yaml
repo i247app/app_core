@@ -25,13 +25,13 @@ dependencies:
   permission_handler: ^10.4.3
   timeago: ^3.1.0
   intl: ^0.18.1
-  flutter_secure_storage: ^4.2.0
+  flutter_secure_storage: ^8.0.0
   json_annotation: ^4.8.1 # ^4.5.0
   fluttertoast: ^8.2.1
   local_auth: ^2.1.6
   new_version_plus: ^0.0.9 # new_version deprecated
   flutter_local_notifications: ^15.1.1
-  flutter_slidable: ^0.6.0
+  flutter_slidable: ^3.0.0
   draggable_widget: ^2.0.0
 
   # Location
