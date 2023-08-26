@@ -19,8 +19,8 @@ dependencies:
   # Core
   async: ^2.6.1
   url_launcher: ^6.0.4 # ^5.0.2
-  device_info_plus: ^8.2.2
-  package_info_plus: ^3.1.2
+  device_info_plus: ^9.0.3
+  package_info_plus: ^4.1.0
   android_id: ^0.3.4
   permission_handler: ^10.4.3
   timeago: ^3.1.0
@@ -68,7 +68,8 @@ dependencies:
 
   flutter_ringtone_player: ^3.2.0
 
-  wakelock: ^0.6.2 # 0.5.6 # ^0.5.1
+#  wakelock: ^0.6.2 # 0.5.6 # ^0.5.1
+  wakelock_plus: ^1.1.1
   uuid: ^3.0.4
 
   # Vietnamese language parsing

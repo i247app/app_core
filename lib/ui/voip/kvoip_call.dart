@@ -15,7 +15,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:uuid/uuid.dart';
 import 'package:app_core/app_core.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 enum _CallPerspective { sender, receiver }
 
@@ -161,7 +161,7 @@ class _KVOIPCallState extends State<KVOIPCall>
     isAudioCall = widget.isAudioCall;
     FocusManager.instance.primaryFocus?.unfocus();
 
-    Wakelock.enable();
+    WakelockPlus.enable();
     KCallKitHelper.instance.isCalling = true;
     WidgetsBinding.instance.addObserver(this);
 
@@ -206,7 +206,7 @@ class _KVOIPCallState extends State<KVOIPCall>
     }
 
     try {
-      Wakelock.disable();
+      WakelockPlus.disable();
     } catch (e) {
       print(e.toString());
     }
