@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:app_core/helper/kplugin_helper.dart';
 
 abstract class KBiometricHelper {
   static final LocalAuthentication localAuth = LocalAuthentication();
