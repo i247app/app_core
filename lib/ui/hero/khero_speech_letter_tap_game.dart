@@ -343,9 +343,8 @@ class KSpeechLetterTapGameScreen extends StatefulWidget {
 class KSpeechLetterTapGameScreenState extends State<KSpeechLetterTapGameScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   static const GAME_NAME = "shooting_game";
-  AudioPlayer backgroundAudioPlayer =
-      AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
-  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer backgroundAudioPlayer = AudioPlayer();
+  AudioPlayer audioPlayer = AudioPlayer();
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
   String? backgroundAudioFileUri;
@@ -865,7 +864,8 @@ class KSpeechLetterTapGameScreenState extends State<KSpeechLetterTapGameScreen>
 
   void loadAudioAsset() async {
     try {
-      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.LOOP);
+      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.loop);
+      await backgroundAudioPlayer.setPlayerMode(PlayerMode.mediaPlayer);
 
       Directory tempDir = await getTemporaryDirectory();
 
@@ -901,9 +901,11 @@ class KSpeechLetterTapGameScreenState extends State<KSpeechLetterTapGameScreen>
   void playSound(bool isTrueAnswer) async {
     try {
       if (isTrueAnswer) {
-        await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
+        await audioPlayer.play(DeviceFileSource(correctAudioFileUri ?? ""),
+            mode: PlayerMode.lowLatency);
       } else {
-        await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
+        await audioPlayer.play(DeviceFileSource(wrongAudioFileUri ?? ""),
+            mode: PlayerMode.lowLatency);
       }
     } catch (e) {}
     this.setState(() {

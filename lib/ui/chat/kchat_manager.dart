@@ -32,7 +32,6 @@ class KChatManager extends StatefulWidget {
 
 class _KChatManagerState extends State<KChatManager> {
   List<KChatMember> members = [];
-  final SlidableController slidableController = SlidableController();
   final FocusNode focusNode = FocusNode();
   final groupNameCtrl = TextEditingController();
 
@@ -145,9 +144,6 @@ class _KChatManagerState extends State<KChatManager> {
 
         return Slidable(
           key: Key(member.puid ?? ""),
-          controller: slidableController,
-          actionPane: SlidableDrawerActionPane(),
-          actionExtentRatio: 0.25,
           child: Container(
             color: Theme.of(context).scaffoldBackgroundColor,
             child: _ResultItem(
@@ -158,18 +154,29 @@ class _KChatManagerState extends State<KChatManager> {
               ),
             ),
           ),
-          dismissal: SlidableDismissal(
-            child: SlidableDrawerDismissal(),
-            onDismissed: (actionType) => this.onRemoveMember(i, member),
-          ),
-          secondaryActions: <Widget>[
-            IconSlideAction(
-              caption: 'Delete',
-              color: Colors.red,
-              icon: Icons.delete,
-              onTap: () => this.onRemoveMember(i, member),
+          startActionPane: ActionPane(
+            motion: InversedDrawerMotion(),
+            extentRatio: 0.25,
+            dismissible: DismissiblePane(
+              onDismissed: () {
+                this.onRemoveMember(i, member);
+              },
             ),
-          ],
+            children: [],
+          ),
+          endActionPane: ActionPane(
+            motion: DrawerMotion(),
+            extentRatio: 0.2,
+            children: [
+              SlidableAction(
+                label: 'Delete',
+                backgroundColor: Colors.red,
+                icon: Icons.delete,
+                onPressed: (context) => this.onRemoveMember(i, member),
+                padding: EdgeInsets.symmetric(horizontal: 2),
+              ),
+            ],
+          ),
         );
       },
       separatorBuilder: (_, __) => Container(

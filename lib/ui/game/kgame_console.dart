@@ -58,8 +58,7 @@ class KGameConsole extends StatefulWidget {
 
 class _KGameConsoleState extends State<KGameConsole>
     with WidgetsBindingObserver {
-  AudioPlayer backgroundAudioPlayer =
-      AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
+  AudioPlayer backgroundAudioPlayer = AudioPlayer();
   String? backgroundAudioFileUri;
 
   late FlutterTts flutterTts;
@@ -277,7 +276,7 @@ class _KGameConsoleState extends State<KGameConsole>
 
   void loadAudioAsset() async {
     try {
-      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.LOOP);
+      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.loop);
 
       Directory tempDir = await getTemporaryDirectory();
 
@@ -1018,12 +1017,13 @@ class _KGameConsoleState extends State<KGameConsole>
         return GestureDetector(
           onTap: () {
             this.setState(() => this.isShowIntro = false);
-            if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+            if (backgroundAudioPlayer.state != PlayerState.playing) {
               this.setState(() {
                 this.isBackgroundSoundPlaying = true;
               });
-              backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
-                  isLocal: true);
+              backgroundAudioPlayer.play(
+                  DeviceFileSource(backgroundAudioFileUri ?? ""),
+                  mode: PlayerMode.mediaPlayer);
             }
           },
           child: Container(
@@ -1031,12 +1031,13 @@ class _KGameConsoleState extends State<KGameConsole>
               hero: widget.hero,
               onFinish: () {
                 this.setState(() => this.isShowIntro = false);
-                if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+                if (backgroundAudioPlayer.state != PlayerState.playing) {
                   this.setState(() {
                     this.isBackgroundSoundPlaying = true;
                   });
-                  backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
-                      isLocal: true);
+                  backgroundAudioPlayer.play(
+                      DeviceFileSource(backgroundAudioFileUri ?? ""),
+                      mode: PlayerMode.mediaPlayer);
                 }
               },
             ),
@@ -1049,23 +1050,25 @@ class _KGameConsoleState extends State<KGameConsole>
           children: [
             KWordGameIntro(onFinish: () {
               setState(() => this.isShowIntro = false);
-              if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+              if (backgroundAudioPlayer.state != PlayerState.playing) {
                 this.setState(() {
                   this.isBackgroundSoundPlaying = true;
                 });
-                backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
-                    isLocal: true);
+                backgroundAudioPlayer.play(
+                    DeviceFileSource(backgroundAudioFileUri ?? ""),
+                    mode: PlayerMode.mediaPlayer);
               }
             }),
             GestureDetector(
               onTap: () {
                 setState(() => this.isShowIntro = false);
-                if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+                if (backgroundAudioPlayer.state != PlayerState.playing) {
                   this.setState(() {
                     this.isBackgroundSoundPlaying = true;
                   });
-                  backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
-                      isLocal: true);
+                  backgroundAudioPlayer.play(
+                      DeviceFileSource(backgroundAudioFileUri ?? ""),
+                      mode: PlayerMode.mediaPlayer);
                 }
               },
             ),
@@ -1077,23 +1080,25 @@ class _KGameConsoleState extends State<KGameConsole>
           children: [
             KEggHeroIntro(onFinish: () {
               setState(() => this.isShowIntro = false);
-              if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+              if (backgroundAudioPlayer.state != PlayerState.playing) {
                 this.setState(() {
                   this.isBackgroundSoundPlaying = true;
                 });
-                backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
-                    isLocal: true);
+                backgroundAudioPlayer.play(
+                    DeviceFileSource(backgroundAudioFileUri ?? ""),
+                    mode: PlayerMode.mediaPlayer);
               }
             }),
             GestureDetector(
               onTap: () {
                 setState(() => this.isShowIntro = false);
-                if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+                if (backgroundAudioPlayer.state != PlayerState.playing) {
                   this.setState(() {
                     this.isBackgroundSoundPlaying = true;
                   });
-                  backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
-                      isLocal: true);
+                  backgroundAudioPlayer.play(
+                      DeviceFileSource(backgroundAudioFileUri ?? ""),
+                      mode: PlayerMode.mediaPlayer);
                 }
               },
             ),
@@ -1246,12 +1251,13 @@ class _KGameConsoleState extends State<KGameConsole>
           gameController.toggleStart(true);
 
           if (!(gameController.value.isMuted ?? false) &&
-              backgroundAudioPlayer.state != PlayerState.PLAYING) {
+              backgroundAudioPlayer.state != PlayerState.playing) {
             this.setState(() {
               this.isBackgroundSoundPlaying = true;
             });
-            backgroundAudioPlayer.play(backgroundAudioFileUri ?? "",
-                isLocal: true);
+            backgroundAudioPlayer.play(
+                DeviceFileSource(backgroundAudioFileUri ?? ""),
+                mode: PlayerMode.mediaPlayer);
           }
         }
       },

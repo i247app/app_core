@@ -76,9 +76,10 @@ class _KGameCountDownIntroState extends State<KGameCountDownIntro>
         this.countAudioFileUri = countAudioTempFile.uri.toString();
       });
 
-      final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+      final ap = AudioPlayer();
       try {
-        ap.play(countAudioFileUri ?? "", isLocal: true);
+        ap.play(DeviceFileSource(countAudioFileUri ?? ""),
+            mode: PlayerMode.lowLatency);
         cAudioPlayer.complete(ap);
       } catch (e) {}
       _scaleAnimationController.forward();
@@ -89,7 +90,8 @@ class _KGameCountDownIntroState extends State<KGameCountDownIntro>
         }
         if (mounted && count > 0) {
           try {
-            ap.play(countAudioFileUri ?? "", isLocal: true);
+            ap.play(DeviceFileSource(countAudioFileUri ?? ""),
+                mode: PlayerMode.lowLatency);
             cAudioPlayer.complete(ap);
           } catch (e) {}
           _scaleAnimationController.forward();

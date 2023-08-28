@@ -83,8 +83,9 @@ class _KWordGameIntroState extends State<KWordGameIntroBackup>
               //   ap.release();
               // });
               try {
-                final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
-                ap.play(correctAudioFileUri ?? "", isLocal: true);
+                final ap = AudioPlayer();
+                ap.play(DeviceFileSource(correctAudioFileUri ?? ""),
+                    mode: PlayerMode.lowLatency);
                 cAudioPlayer.complete(ap);
               } catch (e) {}
             }
@@ -192,7 +193,7 @@ class _KWordGameIntroState extends State<KWordGameIntroBackup>
   void loadAudioAsset() async {
     try {
       cBackgroundAudioPlayer.future
-          .then((ap) => ap.setReleaseMode(ReleaseMode.LOOP));
+          .then((ap) => ap.setReleaseMode(ReleaseMode.loop));
 
       Directory tempDir = await getTemporaryDirectory();
 

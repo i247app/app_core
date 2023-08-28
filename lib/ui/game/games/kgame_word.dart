@@ -35,7 +35,7 @@ class KGameWord extends StatefulWidget {
 }
 
 class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
-  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer audioPlayer = AudioPlayer();
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
 
@@ -262,9 +262,11 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
     if (!isMuted) {
       try {
         if (isTrueAnswer) {
-          await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
+          await audioPlayer.play(DeviceFileSource(correctAudioFileUri ?? ""),
+              mode: PlayerMode.lowLatency);
         } else {
-          await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
+          await audioPlayer.play(DeviceFileSource(wrongAudioFileUri ?? ""),
+              mode: PlayerMode.lowLatency);
         }
       } catch (e) {}
     }
@@ -412,19 +414,19 @@ class _KGameWordState extends State<KGameWord> with TickerProviderStateMixin {
                         color: Colors.white,
                         shadows: [
                           Shadow(
-                            // bottomLeft
+                              // bottomLeft
                               offset: Offset(-1, -1),
                               color: Colors.brown),
                           Shadow(
-                            // bottomRight
+                              // bottomRight
                               offset: Offset(1, -1),
                               color: Colors.brown),
                           Shadow(
-                            // topRight
+                              // topRight
                               offset: Offset(1, 1),
                               color: Colors.brown),
                           Shadow(
-                            // topLeft
+                              // topLeft
                               offset: Offset(-1, 1),
                               color: Colors.brown),
                         ]),
