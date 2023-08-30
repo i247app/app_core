@@ -178,16 +178,20 @@ class _KChatScreenState extends State<KChatScreen> {
     }
 
     final response = await KServerHandler.searchUsers(searchText!);
-    if (response.kstatus == 100) return response.users ?? [];
+    if (response.kstatus == 100) {
+      return response.users ?? [];
+    }
 
     return [];
   }
 
   void onAddMember() async {
-    List<KUser>? result = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (ctx) => KChatContactListing(this.searchUsers)));
+    final result = await Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => KChatContactListing(searchUsers)));
 
-    if (result == null || result.length == 0) return;
+    if ((result ?? []).isEmpty) {
+      return;
+    }
 
     final response = await KServerHandler.addChatMembers(
       chatID: this.chatroomCtrl.value.chatID!,
@@ -198,22 +202,24 @@ class _KChatScreenState extends State<KChatScreen> {
 
     if (response.isSuccess) {
       print("MEMBERS BEFORE - ${this.members.length}");
-      setState(() => this.members.addAll(response.members!));
+      setState(() => members.addAll(response.members!));
       print("MEMBERS AFTER - ${this.members.length}");
     }
   }
 
   void onManagerMember() async {
-    List<KChatMember>? members =
-        await Navigator.of(context).push(MaterialPageRoute(
-            builder: (ctx) => KChatManager(
-                  chatId: this.chatroomCtrl.value.chatID!,
-                  chatTitle: this.chatroomCtrl.value.chatTitle,
-                  members: this.chatroomCtrl.value.members!,
-                  refApp: this.chatroomCtrl.value.refApp,
-                  refID: this.chatroomCtrl.value.refID,
-                )));
-    if ((members ?? []).length > 0) this.chatroomCtrl.loadChat();
+    final members = await Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => KChatManager(
+              chatId: this.chatroomCtrl.value.chatID!,
+              chatTitle: this.chatroomCtrl.value.chatTitle,
+              members: this.chatroomCtrl.value.members!,
+              refApp: this.chatroomCtrl.value.refApp,
+              refID: this.chatroomCtrl.value.refID,
+            )));
+
+    if ((members ?? []).isNotEmpty) {
+      this.chatroomCtrl.loadChat();
+    }
   }
 
   @override

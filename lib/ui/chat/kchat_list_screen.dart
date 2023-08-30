@@ -53,7 +53,9 @@ class _KChatListScreenState extends State<KChatListScreen> {
     }
 
     final response = await KServerHandler.searchUsers(searchText!);
-    if (response.kstatus == 100) return response.users ?? [];
+    if (response.kstatus == 100) {
+      return response.users ?? [];
+    }
 
     return [];
   }
@@ -70,10 +72,11 @@ class _KChatListScreenState extends State<KChatListScreen> {
       refID,
     );
 
-    if (response.isSuccess)
+    if (response.isSuccess) {
       // Then show a snackbar.
       ScaffoldMessenger.of(kNavigatorKey.currentContext!).showSnackBar(
           SnackBar(content: Text('\'${chat.title}\' chat has been removed')));
+    }
 
     return response.isSuccess;
   }
@@ -140,12 +143,14 @@ class _KChatListScreenState extends State<KChatListScreen> {
           Expanded(
             child: Text(
               "Chats",
-              style:
-                  Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 20),
+              style: Theme.of(context)
+                  .textTheme
+                  .titleMedium!
+                  .copyWith(fontSize: 20),
               textAlign: TextAlign.start,
             ),
           ),
-          newChatAction,
+          if (!KSessionData.isTutor) newChatAction,
         ],
       ),
     );
