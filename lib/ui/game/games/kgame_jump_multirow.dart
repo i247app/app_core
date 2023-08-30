@@ -41,8 +41,8 @@ class KGameJumpMultiRow extends StatefulWidget {
 class _KGameJumpMultiRowState extends State<KGameJumpMultiRow>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   AudioPlayer backgroundAudioPlayer =
-      AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
-  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+      AudioPlayer();
+  AudioPlayer audioPlayer = AudioPlayer();
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
   String? backgroundAudioFileUri;
@@ -498,7 +498,8 @@ class _KGameJumpMultiRowState extends State<KGameJumpMultiRow>
 
   void loadAudioAsset() async {
     try {
-      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.LOOP);
+      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.loop);
+      await backgroundAudioPlayer.setPlayerMode(PlayerMode.mediaPlayer);
 
       Directory tempDir = await getTemporaryDirectory();
 
@@ -534,9 +535,9 @@ class _KGameJumpMultiRowState extends State<KGameJumpMultiRow>
   void playSound(bool isTrueAnswer) async {
     try {
       if (isTrueAnswer) {
-        await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
+        await audioPlayer.play(DeviceFileSource(correctAudioFileUri ?? ""), mode: PlayerMode.lowLatency);
       } else {
-        await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
+        await audioPlayer.play(DeviceFileSource(wrongAudioFileUri ?? ""), mode: PlayerMode.lowLatency);
       }
     } catch (e) {}
     this.setState(() {

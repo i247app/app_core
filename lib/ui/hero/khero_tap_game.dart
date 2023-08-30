@@ -361,9 +361,8 @@ class KTapGameScreen extends StatefulWidget {
 class KTapGameScreenState extends State<KTapGameScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   static const GAME_NAME = "shooting_game";
-  AudioPlayer backgroundAudioPlayer =
-      AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
-  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer backgroundAudioPlayer = AudioPlayer();
+  AudioPlayer audioPlayer = AudioPlayer();
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
   String? backgroundAudioFileUri;
@@ -706,20 +705,22 @@ class KTapGameScreenState extends State<KTapGameScreen>
           isStart = true;
         });
       }
-      if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+      if (backgroundAudioPlayer.state != PlayerState.playing) {
         print(backgroundAudioPlayer.state);
 
         this.setState(() {
           this.isBackgroundSoundPlaying = true;
         });
-        backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
+        backgroundAudioPlayer
+            .play(DeviceFileSource(backgroundAudioFileUri ?? ""));
       }
     }
   }
 
   void loadAudioAsset() async {
     try {
-      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.LOOP);
+      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.loop);
+      await backgroundAudioPlayer.setPlayerMode(PlayerMode.mediaPlayer);
 
       Directory tempDir = await getTemporaryDirectory();
 
@@ -755,9 +756,11 @@ class KTapGameScreenState extends State<KTapGameScreen>
   void playSound(bool isTrueAnswer) async {
     try {
       if (isTrueAnswer) {
-        await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
+        await audioPlayer.play(DeviceFileSource(correctAudioFileUri ?? ""),
+            mode: PlayerMode.lowLatency);
       } else {
-        await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
+        await audioPlayer.play(DeviceFileSource(wrongAudioFileUri ?? ""),
+            mode: PlayerMode.lowLatency);
       }
     } catch (e) {}
     this.setState(() {

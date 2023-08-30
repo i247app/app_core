@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:app_core/helper/kplugin_helper.dart';
 
 abstract class KBiometricHelper {
   static final LocalAuthentication localAuth = LocalAuthentication();
@@ -10,7 +9,7 @@ abstract class KBiometricHelper {
   static Future<bool> isAvailable() async {
     final canCheckBiometrics = await localAuth.canCheckBiometrics;
     final hasAvailableMethods =
-        await localAuth.getAvailableBiometrics().then((r) => r.isNotEmpty);
+    await localAuth.getAvailableBiometrics().then((r) => r.isNotEmpty);
     return canCheckBiometrics && hasAvailableMethods;
   }
 
@@ -21,30 +20,45 @@ abstract class KBiometricHelper {
 
   static Future<bool> isFingerprintAvailable() async {
     final result = await localAuth.getAvailableBiometrics();
+    if (Platform.isAndroid) {
+      return result.contains(BiometricType.fingerprint) ||
+          result.contains(BiometricType.strong);
+    }
     return result.contains(BiometricType.fingerprint);
   }
 
   static Future<bool> authenticate(String reason,
       {MethodChannel? channel}) async {
-    if (Platform.isAndroid) {
-      try {
-        final response =
-            await KPluginHelper.biometricAuth(reason, channel: channel);
-        if (response == null)
-          return localAuth.authenticate(
-            localizedReason: reason,
-            biometricOnly: true,
-          );
-        else
-          return response;
-      } catch (e) {
-        return false;
-      }
-    } else {
-      return localAuth.authenticate(
-        localizedReason: reason,
+    return localAuth.authenticate(
+      localizedReason: reason,
+      options: AuthenticationOptions(
         biometricOnly: true,
-      );
-    }
+        stickyAuth: true,
+      ),
+    );
+    // if (Platform.isAndroid) {
+    //   try {
+    //     final response =
+    //         await KPluginHelper.biometricAuth(reason, channel: channel);
+    //     if (response == null)
+    //       return localAuth.authenticate(
+    //         localizedReason: reason,
+    //         options: AuthenticationOptions(
+    //           biometricOnly: true,
+    //         ),
+    //       );
+    //     else
+    //       return response;
+    //   } catch (e) {
+    //     return false;
+    //   }
+    // } else {
+    //   return localAuth.authenticate(
+    //     localizedReason: reason,
+    //     options: AuthenticationOptions(
+    //       biometricOnly: true,
+    //     ),
+    //   );
+    // }
   }
 }

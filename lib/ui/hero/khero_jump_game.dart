@@ -331,9 +331,8 @@ class _KJumpGameScreen extends StatefulWidget {
 
 class _KJumpGameScreenState extends State<_KJumpGameScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
-  AudioPlayer backgroundAudioPlayer =
-      AudioPlayer(mode: PlayerMode.MEDIA_PLAYER);
-  AudioPlayer audioPlayer = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
+  AudioPlayer backgroundAudioPlayer = AudioPlayer();
+  AudioPlayer audioPlayer = AudioPlayer();
   String? correctAudioFileUri;
   String? wrongAudioFileUri;
   String? backgroundAudioFileUri;
@@ -775,7 +774,8 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
 
   void loadAudioAsset() async {
     try {
-      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.LOOP);
+      await backgroundAudioPlayer.setReleaseMode(ReleaseMode.loop);
+      await backgroundAudioPlayer.setPlayerMode(PlayerMode.mediaPlayer);
       Directory tempDir = await getTemporaryDirectory();
 
       ByteData correctAudioFileData =
@@ -846,9 +846,11 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
   void playSound(bool isTrueAnswer) async {
     try {
       if (isTrueAnswer) {
-        await audioPlayer.play(correctAudioFileUri ?? "", isLocal: true);
+        await audioPlayer.play(DeviceFileSource(correctAudioFileUri ?? ""),
+            mode: PlayerMode.lowLatency);
       } else {
-        await audioPlayer.play(wrongAudioFileUri ?? "", isLocal: true);
+        await audioPlayer.play(DeviceFileSource(wrongAudioFileUri ?? ""),
+            mode: PlayerMode.lowLatency);
       }
     } catch (e) {}
     this.setState(() {
@@ -1021,11 +1023,12 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
         });
       }
 
-      if (backgroundAudioPlayer.state != PlayerState.PLAYING) {
+      if (backgroundAudioPlayer.state != PlayerState.playing) {
         this.setState(() {
           this.isBackgroundSoundPlaying = true;
         });
-        backgroundAudioPlayer.play(backgroundAudioFileUri ?? "", isLocal: true);
+        backgroundAudioPlayer
+            .play(DeviceFileSource(backgroundAudioFileUri ?? ""));
       }
     }
   }

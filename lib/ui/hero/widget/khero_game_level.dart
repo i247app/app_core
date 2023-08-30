@@ -71,8 +71,9 @@ class _KHeroGameLevelState extends State<KHeroGameLevel>
 
     Future.delayed(Duration(milliseconds: 500), () {
       try {
-        final ap = AudioPlayer(mode: PlayerMode.LOW_LATENCY);
-        ap.play(correctAudioFileUri ?? "", isLocal: true);
+        final ap = AudioPlayer();
+        ap.play(DeviceFileSource(correctAudioFileUri ?? ""),
+            mode: PlayerMode.lowLatency);
         cAudioPlayer.complete(ap);
       } catch (e) {}
     });

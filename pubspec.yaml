@@ -2,7 +2,7 @@ name: app_core
 
 description: App core package
 
-version: 1.1.262
+version: 1.1.265
 
 homepage: none
 
@@ -19,39 +19,40 @@ dependencies:
   # Core
   async: ^2.6.1
   url_launcher: ^6.0.4 # ^5.0.2
-  device_info: ^2.0.1
-  package_info: ^2.0.0
-  permission_handler: ^7.2.0
+  device_info_plus: ^9.0.3
+  package_info_plus: ^4.1.0
+  android_id: ^0.3.4
+  permission_handler: ^10.4.3
   timeago: ^3.1.0
-  intl: ^0.17.0
-  flutter_secure_storage: ^4.2.0
+  intl: ^0.18.1
+  flutter_secure_storage: ^8.0.0
   json_annotation: ^4.8.1 # ^4.5.0
   fluttertoast: ^8.2.1
-  local_auth: ^1.1.6
+  local_auth: ^2.1.6
   new_version_plus: ^0.0.9 # new_version deprecated
-  flutter_local_notifications: ^6.1.0
-  flutter_slidable: ^0.6.0
+  flutter_local_notifications: ^15.1.1
+  flutter_slidable: ^3.0.0
   draggable_widget: ^2.0.0
 
   # Location
-  geolocator: ^9.0.2 # ^7.0.3
-  geocoding: ^2.0.4
-  google_maps_flutter: ^2.2.5
+  geolocator: ^10.0.0 # ^7.0.3
+  geocoding: ^2.1.0
+  google_maps_flutter: ^2.4.0
   google_maps_webservice: ^0.0.20-nullsafety.5
   flutter_google_places: ^0.3.0
 
-  lottie: ^1.2.2
+  lottie: ^2.6.0
 
   # Photo picker
-  image_picker: ^0.8.5
+  image_picker: ^1.0.2
 
   # QR code scan
   barcode_scan2: ^4.2.4
 
   # Firebase
-  firebase_core_platform_interface: 4.5.1
-  firebase_core: ^1.24.0
-  firebase_messaging: ^13.0.4 # ^11.4.4
+  firebase_core_platform_interface: ^4.8.0
+  firebase_core: ^2.15.1
+  firebase_messaging: ^14.6.6 # ^11.4.4
 
   gallery_saver: 2.3.2 #2.1.0 # +2.1.1 broken so far
   path_provider: ^2.0.1
@@ -60,14 +61,15 @@ dependencies:
   google_fonts: 4.0.3
 
   # VoIP
-  connectycube_flutter_call_kit: 2.2.1
+  connectycube_flutter_call_kit: 2.3.0
 
   # Flutter WebRTC
-  flutter_webrtc: 0.9.27 #0.6.3 # 0.5.8
+  flutter_webrtc: 0.9.40 #0.6.3 # 0.5.8
 
   flutter_ringtone_player: ^3.2.0
 
-  wakelock: 0.6.2 # 0.5.6 # ^0.5.1
+#  wakelock: ^0.6.2 # 0.5.6 # ^0.5.1
+  wakelock_plus: ^1.1.1
   uuid: ^3.0.4
 
   # Vietnamese language parsing
@@ -84,25 +86,25 @@ dependencies:
 
   get_storage: ^2.0.3
 
-  audioplayers: 0.20.1
+  audioplayers: ^5.1.0
 
-  # >5.5.1 build fail
-  flutter_tts: 3.5.1 # ^3.3.3
+  # Text-to-speech
+  flutter_tts: ^3.7.0 # ^3.3.3
 
   # Cache image
   flutter_cache_manager: ^3.3.0
   cached_network_image: ^3.2.2
 
   flutter_picker: ^2.1.0
-  wheel_chooser: 1.0.0 # ^1.1.0 is buggy
+  wheel_chooser: ^1.1.2 # ^1.1.0 is buggy
 
-  xml: ^5.1.2
+  xml: ^6.3.0
 
   avatar_glow: ^2.0.2
 
   flutter_easyloading: ^3.0.5
 
-  syncfusion_flutter_sliders: ^20.2.50
+  syncfusion_flutter_sliders: ^22.2.10
 
   slider_captcha: ^1.0.0
 
@@ -113,8 +115,7 @@ dev_dependencies:
   lints: any
   build_runner: ^2.1.5 # ^1.11.5 # ^1.0.0
   json_serializable: ^6.6.2 # 6.2.0 6.1.2 ^3.5.1 # ^3.0.0
-  test: ^1.17.10
-  analyzer: ^5.1.2
+  analyzer: ^6.2.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
