@@ -17,6 +17,10 @@ import 'package:app_core/ui/widget/kembed_manager.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 
 class KChatListScreen extends StatefulWidget {
+  final bool allowCreateChat;
+
+  KChatListScreen({this.allowCreateChat = true});
+
   @override
   _KChatListScreenState createState() => _KChatListScreenState();
 }
@@ -36,9 +40,9 @@ class _KChatListScreenState extends State<KChatListScreen> {
   void initState() {
     super.initState();
 
-    this.chatListingCtrl = KChatListingController(KChatListingData(
-      loadChats: this.loadChats,
-      removeChat: this.removeChat,
+    chatListingCtrl = KChatListingController(KChatListingData(
+      loadChats: loadChats,
+      removeChat: removeChat,
     ));
   }
 
@@ -89,10 +93,10 @@ class _KChatListScreenState extends State<KChatListScreen> {
         chatID: chat.chatID,
         members: (chat.kMembers ?? []),
         title: chat.title,
-        onChatroomControllerHeard: this.chatListingCtrl.loadChats,
+        onChatroomControllerHeard: chatListingCtrl.loadChats,
       );
 
-      setState(() => this.activeWidget = screen);
+      setState(() => activeWidget = screen);
     } else {
       final screen = KChatScreen(
         chatID: chat.chatID,
@@ -101,15 +105,17 @@ class _KChatListScreenState extends State<KChatListScreen> {
       );
       await Navigator.of(context)
           .push(MaterialPageRoute(builder: (_) => screen));
-      this.chatListingCtrl.loadChats();
+      chatListingCtrl.loadChats();
     }
   }
 
   void onCreateChatClick() async {
-    List<KUser>? result = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (ctx) => KChatContactListing(this.searchUsers)));
+    final result = await Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => KChatContactListing(searchUsers)));
 
-    if (result == null || result.length == 0) return;
+    if ((result ?? []).isEmpty) {
+      return;
+    }
 
     final users = result;
     users.add(KSessionData.me!);
@@ -118,7 +124,7 @@ class _KChatListScreenState extends State<KChatListScreen> {
 
     final screen = KChatScreen(chatID: null, members: members, title: "");
     await Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
-    this.chatListingCtrl.loadChats();
+    chatListingCtrl.loadChats();
   }
 
   Widget _buildSmallLayout(bool isTablet) {
@@ -150,13 +156,13 @@ class _KChatListScreenState extends State<KChatListScreen> {
               textAlign: TextAlign.start,
             ),
           ),
-          if (!KSessionData.isTutor) newChatAction,
+          if (widget.allowCreateChat) newChatAction,
         ],
       ),
     );
 
     final chatListing = KChatListingView(
-      this.chatListingCtrl,
+      chatListingCtrl,
       onChatClick: (chat) => onChatClick(chat, isTablet),
     );
 
@@ -188,25 +194,24 @@ class _KChatListScreenState extends State<KChatListScreen> {
             ),
           ),
         ),
-        Expanded(child: this.activeWidget),
+        Expanded(child: activeWidget),
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final Widget content;
+    final Widget body;
     final shortestSide = MediaQuery.of(context).size.shortestSide;
     if (shortestSide < KStyles.smallestSize) {
-      content = _buildSmallLayout(false);
+      body = _buildSmallLayout(false);
     } else {
-      content = _buildTabletLayout(true);
+      body = _buildTabletLayout(true);
     }
 
-    final scaffoldView = Scaffold(
-      body: SafeArea(child: content),
-    );
-
-    return KEmbedManager.of(context).isEmbed ? content : scaffoldView;
+    return KEmbedManager.of(context).isEmbed
+        ? body
+        : Scaffold(body: SafeArea(child: body));
+    ;
   }
 }

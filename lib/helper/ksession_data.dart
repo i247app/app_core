@@ -184,6 +184,9 @@ abstract class KSessionData {
 
   static bool get isSuperAdmin => userSession?.isSuperAdmin ?? false;
 
+  static bool get isSomeKindOfAdmin =>
+      [isDomainAdmin, isAdmin, isSuperAdmin].reduce((sum, el) => sum || el);
+
   static bool get isBizAdmin =>
       isBusinessMode && activeMember?.role == BusinessMember.ROLE_ADMIN;
 
