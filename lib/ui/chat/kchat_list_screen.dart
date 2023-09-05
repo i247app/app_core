@@ -1,20 +1,20 @@
 import 'dart:async';
 
 import 'package:app_core/helper/kglobals.dart';
+import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/helper/ksession_data.dart';
 import 'package:app_core/model/kchat.dart';
 import 'package:app_core/model/kchat_member.dart';
+import 'package:app_core/model/kuser.dart';
 import 'package:app_core/ui/chat/kchat_contact_listing.dart';
 import 'package:app_core/ui/chat/kchat_listing_view.dart';
+import 'package:app_core/ui/chat/kchat_screen.dart';
 import 'package:app_core/ui/chat/service/kchat_listing_controller.dart';
 import 'package:app_core/ui/chat/service/kchat_listing_data.dart';
-import 'package:flutter/material.dart';
-import 'package:app_core/model/kuser.dart';
-import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/ui/chat/kchat_screen.dart';
-import 'package:app_core/value/kstyles.dart';
 import 'package:app_core/ui/widget/kembed_manager.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
+import 'package:app_core/value/kstyles.dart';
+import 'package:flutter/material.dart';
 
 class KChatListScreen extends StatefulWidget {
   final bool allowCreateChat;
@@ -212,6 +212,5 @@ class _KChatListScreenState extends State<KChatListScreen> {
     return KEmbedManager.of(context).isEmbed
         ? body
         : Scaffold(body: SafeArea(child: body));
-    ;
   }
 }

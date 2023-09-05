@@ -6,15 +6,14 @@ import 'dart:math' as Math;
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/kanswer.dart';
 import 'package:app_core/model/khero.dart';
-import 'package:app_core/model/kquestion.dart';
 import 'package:app_core/ui/game/service/kgame_controller.dart';
 import 'package:app_core/ui/game/service/kgame_data.dart';
+import 'package:app_core/ui/widget/kflip_card/kflip_card.dart';
+import 'package:app_core/ui/widget/kflip_card/kflip_card_controller.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:app_core/ui/widget/kflip_card/kflip_card.dart';
-import 'package:app_core/ui/widget/kflip_card/kflip_card_controller.dart';
 
 class KGameGridCount extends StatefulWidget {
   static const GAME_ID = "517";
@@ -379,9 +378,11 @@ class _KGameGridCountState extends State<KGameGridCount>
     if (!isMuted) {
       try {
         if (isTrueAnswer) {
-          await audioPlayer.play(DeviceFileSource(correctAudioFileUri ?? ""), mode: PlayerMode.lowLatency);
+          await audioPlayer.play(DeviceFileSource(correctAudioFileUri ?? ""),
+              mode: PlayerMode.lowLatency);
         } else {
-          await audioPlayer.play(DeviceFileSource(wrongAudioFileUri ?? ""), mode: PlayerMode.lowLatency);
+          await audioPlayer.play(DeviceFileSource(wrongAudioFileUri ?? ""),
+              mode: PlayerMode.lowLatency);
         }
       } catch (e) {}
     }

@@ -105,9 +105,7 @@ abstract class KUtil {
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     return KTabletDetector.isTablet(MediaQuery.of(context)) ||
         (Platform.isIOS &&
-            ((await deviceInfo.iosInfo).name ?? '')
-                .toLowerCase()
-                .contains("ipad"));
+            ((await deviceInfo.iosInfo).name).toLowerCase().contains("ipad"));
   }
 
   static String prettyXFRDescription({String? lineType, String? xfrType}) {
