@@ -19,6 +19,7 @@ class KUser extends KObject {
   static const String FONE = "fone";
   static const String FONE_CODE = "foneCode";
   static const String EMAIL = "email";
+  static const String CV_TEXT = "cvText";
 
   // static const String IS_ONLINE= "isOnline";
   static const String IS_WORKING = "isWorking";
@@ -183,6 +184,9 @@ class KUser extends KObject {
 
   @JsonKey(name: "distance", fromJson: zzz_atod, toJson: zzz_dtoa)
   double? distance;
+
+  @JsonKey(name: CV_TEXT)
+  String? cvText;
 
   /// Methods
   @JsonKey(ignore: true)

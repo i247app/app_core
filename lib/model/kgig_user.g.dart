@@ -92,6 +92,7 @@ KGigUser _$KGigUserFromJson(Map<String, dynamic> json) => KGigUser()
       : KLatLng.fromJson(json['latLng'] as Map<String, dynamic>)
   ..linkStatus = json['linkStatus'] as String?
   ..distance = zzz_atod(json['distance'] as String?)
+  ..cvText = json['cvText'] as String?
   ..billDate = zzz_str2Date(json['billDate'] as String?)
   ..billGigs = json['billGigs'] as String?
   ..billDuration = zzz_str2Dur(json['billDuration'] as String?)
@@ -189,6 +190,7 @@ Map<String, dynamic> _$KGigUserToJson(KGigUser instance) {
   writeNotNull('latLng', instance.currentLatLng?.toJson());
   writeNotNull('linkStatus', instance.linkStatus);
   writeNotNull('distance', zzz_dtoa(instance.distance));
+  writeNotNull('cvText', instance.cvText);
   writeNotNull('billDate', zzz_date2Str(instance.billDate));
   writeNotNull('billGigs', instance.billGigs);
   writeNotNull('billDuration', zzz_dur2Str(instance.billDuration));

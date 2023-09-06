@@ -88,6 +88,7 @@ BusinessMember _$BusinessMemberFromJson(Map<String, dynamic> json) =>
           : KLatLng.fromJson(json['latLng'] as Map<String, dynamic>)
       ..linkStatus = json['linkStatus'] as String?
       ..distance = zzz_atod(json['distance'] as String?)
+      ..cvText = json['cvText'] as String?
       ..puid = json['puid'] as String?
       ..buid = json['buid'] as String?
       ..storeID = json['storeID'] as String?
@@ -184,6 +185,7 @@ Map<String, dynamic> _$BusinessMemberToJson(BusinessMember instance) {
   writeNotNull('latLng', instance.currentLatLng?.toJson());
   writeNotNull('linkStatus', instance.linkStatus);
   writeNotNull('distance', zzz_dtoa(instance.distance));
+  writeNotNull('cvText', instance.cvText);
   writeNotNull('puid', instance.puid);
   writeNotNull('buid', instance.buid);
   writeNotNull('storeID', instance.storeID);
