@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'share.dart';
+part of 'live_share.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Share _$ShareFromJson(Map<String, dynamic> json) => Share()
+LiveShare _$LiveShareFromJson(Map<String, dynamic> json) => LiveShare()
   ..kdomain = json['domain'] as String?
   ..kreportFlag = json['reportFlag'] as String?
   ..knote = json['note'] as String?
@@ -45,7 +45,7 @@ Share _$ShareFromJson(Map<String, dynamic> json) => Share()
   ..index = json['index'] as String?
   ..shareDate = zzz_str2Date(json['shareDate'] as String?);
 
-Map<String, dynamic> _$ShareToJson(Share instance) {
+Map<String, dynamic> _$LiveShareToJson(LiveShare instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {

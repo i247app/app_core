@@ -37,7 +37,7 @@ import 'package:app_core/model/response/save_score_response.dart';
 import 'package:app_core/model/response/search_users_response.dart';
 import 'package:app_core/model/response/send_2fa_response.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
-import 'package:app_core/model/share.dart';
+import 'package:app_core/model/live_share.dart';
 import 'package:app_core/model/textbook.dart';
 import 'package:app_core/model/xfr_proxy.dart';
 import 'package:app_core/model/xfr_ticket.dart';
@@ -804,7 +804,7 @@ abstract class KServerHandler {
     final params = {
       "svc": "share",
       "req": "share.action",
-      "share": Share()
+      "share": LiveShare()
         ..ssID = ssID
         ..refID = refID
         ..refApp = refApp

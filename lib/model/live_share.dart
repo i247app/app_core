@@ -3,10 +3,10 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'kobject.dart';
 
-part 'share.g.dart';
+part 'live_share.g.dart';
 
 @JsonSerializable()
-class Share extends KObject {
+class LiveShare extends KObject {
   @JsonKey(name: "ssID")
   String? ssID;
 
@@ -47,9 +47,9 @@ class Share extends KObject {
   DateTime? shareDate;
 
   // JSON
-  Share();
+  LiveShare();
 
-  factory Share.fromJson(Map<String, dynamic> json) => _$ShareFromJson(json);
+  factory LiveShare.fromJson(Map<String, dynamic> json) => _$LiveShareFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ShareToJson(this);
+  Map<String, dynamic> toJson() => _$LiveShareToJson(this);
 }

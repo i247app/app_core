@@ -1,5 +1,5 @@
 import 'package:app_core/app_core.dart';
-import 'package:app_core/model/share.dart';
+import 'package:app_core/model/live_share.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'share_doc_old_response.g.dart';
@@ -13,7 +13,7 @@ class ShareDocOldResponse extends BaseResponse {
   String? ssID;
 
   @JsonKey(name: SHARES)
-  List<Share>? shares;
+  List<LiveShare>? shares;
 
   // JSON
   ShareDocOldResponse();

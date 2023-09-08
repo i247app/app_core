@@ -13,7 +13,7 @@ ShareResponse _$ShareResponseFromJson(Map<String, dynamic> json) =>
       ..ktoken = json['ktoken'] as String?
       ..ssID = json['ssID'] as String?
       ..shares = (json['shares'] as List<dynamic>?)
-          ?.map((e) => Share.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => LiveShare.fromJson(e as Map<String, dynamic>))
           .toList();
 
 Map<String, dynamic> _$ShareResponseToJson(ShareResponse instance) {
