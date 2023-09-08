@@ -77,7 +77,7 @@ class _KImageViewerState extends State<KImageViewer> {
       onPressed: onSaveClick,
       icon: CircleAvatar(
         backgroundColor: KStyles.extraDarkGrey,
-        child: Icon(Icons.save, color: KStyles.colorButtonText),
+        child: Icon(Icons.download, color: KStyles.colorButtonText),
       ),
     );
 
