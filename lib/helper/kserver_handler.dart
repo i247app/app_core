@@ -38,12 +38,13 @@ import 'package:app_core/model/response/search_users_response.dart';
 import 'package:app_core/model/response/send_2fa_response.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
 import 'package:app_core/model/live_share.dart';
+import 'package:app_core/model/share.dart';
 import 'package:app_core/model/textbook.dart';
 import 'package:app_core/model/xfr_proxy.dart';
 import 'package:app_core/model/xfr_ticket.dart';
 import 'package:app_core/ui/school/kdoc_picker.dart';
-
-import '../model/response/share_response.dart';
+import 'package:app_core/model/response/live_share_response.dart';
+import 'package:app_core/model/response/share_response.dart';
 
 abstract class KServerHandler {
   static Future<SimpleResponse> logToServer(String key, value) async {
@@ -791,7 +792,7 @@ abstract class KServerHandler {
   }
 
   // requires shareID or (refID, refApp)
-  static Future<ShareResponse> shareAction({
+  static Future<LiveShareResponse> liveShareAction({
     String? ssID,
     required String refID,
     required String refApp,
@@ -813,6 +814,17 @@ abstract class KServerHandler {
         ..chapterID = chapterID
         ..role = role
         ..kaction = kaction,
+    };
+    return TLSHelper.send(params).then((data) => LiveShareResponse.fromJson(data));
+  }
+
+  static Future<ShareResponse> shareAction({
+    required Share share,
+  }) async {
+    final params = {
+      "svc": "share",
+      "req": "share.action",
+      "share": share,
     };
     return TLSHelper.send(params).then((data) => ShareResponse.fromJson(data));
   }

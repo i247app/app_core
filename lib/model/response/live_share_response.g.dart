@@ -1,22 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'share_response.dart';
+part of 'live_share_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-ShareResponse _$ShareResponseFromJson(Map<String, dynamic> json) =>
-    ShareResponse()
+LiveShareResponse _$LiveShareResponseFromJson(Map<String, dynamic> json) =>
+    LiveShareResponse()
       ..kstatus = zzz_parseInt(json['kstatus'] as String?)
       ..kmessage = json['kmessage'] as String?
       ..ktoken = json['ktoken'] as String?
       ..ssID = json['ssID'] as String?
       ..shares = (json['shares'] as List<dynamic>?)
-          ?.map((e) => Share.fromJson(e as Map<String, dynamic>))
+          ?.map((e) => LiveShare.fromJson(e as Map<String, dynamic>))
           .toList();
 
-Map<String, dynamic> _$ShareResponseToJson(ShareResponse instance) {
+Map<String, dynamic> _$LiveShareResponseToJson(LiveShareResponse instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {

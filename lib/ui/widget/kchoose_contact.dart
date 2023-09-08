@@ -9,11 +9,12 @@ import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:app_core/lingo/kphrases.dart';
 import 'package:flutter/material.dart';
 
-enum KContactType { reward, transfer, other }
+enum KContactType { reward, transfer, share, other }
 
 class KChooseContact extends StatefulWidget {
   final bool multiselect;
   final KContactType contactType;
+
   const KChooseContact(
       {this.multiselect = false, this.contactType = KContactType.other});
 
@@ -90,7 +91,9 @@ class _KChooseContactState extends State<KChooseContact> {
     if (KStringHelper.isEmpty(user.puid)) return;
 
     if (widget.multiselect) {
-      if (selectedUsers.where((su) => su.puid == user.puid).isEmpty) {
+      if (selectedUsers
+          .where((su) => su.puid == user.puid)
+          .isEmpty) {
         setState(() {
           selectedUsers.add(user);
           searchFieldCtrl.clear();
@@ -124,7 +127,10 @@ class _KChooseContactState extends State<KChooseContact> {
         child: Text(
           KPhrases.noContactFound,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyText1,
+          style: Theme
+              .of(context)
+              .textTheme
+              .bodyText1,
         ),
       );
     } else {
@@ -146,7 +152,7 @@ class _KChooseContactState extends State<KChooseContact> {
     }
 
     final doneButton = TextButton(
-      onPressed: onComplete,
+      onPressed: selectedUsers.length > 0 ? onComplete : null,
       child: Text("OK"),
     );
 
@@ -212,10 +218,15 @@ class _SearchField extends StatelessWidget {
         showCursor: true,
         onTap: onTap,
         readOnly: readOnly,
-        style: Theme.of(context).textTheme.headline6,
+        style: Theme
+            .of(context)
+            .textTheme
+            .headline6,
         decoration: InputDecoration(
           hintText: "name or phone",
-          hintStyle: TextStyle(color: Theme.of(context).primaryColorLight),
+          hintStyle: TextStyle(color: Theme
+              .of(context)
+              .primaryColorLight),
           counterText: "",
           // contentPadding: EdgeInsets.symmetric(vertical: 2),
           border: InputBorder.none,
@@ -225,27 +236,34 @@ class _SearchField extends StatelessWidget {
 
     final selectedUserChips = this
         .selectedUsers
-        .map((su) => GestureDetector(
-              onTap: () => onSelectedUserTap.call(su),
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+        .map((su) =>
+        GestureDetector(
+          onTap: () => onSelectedUserTap.call(su),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Theme
+                  .of(context)
+                  .primaryColor
+                  .withOpacity(0.1),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  su.fullName ?? su.contactName,
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .subtitle1,
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      su.fullName ?? su.contactName,
-                      style: Theme.of(context).textTheme.subtitle1,
-                    ),
-                    SizedBox(width: 6),
-                    Icon(Icons.close, size: 20),
-                  ],
-                ),
-              ),
-            ))
+                SizedBox(width: 6),
+                Icon(Icons.close, size: 20),
+              ],
+            ),
+          ),
+        ))
         .toList();
 
     final searchRow = Row(
@@ -292,8 +310,9 @@ class _ResultItem extends StatelessWidget {
     this.backgroundColor,
   });
 
-  void onMoreInfoClick(ctx) => Navigator.of(ctx)
-      .push(MaterialPageRoute(builder: (_) => KUserView.fromUser(user)));
+  void onMoreInfoClick(ctx) =>
+      Navigator.of(ctx)
+          .push(MaterialPageRoute(builder: (_) => KUserView.fromUser(user)));
 
   @override
   Widget build(BuildContext context) {
@@ -309,20 +328,32 @@ class _ResultItem extends StatelessWidget {
 
     final contactHandle = Text(
       user.kunm == null ? user.prettyFone : "@${user.kunm}",
-      style: Theme.of(context).textTheme.subtitle1?.copyWith(
-            color: Theme.of(context).primaryColorLight,
-          ),
+      style: Theme
+          .of(context)
+          .textTheme
+          .subtitle1
+          ?.copyWith(
+        color: Theme
+            .of(context)
+            .primaryColorLight,
+      ),
     );
 
     final idText = Text(
       "ID: ${user.puid}",
-      style: Theme.of(context).textTheme.subtitle1?.copyWith(
-            color: Theme.of(context).primaryColorLight,
-          ),
+      style: Theme
+          .of(context)
+          .textTheme
+          .subtitle1
+          ?.copyWith(
+        color: Theme
+            .of(context)
+            .primaryColorLight,
+      ),
     );
 
     final contactRow =
-        Row(children: [contactHandle, SizedBox(width: 8), idText]);
+    Row(children: [contactHandle, SizedBox(width: 8), idText]);
 
     final info = Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -330,7 +361,10 @@ class _ResultItem extends StatelessWidget {
       children: <Widget>[
         Text(
           user.fullName ?? "",
-          style: Theme.of(context).textTheme.subtitle1,
+          style: Theme
+              .of(context)
+              .textTheme
+              .subtitle1,
         ),
         SizedBox(height: 6),
         contactRow,
@@ -342,7 +376,9 @@ class _ResultItem extends StatelessWidget {
       iconSize: 24,
       icon: Icon(
         Icons.info,
-        color: Theme.of(context).primaryColorLight,
+        color: Theme
+            .of(context)
+            .primaryColorLight,
       ),
     );
 
