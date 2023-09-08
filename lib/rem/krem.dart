@@ -10,6 +10,7 @@ abstract class KREM {
   static const String P2P = "p2p";
   static const String FLASH = "flash";
   static const String PRODUCER = "producer";
+  static const String TUTOR = "tutor";
 
   // chao
   static const String AMP = "amp";
