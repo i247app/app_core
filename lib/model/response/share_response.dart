@@ -8,10 +8,6 @@ part 'share_response.g.dart';
 @JsonSerializable()
 class ShareResponse extends BaseResponse {
   static const String SHARES = "shares";
-  static const String SS_ID = "ssID";
-
-  @JsonKey(name: SS_ID)
-  String? ssID;
 
   @JsonKey(name: "shares")
   List<Share>? shares;
