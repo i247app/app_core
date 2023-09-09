@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:app_core/app_core.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -49,6 +51,14 @@ double? zzz_atod(String? z) => z == null ? null : double.tryParse(z);
 
 // ignore: non_constant_identifier_names
 String? zzz_dtoa(double? d) => d?.toString();
+
+// ignore: non_constant_identifier_names
+String? zzz_json2Str(Map<String, dynamic>? m) =>
+    m == null ? null : json.encode(m);
+
+// ignore: non_constant_identifier_names
+Map<String, dynamic>? zzz_str2JSON(String? z) =>
+    z == null ? null : json.decode(z);
 
 abstract class BaseResponse {
   static const String KTOKEN = "ktoken";
