@@ -14,12 +14,12 @@ enum KContactType { reward, transfer, share, other }
 class KChooseContact extends StatefulWidget {
   final bool multiselect;
   final KContactType contactType;
-  final List<String>? excludesPUID;
+  final List<String>? excludePUIDs;
 
   const KChooseContact({
     this.multiselect = false,
     this.contactType = KContactType.other,
-    this.excludesPUID,
+    this.excludePUIDs,
   });
 
   @override
@@ -42,13 +42,14 @@ class _KChooseContactState extends State<KChooseContact> {
   List<KUser>? recentUsers;
 
   List<KUser>? get filteredUserLists => userLists != null
-      ? userLists!.where((user) => !excludesPUID.contains(user.puid)).toList()
-      : null;
-  List<KUser>? get filteredRecentUsers => recentUsers != null
-      ? recentUsers!.where((user) => !excludesPUID.contains(user.puid)).toList()
+      ? userLists!.where((user) => !excludePUIDs.contains(user.puid)).toList()
       : null;
 
-  List<String> get excludesPUID => widget.excludesPUID ?? [];
+  List<KUser>? get filteredRecentUsers => recentUsers != null
+      ? recentUsers!.where((user) => !excludePUIDs.contains(user.puid)).toList()
+      : null;
+
+  List<String> get excludePUIDs => widget.excludePUIDs ?? [];
 
   @override
   void initState() {
