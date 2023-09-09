@@ -14,9 +14,13 @@ enum KContactType { reward, transfer, share, other }
 class KChooseContact extends StatefulWidget {
   final bool multiselect;
   final KContactType contactType;
+  final List<String>? excludesPUID;
 
-  const KChooseContact(
-      {this.multiselect = false, this.contactType = KContactType.other});
+  const KChooseContact({
+    this.multiselect = false,
+    this.contactType = KContactType.other,
+    this.excludesPUID,
+  });
 
   @override
   _KChooseContactState createState() => _KChooseContactState();
@@ -36,6 +40,15 @@ class _KChooseContactState extends State<KChooseContact> {
   int searchReqID = -1;
   List<KUser> selectedUsers = [];
   List<KUser>? recentUsers;
+
+  List<KUser>? get filteredUserLists => userLists != null
+      ? userLists!.where((user) => !excludesPUID.contains(user.puid)).toList()
+      : null;
+  List<KUser>? get filteredRecentUsers => recentUsers != null
+      ? recentUsers!.where((user) => !excludesPUID.contains(user.puid)).toList()
+      : null;
+
+  List<String> get excludesPUID => widget.excludesPUID ?? [];
 
   @override
   void initState() {
@@ -91,9 +104,7 @@ class _KChooseContactState extends State<KChooseContact> {
     if (KStringHelper.isEmpty(user.puid)) return;
 
     if (widget.multiselect) {
-      if (selectedUsers
-          .where((su) => su.puid == user.puid)
-          .isEmpty) {
+      if (selectedUsers.where((su) => su.puid == user.puid).isEmpty) {
         setState(() {
           selectedUsers.add(user);
           searchFieldCtrl.clear();
@@ -120,25 +131,22 @@ class _KChooseContactState extends State<KChooseContact> {
     );
 
     final userListing;
-    if (userLists == null && recentUsers == null) {
+    if (filteredUserLists == null && filteredRecentUsers == null) {
       userListing = Container();
-    } else if (userLists != null && userLists!.isEmpty) {
+    } else if (filteredUserLists != null && filteredUserLists!.isEmpty) {
       userListing = Center(
         child: Text(
           KPhrases.noContactFound,
           textAlign: TextAlign.center,
-          style: Theme
-              .of(context)
-              .textTheme
-              .bodyText1,
+          style: Theme.of(context).textTheme.bodyText1,
         ),
       );
     } else {
       userListing = ListView.builder(
         padding: EdgeInsets.all(4),
-        itemCount: (userLists ?? recentUsers ?? []).length,
+        itemCount: (filteredUserLists ?? filteredRecentUsers ?? []).length,
         itemBuilder: (_, i) {
-          final user = (userLists ?? recentUsers ?? [])[i];
+          final user = (filteredUserLists ?? filteredRecentUsers ?? [])[i];
           return _ResultItem(
             user: user,
             onClick: onSearchResultClick,
@@ -218,15 +226,10 @@ class _SearchField extends StatelessWidget {
         showCursor: true,
         onTap: onTap,
         readOnly: readOnly,
-        style: Theme
-            .of(context)
-            .textTheme
-            .headline6,
+        style: Theme.of(context).textTheme.headline6,
         decoration: InputDecoration(
           hintText: "name or phone",
-          hintStyle: TextStyle(color: Theme
-              .of(context)
-              .primaryColorLight),
+          hintStyle: TextStyle(color: Theme.of(context).primaryColorLight),
           counterText: "",
           // contentPadding: EdgeInsets.symmetric(vertical: 2),
           border: InputBorder.none,
@@ -236,34 +239,27 @@ class _SearchField extends StatelessWidget {
 
     final selectedUserChips = this
         .selectedUsers
-        .map((su) =>
-        GestureDetector(
-          onTap: () => onSelectedUserTap.call(su),
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Theme
-                  .of(context)
-                  .primaryColor
-                  .withOpacity(0.1),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  su.fullName ?? su.contactName,
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .subtitle1,
+        .map((su) => GestureDetector(
+              onTap: () => onSelectedUserTap.call(su),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Theme.of(context).primaryColor.withOpacity(0.1),
                 ),
-                SizedBox(width: 6),
-                Icon(Icons.close, size: 20),
-              ],
-            ),
-          ),
-        ))
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      su.fullName ?? su.contactName,
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                    SizedBox(width: 6),
+                    Icon(Icons.close, size: 20),
+                  ],
+                ),
+              ),
+            ))
         .toList();
 
     final searchRow = Row(
@@ -310,9 +306,8 @@ class _ResultItem extends StatelessWidget {
     this.backgroundColor,
   });
 
-  void onMoreInfoClick(ctx) =>
-      Navigator.of(ctx)
-          .push(MaterialPageRoute(builder: (_) => KUserView.fromUser(user)));
+  void onMoreInfoClick(ctx) => Navigator.of(ctx)
+      .push(MaterialPageRoute(builder: (_) => KUserView.fromUser(user)));
 
   @override
   Widget build(BuildContext context) {
@@ -328,32 +323,20 @@ class _ResultItem extends StatelessWidget {
 
     final contactHandle = Text(
       user.kunm == null ? user.prettyFone : "@${user.kunm}",
-      style: Theme
-          .of(context)
-          .textTheme
-          .subtitle1
-          ?.copyWith(
-        color: Theme
-            .of(context)
-            .primaryColorLight,
-      ),
+      style: Theme.of(context).textTheme.subtitle1?.copyWith(
+            color: Theme.of(context).primaryColorLight,
+          ),
     );
 
     final idText = Text(
       "ID: ${user.puid}",
-      style: Theme
-          .of(context)
-          .textTheme
-          .subtitle1
-          ?.copyWith(
-        color: Theme
-            .of(context)
-            .primaryColorLight,
-      ),
+      style: Theme.of(context).textTheme.subtitle1?.copyWith(
+            color: Theme.of(context).primaryColorLight,
+          ),
     );
 
     final contactRow =
-    Row(children: [contactHandle, SizedBox(width: 8), idText]);
+        Row(children: [contactHandle, SizedBox(width: 8), idText]);
 
     final info = Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -361,10 +344,7 @@ class _ResultItem extends StatelessWidget {
       children: <Widget>[
         Text(
           user.fullName ?? "",
-          style: Theme
-              .of(context)
-              .textTheme
-              .subtitle1,
+          style: Theme.of(context).textTheme.subtitle1,
         ),
         SizedBox(height: 6),
         contactRow,
@@ -376,9 +356,7 @@ class _ResultItem extends StatelessWidget {
       iconSize: 24,
       icon: Icon(
         Icons.info,
-        color: Theme
-            .of(context)
-            .primaryColorLight,
+        color: Theme.of(context).primaryColorLight,
       ),
     );
 
