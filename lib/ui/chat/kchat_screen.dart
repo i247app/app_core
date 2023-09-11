@@ -208,6 +208,9 @@ class _KChatScreenState extends State<KChatScreen> {
   }
 
   void onManagerMember() async {
+    if (this.chatroomCtrl.value.chatID == null ||
+        this.chatroomCtrl.value.members == null) return;
+
     final members = await Navigator.of(context).push(MaterialPageRoute(
         builder: (_) => KChatManager(
               chatId: this.chatroomCtrl.value.chatID!,
@@ -259,7 +262,7 @@ class _KChatScreenState extends State<KChatScreen> {
           actions: <Widget>[
             if (this.isVideoCallEnabled && !KCallKitHelper.instance.isCalling)
               videoCallAction,
-            addMemberAction
+            if (!widget.isSupport) addMemberAction,
           ],
           elevation: 1,
         ),
@@ -292,7 +295,7 @@ class _KChatScreenState extends State<KChatScreen> {
                   ),
                 ),
                 if (this.isVideoCallEnabled) videoCallAction,
-                addMemberAction
+                if (!widget.isSupport) addMemberAction,
               ],
             ),
           ),
