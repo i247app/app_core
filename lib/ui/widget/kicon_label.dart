@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:app_core/value/kstyles.dart';
+import 'package:flutter/material.dart';
 
+@Deprecated("Janky code that should go away")
 class KIconLabel extends StatelessWidget {
   final String? asset;
   final IconData? icon;
@@ -35,7 +36,11 @@ class KIconLabel extends StatelessWidget {
             fit: BoxFit.contain,
             package: 'app_core',
           )
-        : Icon(this.icon, size: this.assetSize, color: Theme.of(context).colorScheme.primary,);
+        : Icon(
+            this.icon,
+            size: this.assetSize,
+            color: Theme.of(context).colorScheme.primary,
+          );
 
     final image = !this.circleIcon
         ? rawIcon
@@ -47,8 +52,8 @@ class KIconLabel extends StatelessWidget {
               color: KStyles.white,
               borderRadius: BorderRadius.circular(30),
             ),
-            child: rawIcon,
-          );
+      child: rawIcon,
+    );
 
     final label = Text(
       this.text,

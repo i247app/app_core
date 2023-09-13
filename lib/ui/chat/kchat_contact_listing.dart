@@ -1,10 +1,7 @@
 import 'dart:async';
 
+import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/helper/ksession_data.dart';
-import 'package:app_core/helper/kstring_helper.dart';
-import 'package:app_core/helper/kutil.dart';
-import 'package:app_core/model/kuser.dart';
 import 'package:app_core/ui/widget/kcontact_name_view.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kicon_label.dart';
@@ -23,7 +20,7 @@ class KChatContactListing extends StatefulWidget {
 class _KChatContactListingState extends State<KChatContactListing> {
   static const Duration SEARCH_DELAY = Duration(milliseconds: 250);
 
-  final TextEditingController searchFieldController = TextEditingController();
+  final TextEditingController searchCtrl = TextEditingController();
 
   List<KUser>? userLists;
   String? currentSearchText;
@@ -48,7 +45,9 @@ class _KChatContactListingState extends State<KChatContactListing> {
       searchedUsers = response.users;
     }
 
-    if (myReqID == searchReqID) setState(() => this.userLists = searchedUsers);
+    if (myReqID == searchReqID) {
+      setState(() => this.userLists = searchedUsers);
+    }
   }
 
   void onSearchChanged(String searchText) {
@@ -59,23 +58,52 @@ class _KChatContactListingState extends State<KChatContactListing> {
   }
 
   void onSearchResultClick(KUser user) {
-    if (KStringHelper.isEmpty(user.puid)) return;
-
-    if (this.selectedUsers.where((su) => su.puid == user.puid).isEmpty) {
-      setState(() {
-        this.selectedUsers.add(user);
-        this.searchFieldController.clear();
-      });
+    if (KStringHelper.isEmpty(user.puid)) {
+      if (KSessionData.isSomeKindOfAdmin || KUtil.isDebug) {
+        KToastHelper.error("selected user.puid empty");
+      }
+      return;
+    } else if (selectedUsers.where((su) => su.puid == user.puid).isNotEmpty) {
+      if (KSessionData.isSomeKindOfAdmin || KUtil.isDebug) {
+        KToastHelper.error("user already selected");
+      }
+      return;
     }
+
+    setState(() {
+      selectedUsers.add(user);
+      searchCtrl.clear();
+    });
   }
 
-  void onComplete() => Navigator.of(context).pop(this.selectedUsers);
+  void onComplete() async {
+    if (KSessionData.isSomeKindOfAdmin || KUtil.isDebug) {
+      KToastHelper.error("selectedUsers.length: ${selectedUsers.length}");
+      await Future.delayed(Duration(milliseconds: 250));
+    }
+    Navigator.of(context).pop(selectedUsers);
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final doneButton = TextButton(
+      onPressed: onComplete,
+      child: Text("OK"),
+    );
+
+    final topBar = Row(
+      children: [
+        BackButton(),
+        Text("Choose Users", style: theme.textTheme.titleMedium),
+        Spacer(),
+        doneButton,
+      ],
+    );
+
     final searchInput = _SearchField(
-      searchFieldController: this.searchFieldController,
+      searchFieldController: this.searchCtrl,
       onChanged: onSearchChanged,
       readOnly: false,
       focusNode: this.focusNode,
@@ -86,9 +114,9 @@ class _KChatContactListingState extends State<KChatContactListing> {
     );
 
     final userListing;
-    if (this.userLists == null)
+    if (userLists == null) {
       userListing = Container();
-    else if (this.userLists!.isEmpty)
+    } else if (userLists!.isEmpty) {
       userListing = Center(
         child: Text(
           "Nothing found!",
@@ -96,13 +124,12 @@ class _KChatContactListingState extends State<KChatContactListing> {
           style: theme.textTheme.bodyLarge,
         ),
       );
-    else
+    } else {
       userListing = ListView.separated(
-        padding: EdgeInsets.all(4),
-        itemCount: (this.userLists ?? []).length,
+        padding: EdgeInsets.symmetric(vertical: 6),
+        itemCount: (userLists ?? []).length,
         itemBuilder: (_, i) {
-          KUser user = (this.userLists ?? [])[i];
-
+          final user = (userLists ?? [])[i];
           if (user.puid == KSessionData.me?.puid) {
             return Container();
           }
@@ -111,35 +138,23 @@ class _KChatContactListingState extends State<KChatContactListing> {
             user: user,
             onClick: onSearchResultClick,
             icon: Container(
-              width: 50,
+              width: 40,
               child: KUserAvatar.fromUser(user),
             ),
           );
         },
         separatorBuilder: (_, __) => Container(
-          width: double.infinity,
           height: 1,
-          color: Theme.of(context).dividerTheme.color,
+          color: Theme.of(context).primaryColor.withOpacity(0.08),
         ),
       );
-
-    final doneButton = TextButton(
-      onPressed: onComplete,
-      child: Text("OK"),
-    );
+    }
 
     final body = SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(
-            children: [
-              BackButton(),
-              Text("Choose Users", style: theme.textTheme.titleMedium),
-              Spacer(),
-              doneButton,
-            ],
-          ),
+          topBar,
           SizedBox(height: 8),
           searchInput,
           Expanded(child: userListing),
@@ -229,6 +244,7 @@ class _SearchField extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           searchField,
+          SizedBox(height: 2),
           Wrap(
             spacing: 4,
             runSpacing: 4,
@@ -259,29 +275,31 @@ class _ResultItem extends StatelessWidget {
     final centerInfo = Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        KContactNameView.fromUser(this.user),
+      children: [
+        KContactNameView.fromUser(user),
         SizedBox(height: 4),
         KIconLabel(
           icon: Icons.phone,
           text: KUtil.maskedFone(KUtil.prettyFone(
-            foneCode: this.user.phoneCode ?? "",
-            number: this.user.phone ?? "",
+            foneCode: user.phoneCode ?? "",
+            number: user.phone ?? "",
           )),
         ),
       ],
     );
 
     return InkWell(
-      onTap: () => this.onClick.call(this.user),
+      onTap: () => onClick.call(user),
       child: Container(
-        padding: EdgeInsets.all(6),
+        padding: EdgeInsets.symmetric(horizontal: 6, vertical: 10),
         color: Colors.transparent,
-        child: Row(children: <Widget>[
-          this.icon,
-          SizedBox(width: 16),
-          Expanded(child: centerInfo),
-        ]),
+        child: Row(
+          children: [
+            icon,
+            SizedBox(width: 10),
+            Expanded(child: centerInfo),
+          ],
+        ),
       ),
     );
   }

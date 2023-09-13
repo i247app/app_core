@@ -27,14 +27,14 @@ class KContactNameView extends StatelessWidget {
     final body = RichText(
       overflow: TextOverflow.ellipsis,
       text: TextSpan(
-        style: Theme.of(context).textTheme.subtitle1,
+        style: Theme.of(context).textTheme.titleMedium,
         children: <TextSpan>[
           if (this.kunm != null && (this.kunm ?? "").isNotEmpty)
             TextSpan(
               text: '@${this.kunm} ',
               style: Theme.of(context)
                   .textTheme
-                  .subtitle1
+                  .titleMedium
                   ?.copyWith(color: Theme.of(context).primaryColor),
             ),
           TextSpan(

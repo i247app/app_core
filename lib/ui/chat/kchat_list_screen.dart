@@ -112,19 +112,17 @@ class _KChatListScreenState extends State<KChatListScreen> {
   void onCreateChatClick() async {
     final result = await Navigator.of(context).push(
         MaterialPageRoute(builder: (_) => KChatContactListing(searchUsers)));
-
     if ((result ?? []).isEmpty) {
       return;
     }
 
-    final users = result;
-    users.add(KSessionData.me!);
-
+    final users = [...result, KSessionData.me!];
     final members = users.map((u) => KChatMember.fromUser(u)).toList();
 
-    final screen = KChatScreen(chatID: null, members: members, title: "");
-    await Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
-    chatListingCtrl.loadChats();
+    final screen = KChatScreen(chatID: null, members: members);
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (_) => screen))
+        .whenComplete(() => chatListingCtrl.loadChats());
   }
 
   Widget _buildSmallLayout(bool isTablet) {
