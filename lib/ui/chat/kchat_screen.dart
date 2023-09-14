@@ -48,6 +48,8 @@ class _KChatScreenState extends State<KChatScreen> {
           ? "Support"
           : (members.isNotEmpty ? members.first.firstName ?? "" : "Chat"));
 
+  bool get isHideAddButton => chatroomCtrl.value.refApp == KChat.APP_CONTENT_SUPPORT && !KSessionData.isSomeKindOfAdmin;
+
   @override
   void initState() {
     super.initState();
@@ -262,7 +264,7 @@ class _KChatScreenState extends State<KChatScreen> {
           actions: <Widget>[
             if (this.isVideoCallEnabled && !KCallKitHelper.instance.isCalling)
               videoCallAction,
-            if (!widget.isSupport) addMemberAction,
+            if (!isHideAddButton) addMemberAction,
           ],
           elevation: 1,
         ),
@@ -295,7 +297,7 @@ class _KChatScreenState extends State<KChatScreen> {
                   ),
                 ),
                 if (this.isVideoCallEnabled) videoCallAction,
-                if (!widget.isSupport) addMemberAction,
+                if (!isHideAddButton) addMemberAction,
               ],
             ),
           ),
