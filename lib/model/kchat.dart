@@ -9,7 +9,7 @@ part 'kchat.g.dart';
 @JsonSerializable()
 class KChat {
   static const String APP_CONTENT_CHAT = "chat";
-  static const String APP_CONTENT_SUPPORT = "cusup";
+  static const String APP_CONTENT_CUSUP = "cusup";
 
   @JsonKey(name: "chatID")
   String? chatID;

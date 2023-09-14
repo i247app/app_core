@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 
 class KChatScreen extends StatefulWidget {
   final List<KChatMember>? members;
-  final bool isSupport;
+  final bool isCUSUP;
   final String? chatID;
   final String? title;
   final Function? onChat;
@@ -24,7 +24,7 @@ class KChatScreen extends StatefulWidget {
     this.onChat,
     this.isEmbedded = false,
     this.onChatroomControllerHeard,
-    this.isSupport = false,
+    this.isCUSUP = false,
   }) : super(key: key);
 
   @override
@@ -44,11 +44,11 @@ class _KChatScreenState extends State<KChatScreen> {
   String get smartTitle =>
       chatroomCtrl.value.chatTitle ??
       widget.title ??
-      (widget.isSupport
+      (widget.isCUSUP
           ? "Support"
           : (members.isNotEmpty ? members.first.firstName ?? "" : "Chat"));
 
-  bool get isHideAddButton => chatroomCtrl.value.refApp == KChat.APP_CONTENT_SUPPORT && !KSessionData.isSomeKindOfAdmin;
+  bool get isHideAddButton => chatroomCtrl.value.refApp == KChat.APP_CONTENT_CUSUP && !KSessionData.isSomeKindOfAdmin;
 
   @override
   void initState() {
@@ -56,7 +56,7 @@ class _KChatScreenState extends State<KChatScreen> {
 
     this.chatroomCtrl = KChatroomController(
       refApp:
-          widget.isSupport ? KChat.APP_CONTENT_SUPPORT : KChat.APP_CONTENT_CHAT,
+          widget.isCUSUP ? KChat.APP_CONTENT_CUSUP : KChat.APP_CONTENT_CHAT,
       chatID: widget.chatID,
       members: widget.members,
     );
@@ -231,7 +231,7 @@ class _KChatScreenState extends State<KChatScreen> {
   Widget build(BuildContext context) {
     final body = KChatroom(
       chatroomCtrl,
-      isSupport: widget.isSupport,
+      isSupport: widget.isCUSUP,
     );
 
     final addMemberAction = IconButton(
