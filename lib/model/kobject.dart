@@ -36,6 +36,7 @@ abstract class KObject {
   static const String VALUE_YES = "yes";
   static const String VALUE_NO = "no";
   static const String VALUE_ALL = "all";
+  static const String VALUE_ONE = "one";
 
   static const String KNAME = "kname";
 
