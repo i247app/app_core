@@ -16,6 +16,7 @@ class Tutor extends KUser {
   static const String CAN_HEADSTART = "canHeadstart";
   static const String CAN_ENGLISH = "canEnglish";
   static const String CAN_VIET = "canViet";
+  static const String CAN_SPEAK_ENGLISH = "canSpeakEnglish";
 
   static const String STATUS_PENDING = "P";
   static const String STATUS_ACTIVE = "A";
@@ -59,6 +60,10 @@ class Tutor extends KUser {
 
   @JsonKey(name: CAN_VIET, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canViet;
+
+  @JsonKey(
+      name: CAN_SPEAK_ENGLISH, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
+  bool? canSpeakEnglish;
 
   @JsonKey(name: IS_SKILL, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isSkill;
@@ -139,8 +144,8 @@ class Tutor extends KUser {
       return (isSkill ?? false)
           ? Colors.blue
           : (isGenius ?? false)
-              ? Colors.green
-              : Colors.green;
+          ? Colors.green
+          : Colors.green;
     } else {
       return Colors.red;
     }
@@ -156,8 +161,8 @@ class Tutor extends KUser {
       return (isSkill ?? false)
           ? Icons.diamond_outlined
           : (isGenius ?? false)
-              ? Icons.local_police_outlined
-              : Icons.verified_user_outlined;
+          ? Icons.local_police_outlined
+          : Icons.verified_user_outlined;
     } else {
       return Icons.gpp_maybe_outlined;
     }
@@ -170,8 +175,8 @@ class Tutor extends KUser {
   @JsonKey(ignore: true)
   bool get requiresEdit =>
       (this.userTags ?? []).isEmpty ||
-      (this.educations ?? []).isEmpty ||
-      KStringHelper.isEmpty(this.officialIDURL);
+          (this.educations ?? []).isEmpty ||
+          KStringHelper.isEmpty(this.officialIDURL);
 
   // JSON
   Tutor();
