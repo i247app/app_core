@@ -17,6 +17,7 @@ class Tutor extends KUser {
   static const String CAN_ENGLISH = "canEnglish";
   static const String CAN_VIET = "canViet";
   static const String CAN_SPEAK_ENGLISH = "canSpeakEnglish";
+  static const String CAN_PRE_SCHOOL = "canPreschool";
 
   static const String STATUS_PENDING = "P";
   static const String STATUS_ACTIVE = "A";
@@ -64,6 +65,10 @@ class Tutor extends KUser {
   @JsonKey(
       name: CAN_SPEAK_ENGLISH, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? canSpeakEnglish;
+
+  @JsonKey(
+      name: CAN_PRE_SCHOOL, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
+  bool? canPreSchool;
 
   @JsonKey(name: IS_SKILL, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isSkill;

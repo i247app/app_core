@@ -102,6 +102,7 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..canEnglish = zzz_str2Bool(json['canEnglish'] as String?)
   ..canViet = zzz_str2Bool(json['canViet'] as String?)
   ..canSpeakEnglish = zzz_str2Bool(json['canSpeakEnglish'] as String?)
+  ..canPreSchool = zzz_str2Bool(json['canPreschool'] as String?)
   ..isSkill = zzz_str2Bool(json['isSkill'] as String?)
   ..isGenius = zzz_str2Bool(json['isGenius'] as String?)
   ..isKeepWorker = zzz_str2Bool(json['isKeepWorker'] as String?)
@@ -218,6 +219,7 @@ Map<String, dynamic> _$TutorToJson(Tutor instance) {
   writeNotNull('canEnglish', zzz_bool2Str(instance.canEnglish));
   writeNotNull('canViet', zzz_bool2Str(instance.canViet));
   writeNotNull('canSpeakEnglish', zzz_bool2Str(instance.canSpeakEnglish));
+  writeNotNull('canPreschool', zzz_bool2Str(instance.canPreSchool));
   writeNotNull('isSkill', zzz_bool2Str(instance.isSkill));
   writeNotNull('isGenius', zzz_bool2Str(instance.isGenius));
   writeNotNull('isKeepWorker', zzz_bool2Str(instance.isKeepWorker));
