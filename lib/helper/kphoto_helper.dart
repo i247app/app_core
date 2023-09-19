@@ -16,20 +16,35 @@ class KPhotoResult {
 
 abstract class KPhotoHelper {
   static Future<KPhotoResult> chooser(BuildContext context,
-      {bool hero = false, bool showRemoveHero = false}) async {
+      {bool hero = false,
+      bool showRemoveHero = false,
+      bool videoPicker = false}) async {
     final result = await showModalBottomSheet(
-        context: context,
-        builder: (ctx) => KChoosePhotoBottomSheetView(
-            hero: hero, showRemoveHero: showRemoveHero));
+      context: context,
+      builder: (ctx) => KChoosePhotoBottomSheetView(
+        hero: hero,
+        showRemoveHero: showRemoveHero,
+        videoPicker: videoPicker,
+      ),
+    );
 
     return result ?? KPhotoResult(status: KPhotoStatus.unknown);
   }
 
-  static Future<KPhotoResult> camera() async => _do(ImageSource.camera);
+  static Future<KPhotoResult> camera({
+    bool? videoPicker,
+  }) async =>
+      _do(ImageSource.camera, videoPicker: videoPicker);
 
-  static Future<KPhotoResult> gallery() async => _do(ImageSource.gallery);
+  static Future<KPhotoResult> gallery({
+    bool? videoPicker,
+  }) async =>
+      _do(ImageSource.gallery, videoPicker: videoPicker);
 
-  static Future<KPhotoResult> _do(ImageSource source) async {
+  static Future<KPhotoResult> _do(
+    ImageSource source, {
+    bool? videoPicker,
+  }) async {
     // TODO might need to uncomment the below lines
     // final permissionStatus = await Permission.storage.request();
     // if (permissionStatus != PermissionStatus.granted) return null;
@@ -38,7 +53,9 @@ abstract class KPhotoHelper {
     try {
       //##### PickedFile
       final _picker = ImagePicker();
-      final pickedFile = await _picker.pickImage(source: source);
+      final pickedFile = await ((videoPicker ?? false)
+          ? _picker.pickVideo(source: source)
+          : _picker.pickImage(source: source));
 
       if (pickedFile != null)
         result = KPhotoResult(

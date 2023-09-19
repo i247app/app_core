@@ -4,8 +4,14 @@ import 'package:flutter/material.dart';
 class KChoosePhotoBottomSheetView extends StatefulWidget {
   final bool hero;
   final bool showRemoveHero;
-  const KChoosePhotoBottomSheetView(
-      {required this.hero, required this.showRemoveHero});
+  final bool videoPicker;
+
+  const KChoosePhotoBottomSheetView({
+    required this.hero,
+    required this.showRemoveHero,
+    required this.videoPicker,
+  });
+
   @override
   _KChoosePhotoBottomSheetViewState createState() =>
       _KChoosePhotoBottomSheetViewState();
@@ -14,12 +20,12 @@ class KChoosePhotoBottomSheetView extends StatefulWidget {
 class _KChoosePhotoBottomSheetViewState
     extends State<KChoosePhotoBottomSheetView> {
   void onCameraClick() async {
-    final result = await KPhotoHelper.camera();
+    final result = await KPhotoHelper.camera(videoPicker: widget.videoPicker);
     Navigator.of(context).pop(result);
   }
 
   void onGalleryClick() async {
-    final result = await KPhotoHelper.gallery();
+    final result = await KPhotoHelper.gallery(videoPicker: widget.videoPicker);
     Navigator.of(context).pop(result);
   }
 
