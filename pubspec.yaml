@@ -44,7 +44,7 @@ dependencies:
   lottie: ^2.6.0
 
   # Photo picker
-  image_picker: ^1.0.2
+  image_picker: ^1.0.4
 
   # QR code scan
   barcode_scan2: ^4.2.4
@@ -109,6 +109,9 @@ dependencies:
   slider_captcha: ^1.0.0
 
   flutter_isolate: ^2.0.4
+
+  video_compress: ^3.1.2
+  light_compressor: ^2.1.0
 
 dev_dependencies:
   flutter_test:
