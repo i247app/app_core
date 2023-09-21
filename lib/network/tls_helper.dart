@@ -4,8 +4,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:app_core/app_core.dart';
-import 'package:app_core/network/kpacket_header.dart';
 import 'package:app_core/lingo/kphrases.dart';
+import 'package:app_core/network/kpacket_header.dart';
 import 'package:flutter/foundation.dart';
 
 abstract class TLSHelper {
@@ -113,9 +113,9 @@ abstract class TLSHelper {
     final result = decodedAnswer ?? jsonDecode(answer);
     if (sessGen == KSessionData.getSessionGeneration() &&
         KSessionData.getSessionGeneration() != null) {
-      print("T L S :::: sessGen = $sessGen");
-      print(
-          "T L S :::: KSessionData.getSessionGeneration() = ${KSessionData.getSessionGeneration()}");
+      // print("T L S :::: sessGen = $sessGen");
+      // print(
+      //     "T L S :::: KSessionData.getSessionGeneration() = ${KSessionData.getSessionGeneration()}");
 
       if (KStringHelper.isExist(result["ktoken"]) &&
           KSessionData.getSessionToken() != result["ktoken"] &&
@@ -128,10 +128,10 @@ abstract class TLSHelper {
 
     // Replace stack with Splash in case of BAD SESSION response
     try {
-      final condition =
+      final isBadSession =
           ((int.tryParse(result["kstatus"]) ?? 0) == KCoreCode.BAD_SESSION) &&
               KSessionData.hasActiveSession;
-      if (condition) {
+      if (isBadSession) {
         KSessionData.wipeSession();
         // TODO: Check for schoolbird
         KToastHelper.show("Session terminated");
