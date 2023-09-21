@@ -369,7 +369,9 @@ abstract class KUtil {
   // USD - dot separator   - 24,500 or 24,500.55
   // null tokenName, default dot separator format
   static String? prettyNumber({String? number, String? tokenName}) {
-    if ((number ?? "").isEmpty) return null;
+    if ((number ?? "").isEmpty) {
+      return null;
+    }
 
     String pretty;
     try {
@@ -398,8 +400,9 @@ abstract class KUtil {
     try {
       // Normalize input
       amount = double.parse(amount ?? "").toString();
-      if (amount.endsWith(".0"))
+      if (amount.endsWith(".0")) {
         amount = amount.substring(0, amount.length - 2);
+      }
 
       // Check for negative value
       bool isNegative = false;
@@ -418,8 +421,10 @@ abstract class KUtil {
 
       // Build balance in reverse
       for (int i = integerPart.length - 1; i >= 0; i--) {
-        int indexFromRight = integerPart.length - 1 - i;
-        if (indexFromRight != 0 && indexFromRight % 3 == 0) z += ".";
+        final indexFromRight = integerPart.length - 1 - i;
+        if (indexFromRight != 0 && indexFromRight % 3 == 0) {
+          z += ".";
+        }
         z += integerPart[i];
       }
 
@@ -427,10 +432,14 @@ abstract class KUtil {
       z = z.split('').reversed.join('');
 
       // Add minus sign if negative value
-      if (isNegative) z = "-" + z;
+      if (isNegative) {
+        z = "-" + z;
+      }
 
       // Append fractional part if exists
-      if (fractionalPart.isNotEmpty) z = z + "." + fractionalPart;
+      if (fractionalPart.isNotEmpty) {
+        z = z + "." + fractionalPart;
+      }
     } catch (e) {
       z = amount ?? "";
     }
@@ -457,7 +466,9 @@ abstract class KUtil {
       }
 
       if (date != null) {
-        if (date.isUtc) print("Util.timeAgo date is utc");
+        if (date.isUtc) {
+          print("Util.timeAgo date is utc");
+        }
         // date = date.toLocal(); // localized for display only
 
         date = date.toLocal();
