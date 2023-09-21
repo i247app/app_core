@@ -8,6 +8,8 @@ import 'package:app_core/model/response/base_response.dart';
 import 'package:app_core/model/tutor.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'kaws_info.dart';
+
 part 'kuser_session.g.dart';
 
 @JsonSerializable()
@@ -31,6 +33,7 @@ class KUserSession {
   static const String IS_FORCE_UPDATE = "isForceUpdate";
   static const String BUSINESS = "business";
   static const String BUSINESS_MEMBERS = "businessMembers";
+  static const String AWS_INFO = "awsInfo";
 
   @JsonKey(name: KTOKEN)
   String? ktoken;
@@ -82,6 +85,9 @@ class KUserSession {
 
   @JsonKey(name: BUSINESS_MEMBERS)
   List<BusinessMember>? businessMembers;
+
+  @JsonKey(name: AWS_INFO)
+  KAWSInfo? awsInfo;
 
   /// Extra
   @JsonKey(ignore: true)

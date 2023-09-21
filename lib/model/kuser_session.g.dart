@@ -37,7 +37,10 @@ KUserSession _$KUserSessionFromJson(Map<String, dynamic> json) => KUserSession()
       : Business.fromJson(json['business'] as Map<String, dynamic>)
   ..businessMembers = (json['businessMembers'] as List<dynamic>?)
       ?.map((e) => BusinessMember.fromJson(e as Map<String, dynamic>))
-      .toList();
+      .toList()
+  ..awsInfo = json['awsInfo'] == null
+      ? null
+      : KAWSInfo.fromJson(json['awsInfo'] as Map<String, dynamic>);
 
 Map<String, dynamic> _$KUserSessionToJson(KUserSession instance) {
   final val = <String, dynamic>{};
@@ -66,5 +69,6 @@ Map<String, dynamic> _$KUserSessionToJson(KUserSession instance) {
   writeNotNull('business', instance.business?.toJson());
   writeNotNull('businessMembers',
       instance.businessMembers?.map((e) => e.toJson()).toList());
+  writeNotNull('awsInfo', instance.awsInfo?.toJson());
   return val;
 }
