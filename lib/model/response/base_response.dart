@@ -60,6 +60,14 @@ String? zzz_json2Str(Map<String, dynamic>? m) =>
 Map<String, dynamic>? zzz_str2JSON(String? z) =>
     z == null ? null : json.decode(z);
 
+// ignore: non_constant_identifier_names
+String? zzz_list2Str(List<String>? m) =>
+    m == null ? null : json.encode(m);
+
+// ignore: non_constant_identifier_names
+List<String>? zzz_str2List(String? z) =>
+    z == null ? null : json.decode(z);
+
 abstract class BaseResponse {
   static const String KTOKEN = "ktoken";
   static const String KSTATUS = "kstatus";

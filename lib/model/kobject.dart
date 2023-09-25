@@ -46,6 +46,9 @@ abstract class KObject {
   static const String VALUE_TUTOR_SKILL = "SKILL";
   static const String VALUE_TUTOR_BIO = "BIO";
   static const String VALUE_TUTOR_VIDEO = "VIDEO";
+  static const String BOOKING_DEMO_VIDEO = "booking.demo.video";
+  static const String TUTOR_ONBOOARD_VIDEO = "tutor.onbooard.video";
+  static const String TUTOR_PROFILE_VIDEO = "tutor.profile.video";
 
   static const String KNAME = "kname";
 

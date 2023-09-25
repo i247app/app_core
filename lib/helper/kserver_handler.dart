@@ -7,6 +7,7 @@ import 'package:app_core/model/chapter.dart';
 import 'package:app_core/model/course.dart';
 import 'package:app_core/model/kanswer.dart';
 import 'package:app_core/model/kcheck_in.dart';
+import 'package:app_core/model/kfoo.dart';
 import 'package:app_core/model/kgame.dart';
 import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/model/khero.dart';
@@ -38,6 +39,7 @@ import 'package:app_core/model/response/search_users_response.dart';
 import 'package:app_core/model/response/send_2fa_response.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
 import 'package:app_core/model/live_share.dart';
+import 'package:app_core/model/response/video_action_response.dart';
 import 'package:app_core/model/share.dart';
 import 'package:app_core/model/textbook.dart';
 import 'package:app_core/model/xfr_proxy.dart';
@@ -816,6 +818,16 @@ abstract class KServerHandler {
         ..kaction = kaction,
     };
     return TLSHelper.send(params).then((data) => LiveShareResponse.fromJson(data));
+  }
+
+  static Future<VideoActionResponse> videoAction(KFoo foo) async {
+    final params = {
+      "svc": "pub",
+      "req": "video.action",
+      "kaction": foo.kaction,
+      "kvalue": foo.kvalue,
+    };
+    return TLSHelper.send(params).then((data) => VideoActionResponse.fromJson(data));
   }
 
   static Future<ShareResponse> shareAction({
