@@ -37,6 +37,18 @@ abstract class KObject {
   static const String VALUE_NO = "no";
   static const String VALUE_ALL = "all";
   static const String VALUE_ONE = "one";
+  static const String VALUE_TUTOR_PERSONAL = "PERSONAL";
+  static const String VALUE_TUTOR_AVATAR = "AVATAR";
+  static const String VALUE_TUTOR_EDU = "EDU";
+  static const String VALUE_TUTOR_ID = "ID";
+  static const String VALUE_TUTOR_STUDENT_ID = "STUDENT_ID";
+  static const String VALUE_TUTOR_BANK = "BANK";
+  static const String VALUE_TUTOR_SKILL = "SKILL";
+  static const String VALUE_TUTOR_BIO = "BIO";
+  static const String VALUE_TUTOR_VIDEO = "VIDEO";
+  static const String BOOKING_DEMO_VIDEO = "booking.demo.video";
+  static const String TUTOR_ONBOOARD_VIDEO = "tutor.onbooard.video";
+  static const String TUTOR_PROFILE_VIDEO = "tutor.profile.video";
 
   static const String KNAME = "kname";
 
