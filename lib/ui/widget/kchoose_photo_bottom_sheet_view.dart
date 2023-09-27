@@ -68,7 +68,7 @@ class _KChoosePhotoBottomSheetViewState
                 children: [
                   Icon(Icons.photo_library),
                   SizedBox(width: 10),
-                  Text("Photo"),
+                  Text("Gallery"),
                 ],
               ),
             ),
