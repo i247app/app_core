@@ -14,8 +14,8 @@ class KFullNotification {
   @JsonKey(name: DATA)
   KPushData? data;
 
-  @JsonKey(ignore: true)
-  String? get app => this.data?.app;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  String? get app => data?.app;
 
   // JSON
   KFullNotification();

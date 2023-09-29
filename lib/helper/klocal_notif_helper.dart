@@ -43,11 +43,18 @@ abstract class KLocalNotifHelper {
     _logBlockDepth(app);
   }
 
-  static bool isBannerBlocked(String app) =>
-      (_blockedBannersDepth[app] ?? 0) > 0;
+  static bool isBannerBlocked(String? app) =>
+      app != null && (_blockedBannersDepth[app] ?? 0) > 0;
 
-  static void _logBlockDepth(String app) => print(
-      "LocalNotifHelper :: banner block depth - ${_blockedBannersDepth[app]}");
+  static void _logBlockDepth(String? app) {
+    String msg;
+    if (app == null) {
+      msg = "anonymous notification - NOT BLOCKING";
+    } else {
+      msg = "banner block depth - ${_blockedBannersDepth[app]}";
+    }
+    print("LocalNotifHelper :: $msg");
+  }
 
   static Future<void> setupLocalNotifications(
     String androidIcon, {
@@ -56,8 +63,7 @@ abstract class KLocalNotifHelper {
     print("fcm_helper => setupLocalNotifications fired");
 
     if (Platform.isAndroid) {
-      FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-          FlutterLocalNotificationsPlugin();
+      final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
       flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin>()
@@ -83,14 +89,21 @@ abstract class KLocalNotifHelper {
   }) async {
     final KNotifData? notif = msg.notification;
     final String? app = msg.app;
-    if (notif == null || app == null) return;
+    if (notif == null
+        // || app == null
+        ) {
+      print(
+          "KLocalNotifHelper.showNotification validation fail - notif=$notif");
+      return;
+    }
 
     /// Pretty hacky but FOR NOW don't display blocked banners
     _logBlockDepth(app);
-    if (isBannerBlocked(app) && obeyBlacklist == true) {
+    if (isBannerBlocked(app) && obeyBlacklist) {
       print("LocalNotifHelper - blocked banner for app '$app'");
-      if (!KHostConfig.isReleaseMode && BLOCKED_BANNERS_AS_TOAST)
+      if (!KHostConfig.isReleaseMode && BLOCKED_BANNERS_AS_TOAST) {
         KToastHelper.show("data app $app");
+      }
       return;
     }
 
@@ -117,12 +130,13 @@ abstract class KLocalNotifHelper {
         "LocalNotifHelper.showNotification - showing ${KUtil.prettyJSON(notif)}");
 
     if (KStringHelper.isExist(notif.title ?? "")) {
-      if (_flutterLocalNotificationsPlugin == null)
+      if (_flutterLocalNotificationsPlugin == null) {
         await setupLocalNotifications(
           androidIcon,
           onSelectNotification: onSelectNotification,
         );
-      var rng = new Random();
+      }
+      final rng = new Random();
       await _flutterLocalNotificationsPlugin!.show(
         rng.nextInt(100000),
         notif.title,
