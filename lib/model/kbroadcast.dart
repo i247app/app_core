@@ -2,17 +2,17 @@ import 'package:app_core/model/kobject.dart';
 import 'package:app_core/model/response/base_response.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'kaddress.dart';
+import 'klat_lng.dart';
+
 part 'kbroadcast.g.dart';
 
 @JsonSerializable()
 class KBroadcast extends KObject {
-  @JsonKey(name: "broadcast")
-  String? broadcast;
-
   @JsonKey(name: "broadcastID")
   String? broadcastID;
 
-  @JsonKey(name: "byPuid")
+  @JsonKey(name: "byPUID")
   String? byPUID;
 
   @JsonKey(name: "title")
@@ -30,8 +30,11 @@ class KBroadcast extends KObject {
   @JsonKey(name: "broadcastDate")
   String? broadcastDate;
 
-  @JsonKey(name: "count")
-  String? count;
+  @JsonKey(name: "broadcastMax")
+  String? broadcastMax;
+
+  @JsonKey(name: "broadcastCount")
+  String? broadcastCount;
 
   @JsonKey(name: "isPaid", fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isPaid;
@@ -39,14 +42,20 @@ class KBroadcast extends KObject {
   @JsonKey(name: "toAll", fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? toAll;
 
-  @JsonKey(name: "broadcastStatus")
-  String? broadcastStatus;
-
   @JsonKey(name: "recipients")
   List<String>? recipients;
 
   @JsonKey(name: "recipientType")
   String? recipientType;
+
+  @JsonKey(name: "addresses")
+  List<KAddress>? addresses;
+
+  @JsonKey(name: "latLng")
+  KLatLng? latLng;
+
+  @JsonKey(name: "broadcastStatus")
+  String? broadcastStatus;
 
   // JSON
   KBroadcast();
