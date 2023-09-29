@@ -7,6 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 abstract class KPrefHelper {
   static const String TAG = 'KPrefHelper';
 
+  static const String PASSCODE = 'passcode';
   static const String BUILD_NUMBER = 'build_number';
   static const String KTOKEN = 'session_token';
   static const String PUSH_TOKEN = 'push_token';

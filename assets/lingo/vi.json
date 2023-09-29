@@ -182,5 +182,10 @@
   "pre_school": "Mầm Non",
   "skip": "Bỏ Qua",
   "new_update": "Cập nhật",
-  "update_content": "Cập nhận phiên bản"
+  "update_content": "Cập nhận phiên bản",
+  "passcode_setting": "Cài Đặt Mã Khóa",
+  "input_current_passcode": "Nhập Mã Khóa Hiện Tại",
+  "input_passcode": "Nhập Mã Khóa",
+  "input_re_passcode": "Nhập Lại Mã Khóa",
+  "passcode_not_match": "Mã Khóa Không Khớp"
 }

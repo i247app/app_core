@@ -181,5 +181,10 @@
   "pre_school": "Pre-School",
   "skip": "Skip",
   "new_update": "App Update",
-  "update_content": "Update to version"
+  "update_content": "Update to version",
+  "passcode_setting": "Passcode Setting",
+  "input_current_passcode": "Input Current Passcode",
+  "input_passcode": "Input Passcode",
+  "input_re_passcode": "Input Re-Passcode",
+  "passcode_not_match": "Passcode Not Match"
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 enum KNumberPadMode { NONE, NUMBER, QWERTY }
 
-enum KNumberPadStyle { ORIGINAL, CASHAPP }
+enum KNumberPadStyle { ORIGINAL, CASHAPP, PASSCODE }
 
 class _NumpadStyleManager extends InheritedWidget {
   final KNumberPadStyle style;
@@ -30,6 +30,7 @@ class KNumberPad extends StatelessWidget {
   final void Function(String)? onTextChange;
   final KNumberPadStyle style;
   final int decimals;
+  final int? maxLength;
 
   KNumberPad({
     Key? key,
@@ -38,6 +39,7 @@ class KNumberPad extends StatelessWidget {
     this.onTextChange,
     this.style = KNumberPadStyle.ORIGINAL,
     this.decimals = 2,
+    this.maxLength,
   }) : super(key: key);
 
   void _qwertyHandler() => this.onReturn.call();
@@ -99,6 +101,12 @@ class KNumberPad extends StatelessWidget {
         baseOffset: textSelection.start + myTextLength,
         extentOffset: textSelection.start + myTextLength,
       );
+    } else if (style == KNumberPadStyle.PASSCODE) {
+      final text = controller.text;
+      final newText = text + myText;
+      if (maxLength != null && maxLength! < newText.length) return;
+      controller.text = newText;
+      _textChange(newText);
     } else {
       //CASHAPP
       if (controller.text.contains('.') && myText == '.') {
@@ -156,6 +164,11 @@ class KNumberPad extends StatelessWidget {
         baseOffset: newStart,
         extentOffset: newStart,
       );
+      _textChange(newText);
+    } else if (style == KNumberPadStyle.PASSCODE) {
+      final text = controller.text;
+      final newText = text.isNotEmpty ? text.substring(0, text.length - 1) : '';
+      controller.text = newText;
       _textChange(newText);
     } else {
       //CASHAPP
