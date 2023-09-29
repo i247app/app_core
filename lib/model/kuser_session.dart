@@ -1,14 +1,13 @@
 import 'package:app_core/model/business.dart';
 import 'package:app_core/model/business_member.dart';
 import 'package:app_core/model/kapp_nav.dart';
+import 'package:app_core/model/kaws_info.dart';
 import 'package:app_core/model/kgig_nav.dart';
 import 'package:app_core/model/ksystem_host_data.dart';
 import 'package:app_core/model/kuser.dart';
 import 'package:app_core/model/response/base_response.dart';
 import 'package:app_core/model/tutor.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import 'kaws_info.dart';
 
 part 'kuser_session.g.dart';
 
@@ -34,6 +33,7 @@ class KUserSession {
   static const String BUSINESS = "business";
   static const String BUSINESS_MEMBERS = "businessMembers";
   static const String AWS_INFO = "awsInfo";
+  static const String IS_SECURE = "isSecure";
 
   @JsonKey(name: KTOKEN)
   String? ktoken;
@@ -68,7 +68,8 @@ class KUserSession {
   @JsonKey(name: IS_CUSUP_READY, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isCusupReady;
 
-  @JsonKey(name: IS_DOMAIN_ADMIN_READY, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
+  @JsonKey(
+      name: IS_DOMAIN_ADMIN_READY, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
   bool? isDomainAdminReady;
 
   @JsonKey(name: IS_ADMIN_READY, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
@@ -89,16 +90,18 @@ class KUserSession {
   @JsonKey(name: AWS_INFO)
   KAWSInfo? awsInfo;
 
+  @JsonKey(name: IS_SECURE, fromJson: zzz_str2Bool, toJson: zzz_bool2Str)
+  bool? isSecure;
+
   /// Extra
   @JsonKey(ignore: true)
-  KAppNav? get appCoreAppNav => this.appNav as KAppNav;
+  KAppNav? get appCoreAppNav => appNav as KAppNav;
 
   @JsonKey(ignore: true)
   bool isGuest = false;
 
   @JsonKey(ignore: true)
-  bool get isTutor =>
-      this.tutor != null && this.tutor!.tutorStatus != Tutor.STATUS_PENDING;
+  bool get isTutor => tutor?.tutorStatus != Tutor.STATUS_PENDING;
 
   BusinessMember? getActiveMember() {
     BusinessMember? activeMember;

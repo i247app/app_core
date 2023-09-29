@@ -40,7 +40,8 @@ KUserSession _$KUserSessionFromJson(Map<String, dynamic> json) => KUserSession()
       .toList()
   ..awsInfo = json['awsInfo'] == null
       ? null
-      : KAWSInfo.fromJson(json['awsInfo'] as Map<String, dynamic>);
+      : KAWSInfo.fromJson(json['awsInfo'] as Map<String, dynamic>)
+  ..isSecure = zzz_str2Bool(json['isSecure'] as String?);
 
 Map<String, dynamic> _$KUserSessionToJson(KUserSession instance) {
   final val = <String, dynamic>{};
@@ -70,5 +71,6 @@ Map<String, dynamic> _$KUserSessionToJson(KUserSession instance) {
   writeNotNull('businessMembers',
       instance.businessMembers?.map((e) => e.toJson()).toList());
   writeNotNull('awsInfo', instance.awsInfo?.toJson());
+  writeNotNull('isSecure', zzz_bool2Str(instance.isSecure));
   return val;
 }

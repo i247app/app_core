@@ -3,7 +3,6 @@ import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/business_member.dart';
 import 'package:app_core/model/kgig_nav.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
 
 abstract class KSessionData {
   static String? kSessionToken;
@@ -15,7 +14,7 @@ abstract class KSessionData {
   static String? _sessionGenerationID;
 
   // // // // // system
-  static bool get hasActiveSession => getSessionToken() != null;
+  static bool get hasActiveSession => getUserSession()?.isSecure ?? false;
 
   static String? getSessionToken() => kSessionToken;
 
@@ -36,13 +35,13 @@ abstract class KSessionData {
     }
     String? countryCode;
     try {
-      Position? position = KLocationHelper.cachedPosition;
+      final position = KLocationHelper.cachedPosition;
       if (position != null) {
-        List<Placemark> placemarks = await placemarkFromCoordinates(
+        final placemarks = await placemarkFromCoordinates(
             position.latitude, position.longitude);
         countryCode = placemarks.first.isoCountryCode;
       }
-    } catch (ex) {}
+    } catch (_) {}
 
     if (KStringHelper.isExist(countryCode)) {
       setCountryCode(countryCode);

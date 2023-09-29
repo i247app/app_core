@@ -104,7 +104,7 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
   void hardReloadListener() {
     kNavigatorKey.currentState!.popUntil((r) => r.isFirst);
     kNavigatorKey.currentState!
-        .pushReplacement(MaterialPageRoute(builder: (ctx) => widget.home));
+        .pushReplacement(MaterialPageRoute(builder: (_) => widget.home));
   }
 
   void rebuildAllChildren(BuildContext context) {
