@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kpasscode_helper.dart';
 import 'package:app_core/lingo/kphrases.dart';
+import 'package:app_core/style/ktheme.dart';
 import 'package:app_core/ui/widget/kpasscode/kpasscode_input.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
@@ -40,14 +42,14 @@ class _KPasscodeSettingState extends State<KPasscode> {
   String get titleText {
     switch (widget.action) {
       case KPasscodeAction.clear:
-        return KPhrases.inputCurrentPasscode;
+        return KPhrases.enterCurrentPasscode;
       case KPasscodeAction.login:
-        return KPhrases.enterLoginPin;
+        return KPhrases.enterPasscode;
       case KPasscodeAction.store:
       default:
         return isShowRePasscodeInput
-            ? KPhrases.inputRePasscode
-            : KPhrases.inputPasscode;
+            ? KPhrases.reEnterPasscode
+            : KPhrases.enterPasscode;
     }
   }
 
@@ -209,7 +211,9 @@ class _KPasscodeSettingState extends State<KPasscode> {
                   style: TextStyle(
                     color: KStyles.colorError,
                   ),
-                ),
+                )
+              else
+                Text("") // fake spacing
             ],
           );
 
@@ -221,15 +225,15 @@ class _KPasscodeSettingState extends State<KPasscode> {
         children: <Widget>[
           Text(
             titleText,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.headlineSmall,
             textAlign: TextAlign.center,
           ),
           Center(
             child: isShowRePasscodeInput ? rePasscodeInput : passcodeInput,
           ),
-          SizedBox(height: 14),
+          SizedBox(height: 12),
           Center(child: errorLabel),
-          SizedBox(height: 20),
+          // SizedBox(height: 12),
           keyboard,
         ],
       ),

@@ -183,10 +183,9 @@
   "skip": "Bỏ Qua",
   "new_update": "Cập nhật",
   "update_content": "Cập nhận phiên bản",
-  "passcode_setting": "Cài Đặt Mã Khóa",
-  "input_current_passcode": "Nhập Mã Khóa Hiện Tại",
-  "input_passcode": "Nhập Mã Khóa",
-  "input_re_passcode": "Nhập Lại Mã Khóa",
-  "passcode_not_match": "Mã Khóa Không Khớp",
-  "enter_login_pin": "Nhập Mã Đăng Nhập"
+  "passcode_setting": "Cài Đặt Pin",
+  "enter_passcode": "Nhập Pin",
+  "re_enter_passcode": "Nhập Lại Pin",
+  "passcode_not_match": "Pin Không Khớp",
+  "enter_current_passcode": "Nhập Mã Khóa Hiện Tại"
 }

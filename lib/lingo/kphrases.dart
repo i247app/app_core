@@ -155,13 +155,11 @@ abstract class KPhrases {
 
   static String get passcodeSetting => _klingo.yak("passcode_setting");
 
-  static String get inputCurrentPasscode => _klingo.yak("input_current_passcode");
+  static String get enterCurrentPasscode => _klingo.yak("enter_current_passcode");
 
-  static String get inputPasscode => _klingo.yak("input_passcode");
-
-  static String get inputRePasscode => _klingo.yak("input_re_passcode");
+  static String get reEnterPasscode => _klingo.yak("re_enter_passcode");
 
   static String get passcodeNotMatch => _klingo.yak("passcode_not_match");
 
-  static String get enterLoginPin => _klingo.yak("enter_login_pin");
+  static String get enterPasscode => _klingo.yak("enter_passcode");
 }

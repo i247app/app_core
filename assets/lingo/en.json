@@ -183,9 +183,8 @@
   "new_update": "App Update",
   "update_content": "Update to version",
   "passcode_setting": "Passcode Setting",
-  "input_current_passcode": "Input Current Passcode",
-  "input_passcode": "Input Passcode",
-  "input_re_passcode": "Input Re-Passcode",
-  "passcode_not_match": "Passcode Not Match",
-  "enter_login_pin": "Enter Login Pin"
+  "enter_passcode": "Enter Passcode",
+  "re_enter_passcode": "Re-Enter Passcode",
+  "passcode_not_match": "Passcode Do Not Match",
+  "enter_current_passcode": "Enter Current Passcode"
 }
