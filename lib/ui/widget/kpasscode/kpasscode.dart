@@ -31,19 +31,25 @@ class _KPasscodeSettingState extends State<KPasscode> {
   final TextEditingController rePasscodeCtrl = TextEditingController();
   final FocusNode focusNode = FocusNode();
   final StreamController<bool> verificationNotifier =
-  StreamController<bool>.broadcast();
+      StreamController<bool>.broadcast();
 
   bool isShowRePasscodeInput = false;
   bool isLoading = false;
   String errorMessage = "";
 
-  String get titleText =>
-      widget.action == KPasscodeAction.clear ||
-          widget.action == KPasscodeAction.login
-          ? KPhrases.inputCurrentPasscode
-          : (isShowRePasscodeInput
-          ? KPhrases.inputRePasscode
-          : KPhrases.inputPasscode);
+  String get titleText {
+    switch (widget.action) {
+      case KPasscodeAction.clear:
+        return KPhrases.inputCurrentPasscode;
+      case KPasscodeAction.login:
+        return KPhrases.enterLoginPin;
+      case KPasscodeAction.store:
+      default:
+        return isShowRePasscodeInput
+            ? KPhrases.inputRePasscode
+            : KPhrases.inputPasscode;
+    }
+  }
 
   @override
   void initState() {
@@ -165,27 +171,17 @@ class _KPasscodeSettingState extends State<KPasscode> {
     }
   }
 
-  buildKeyboard() =>
-      Container(
+  buildKeyboard() => Container(
         child: _Keyboard(
           onKeyboardTap: onKeyboardButtonPressed,
-          primaryColor: Theme
-              .of(context)
-              .colorScheme
-              .onBackground,
+          primaryColor: Theme.of(context).colorScheme.onBackground,
           digitTextStyle: TextStyle(
             fontSize: 30,
-            color: Theme
-                .of(context)
-                .colorScheme
-                .onBackground,
+            color: Theme.of(context).colorScheme.onBackground,
           ),
           deleteButtonTextStyle: TextStyle(
             fontSize: 16,
-            color: Theme
-                .of(context)
-                .colorScheme
-                .onBackground,
+            color: Theme.of(context).colorScheme.onBackground,
           ),
         ),
       );
@@ -205,17 +201,17 @@ class _KPasscodeSettingState extends State<KPasscode> {
     final errorLabel = isLoading
         ? CircularProgressIndicator()
         : Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        if (KStringHelper.isExist(errorMessage))
-          Text(
-            errorMessage,
-            style: TextStyle(
-              color: KStyles.colorError,
-            ),
-          ),
-      ],
-    );
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (KStringHelper.isExist(errorMessage))
+                Text(
+                  errorMessage,
+                  style: TextStyle(
+                    color: KStyles.colorError,
+                  ),
+                ),
+            ],
+          );
 
     final keyboard = buildKeyboard();
 
@@ -225,10 +221,7 @@ class _KPasscodeSettingState extends State<KPasscode> {
         children: <Widget>[
           Text(
             titleText,
-            style: Theme
-                .of(context)
-                .textTheme
-                .titleMedium,
+            style: Theme.of(context).textTheme.titleMedium,
             textAlign: TextAlign.center,
           ),
           Center(
@@ -246,7 +239,7 @@ class _KPasscodeSettingState extends State<KPasscode> {
 
     return Scaffold(
       appBar:
-      AppBar(title: Text(widget.appBarTitle ?? KPhrases.passcodeSetting)),
+          AppBar(title: Text(widget.appBarTitle ?? KPhrases.passcodeSetting)),
       body: SafeArea(child: body),
     );
   }
@@ -284,7 +277,7 @@ class _Keyboard extends StatelessWidget {
     this.digitFillColor = Colors.transparent,
     this.digitTextStyle = const TextStyle(fontSize: 30, color: Colors.white),
     this.deleteButtonTextStyle =
-    const TextStyle(fontSize: 16, color: Colors.white),
+        const TextStyle(fontSize: 16, color: Colors.white),
     this.keyboardSize,
   }) : super(key: key);
 
@@ -311,9 +304,7 @@ class _Keyboard extends StatelessWidget {
     } else {
       keyboardItems = digits!;
     }
-    final screenSize = MediaQuery
-        .of(context)
-        .size;
+    final screenSize = MediaQuery.of(context).size;
     final keyboardHeight = screenSize.height > screenSize.width
         ? screenSize.height / 2
         : screenSize.height - 80;
@@ -379,31 +370,18 @@ class _Keyboard extends StatelessWidget {
     if (text == _Keyboard.DELETE_BUTTON) {
       return Container(
         margin: EdgeInsets.all(4),
-        child: ClipOval(
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              splashColor: this.primaryColor.withOpacity(0.4),
-              onTap: () {
-                onKeyboardTap(text);
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.transparent,
-                  border: Border.all(
-                      color: this.primaryColor, width: this.digitBorderWidth),
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: this.digitFillColor,
-                  ),
-                  child: Center(
-                    child: Icon(Icons.backspace_outlined),
-                  ),
-                ),
-              ),
+        child: InkWell(
+          splashColor: this.primaryColor.withOpacity(0.4),
+          onTap: () {
+            onKeyboardTap(text);
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: this.digitFillColor,
+            ),
+            child: Center(
+              child: Icon(Icons.backspace_outlined),
             ),
           ),
         ),
@@ -460,8 +438,7 @@ class _AlignedGrid extends StatelessWidget {
     Key? key,
     required this.children,
     required this.keyboardSize,
-  })
-      : listSize = children.length,
+  })  : listSize = children.length,
         super(key: key);
 
   @override
@@ -475,12 +452,11 @@ class _AlignedGrid extends StatelessWidget {
       spacing: spacing,
       alignment: WrapAlignment.center,
       children: children
-          .map((item) =>
-          Container(
-            width: itemSize,
-            height: itemSize,
-            child: item,
-          ))
+          .map((item) => Container(
+                width: itemSize,
+                height: itemSize,
+                child: item,
+              ))
           .toList(growable: false),
     );
   }
