@@ -344,27 +344,28 @@ class _Keyboard extends StatelessWidget {
 
   Widget _buildKeyboardDigit(String text) {
     if (text == _Keyboard.CANCEL_BUTTON) {
-      return Container(
-        margin: EdgeInsets.all(4),
-        child: InkWell(
-          splashColor: this.primaryColor.withOpacity(0.4),
-          onTap: () {
-            onKeyboardTap(text);
-          },
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.center,
-              child: Text(
-                KPhrases.cancel,
-                style: this.digitTextStyle,
-                semanticsLabel: text,
-              ),
-            ),
-          ),
-        ),
-      );
+      return Container();
+      // return Container(
+      //   margin: EdgeInsets.all(4),
+      //   child: InkWell(
+      //     splashColor: this.primaryColor.withOpacity(0.4),
+      //     onTap: () {
+      //       onKeyboardTap(text);
+      //     },
+      //     child: Container(
+      //       padding: EdgeInsets.symmetric(horizontal: 20),
+      //       child: FittedBox(
+      //         fit: BoxFit.scaleDown,
+      //         alignment: Alignment.center,
+      //         child: Text(
+      //           KPhrases.cancel,
+      //           style: this.digitTextStyle,
+      //           semanticsLabel: text,
+      //         ),
+      //       ),
+      //     ),
+      //   ),
+      // );
     }
 
     if (text == _Keyboard.DELETE_BUTTON) {
