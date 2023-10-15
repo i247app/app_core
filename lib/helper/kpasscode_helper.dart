@@ -1,6 +1,14 @@
 import 'package:app_core/app_core.dart';
 
 abstract class KPasscodeHelper {
+  static String? peer;
+  static String? kCountryCode;
+  static String? _fcmToken;
+  static String? _voipToken;
+  static KUserSession? kUserSession;
+  static Future? Function(KSessionInitData)? _postSetupHook;
+  static String? _sessionGenerationID;
+
   static storePasscode(String passcode) async {
     await KPrefHelper.put(KPrefHelper.PASSCODE, passcode);
   }

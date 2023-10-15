@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:google_maps_webservice/directions.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:google_maps_webservice/geocoding.dart';
-import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
 
 /// Helpful links for tracking API usage and cost
 /// Places: https://developers.google.com/places/web-service/usage-and-billing

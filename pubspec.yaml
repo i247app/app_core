@@ -39,7 +39,8 @@ dependencies:
   geocoding: ^2.1.0
   google_maps_flutter: ^2.4.0
   google_maps_webservice: ^0.0.20-nullsafety.5
-  flutter_google_places: ^0.3.0
+#  flutter_google_places: ^0.3.0
+  flutter_google_places_hoc081098: ^1.2.0
 
   lottie: ^2.6.0
 
@@ -110,6 +111,9 @@ dependencies:
 
   light_compressor: ^2.1.0
   aws_s3_upload: ^1.5.0
+
+  peerdart: 0.5.2
+  queue: ^3.1.0+2
 
 dev_dependencies:
   flutter_test:
