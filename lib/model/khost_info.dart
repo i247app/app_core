@@ -9,10 +9,10 @@ class KHostInfo {
   static const String PORT = "port";
 
   @JsonKey(name: HOSTNAME)
-  late String hostname;
+  late final String hostname;
 
   @JsonKey(name: PORT, fromJson: int.parse, toJson: zzz_itoa)
-  late int port;
+  late final int port;
 
   @JsonKey(ignore: true)
   String get nickname {
