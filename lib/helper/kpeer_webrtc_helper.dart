@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:app_core/model/kremote_peer.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
-import 'package:peerdart/peerdart.dart';
+import 'package:sb_peerdart/sb_peerdart.dart';
 
 enum KPeerWebRTCStatus { OPEN, CLOSE, CALL, CONNECTION, CONNECTED }
 
@@ -74,17 +74,40 @@ abstract class KPeerWebRTCHelper {
     KPeerWebRTCHelper.isAutoCall = auto ?? true;
 
     if (KPeerWebRTCHelper.mediaStream != null) {
+      KPeerWebRTCHelper.mediaStream!.onRemoveTrack = (_) {
+        print("asdasads");
+      };
       KPeerWebRTCHelper.peer = Peer(
         id: KPeerWebRTCHelper.localPeerId,
         options: PeerOptions(
-          debug: LogLevel.Errors,
-          // config: {
-          //   'iceServers': [
-          //     {
-          //       'url': "stun:stun.l.google.com:19302",
-          //     },
-          //   ],
-          // },
+          debug: LogLevel.All,
+          config: {
+            'iceServers': [
+              {
+                'urls': [
+                  'stun:stun.l.google.com:19302',
+                  'stun:stun1.l.google.com:19302',
+                  'stun:stun2.l.google.com:19302',
+                  'stun:stun3.l.google.com:19302',
+                  'stun:stun4.l.google.com:19302',
+                ]
+              },
+              {
+                "urls": [
+                  "turn:eu-0.turn.peerjs.com:3478",
+                  "turn:us-0.turn.peerjs.com:3478",
+                ],
+                "username": "peerjs",
+                "credential": "peerjsp",
+              },
+            ],
+            'sdpSemantics': "unified-plan",
+            // 'iceServers': [
+            //   {
+            //     'url': "stun:stun.l.google.com:19302",
+            //   },
+            // ],
+          },
         ),
       );
 
@@ -138,7 +161,7 @@ abstract class KPeerWebRTCHelper {
         });
       });
 
-      _localPlayerStreamController.add(KPeerWebRTCHelper.mediaStream!);
+      _localPlayerStreamController.add(localStream);
     }
   }
 
@@ -226,13 +249,13 @@ abstract class KPeerWebRTCHelper {
     }
   }
 
-  static Future retrieveLocalStream() async {
+  static Future<MediaStream> retrieveLocalStream() async {
     final Map<String, dynamic> mediaConstraints = {
       'audio': true,
       'video': {
         'mandatory': {
           'minWidth':
-          '640', // Provide your own width, height and frame rate here
+              '640', // Provide your own width, height and frame rate here
           'minHeight': '480',
           'minFrameRate': '30',
         },
@@ -241,8 +264,8 @@ abstract class KPeerWebRTCHelper {
       }
     };
 
-    final localStream = await navigator.mediaDevices
-        .getUserMedia(mediaConstraints);
+    final localStream =
+        await navigator.mediaDevices.getUserMedia(mediaConstraints);
 
     return localStream;
   }
@@ -296,6 +319,7 @@ abstract class KPeerWebRTCHelper {
       print("Calling ${remotePeer.peerID}...");
 
       onPeerDiscovery(remotePeer);
+      KPeerWebRTCHelper.remotePeers[remotePeerIndex].retryCount = 0;
     });
 
     KPeerWebRTCHelper.remotePeers[remotePeerIndex].dataConnection!
@@ -309,9 +333,15 @@ abstract class KPeerWebRTCHelper {
         .on('close')
         .listen((event) {
       print("- - - A DATA CONNECTION CLOSED - - -");
+      KPeerWebRTCHelper.remotePeers[remotePeerIndex] = KRemotePeer()..peerID = KPeerWebRTCHelper.remotePeers[remotePeerIndex].peerID;
+      _remotePlayerStreamStreamController.add({
+        'peerID': KPeerWebRTCHelper.remotePeers[remotePeerIndex].peerID,
+        'peer': KPeerWebRTCHelper.remotePeers[remotePeerIndex],
+        'stream': null,
+      });
 
       Future.delayed(Duration(milliseconds: 1000), () {
-        sendCall(remotePeer);
+        sendCall(KPeerWebRTCHelper.remotePeers[remotePeerIndex]);
       });
     });
 

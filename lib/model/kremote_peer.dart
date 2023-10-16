@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:peerdart/peerdart.dart';
+import 'package:sb_peerdart/sb_peerdart.dart';
 
 part 'kremote_peer.g.dart';
 

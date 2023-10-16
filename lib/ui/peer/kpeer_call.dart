@@ -10,7 +10,7 @@ import 'package:app_core/ui/peer/widget/kpeer_button_view.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/utils.dart';
-import 'package:peerdart/peerdart.dart';
+import 'package:sb_peerdart/sb_peerdart.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:queue/queue.dart';
 
@@ -99,34 +99,42 @@ class _KPeerCallState extends State<KPeerCall> {
       print(
           'remotePeer ${index} ${remotePeer} ${_remoteRenderers.map(((item) => item['peerID']))}');
       if (index == -1) {
-        final _remoteRenderer = RTCVideoRenderer();
-        await _remoteRenderer.initialize();
-        _remoteRenderer.srcObject = remotePeer['stream'];
-
-        _remoteRenderers.add({
+        final _remotePeer = {
           ...remotePeer,
-          'remoteRenderer': _remoteRenderer,
+          'remoteRenderer': null,
           'metadata': {
             'isAudioEnable': false,
             'isVideoEnable': false,
             'displayName': '',
           }
-        });
+        };
+        if (remotePeer['stream'] != null) {
+          final _remoteRenderer = RTCVideoRenderer();
+          await _remoteRenderer.initialize();
+          _remoteRenderer.srcObject = remotePeer['stream'];
+          _remotePeer['remoteRenderer'] = _remoteRenderer;
+        }
+
+        _remoteRenderers.add(_remotePeer);
         this.setState(() {});
       } else {
-        final _remoteRenderer = RTCVideoRenderer();
-        await _remoteRenderer.initialize();
-        _remoteRenderer.srcObject = remotePeer['stream'];
-
-        _remoteRenderers[index] = {
+        final _remotePeer = {
           ...remotePeer,
-          'remoteRenderer': _remoteRenderer,
+          'remoteRenderer': null,
           'metadata': {
             'isAudioEnable': false,
             'isVideoEnable': false,
             'displayName': '',
-          },
+          }
         };
+        if (remotePeer['stream'] != null) {
+          final _remoteRenderer = RTCVideoRenderer();
+          await _remoteRenderer.initialize();
+          _remoteRenderer.srcObject = remotePeer['stream'];
+          _remotePeer['remoteRenderer'] = _remoteRenderer;
+        }
+
+        _remoteRenderers[index] = _remotePeer;
         this.setState(() {});
       }
 
@@ -168,6 +176,7 @@ class _KPeerCallState extends State<KPeerCall> {
           ?.dataConnection;
       print('packet ${jsonEncode(packet)} ${conn?.peer} ${conn?.open}');
       if (conn != null && conn.open) {
+        // print(Uint8List.fromList(jsonEncode(packet).codeUnits));
         conn.sendBinary(Uint8List.fromList(jsonEncode(packet).codeUnits));
       }
     });
@@ -231,10 +240,10 @@ class _KPeerCallState extends State<KPeerCall> {
           .listen((data) async =>
               await queue.add(() => handleRemotePlayerUpdate(data)));
 
-      final localStream = await KPeerWebRTCHelper.retrieveLocalStream();
-      print("localStream, ${localStream}");
+      final _localStream = await KPeerWebRTCHelper.retrieveLocalStream();
+      print("_localStream, ${_localStream.id}");
       await KPeerWebRTCHelper.init(
-        localStream,
+        _localStream,
         localPeerID: this.peerId,
         auto: false,
         displayName: KSessionData.me?.fullName,
@@ -244,7 +253,7 @@ class _KPeerCallState extends State<KPeerCall> {
       final remotePeers = await HTTPHelper.send(
         '/api/gigs/${widget.callId}/join',
         {},
-        hostInfo: KHostInfo.raw('192.168.1.3', 8000),
+        hostInfo: KHostInfo.raw('192.168.1.4', 8000),
       );
 
       final jsonData = jsonDecode(remotePeers.body);
@@ -299,12 +308,10 @@ class _KPeerCallState extends State<KPeerCall> {
       isMySoundEnabled = value;
     });
 
-    // const audioTrack = localVideoStream.value?.getAudioTracks()?.[0];
-    // if (!audioTrack) return;
-    //
-    // localMetadata.value.isAudioEnable = !localMetadata.value.isAudioEnable;
-    // audioTrack.enabled = localMetadata.value.isAudioEnable;
-    //
+    final audioTrack = _localRenderer.srcObject?.getAudioTracks().first;
+    if (audioTrack == null) return;
+
+    audioTrack.enabled = value;
     sendMetadata(KPeerWebRTCHelper.remotePeers);
   }
 
@@ -313,17 +320,16 @@ class _KPeerCallState extends State<KPeerCall> {
       isMyCameraEnabled = value;
     });
 
-    // const videoTrack = localVideoStream.value?.getVideoTracks()?.[0];
-    // if (!videoTrack) return;
-    //
-    // localMetadata.value.isVideoEnable = !localMetadata.value.isVideoEnable;
-    // videoTrack.enabled = localMetadata.value.isVideoEnable;
-    //
+    final videoTrack = _localRenderer.srcObject?.getVideoTracks().first;
+    if (videoTrack == null) return;
+
+    videoTrack.enabled = value;
     sendMetadata(KPeerWebRTCHelper.remotePeers);
   }
 
   @override
   Widget build(BuildContext context) {
+    print("localStream, ${_localRenderer.srcObject?.id}");
     print(KPeerWebRTCHelper.remotePeers.map((item) => item.peerID));
     // return Scaffold(
     //     appBar: AppBar(),
@@ -357,43 +363,59 @@ class _KPeerCallState extends State<KPeerCall> {
     //         ],
     //       ),
     //     ));
-
-    final callView = SingleChildScrollView(
-      child: Column(
+    final callView = SafeArea(
+      child: Stack(
+        fit: StackFit.expand,
         children: [
-          if (_localRenderer.srcObject != null) ...[
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 2,
-              child: RTCVideoView(
-                _localRenderer,
+          Container(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  if (_localRenderer.srcObject != null) ...[
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height / 2,
+                      child: RTCVideoView(
+                        _localRenderer,
+                        key: Key('${_localRenderer.srcObject!.id}'),
+                      ),
+                    ),
+                  ],
+                  if (_remoteRenderers.length > 0)
+                    ...List.generate(_remoteRenderers.length, (index) {
+                      final _remoteRenderer =
+                          _remoteRenderers[index]['remoteRenderer'];
+
+                      if (_remoteRenderer?.srcObject != null) {
+                        return SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height / 2,
+                          child: RTCVideoView(
+                            _remoteRenderer,
+                            key: Key('${_remoteRenderer.srcObject!.id}'),
+                          ),
+                        );
+                      }
+                      return Container();
+                    }).toList(),
+                ],
               ),
             ),
-          ],
-          if (_remoteRenderers.length > 0)
-            ...List.generate(_remoteRenderers.length, (index) {
-              final _remoteRenderer = _remoteRenderers[index]['remoteRenderer'];
-
-              if (_remoteRenderer?.srcObject != null) {
-                return SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height / 2,
-                  child: RTCVideoView(
-                    _remoteRenderer,
-                  ),
-                );
-              }
-              return Container();
-            }).toList(),
-          Container(
-            width: 200.0,
-            child: KPeerButtonView(
-              isMicEnabled: this.isMySoundEnabled,
-              isCameraEnabled: this.isMyCameraEnabled,
-              type: KWebRTCCallType.video,
-              onMicToggled: onMicToggled,
-              onCameraToggled: onCameraToggled,
-              onHangUp: hangUp,
+          ),
+          Positioned(
+            bottom: 20.0,
+            left: 10.0,
+            right: 10.0,
+            child: Container(
+              width: 200.0,
+              child: KPeerButtonView(
+                isMicEnabled: this.isMySoundEnabled,
+                isCameraEnabled: this.isMyCameraEnabled,
+                type: KWebRTCCallType.video,
+                onMicToggled: onMicToggled,
+                onCameraToggled: onCameraToggled,
+                onHangUp: hangUp,
+              ),
             ),
           ),
         ],

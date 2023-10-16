@@ -65,7 +65,7 @@ dependencies:
   connectycube_flutter_call_kit: 2.3.0
 
   # Flutter WebRTC
-  flutter_webrtc: 0.9.40 #0.6.3 # 0.5.8
+  flutter_webrtc: ^0.9.45 #0.6.3 # 0.5.8
 
   flutter_ringtone_player: ^3.2.0
 
@@ -112,7 +112,7 @@ dependencies:
   light_compressor: ^2.1.0
   aws_s3_upload: ^1.5.0
 
-  peerdart: 0.5.2
+  sb_peerdart: ^0.1.0
   queue: ^3.1.0+2
 
 dev_dependencies:
