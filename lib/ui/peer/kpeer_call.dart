@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/helper/kpeer_socket_helper.dart';
 import 'package:app_core/helper/kpeer_webrtc_helper.dart';
 import 'package:app_core/model/kremote_peer.dart';
 import 'package:app_core/network/http_helper.dart';
@@ -10,7 +11,6 @@ import 'package:app_core/ui/peer/widget/kpeer_button_view.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/utils.dart';
-import 'package:sb_peerdart/sb_peerdart.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:queue/queue.dart';
 
@@ -43,6 +43,12 @@ class _KPeerCallState extends State<KPeerCall> {
 
   String get peerId => 'sb-${widget.callId}-${KSessionData.me?.puid}';
 
+  int get peerCount =>
+      (_localRenderer.srcObject != null ? 1 : 0) +
+      _remoteRenderers
+          .where((e) => e['remoteRenderer']?.srcObject != null)
+          .length;
+
   bool isMySoundEnabled = true;
   bool isMySpeakerEnabled = true;
   bool isMyCameraEnabled = true;
@@ -62,6 +68,7 @@ class _KPeerCallState extends State<KPeerCall> {
     localPlayerStreamSubscription?.cancel();
     remotePlayerStreamSubscription?.cancel();
     queue.dispose();
+    KPeerSocketHelper.dispose();
     super.dispose();
   }
 
@@ -138,26 +145,25 @@ class _KPeerCallState extends State<KPeerCall> {
         this.setState(() {});
       }
 
-      sendMetadata([remotePeer['peer']]);
-      sendDataPacket(
-          [remotePeer['peer']],
-          KPeerWebRTCHelper.PACKET_TYPE_RETRIEVE_METADATA,
-          {
-            'peerID': KPeerWebRTCHelper.localPeerId,
-          });
+      sendMetadata();
+      KPeerSocketHelper.socket?.emit('retrieve-metadata', [
+        widget.callId,
+        this.peerId,
+      ]);
       // calculateMaxVideoEachRow();
     }
   }
 
-  void sendMetadata(List<KRemotePeer> peers) {
-    sendDataPacket(peers, KPeerWebRTCHelper.PACKET_TYPE_METADATA, {
-      'peerID': KPeerWebRTCHelper.localPeerId,
-      'metadata': {
+  void sendMetadata() {
+    KPeerSocketHelper.socket?.emit('send-data-to-room', [
+      widget.callId,
+      this.peerId,
+      {
         'isAudioEnable': isMySoundEnabled,
         'isVideoEnable': isMyCameraEnabled,
         'displayName': KPeerWebRTCHelper.localDisplayName,
       },
-    });
+    ]);
   }
 
   void sendDataPacket(
@@ -182,44 +188,59 @@ class _KPeerCallState extends State<KPeerCall> {
     });
   }
 
-  void handleDataUpdate(Map<String, dynamic> data) {
+  void handleDataUpdate(List<dynamic> data) {
     if (mounted) {
-      final remotePeer = data['remotePeer'];
-      final remotePeerData = data['data'];
-      print('data ${remotePeer} ${remotePeerData}');
+      print('handleDataUpdate');
+      print(data);
+      final _peerId = data[0];
+      final _metadata = data[1];
 
-      switch (remotePeerData['type']) {
-        case KPeerWebRTCHelper.PACKET_TYPE_METADATA:
-          {
-            final index = _remoteRenderers.indexWhere(
-                (e) => e['peerID'] == remotePeerData['payload']['peerID']);
-            if (index > -1 && data['payload']['metadata'] != null) {
-              _remoteRenderers[index]['metadata'] = data['payload']['metadata'];
-            } else {
-              // retry set metadata
-              Future.delayed(
-                  Duration(milliseconds: 250), () => handleDataUpdate(data));
-            }
-          }
-          break;
-        case KPeerWebRTCHelper.PACKET_TYPE_RETRIEVE_METADATA:
-          {
-            final index = _remoteRenderers.indexWhere(
-                (e) => e['peerID'] == remotePeerData['payload']['peerID']);
-            if (index > -1 &&
-                _remoteRenderers[index]['peer']['dataConnection'] != null) {
-              sendMetadata([_remoteRenderers[index]['peer']]);
-            } else {
-              // retry set metadata
-              Future.delayed(
-                  Duration(milliseconds: 250), () => handleDataUpdate(data));
-            }
-          }
-          break;
-        default:
-          print('Unrecognized data packet of type ${remotePeerData['type']}');
-          break;
+      if (_peerId != this.peerId) {
+        final index =
+            _remoteRenderers.indexWhere((e) => e['peerID'] == _peerId);
+        if (index > -1 && _metadata != null) {
+          this.setState(() {
+            _remoteRenderers[index]['metadata'] = _metadata;
+            print('_metadata ${_metadata}');
+          });
+        }
       }
+      // final remotePeer = data['remotePeer'];
+      // final remotePeerData = data['data'];
+      // print('data ${remotePeer} ${remotePeerData}');
+      //
+      // switch (remotePeerData['type']) {
+      //   case KPeerWebRTCHelper.PACKET_TYPE_METADATA:
+      //     {
+      //       final index = _remoteRenderers.indexWhere(
+      //           (e) => e['peerID'] == remotePeerData['payload']['peerID']);
+      //       if (index > -1 && data['payload']['metadata'] != null) {
+      //         _remoteRenderers[index]['metadata'] = data['payload']['metadata'];
+      //       } else {
+      //         // retry set metadata
+      //         Future.delayed(
+      //             Duration(milliseconds: 250), () => handleDataUpdate(data));
+      //       }
+      //     }
+      //     break;
+      //   case KPeerWebRTCHelper.PACKET_TYPE_RETRIEVE_METADATA:
+      //     {
+      //       final index = _remoteRenderers.indexWhere(
+      //           (e) => e['peerID'] == remotePeerData['payload']['peerID']);
+      //       if (index > -1 &&
+      //           _remoteRenderers[index]['peer']['dataConnection'] != null) {
+      //         sendMetadata();
+      //       } else {
+      //         // retry set metadata
+      //         Future.delayed(
+      //             Duration(milliseconds: 250), () => handleDataUpdate(data));
+      //       }
+      //     }
+      //     break;
+      //   default:
+      //     print('Unrecognized data packet of type ${remotePeerData['type']}');
+      //     break;
+      // }
     }
   }
 
@@ -232,8 +253,8 @@ class _KPeerCallState extends State<KPeerCall> {
       connectionStatusStreamSubscription = KPeerWebRTCHelper
           .connectionStatusStream
           .listen(handleConnectionStatusUpdate);
-      dataStreamSubscription =
-          KPeerWebRTCHelper.dataStream.listen(handleDataUpdate);
+      // dataStreamSubscription =
+      //     KPeerWebRTCHelper.dataStream.listen(handleDataUpdate);
       localPlayerStreamSubscription =
           KPeerWebRTCHelper.localPlayerStream.listen(handleLocalPlayerUpdate);
       remotePlayerStreamSubscription = KPeerWebRTCHelper.remotePlayerStream
@@ -248,25 +269,51 @@ class _KPeerCallState extends State<KPeerCall> {
         auto: false,
         displayName: KSessionData.me?.fullName,
       );
+      setupSocket();
 
       // Initiate call using sendCall function
       final remotePeers = await HTTPHelper.send(
         '/api/gigs/${widget.callId}/join',
         {},
-        hostInfo: KHostInfo.raw('192.168.1.4', 8000),
+        hostInfo: !KHostConfig.isReleaseMode
+            ? KHostInfo.raw('192.168.1.64', 8000)
+            : KHostInfo.raw('schoolbird.vn', 80),
       );
 
+      print("remotePeers.body");
+      print(remotePeers.body);
       final jsonData = jsonDecode(remotePeers.body);
       if (jsonData['data']?.length > 0) {
         KPeerWebRTCHelper.sendMultipleCalls(jsonData['data']
             .where((remotePeer) => remotePeer['peerjs_tag'] != this.peerId)
             .map((remotePeer) => remotePeer['peerjs_tag']));
       }
+      setState(() {
+        isCallSetting = false;
+        isCalled = true;
+      });
     } catch (ex) {
       print("ex ${ex}");
       setState(() {
         isCallSetting = false;
       });
+    }
+  }
+
+  Future setupSocket() async {
+    print('setupSocket');
+    dataStreamSubscription =
+        KPeerSocketHelper.dataStream.listen(handleDataUpdate);
+
+    try {
+      await KPeerSocketHelper.init(
+        widget.callId,
+        this.peerId,
+      );
+
+      KPeerSocketHelper.socket!.on('user-joined', (data) => sendMetadata());
+    } catch (ex) {
+      print('Socket error ${ex}');
     }
   }
 
@@ -312,7 +359,7 @@ class _KPeerCallState extends State<KPeerCall> {
     if (audioTrack == null) return;
 
     audioTrack.enabled = value;
-    sendMetadata(KPeerWebRTCHelper.remotePeers);
+    sendMetadata();
   }
 
   void onCameraToggled(value) {
@@ -324,76 +371,51 @@ class _KPeerCallState extends State<KPeerCall> {
     if (videoTrack == null) return;
 
     videoTrack.enabled = value;
-    sendMetadata(KPeerWebRTCHelper.remotePeers);
+    sendMetadata();
   }
 
   @override
   Widget build(BuildContext context) {
-    print("localStream, ${_localRenderer.srcObject?.id}");
-    print(KPeerWebRTCHelper.remotePeers.map((item) => item.peerID));
-    // return Scaffold(
-    //     appBar: AppBar(),
-    //     body: Center(
-    //       child: Column(
-    //         mainAxisAlignment: MainAxisAlignment.center,
-    //         children: <Widget>[
-    //           _renderState(),
-    //           const Text(
-    //             'Connection ID:',
-    //           ),
-    //           SelectableText(peerId ?? ""),
-    //           TextField(
-    //             controller: _controller,
-    //           ),
-    //           ElevatedButton(onPressed: connect, child: const Text("connect")),
-    //           ElevatedButton(
-    //               onPressed: send, child: const Text("send message")),
-    //           if (inCall)
-    //             Expanded(
-    //               child: RTCVideoView(
-    //                 _localRenderer,
-    //               ),
-    //             ),
-    //           if (inCall)
-    //             Expanded(
-    //               child: RTCVideoView(
-    //                 _remoteRenderer,
-    //               ),
-    //             ),
-    //         ],
-    //       ),
-    //     ));
+    final deviceWidth = MediaQuery.of(context).size.width;
+    final deviceHeight = MediaQuery.of(context).size.height -
+        MediaQuery.of(context).padding.top -
+        MediaQuery.of(context).padding.bottom;
     final callView = SafeArea(
       child: Stack(
         fit: StackFit.expand,
         children: [
           Container(
             child: SingleChildScrollView(
-              child: Column(
+              child: Wrap(
                 children: [
                   if (_localRenderer.srcObject != null) ...[
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height / 2,
-                      child: RTCVideoView(
-                        _localRenderer,
-                        key: Key('${_localRenderer.srcObject!.id}'),
-                      ),
+                    _KPeerCallVideoRender(
+                      videoRenderer: _localRenderer,
+                      containerHeight: deviceHeight,
+                      containerWidth: deviceWidth,
+                      peerCount: peerCount,
+                      isAudioEnable: isMySoundEnabled,
+                      isVideoEnable: isMyCameraEnabled,
+                      displayName: KSessionData.me?.fullName ?? '',
+                      isLocal: true,
                     ),
                   ],
                   if (_remoteRenderers.length > 0)
                     ...List.generate(_remoteRenderers.length, (index) {
+                      final metadata = _remoteRenderers[index]['metadata'];
                       final _remoteRenderer =
                           _remoteRenderers[index]['remoteRenderer'];
-
+                      print(metadata);
                       if (_remoteRenderer?.srcObject != null) {
-                        return SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height / 2,
-                          child: RTCVideoView(
-                            _remoteRenderer,
-                            key: Key('${_remoteRenderer.srcObject!.id}'),
-                          ),
+                        return _KPeerCallVideoRender(
+                          videoRenderer: _remoteRenderer,
+                          containerHeight: deviceHeight,
+                          containerWidth: deviceWidth,
+                          peerCount: peerCount,
+                          isAudioEnable: metadata['isAudioEnable'],
+                          isVideoEnable: metadata['isVideoEnable'],
+                          displayName: metadata['displayName'] ?? '',
+                          isLocal: false,
                         );
                       }
                       return Container();
@@ -613,6 +635,135 @@ class _KPeerCallState extends State<KPeerCall> {
         txt,
         style:
             Theme.of(context).textTheme.titleLarge?.copyWith(color: txtColor),
+      ),
+    );
+  }
+}
+
+class _KPeerCallVideoRender extends StatelessWidget {
+  final RTCVideoRenderer videoRenderer;
+  final double containerWidth;
+  final double containerHeight;
+  final int peerCount;
+  final bool isAudioEnable;
+  final bool isVideoEnable;
+  final String displayName;
+  final bool isLocal;
+
+  _KPeerCallVideoRender({
+    Key? key,
+    required this.videoRenderer,
+    required this.containerWidth,
+    required this.containerHeight,
+    required this.peerCount,
+    required this.isAudioEnable,
+    required this.isVideoEnable,
+    required this.displayName,
+    required this.isLocal,
+  }) : super(key: key);
+
+  double get calculatedHeight {
+    double height = containerHeight;
+
+    if (peerCount >= 2) {
+      height = containerHeight / 2;
+    }
+
+    if (peerCount > 4) {
+      height = containerHeight / 3;
+    }
+
+    return height;
+  }
+
+  double get calculatedWidth {
+    double width = containerWidth;
+
+    if (peerCount > 2) {
+      width = containerWidth / 2;
+    }
+
+    return width;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: calculatedWidth,
+      height: calculatedHeight,
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: isVideoEnable
+                          ? RTCVideoView(
+                              videoRenderer,
+                              key: Key('${videoRenderer.srcObject!.id}'),
+                              mirror: isLocal,
+                              objectFit: RTCVideoViewObjectFit
+                                  .RTCVideoViewObjectFitCover,
+                            )
+                          : Container(
+                              color: Colors.black,
+                              child: Center(
+                                child: KUserAvatar(
+                                  initial: displayName
+                                      .split(' ')
+                                      .map((e) => "${e}".capitalizeFirst)
+                                      .join(''),
+                                  size: calculatedWidth / 3,
+                                  backgroundColor: Colors.grey,
+                                ),
+                              ),
+                            ),
+                    ),
+                  ),
+                  if (!isAudioEnable)
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Icon(
+                          Icons.mic_off_outlined,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  if (KStringHelper.isExist(displayName))
+                    Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Text(
+                          displayName,
+                          style:
+                              Theme.of(context).textTheme.titleMedium!.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    shadows: <Shadow>[
+                                      Shadow(
+                                        offset: Offset(0.0, 0.0),
+                                        blurRadius: 4.0,
+                                        color: Colors.black,
+                                      ),
+                                    ],
+                                    color: Colors.white,
+                                  ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -4,6 +4,8 @@ import 'package:app_core/model/kremote_peer.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:sb_peerdart/sb_peerdart.dart';
 
+import 'khost_config.dart';
+
 enum KPeerWebRTCStatus { OPEN, CLOSE, CALL, CONNECTION, CONNECTED }
 
 abstract class KPeerWebRTCHelper {
@@ -81,6 +83,10 @@ abstract class KPeerWebRTCHelper {
         id: KPeerWebRTCHelper.localPeerId,
         options: PeerOptions(
           debug: LogLevel.All,
+          // secure: false,
+          // host: KHostConfig.peerjs.hostname,
+          // port: KHostConfig.peerjs.port,
+          // path: '/sb-peer',
           config: {
             'iceServers': [
               {
@@ -195,7 +201,11 @@ abstract class KPeerWebRTCHelper {
 
     KPeerWebRTCHelper.remotePeers[remotePeerIndex].status =
         KRemotePeer.STATUS_CONNECTED;
-    final isActive = localPeerID != remotePeerID;
+
+    final isActive = int.parse(remotePeer.peerID?.split('-').last ?? '0') <
+            int.parse(localPeerID?.split('-').last ?? '0') &&
+        localPeerID != remotePeerID;
+    print("localPeerID ${isActive}");
 
     if (isActive) {
       KPeerWebRTCHelper.remotePeers[remotePeerIndex].role =
@@ -333,7 +343,8 @@ abstract class KPeerWebRTCHelper {
         .on('close')
         .listen((event) {
       print("- - - A DATA CONNECTION CLOSED - - -");
-      KPeerWebRTCHelper.remotePeers[remotePeerIndex] = KRemotePeer()..peerID = KPeerWebRTCHelper.remotePeers[remotePeerIndex].peerID;
+      KPeerWebRTCHelper.remotePeers[remotePeerIndex] = KRemotePeer()
+        ..peerID = KPeerWebRTCHelper.remotePeers[remotePeerIndex].peerID;
       _remotePlayerStreamStreamController.add({
         'peerID': KPeerWebRTCHelper.remotePeers[remotePeerIndex].peerID,
         'peer': KPeerWebRTCHelper.remotePeers[remotePeerIndex],

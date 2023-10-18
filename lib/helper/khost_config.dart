@@ -8,6 +8,8 @@ abstract class KHostConfig {
   static final KHostInfo k2 = KHostInfo.raw("k2.kashin.io", 45503); // qa
   static final KHostInfo k1 = KHostInfo.raw("k1.kashin.io", 55500); //  prd
   static final KHostInfo kex = KHostInfo.raw("kex.kashin.io", 55500); // prd
+  static final KHostInfo peerjs = KHostInfo.raw("103.77.174.239", 9000); // peerjs
+  static final KHostInfo peerjsSocket = KHostInfo.raw("103.77.174.239", 9001); // peerjs
 
   static final KHostInfo alexK4 = KHostInfo.raw("k4.kashin.io", 45580);
 
