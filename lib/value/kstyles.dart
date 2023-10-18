@@ -205,7 +205,7 @@ abstract class KStyles {
     final baseTextTheme =
         // GoogleFonts.cabin().copyWith(
         TextStyle().copyWith(
-          package: 'app_core',
+      package: 'app_core',
       fontFamily: fontBeVietnamPro,
       // fontFamily: fontApercu,
       // fontFamily: fontUberMove,
