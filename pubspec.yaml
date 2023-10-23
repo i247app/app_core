@@ -39,7 +39,8 @@ dependencies:
   geocoding: ^2.1.0
   google_maps_flutter: ^2.4.0
   google_maps_webservice: ^0.0.20-nullsafety.5
-  flutter_google_places: ^0.3.0
+#  flutter_google_places: ^0.3.0
+  flutter_google_places_hoc081098: ^1.2.0
 
   lottie: ^2.6.0
 
@@ -64,7 +65,7 @@ dependencies:
   connectycube_flutter_call_kit: 2.3.0
 
   # Flutter WebRTC
-  flutter_webrtc: 0.9.40 #0.6.3 # 0.5.8
+  flutter_webrtc: ^0.9.45 #0.6.3 # 0.5.8
 
   flutter_ringtone_player: ^3.2.0
 
@@ -110,6 +111,10 @@ dependencies:
 
   light_compressor: ^2.1.0
   aws_s3_upload: ^1.5.0
+
+  sb_peerdart: ^0.1.0
+  queue: ^3.1.0+2
+  socket_io_client: ^2.0.3+1
 
 dev_dependencies:
   flutter_test:
