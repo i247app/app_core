@@ -219,9 +219,7 @@ class _KPeerCallState extends State<KPeerCall> {
       final conn = KPeerWebRTCHelper.remotePeers
           .firstWhereOrNull((e) => e.peerID == remotePeer.peerID)
           ?.dataConnection;
-      print('packet ${jsonEncode(packet)} ${conn?.peer} ${conn?.open}');
       if (conn != null && conn.open) {
-        // print(Uint8List.fromList(jsonEncode(packet).codeUnits));
         conn.sendBinary(Uint8List.fromList(jsonEncode(packet).codeUnits));
       }
     });
@@ -244,42 +242,49 @@ class _KPeerCallState extends State<KPeerCall> {
           });
         }
       }
-      // final remotePeer = data['remotePeer'];
-      // final remotePeerData = data['data'];
-      // print('data ${remotePeer} ${remotePeerData}');
-      //
-      // switch (remotePeerData['type']) {
-      //   case KPeerWebRTCHelper.PACKET_TYPE_METADATA:
-      //     {
-      //       final index = _remoteRenderers.indexWhere(
-      //           (e) => e['peerID'] == remotePeerData['payload']['peerID']);
-      //       if (index > -1 && data['payload']['metadata'] != null) {
-      //         _remoteRenderers[index]['metadata'] = data['payload']['metadata'];
-      //       } else {
-      //         // retry set metadata
-      //         Future.delayed(
-      //             Duration(milliseconds: 250), () => handleDataUpdate(data));
-      //       }
-      //     }
-      //     break;
-      //   case KPeerWebRTCHelper.PACKET_TYPE_RETRIEVE_METADATA:
-      //     {
-      //       final index = _remoteRenderers.indexWhere(
-      //           (e) => e['peerID'] == remotePeerData['payload']['peerID']);
-      //       if (index > -1 &&
-      //           _remoteRenderers[index]['peer']['dataConnection'] != null) {
-      //         sendMetadata();
-      //       } else {
-      //         // retry set metadata
-      //         Future.delayed(
-      //             Duration(milliseconds: 250), () => handleDataUpdate(data));
-      //       }
-      //     }
-      //     break;
-      //   default:
-      //     print('Unrecognized data packet of type ${remotePeerData['type']}');
-      //     break;
-      // }
+    }
+  }
+
+  void handleWebRTCDataUpdate(Map<String, dynamic> data) {
+    if (mounted) {
+      print('handleWebRTCDataUpdate');
+      print(data);
+      final remotePeer = data['remotePeer'];
+      final remotePeerData = data['data'];
+      print('data ${remotePeer} ${remotePeerData}');
+
+      switch (remotePeerData['type']) {
+        // case KPeerWebRTCHelper.PACKET_TYPE_METADATA:
+        //   {
+        //     final index = _remoteRenderers.indexWhere(
+        //         (e) => e['peerID'] == remotePeerData['payload']['peerID']);
+        //     if (index > -1 && data['payload']['metadata'] != null) {
+        //       _remoteRenderers[index]['metadata'] = data['payload']['metadata'];
+        //     } else {
+        //       // retry set metadata
+        //       Future.delayed(
+        //           Duration(milliseconds: 250), () => handleDataUpdate(data));
+        //     }
+        //   }
+        //   break;
+        // case KPeerWebRTCHelper.PACKET_TYPE_RETRIEVE_METADATA:
+        //   {
+        //     final index = _remoteRenderers.indexWhere(
+        //         (e) => e['peerID'] == remotePeerData['payload']['peerID']);
+        //     if (index > -1 &&
+        //         _remoteRenderers[index]['peer']['dataConnection'] != null) {
+        //       sendMetadata();
+        //     } else {
+        //       // retry set metadata
+        //       Future.delayed(
+        //           Duration(milliseconds: 250), () => handleDataUpdate(data));
+        //     }
+        //   }
+        //   break;
+        default:
+          print('Unrecognized data packet of type ${remotePeerData['type']}');
+          break;
+      }
     }
   }
 
@@ -318,8 +323,8 @@ class _KPeerCallState extends State<KPeerCall> {
         connectionStatusStreamSubscription = KPeerWebRTCHelper
             .connectionStatusStream
             .listen(handleConnectionStatusUpdate);
-        // dataStreamSubscription =
-        //     KPeerWebRTCHelper.dataStream.listen(handleDataUpdate);
+        dataStreamSubscription =
+            KPeerWebRTCHelper.dataStream.listen(handleWebRTCDataUpdate);
         localPlayerStreamSubscription =
             KPeerWebRTCHelper.localPlayerStream.listen(handleLocalPlayerUpdate);
         remotePlayerStreamSubscription = KPeerWebRTCHelper.remotePlayerStream

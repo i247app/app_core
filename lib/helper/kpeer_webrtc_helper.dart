@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:app_core/model/kremote_peer.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -264,7 +266,8 @@ abstract class KPeerWebRTCHelper {
       'audio': true,
       'video': {
         'mandatory': {
-          'minWidth': '640', // Provide your own width, height and frame rate here
+          'minWidth': '640',
+          // Provide your own width, height and frame rate here
           'minHeight': '480',
           'minFrameRate': '30',
         },
@@ -308,12 +311,14 @@ abstract class KPeerWebRTCHelper {
     print("!!! WebRTC.sendCall ${remotePeer.peerID}");
     _connectionStatusStreamController.add(KPeerWebRTCStatus.CALL);
 
-    KPeerWebRTCHelper.remotePeers[remotePeerIndex].dataConnection =
-        peer!.connect(remotePeer.peerID!,
-            options: PeerConnectOption(metadata: {
-              'peerID': KPeerWebRTCHelper.localPeerId,
-              'displayName': KPeerWebRTCHelper.localDisplayName,
-            }));
+    KPeerWebRTCHelper.remotePeers[remotePeerIndex].dataConnection = peer!
+        .connect(remotePeer.peerID!,
+            options: PeerConnectOption(
+                serialization: SerializationType.JSON,
+                metadata: {
+                  'peerID': KPeerWebRTCHelper.localPeerId,
+                  'displayName': KPeerWebRTCHelper.localDisplayName,
+                }));
 
     KPeerWebRTCHelper.remotePeers[remotePeerIndex].dataConnection!
         .on('error')
@@ -336,6 +341,13 @@ abstract class KPeerWebRTCHelper {
         .listen((data) => _dataStreamController.add({
               'remotePeer': remotePeer,
               'data': data,
+            }));
+
+    KPeerWebRTCHelper.remotePeers[remotePeerIndex].dataConnection!
+        .on('binary')
+        .listen((data) => _dataStreamController.add({
+              'remotePeer': remotePeer,
+              'data': jsonDecode(utf8.decode(data)),
             }));
 
     KPeerWebRTCHelper.remotePeers[remotePeerIndex].dataConnection!
