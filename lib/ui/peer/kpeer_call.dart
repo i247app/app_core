@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:get/utils.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:queue/queue.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class KPeerCall extends StatefulWidget {
   const KPeerCall({
@@ -66,12 +67,13 @@ class _KPeerCallState extends State<KPeerCall> {
   @override
   void initState() {
     super.initState();
-
+    WakelockPlus.enable();
     fetchMeeting();
   }
 
   @override
   void dispose() {
+    WakelockPlus.disable();
     KPeerWebRTCHelper.dispose();
     connectionStatusStreamSubscription?.cancel();
     dataStreamSubscription?.cancel();
