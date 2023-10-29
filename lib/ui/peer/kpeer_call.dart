@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:app_core/app_core.dart';
 import 'package:app_core/header/kaction.dart';
-import 'package:app_core/helper/kpeer_socket_helper.dart';
 import 'package:app_core/helper/kpeer_webrtc_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/kobject.dart';
@@ -79,7 +78,6 @@ class _KPeerCallState extends State<KPeerCall> {
     localPlayerStreamSubscription?.cancel();
     remotePlayerStreamSubscription?.cancel();
     queue.dispose();
-    KPeerSocketHelper.dispose();
     super.dispose();
   }
 
@@ -184,25 +182,27 @@ class _KPeerCallState extends State<KPeerCall> {
         this.setState(() {});
       }
 
-      sendMetadata();
-      KPeerSocketHelper.socket?.emit('retrieve-metadata', [
-        this.currentMeeting?.conferenceID,
-        this.currentMeetingMember?.memberKey,
-      ]);
+      sendMetadata([remotePeer['peer']]);
+      sendDataPacket(
+          [remotePeer['peer']],
+          KPeerWebRTCHelper.PACKET_TYPE_RETRIEVE_METADATA,
+          {
+            'peerID': KPeerWebRTCHelper.localPeerId,
+          });
       // calculateMaxVideoEachRow();
     }
   }
 
-  void sendMetadata() {
-    KPeerSocketHelper.socket?.emit('send-data-to-room', [
-      this.currentMeeting?.conferenceID,
-      this.currentMeetingMember?.memberKey,
-      {
+  void sendMetadata(List<KRemotePeer> peers) {
+    print('sendMetadata');
+    sendDataPacket(peers, KPeerWebRTCHelper.PACKET_TYPE_METADATA, {
+      'peerID': KPeerWebRTCHelper.localPeerId,
+      'metadata': {
         'isAudioEnable': isMySoundEnabled,
         'isVideoEnable': isMyCameraEnabled,
         'displayName': KPeerWebRTCHelper.localDisplayName,
       },
-    ]);
+    });
   }
 
   void sendDataPacket(
@@ -225,62 +225,42 @@ class _KPeerCallState extends State<KPeerCall> {
     });
   }
 
-  void handleDataUpdate(List<dynamic> data) {
+  void handleDataUpdate(Map<String, dynamic> data) {
     if (mounted) {
-      print('handleDataUpdate');
-      print(data);
-      final _peerId = data[0];
-      final _metadata = data[1];
-
-      if (_peerId != this.currentMeetingMember?.memberKey) {
-        final index =
-            _remoteRenderers.indexWhere((e) => e['peerID'] == _peerId);
-        if (index > -1 && _metadata != null) {
-          this.setState(() {
-            _remoteRenderers[index]['metadata'] = _metadata;
-            print('_metadata ${_metadata}');
-          });
-        }
-      }
-    }
-  }
-
-  void handleWebRTCDataUpdate(Map<String, dynamic> data) {
-    if (mounted) {
-      print('handleWebRTCDataUpdate');
-      print(data);
       final remotePeer = data['remotePeer'];
       final remotePeerData = data['data'];
-      print('data ${remotePeer} ${remotePeerData}');
+      print('data ${remotePeer} ${remotePeerData['payload']}');
 
       switch (remotePeerData['type']) {
-        // case KPeerWebRTCHelper.PACKET_TYPE_METADATA:
-        //   {
-        //     final index = _remoteRenderers.indexWhere(
-        //         (e) => e['peerID'] == remotePeerData['payload']['peerID']);
-        //     if (index > -1 && data['payload']['metadata'] != null) {
-        //       _remoteRenderers[index]['metadata'] = data['payload']['metadata'];
-        //     } else {
-        //       // retry set metadata
-        //       Future.delayed(
-        //           Duration(milliseconds: 250), () => handleDataUpdate(data));
-        //     }
-        //   }
-        //   break;
-        // case KPeerWebRTCHelper.PACKET_TYPE_RETRIEVE_METADATA:
-        //   {
-        //     final index = _remoteRenderers.indexWhere(
-        //         (e) => e['peerID'] == remotePeerData['payload']['peerID']);
-        //     if (index > -1 &&
-        //         _remoteRenderers[index]['peer']['dataConnection'] != null) {
-        //       sendMetadata();
-        //     } else {
-        //       // retry set metadata
-        //       Future.delayed(
-        //           Duration(milliseconds: 250), () => handleDataUpdate(data));
-        //     }
-        //   }
-        //   break;
+        case KPeerWebRTCHelper.PACKET_TYPE_METADATA:
+          {
+            final index = _remoteRenderers.indexWhere(
+                (e) => e['peerID'] == remotePeerData['payload']['peerID']);
+            if (index > -1 && remotePeerData['payload']['metadata'] != null) {
+              this.setState(() {
+                _remoteRenderers[index]['metadata'] = remotePeerData['payload']['metadata'];
+              });
+            } else {
+              // retry set metadata
+              Future.delayed(
+                  Duration(milliseconds: 250), () => handleDataUpdate(data));
+            }
+          }
+          break;
+        case KPeerWebRTCHelper.PACKET_TYPE_RETRIEVE_METADATA:
+          {
+            final index = _remoteRenderers.indexWhere(
+                (e) => e['peerID'] == remotePeerData['payload']['peerID']);
+            if (index > -1 &&
+                _remoteRenderers[index]['peer']['dataConnection'] != null) {
+              sendMetadata([_remoteRenderers[index]['peer']]);
+            } else {
+              // retry set metadata
+              Future.delayed(
+                  Duration(milliseconds: 250), () => handleDataUpdate(data));
+            }
+          }
+          break;
         default:
           print('Unrecognized data packet of type ${remotePeerData['type']}');
           break;
@@ -324,7 +304,7 @@ class _KPeerCallState extends State<KPeerCall> {
             .connectionStatusStream
             .listen(handleConnectionStatusUpdate);
         dataStreamSubscription =
-            KPeerWebRTCHelper.dataStream.listen(handleWebRTCDataUpdate);
+            KPeerWebRTCHelper.dataStream.listen(handleDataUpdate);
         localPlayerStreamSubscription =
             KPeerWebRTCHelper.localPlayerStream.listen(handleLocalPlayerUpdate);
         remotePlayerStreamSubscription = KPeerWebRTCHelper.remotePlayerStream
@@ -339,7 +319,6 @@ class _KPeerCallState extends State<KPeerCall> {
           auto: false,
           displayName: KSessionData.me?.fullName,
         );
-        setupSocket();
 
         // Initiate call using sendCall function
         final remotePeers = currentMeeting?.webRTCMembers ?? [];
@@ -363,23 +342,6 @@ class _KPeerCallState extends State<KPeerCall> {
       setState(() {
         isCallSetting = false;
       });
-    }
-  }
-
-  Future setupSocket() async {
-    print('setupSocket');
-    dataStreamSubscription =
-        KPeerSocketHelper.dataStream.listen(handleDataUpdate);
-
-    try {
-      await KPeerSocketHelper.init(
-        this.currentMeeting?.conferenceID,
-        this.currentMeetingMember?.memberKey,
-      );
-
-      KPeerSocketHelper.socket!.on('user-joined', (data) => sendMetadata());
-    } catch (ex) {
-      print('Socket error ${ex}');
     }
   }
 
@@ -427,7 +389,7 @@ class _KPeerCallState extends State<KPeerCall> {
     if (audioTrack == null) return;
 
     audioTrack.enabled = value;
-    sendMetadata();
+    sendMetadata(KPeerWebRTCHelper.remotePeers);
   }
 
   void onCameraToggled(value) {
@@ -439,7 +401,7 @@ class _KPeerCallState extends State<KPeerCall> {
     if (videoTrack == null) return;
 
     videoTrack.enabled = value;
-    sendMetadata();
+    sendMetadata(KPeerWebRTCHelper.remotePeers);
   }
 
   @override
