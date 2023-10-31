@@ -139,6 +139,12 @@ flutter:
     - assets/audio/
     - assets/lingo/
   fonts:
+    - family: BeVietnamPro
+      fonts:
+        - asset: fonts/BeVietnamPro/BeVietnamPro-Regular.ttf
+        - asset: fonts/BeVietnamPro/BeVietnamPro-Bold.ttf
+        - asset: fonts/BeVietnamPro/BeVietnamPro-Italic.ttf
+          style: italic
     - family: Apercu
       fonts:
         - asset: fonts/ApercuRegular.ttf

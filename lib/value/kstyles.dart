@@ -89,6 +89,7 @@ abstract class KStyles {
   static final double headerFontSize = fontSizeLarge;
 
   /// Fonts
+  static final String fontBeVietnamPro = "BeVietnamPro";
   static final String fontApercu = "Apercu";
   static final String fontUberMove = "UberMove";
 
@@ -205,7 +206,8 @@ abstract class KStyles {
         // GoogleFonts.cabin().copyWith(
         TextStyle().copyWith(
       package: 'app_core',
-      fontFamily: fontApercu,
+      fontFamily: fontBeVietnamPro,
+      // fontFamily: fontApercu,
       // fontFamily: fontUberMove,
       color: palette.primary,
       fontWeight: FontWeight.normal,
