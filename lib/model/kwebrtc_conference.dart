@@ -47,6 +47,9 @@ class KWebRTCConference extends KObject {
   @JsonKey(name: "conferencePass")
   String? conferencePass;
 
+  @JsonKey(name: "conferenceSlug")
+  String? conferenceSlug;
+
   @JsonKey(name: "webRTCMembers")
   List<KWebRTCMember>? webRTCMembers;
 

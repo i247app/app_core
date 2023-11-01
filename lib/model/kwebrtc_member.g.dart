@@ -49,7 +49,8 @@ KWebRTCMember _$KWebRTCMemberFromJson(Map<String, dynamic> json) =>
       ..nicKey = json['nicKey'] as String?
       ..fnm = json['fnm'] as String?
       ..mnm = json['mnm'] as String?
-      ..lnm = json['lnm'] as String?;
+      ..lnm = json['lnm'] as String?
+      ..role = json['role'] as String?;
 
 Map<String, dynamic> _$KWebRTCMemberToJson(KWebRTCMember instance) {
   final val = <String, dynamic>{};
@@ -101,5 +102,6 @@ Map<String, dynamic> _$KWebRTCMemberToJson(KWebRTCMember instance) {
   writeNotNull('fnm', instance.fnm);
   writeNotNull('mnm', instance.mnm);
   writeNotNull('lnm', instance.lnm);
+  writeNotNull('role', instance.role);
   return val;
 }

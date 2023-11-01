@@ -7,6 +7,8 @@ part 'kwebrtc_member.g.dart';
 
 @JsonSerializable()
 class KWebRTCMember extends KObject {
+  static const MEMBER_ROLE_ADMIN = 'admin';
+
   @JsonKey(name: "conferenceID")
   String? conferenceID;
 
@@ -57,6 +59,9 @@ class KWebRTCMember extends KObject {
 
   @JsonKey(name: "lnm")
   String? lnm;
+
+  @JsonKey(name: "role")
+  String? role;
 
   // JSON
   KWebRTCMember();

@@ -14,6 +14,8 @@ abstract class KPeerWebRTCHelper {
   static const RETRY_MAX = 5;
   static const PACKET_TYPE_METADATA = 'METADATA';
   static const PACKET_TYPE_RETRIEVE_METADATA = 'RETRIEVE_METADATA';
+  static const CONTROL_SIGNAL_LEAVE = 'LEAVE';
+  static const CONTROL_SIGNAL_END = 'END';
 
   static String? localPeerId = null;
   static String? localDisplayName = null;
@@ -264,6 +266,13 @@ abstract class KPeerWebRTCHelper {
         ..peerID = peerID;
       KPeerWebRTCHelper.remotePeers.add(remotePeer);
       return remotePeer;
+    }
+  }
+
+  static removePeer(String peerID) {
+    final index = KPeerWebRTCHelper.remotePeers.indexWhere((remotePeer) => remotePeer.peerID == peerID);
+    if (index > -1) {
+      KPeerWebRTCHelper.remotePeers = KPeerWebRTCHelper.remotePeers.where((remotePeer) => remotePeer.peerID != peerID).toList();
     }
   }
 

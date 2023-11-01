@@ -40,6 +40,7 @@ class _KPeerCallState extends State<KPeerCall> {
 
   bool isFetchingMeeting = false;
   bool isCallSetting = false;
+  bool isNeedInputPassForSlugCall = false;
   bool inCall = false;
   bool isCalled = false;
   String? errorMsg;
@@ -227,7 +228,7 @@ class _KPeerCallState extends State<KPeerCall> {
     });
   }
 
-  void handleDataUpdate(Map<String, dynamic> data) {
+  void handleDataUpdate(Map<String, dynamic> data) async {
     if (mounted) {
       final remotePeer = data['remotePeer'];
       final remotePeerData = data['data'];
@@ -240,7 +241,8 @@ class _KPeerCallState extends State<KPeerCall> {
                 (e) => e['peerID'] == remotePeerData['payload']['peerID']);
             if (index > -1 && remotePeerData['payload']['metadata'] != null) {
               this.setState(() {
-                _remoteRenderers[index]['metadata'] = remotePeerData['payload']['metadata'];
+                _remoteRenderers[index]['metadata'] =
+                    remotePeerData['payload']['metadata'];
               });
             } else {
               // retry set metadata
@@ -263,6 +265,45 @@ class _KPeerCallState extends State<KPeerCall> {
             }
           }
           break;
+        case KPeerWebRTCHelper.CONTROL_SIGNAL_LEAVE:
+          if (remotePeerData['payload']['peerID'] &&
+              remotePeerData['payload']['peerID'] !=
+                  currentMeetingMember?.memberKey) {
+            KPeerWebRTCHelper.removePeer(remotePeerData['payload']['peerID']);
+            final index = _remoteRenderers.indexWhere(
+                (e) => e['peerID'] == remotePeerData['payload']['peerID']);
+            if (index > -1) {
+              this.setState(() {
+                _remoteRenderers = _remoteRenderers
+                    .where((_remoteRenderer) =>
+                        _remoteRenderer['peerID'] !=
+                        remotePeerData['payload']['peerID'])
+                    .toList();
+              });
+            }
+            print("[LEAVE] data packet received ${remotePeerData['payload']}");
+          }
+          break;
+        case KPeerWebRTCHelper.CONTROL_SIGNAL_END:
+          if (remotePeerData['payload']['peerID'] &&
+              remotePeerData['payload']['peerID'] !=
+                  currentMeetingMember?.memberKey) {
+            await showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) => new AlertDialog(
+                title: new Text('Call ended!'),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => safePop(true),
+                    child: new Text('Ok'),
+                  ),
+                ],
+              ),
+            );
+          }
+          print("[END] data packet received ${remotePeerData['payload']}");
+          break;
         default:
           print('Unrecognized data packet of type ${remotePeerData['type']}');
           break;
@@ -270,12 +311,18 @@ class _KPeerCallState extends State<KPeerCall> {
     }
   }
 
-  Future handleJoinWithCode(
-      String conferenceCode, String conferencePass) async {
+  Future handleJoinWithCode({
+    String? conferenceCode,
+    String? conferenceSlug,
+    required String conferencePass,
+  }) async {
     try {
-      await setupCall(KWebRTCConference()
-        ..conferenceCode = conferenceCode
-        ..conferencePass = conferencePass);
+      await setupCall(
+        KWebRTCConference()
+          ..conferenceCode = conferenceCode
+          ..conferenceSlug = conferenceSlug
+          ..conferencePass = conferencePass,
+      );
     } catch (ex) {}
   }
 
@@ -332,11 +379,16 @@ class _KPeerCallState extends State<KPeerCall> {
         }
         setState(() {
           isCallSetting = false;
+          isNeedInputPassForSlugCall = false;
           isCalled = true;
         });
       } else {
         setState(() {
           isCallSetting = false;
+          if (KStringHelper.isExist(meeting.conferenceSlug) && !KStringHelper.isExist(meeting.conferencePass) && !isNeedInputPassForSlugCall) {
+            isNeedInputPassForSlugCall = true;
+            currentMeeting = meeting;
+          };
         });
       }
     } catch (ex) {
@@ -351,10 +403,47 @@ class _KPeerCallState extends State<KPeerCall> {
     Navigator.of(context).pop(result);
   }
 
-  void hangUp() {
+  void hangUp() async {
     try {
-      // stopCallerTune();
-      // this.commManager?.sayGoodbye();
+      final hangUpConfirm = await showDialog(
+        context: context,
+        builder: (context) => new AlertDialog(
+          title: new Text('Hang up call?'),
+          content: new Text('Cúp máy?'),
+          actions: <Widget>[
+            if (currentMeetingMember?.role ==
+                KWebRTCMember.MEMBER_ROLE_ADMIN) ...[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: new Text('End for All'),
+              ),
+              Spacer(),
+            ],
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(null),
+              child: new Text('No'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: new Text('Yes'),
+            ),
+          ],
+        ),
+      );
+
+      if (hangUpConfirm == null) {
+        return;
+      } else if (!hangUpConfirm) {
+        this.sendDataPacket(KPeerWebRTCHelper.remotePeers,
+            KPeerWebRTCHelper.CONTROL_SIGNAL_END, {
+          'peerID': KPeerWebRTCHelper.localPeerId,
+        });
+      } else {
+        this.sendDataPacket(KPeerWebRTCHelper.remotePeers,
+            KPeerWebRTCHelper.CONTROL_SIGNAL_LEAVE, {
+          'peerID': KPeerWebRTCHelper.localPeerId,
+        });
+      }
     } catch (e) {}
     safePop(true);
   }
@@ -570,7 +659,7 @@ class _KPeerCallState extends State<KPeerCall> {
               child: CircularProgressIndicator(),
             )
           else ...[
-            if (meetingList.length > 0)
+            if (meetingList.length > 0 && !isNeedInputPassForSlugCall)
               ...List.generate(meetingList.length, (index) {
                 final meeting = meetingList[index];
 
@@ -603,7 +692,10 @@ class _KPeerCallState extends State<KPeerCall> {
                 return Container();
               }).toList()
             else
-              _KPeerCallForm(onSubmit: handleJoinWithCode),
+              _KPeerCallForm(
+                onSubmit: handleJoinWithCode,
+                conferenceSlug: currentMeeting?.conferenceSlug,
+              ),
           ],
         ],
       ),
@@ -828,10 +920,17 @@ class _KPeerCallVideoRender extends StatelessWidget {
 }
 
 class _KPeerCallForm extends StatefulWidget {
-  final Future<dynamic> Function(String conferenceCode, String conferencePass)
-      onSubmit;
+  final Future<dynamic> Function({
+    String? conferenceCode,
+    String? conferenceSlug,
+    required String conferencePass,
+  }) onSubmit;
+  final String? conferenceSlug;
 
-  _KPeerCallForm({required this.onSubmit});
+  _KPeerCallForm({
+    required this.onSubmit,
+    this.conferenceSlug,
+  });
 
   @override
   State<StatefulWidget> createState() => _KPeerCallFormState();
@@ -855,6 +954,8 @@ class _KPeerCallFormState extends State<_KPeerCallForm> {
       isConferenceCodeTouched &&
       formKey.currentState != null &&
       formKey.currentState!.validate();
+
+  bool get isJoinWithSlug => KStringHelper.isExist(widget.conferenceSlug);
 
   double labelWidth = 50;
 
@@ -893,8 +994,17 @@ class _KPeerCallFormState extends State<_KPeerCallForm> {
     });
     try {
       if (isFormValid) {
-        widget.onSubmit(
-            conferenceCodeController.text, conferencePassController.text);
+        if (isJoinWithSlug) {
+          widget.onSubmit(
+            conferenceSlug: widget.conferenceSlug,
+            conferencePass: conferencePassController.text,
+          );
+        } else {
+          widget.onSubmit(
+            conferenceCode: conferenceCodeController.text,
+            conferencePass: conferencePassController.text,
+          );
+        }
       }
     } catch (ex) {
       print(ex);
@@ -923,24 +1033,26 @@ class _KPeerCallFormState extends State<_KPeerCallForm> {
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            TextFormField(
-              validator: (value) {
-                if ((value == null || value.isEmpty) &&
-                    isConferenceCodeTouched) {
-                  return 'Field required!';
-                }
-                return null;
-              },
-              style: Theme.of(context).textTheme.subtitle1,
-              controller: conferenceCodeController,
-              focusNode: conferenceCodeFocusNode,
-              decoration: InputDecoration(
-                hintText: 'Meeting Code',
-                hintStyle: Theme.of(context).textTheme.subtitle1,
-                border: OutlineInputBorder(),
+            if (!isJoinWithSlug) ...[
+              TextFormField(
+                validator: (value) {
+                  if ((value == null || value.isEmpty) &&
+                      isConferenceCodeTouched) {
+                    return 'Field required!';
+                  }
+                  return null;
+                },
+                style: Theme.of(context).textTheme.subtitle1,
+                controller: conferenceCodeController,
+                focusNode: conferenceCodeFocusNode,
+                decoration: InputDecoration(
+                  hintText: 'Meeting Code',
+                  hintStyle: Theme.of(context).textTheme.subtitle1,
+                  border: OutlineInputBorder(),
+                ),
               ),
-            ),
-            SizedBox(height: 12),
+              SizedBox(height: 12),
+            ],
             TextFormField(
               validator: (value) {
                 if ((value == null || value.isEmpty) &&

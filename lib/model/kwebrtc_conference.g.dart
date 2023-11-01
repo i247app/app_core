@@ -46,6 +46,7 @@ KWebRTCConference _$KWebRTCConferenceFromJson(Map<String, dynamic> json) =>
       ..status = json['status'] as String?
       ..conferenceCode = json['conferenceCode'] as String?
       ..conferencePass = json['conferencePass'] as String?
+      ..conferenceSlug = json['conferenceSlug'] as String?
       ..webRTCMembers = (json['webRTCMembers'] as List<dynamic>?)
           ?.map((e) => KWebRTCMember.fromJson(e as Map<String, dynamic>))
           .toList();
@@ -96,6 +97,7 @@ Map<String, dynamic> _$KWebRTCConferenceToJson(KWebRTCConference instance) {
   writeNotNull('status', instance.status);
   writeNotNull('conferenceCode', instance.conferenceCode);
   writeNotNull('conferencePass', instance.conferencePass);
+  writeNotNull('conferenceSlug', instance.conferenceSlug);
   writeNotNull(
       'webRTCMembers', instance.webRTCMembers?.map((e) => e.toJson()).toList());
   return val;
