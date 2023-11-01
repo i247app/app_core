@@ -427,20 +427,29 @@ class _KPeerCallState extends State<KPeerCall> {
         builder: (context) => new AlertDialog(
           title: new Text(KPhrases.webRTCCallLeave),
           actions: <Widget>[
-            if (isMeetingAdmin ?? false) ...[
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: new Text(KPhrases.webRTCCallEnd),
-              ),
-              Spacer(),
-            ],
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(null),
-              child: new Text(KPhrases.webRTCCallNo),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: new Text(KPhrases.webRTCCallYes),
+            Row(
+              children: [
+                if (isMeetingAdmin ?? false) ...[
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text(
+                      KPhrases.webRTCCallEnd,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: KStyles.colorBGNo,
+                          ),
+                    ),
+                  ),
+                  Spacer(),
+                ],
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(null),
+                  child: new Text(KPhrases.webRTCCallNo),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: new Text(KPhrases.webRTCCallYes),
+                ),
+              ],
             ),
           ],
         ),
