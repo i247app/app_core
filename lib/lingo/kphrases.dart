@@ -162,4 +162,20 @@ abstract class KPhrases {
   static String get passcodeNotMatch => _klingo.yak("passcode_not_match");
 
   static String get enterPasscode => _klingo.yak("enter_passcode");
+
+  static String get webRTCCallLeave => _klingo.yak("web_rtc_call_leave");
+
+  static String get webRTCCallEnd => _klingo.yak("web_rtc_call_end");
+
+  static String get webRTCCallNo => _klingo.yak("web_rtc_call_no");
+
+  static String get webRTCCallYes => _klingo.yak("web_rtc_call_yes");
+
+  static String get webRTCCallShareMeetingInfo => _klingo.yak("web_rtc_call_share_meeting_info");
+
+  static String get webRTCCallMeetingCode => _klingo.yak("web_rtc_call_meeting_code");
+
+  static String get webRTCCallMeetingPass => _klingo.yak("web_rtc_call_meeting_pass");
+
+  static String get copied => _klingo.yak("copied");
 }

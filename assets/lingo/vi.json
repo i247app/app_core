@@ -187,5 +187,13 @@
   "enter_passcode": "Nhập Pin",
   "re_enter_passcode": "Nhập Lại Pin",
   "passcode_not_match": "Pin Không Khớp",
-  "enter_current_passcode": "Nhập Mã Khóa Hiện Tại"
+  "enter_current_passcode": "Nhập Mã Khóa Hiện Tại",
+  "web_rtc_call_leave": "Rời Cuộc Họp?",
+  "web_rtc_call_end": "Kết Thúc",
+  "web_rtc_call_no": "Hủy",
+  "web_rtc_call_yes": "Rời",
+  "web_rtc_call_share_meeting_info": "Chia Sẻ Cuộc Họp",
+  "web_rtc_call_meeting_code": "Mã Cuộc Họp",
+  "web_rtc_call_meeting_pass": "Mật Mã",
+  "copied": "Copied"
 }
