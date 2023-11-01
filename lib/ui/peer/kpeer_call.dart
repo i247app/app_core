@@ -440,7 +440,8 @@ class _KPeerCallState extends State<KPeerCall> {
                     ),
                   ),
                   Spacer(),
-                ],
+                ] else
+                  Spacer(),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(null),
                   child: new Text(KPhrases.webRTCCallNo),
