@@ -10,6 +10,7 @@ class KPeerButtonView extends StatelessWidget {
   final Function(bool)? onMicToggled;
   final Function(bool)? onCameraToggled;
   final Function()? onHangUp;
+  final Function()? onShowMeetingInfo;
 
   const KPeerButtonView({
     required this.isMicEnabled,
@@ -18,6 +19,7 @@ class KPeerButtonView extends StatelessWidget {
     this.onCameraToggled,
     this.onMicToggled,
     this.onHangUp,
+    this.onShowMeetingInfo,
   });
 
   @override
@@ -48,9 +50,19 @@ class KPeerButtonView extends StatelessWidget {
       icon: Icon(Icons.call_end, color: KStyles.colorButtonText),
     );
 
+    final showMeetingInfoBtn = KP2PButton(
+      onClick: this.onShowMeetingInfo ?? () {},
+      backgroundColor: KStyles.darkGrey,
+      icon: Icon(
+        Icons.info_outline_rounded,
+        color: KStyles.white,
+      ),
+    );
+
     final body = Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
+        if (this.onShowMeetingInfo != null) showMeetingInfoBtn,
         toggleMicBtn,
         if (this.type == KWebRTCCallType.video) ...[
           toggleCameraBtn,

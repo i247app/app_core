@@ -6,7 +6,7 @@ import 'package:app_core/app_core.dart';
 import 'package:app_core/header/kaction.dart';
 import 'package:app_core/helper/kpeer_webrtc_helper.dart';
 import 'package:app_core/helper/kserver_handler.dart';
-import 'package:app_core/model/kobject.dart';
+import 'package:app_core/lingo/kphrases.dart';
 import 'package:app_core/model/kremote_peer.dart';
 import 'package:app_core/model/kwebrtc_conference.dart';
 import 'package:app_core/model/kwebrtc_member.dart';
@@ -14,14 +14,20 @@ import 'package:app_core/ui/peer/widget/kpeer_button_view.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/utils.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:queue/queue.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class KPeerCall extends StatefulWidget {
+  final String? refApp;
+  final String? refID;
+
   const KPeerCall({
     Key? key,
+    this.refApp,
+    this.refID,
   }) : super(key: key);
 
   @override
@@ -65,6 +71,10 @@ class _KPeerCallState extends State<KPeerCall> {
   bool isBringMyCamBack = false;
   bool isPanelOpen = false;
 
+  bool? get isMeetingAdmin => currentMeetingMember != null
+      ? currentMeetingMember!.role == KWebRTCMember.MEMBER_ROLE_ADMIN
+      : null;
+
   @override
   void initState() {
     super.initState();
@@ -93,7 +103,11 @@ class _KPeerCallState extends State<KPeerCall> {
 
     try {
       final response = await KServerHandler.webRTCConferenceAction(
-          kWebRTCConference: KWebRTCConference()..kaction = KAction.LIST);
+        kWebRTCConference: KWebRTCConference()
+          ..kaction = KAction.LIST
+          ..refApp = widget.refApp
+          ..refID = widget.refID,
+      );
       if (response.isSuccess) {
         setState(() {
           meetingList = (response.webRTCConferences ?? [])
@@ -256,7 +270,7 @@ class _KPeerCallState extends State<KPeerCall> {
             final index = _remoteRenderers.indexWhere(
                 (e) => e['peerID'] == remotePeerData['payload']['peerID']);
             if (index > -1 &&
-                _remoteRenderers[index]['peer']['dataConnection'] != null) {
+                _remoteRenderers[index]['peer']?.dataConnection != null) {
               sendMetadata([_remoteRenderers[index]['peer']]);
             } else {
               // retry set metadata
@@ -385,10 +399,13 @@ class _KPeerCallState extends State<KPeerCall> {
       } else {
         setState(() {
           isCallSetting = false;
-          if (KStringHelper.isExist(meeting.conferenceSlug) && !KStringHelper.isExist(meeting.conferencePass) && !isNeedInputPassForSlugCall) {
+          if (KStringHelper.isExist(meeting.conferenceSlug) &&
+              !KStringHelper.isExist(meeting.conferencePass) &&
+              !isNeedInputPassForSlugCall) {
             isNeedInputPassForSlugCall = true;
             currentMeeting = meeting;
-          };
+          }
+          ;
         });
       }
     } catch (ex) {
@@ -408,24 +425,32 @@ class _KPeerCallState extends State<KPeerCall> {
       final hangUpConfirm = await showDialog(
         context: context,
         builder: (context) => new AlertDialog(
-          title: new Text('Hang up call?'),
-          content: new Text('Cúp máy?'),
+          title: new Text(KPhrases.webRTCCallLeave),
           actions: <Widget>[
-            if (currentMeetingMember?.role ==
-                KWebRTCMember.MEMBER_ROLE_ADMIN) ...[
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: new Text('End for All'),
-              ),
-              Spacer(),
-            ],
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(null),
-              child: new Text('No'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: new Text('Yes'),
+            Row(
+              children: [
+                if (isMeetingAdmin ?? false) ...[
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text(
+                      KPhrases.webRTCCallEnd,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: KStyles.colorBGNo,
+                          ),
+                    ),
+                  ),
+                  Spacer(),
+                ] else
+                  Spacer(),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(null),
+                  child: new Text(KPhrases.webRTCCallNo),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: new Text(KPhrases.webRTCCallYes),
+                ),
+              ],
             ),
           ],
         ),
@@ -434,15 +459,39 @@ class _KPeerCallState extends State<KPeerCall> {
       if (hangUpConfirm == null) {
         return;
       } else if (!hangUpConfirm) {
-        this.sendDataPacket(KPeerWebRTCHelper.remotePeers,
-            KPeerWebRTCHelper.CONTROL_SIGNAL_END, {
-          'peerID': KPeerWebRTCHelper.localPeerId,
-        });
+        if (currentMeeting != null && currentMeetingMember != null) {
+          final response = await KServerHandler.webRTCConferenceAction(
+            kWebRTCConference: currentMeeting!
+              ..kaction = KAction.END
+              ..webRTCMembers = [currentMeetingMember!],
+          );
+
+          if (response.isSuccess) {
+            this.sendDataPacket(KPeerWebRTCHelper.remotePeers,
+                KPeerWebRTCHelper.CONTROL_SIGNAL_END, {
+              'peerID': KPeerWebRTCHelper.localPeerId,
+            });
+          } else {
+            return;
+          }
+        }
       } else {
-        this.sendDataPacket(KPeerWebRTCHelper.remotePeers,
-            KPeerWebRTCHelper.CONTROL_SIGNAL_LEAVE, {
-          'peerID': KPeerWebRTCHelper.localPeerId,
-        });
+        if (currentMeeting != null && currentMeetingMember != null) {
+          final response = await KServerHandler.webRTCConferenceAction(
+            kWebRTCConference: currentMeeting!
+              ..kaction = KAction.STOP
+              ..webRTCMembers = [currentMeetingMember!],
+          );
+
+          if (response.isSuccess) {
+            this.sendDataPacket(KPeerWebRTCHelper.remotePeers,
+                KPeerWebRTCHelper.CONTROL_SIGNAL_LEAVE, {
+              'peerID': KPeerWebRTCHelper.localPeerId,
+            });
+          } else {
+            return;
+          }
+        }
       }
     } catch (e) {}
     safePop(true);
@@ -493,6 +542,69 @@ class _KPeerCallState extends State<KPeerCall> {
 
     videoTrack.enabled = value;
     sendMetadata(KPeerWebRTCHelper.remotePeers);
+  }
+
+  void copyTextToClipboard(String text) {
+    Clipboard.setData(
+      ClipboardData(text: text),
+    );
+    KSnackBarHelper.success(KPhrases.copied);
+  }
+
+  void showMeetingInfo() async {
+    try {
+      await showDialog(
+        context: context,
+        builder: (context) => new AlertDialog(
+          title: new Text(KPhrases.webRTCCallShareMeetingInfo),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Text(
+                      "${KPhrases.webRTCCallMeetingCode}: ${currentMeeting?.conferenceCode}"),
+                  Spacer(),
+                  IconButton(
+                    onPressed:
+                        !KStringHelper.isExist(currentMeeting?.conferenceCode)
+                            ? null
+                            : () => copyTextToClipboard(
+                                currentMeeting!.conferenceCode!),
+                    icon: Icon(Icons.copy_outlined),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 12,
+              ),
+              Row(
+                children: [
+                  Text(
+                      "${KPhrases.webRTCCallMeetingPass}: ${currentMeeting?.conferencePass}"),
+                  Spacer(),
+                  IconButton(
+                    onPressed:
+                        !KStringHelper.isExist(currentMeeting?.conferencePass)
+                            ? null
+                            : () => copyTextToClipboard(
+                                currentMeeting!.conferencePass!),
+                    icon: Icon(Icons.copy_outlined),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: new Text(KPhrases.ok),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {}
   }
 
   @override
@@ -558,6 +670,11 @@ class _KPeerCallState extends State<KPeerCall> {
                 onMicToggled: onMicToggled,
                 onCameraToggled: onCameraToggled,
                 onHangUp: hangUp,
+                onShowMeetingInfo: (isMeetingAdmin ?? false) &&
+                        KStringHelper.isExist(currentMeeting?.conferenceCode) &&
+                        KStringHelper.isExist(currentMeeting?.conferencePass)
+                    ? showMeetingInfo
+                    : null,
               ),
             ),
           ),
@@ -664,28 +781,32 @@ class _KPeerCallState extends State<KPeerCall> {
                 final meeting = meetingList[index];
 
                 if (KStringHelper.isExist(meeting.meetingName)) {
-                  return ElevatedButton(
-                    onPressed: isCallSetting ? null : () => setupCall(meeting),
-                    style: KStyles.roundedButton(
-                      Theme.of(context).colorScheme.primary,
-                      textColor: Colors.white,
-                    ),
-                    child: isCallSetting
-                        ? CircularProgressIndicator()
-                        : FittedBox(
-                            fit: BoxFit.scaleDown,
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Join Call ${meeting.meetingName}",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1!
-                                  .copyWith(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                  ),
+                  return Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8),
+                    child: ElevatedButton(
+                      onPressed:
+                          isCallSetting ? null : () => setupCall(meeting),
+                      style: KStyles.roundedButton(
+                        Theme.of(context).colorScheme.primary,
+                        textColor: Colors.white,
+                      ),
+                      child: isCallSetting
+                          ? CircularProgressIndicator()
+                          : FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Join Call ${meeting.meetingName}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText1!
+                                    .copyWith(
+                                      color: Colors.white,
+                                      fontSize: 24,
+                                    ),
+                              ),
                             ),
-                          ),
+                    ),
                   );
                 }
 
