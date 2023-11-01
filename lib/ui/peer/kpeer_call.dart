@@ -71,6 +71,10 @@ class _KPeerCallState extends State<KPeerCall> {
   bool isBringMyCamBack = false;
   bool isPanelOpen = false;
 
+  bool? get isMeetingAdmin => currentMeetingMember != null
+      ? currentMeetingMember!.role == KWebRTCMember.MEMBER_ROLE_ADMIN
+      : null;
+
   @override
   void initState() {
     super.initState();
@@ -423,8 +427,7 @@ class _KPeerCallState extends State<KPeerCall> {
         builder: (context) => new AlertDialog(
           title: new Text(KPhrases.webRTCCallLeave),
           actions: <Widget>[
-            if (currentMeetingMember?.role ==
-                KWebRTCMember.MEMBER_ROLE_ADMIN) ...[
+            if (isMeetingAdmin ?? false) ...[
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
                 child: new Text(KPhrases.webRTCCallEnd),
@@ -657,8 +660,8 @@ class _KPeerCallState extends State<KPeerCall> {
                 onMicToggled: onMicToggled,
                 onCameraToggled: onCameraToggled,
                 onHangUp: hangUp,
-                onShowMeetingInfo: KStringHelper.isExist(
-                            currentMeeting?.conferenceCode) &&
+                onShowMeetingInfo: (isMeetingAdmin ?? false) &&
+                        KStringHelper.isExist(currentMeeting?.conferenceCode) &&
                         KStringHelper.isExist(currentMeeting?.conferencePass)
                     ? showMeetingInfo
                     : null,
