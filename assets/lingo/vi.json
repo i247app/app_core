@@ -192,8 +192,8 @@
   "web_rtc_call_end": "Kết Thúc",
   "web_rtc_call_no": "Hủy",
   "web_rtc_call_yes": "Rời",
-  "web_rtc_call_share_meeting_info": "Cuộc Họp",
-  "web_rtc_call_meeting_code": "Mã",
-  "web_rtc_call_meeting_pass": "Pass",
+  "web_rtc_meeting": "Cuộc Họp",
+  "web_rtc_code": "Mã",
+  "web_rtc_pass": "Pass",
   "copied": "Copied"
 }

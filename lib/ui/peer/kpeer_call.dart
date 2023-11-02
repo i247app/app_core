@@ -565,7 +565,7 @@ class _KPeerCallState extends State<KPeerCall> {
       await showDialog(
         context: context,
         builder: (context) => new AlertDialog(
-          title: new Text(KPhrases.webRTCCallShareMeetingInfo),
+          title: new Text(KPhrases.webRTCMeeting),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -573,7 +573,7 @@ class _KPeerCallState extends State<KPeerCall> {
               Row(
                 children: [
                   Text(
-                      "${KPhrases.webRTCCallMeetingCode}: ${currentMeeting?.conferenceCode}"),
+                      "${KPhrases.webRTCCode}: ${currentMeeting?.conferenceCode}"),
                   Spacer(),
                   IconButton(
                     onPressed:
@@ -591,7 +591,7 @@ class _KPeerCallState extends State<KPeerCall> {
               Row(
                 children: [
                   Text(
-                      "${KPhrases.webRTCCallMeetingPass}: ${currentMeeting?.conferencePass}"),
+                      "${KPhrases.webRTCPass}: ${currentMeeting?.conferencePass}"),
                   Spacer(),
                   IconButton(
                     onPressed:

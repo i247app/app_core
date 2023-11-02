@@ -171,11 +171,11 @@ abstract class KPhrases {
 
   static String get webRTCCallYes => _klingo.yak("web_rtc_call_yes");
 
-  static String get webRTCCallShareMeetingInfo => _klingo.yak("web_rtc_call_share_meeting_info");
+  static String get webRTCMeeting => _klingo.yak("web_rtc_meeting");
 
-  static String get webRTCCallMeetingCode => _klingo.yak("web_rtc_call_meeting_code");
+  static String get webRTCCode => _klingo.yak("web_rtc_code");
 
-  static String get webRTCCallMeetingPass => _klingo.yak("web_rtc_call_meeting_pass");
+  static String get webRTCPass => _klingo.yak("web_rtc_pass");
 
   static String get copied => _klingo.yak("copied");
 }
