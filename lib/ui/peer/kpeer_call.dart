@@ -471,8 +471,6 @@ class _KPeerCallState extends State<KPeerCall> {
                 KPeerWebRTCHelper.CONTROL_SIGNAL_END, {
               'peerID': KPeerWebRTCHelper.localPeerId,
             });
-          } else {
-            return;
           }
         }
       } else {
@@ -488,8 +486,6 @@ class _KPeerCallState extends State<KPeerCall> {
                 KPeerWebRTCHelper.CONTROL_SIGNAL_LEAVE, {
               'peerID': KPeerWebRTCHelper.localPeerId,
             });
-          } else {
-            return;
           }
         }
       }
