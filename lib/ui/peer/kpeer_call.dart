@@ -480,15 +480,13 @@ class _KPeerCallState extends State<KPeerCall> {
               ..kaction = KAction.STOP
               ..webRTCMembers = [currentMeetingMember!],
           );
-
-          if (response.isSuccess) {
-            this.sendDataPacket(KPeerWebRTCHelper.remotePeers,
-                KPeerWebRTCHelper.CONTROL_SIGNAL_LEAVE, {
-              'peerID': KPeerWebRTCHelper.localPeerId,
-            });
-          }
         }
       }
+
+      this.sendDataPacket(KPeerWebRTCHelper.remotePeers,
+          KPeerWebRTCHelper.CONTROL_SIGNAL_LEAVE, {
+        'peerID': KPeerWebRTCHelper.localPeerId,
+      });
     } catch (e) {}
     safePop(true);
   }
