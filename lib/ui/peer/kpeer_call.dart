@@ -65,6 +65,7 @@ class _KPeerCallState extends State<KPeerCall> {
           .where((e) => e['remoteRenderer']?.srcObject != null)
           .length;
 
+  bool isSpeakerEnabled = true;
   bool isMySoundEnabled = true;
   bool isMySpeakerEnabled = true;
   bool isMyCameraEnabled = true;
@@ -528,6 +529,17 @@ class _KPeerCallState extends State<KPeerCall> {
     sendMetadata(KPeerWebRTCHelper.remotePeers);
   }
 
+  void onSpeakerToggled(value) {
+    setState(() {
+      isSpeakerEnabled = value;
+    });
+
+    final audioTrack = _localRenderer.srcObject?.getAudioTracks().first;
+    if (audioTrack == null) return;
+
+    audioTrack.enableSpeakerphone(value);
+  }
+
   void onCameraToggled(value) {
     setState(() {
       isMyCameraEnabled = value;
@@ -660,11 +672,13 @@ class _KPeerCallState extends State<KPeerCall> {
             child: Container(
               width: 200.0,
               child: KPeerButtonView(
+                isSpeakerEnabled: isSpeakerEnabled,
                 isMicEnabled: this.isMySoundEnabled,
                 isCameraEnabled: this.isMyCameraEnabled,
                 type: KWebRTCCallType.video,
                 onMicToggled: onMicToggled,
                 onCameraToggled: onCameraToggled,
+                onSpeakerToggled: onSpeakerToggled,
                 onHangUp: hangUp,
                 onShowMeetingInfo: (isMeetingAdmin ?? false) &&
                         KStringHelper.isExist(currentMeeting?.conferenceCode) &&

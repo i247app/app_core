@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 class KPeerButtonView extends StatelessWidget {
   final bool isMicEnabled;
   final bool isCameraEnabled;
+  final bool isSpeakerEnabled;
 
   final KWebRTCCallType type;
   final Function(bool)? onMicToggled;
   final Function(bool)? onCameraToggled;
+  final Function(bool)? onSpeakerToggled;
   final Function()? onHangUp;
   final Function()? onShowMeetingInfo;
 
@@ -20,10 +22,20 @@ class KPeerButtonView extends StatelessWidget {
     this.onMicToggled,
     this.onHangUp,
     this.onShowMeetingInfo,
+    required this.isSpeakerEnabled,
+    this.onSpeakerToggled,
   });
 
   @override
   Widget build(BuildContext context) {
+    final switchSpeakerBtn = KP2PButton(
+      onClick: () => this.onSpeakerToggled?.call(!this.isSpeakerEnabled),
+      backgroundColor:
+      KStyles.darkGrey.withOpacity(this.isSpeakerEnabled ? 1 : 0.5),
+      icon: Icon(this.isSpeakerEnabled ? Icons.volume_up : Icons.volume_off,
+          color: KStyles.colorButtonText),
+    );
+
     final toggleMicBtn = KP2PButton(
       onClick: () => this.onMicToggled?.call(!this.isMicEnabled),
       backgroundColor:
@@ -63,6 +75,7 @@ class KPeerButtonView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         if (this.onShowMeetingInfo != null) showMeetingInfoBtn,
+        switchSpeakerBtn,
         toggleMicBtn,
         if (this.type == KWebRTCCallType.video) ...[
           toggleCameraBtn,
