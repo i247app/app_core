@@ -31,7 +31,7 @@ class KPeerButtonView extends StatelessWidget {
     final switchSpeakerBtn = KP2PButton(
       onClick: () => this.onSpeakerToggled?.call(!this.isSpeakerEnabled),
       backgroundColor:
-      KStyles.darkGrey.withOpacity(this.isSpeakerEnabled ? 1 : 0.5),
+          KStyles.darkGrey.withOpacity(this.isSpeakerEnabled ? 1 : 0.5),
       icon: Icon(this.isSpeakerEnabled ? Icons.volume_up : Icons.volume_off,
           color: KStyles.colorButtonText),
     );
@@ -112,6 +112,14 @@ class KP2PButton extends StatelessWidget {
       ),
     );
 
-    return body;
+    return Expanded(
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 4),
+          child: body,
+        ),
+      ),
+    );
   }
 }
