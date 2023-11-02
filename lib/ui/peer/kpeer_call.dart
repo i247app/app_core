@@ -11,6 +11,7 @@ import 'package:app_core/model/kremote_peer.dart';
 import 'package:app_core/model/kwebrtc_conference.dart';
 import 'package:app_core/model/kwebrtc_member.dart';
 import 'package:app_core/ui/peer/widget/kpeer_button_view.dart';
+import 'package:app_core/ui/peer/widget/kpeer_video_render.dart';
 import 'package:app_core/ui/widget/keyboard_killer.dart';
 import 'package:app_core/ui/widget/kuser_avatar.dart';
 import 'package:flutter/material.dart';
@@ -165,8 +166,8 @@ class _KPeerCallState extends State<KPeerCall> {
           ...remotePeer,
           'remoteRenderer': null,
           'metadata': {
-            'isAudioEnable': false,
-            'isVideoEnable': false,
+            'isAudioEnable': true,
+            'isVideoEnable': true,
             'displayName': '',
           }
         };
@@ -185,8 +186,8 @@ class _KPeerCallState extends State<KPeerCall> {
           ...remotePeer,
           'remoteRenderer': null,
           'metadata': {
-            'isAudioEnable': false,
-            'isVideoEnable': false,
+            'isAudioEnable': true,
+            'isVideoEnable': true,
             'displayName': '',
           }
         };
@@ -630,7 +631,7 @@ class _KPeerCallState extends State<KPeerCall> {
               child: Wrap(
                 children: [
                   if (_localRenderer.srcObject != null) ...[
-                    _KPeerCallVideoRender(
+                    KPeerVideoRender(
                       videoRenderer: _localRenderer,
                       containerHeight: deviceHeight,
                       containerWidth: deviceWidth,
@@ -648,7 +649,7 @@ class _KPeerCallState extends State<KPeerCall> {
                           _remoteRenderers[index]['remoteRenderer'];
                       print(metadata);
                       if (_remoteRenderer?.srcObject != null) {
-                        return _KPeerCallVideoRender(
+                        return KPeerVideoRender(
                           videoRenderer: _remoteRenderer,
                           containerHeight: deviceHeight,
                           containerWidth: deviceWidth,
@@ -916,135 +917,6 @@ class _KPeerCallState extends State<KPeerCall> {
         txt,
         style:
             Theme.of(context).textTheme.titleLarge?.copyWith(color: txtColor),
-      ),
-    );
-  }
-}
-
-class _KPeerCallVideoRender extends StatelessWidget {
-  final RTCVideoRenderer videoRenderer;
-  final double containerWidth;
-  final double containerHeight;
-  final int peerCount;
-  final bool isAudioEnable;
-  final bool isVideoEnable;
-  final String displayName;
-  final bool isLocal;
-
-  _KPeerCallVideoRender({
-    Key? key,
-    required this.videoRenderer,
-    required this.containerWidth,
-    required this.containerHeight,
-    required this.peerCount,
-    required this.isAudioEnable,
-    required this.isVideoEnable,
-    required this.displayName,
-    required this.isLocal,
-  }) : super(key: key);
-
-  double get calculatedHeight {
-    double height = containerHeight;
-
-    if (peerCount >= 2) {
-      height = containerHeight / 2;
-    }
-
-    if (peerCount > 4) {
-      height = containerHeight / 3;
-    }
-
-    return height;
-  }
-
-  double get calculatedWidth {
-    double width = containerWidth;
-
-    if (peerCount > 2) {
-      width = containerWidth / 2;
-    }
-
-    return width;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: calculatedWidth,
-      height: calculatedHeight,
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Expanded(
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.center,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: isVideoEnable
-                          ? RTCVideoView(
-                              videoRenderer,
-                              key: Key('${videoRenderer.srcObject!.id}'),
-                              mirror: isLocal,
-                              objectFit: RTCVideoViewObjectFit
-                                  .RTCVideoViewObjectFitCover,
-                            )
-                          : Container(
-                              color: Colors.black,
-                              child: Center(
-                                child: KUserAvatar(
-                                  initial: displayName
-                                      .split(' ')
-                                      .map((e) => "${e}".capitalizeFirst)
-                                      .join(''),
-                                  size: calculatedWidth / 3,
-                                  backgroundColor: Colors.grey,
-                                ),
-                              ),
-                            ),
-                    ),
-                  ),
-                  if (!isAudioEnable)
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Icon(
-                          Icons.mic_off_outlined,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  if (KStringHelper.isExist(displayName))
-                    Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text(
-                          displayName,
-                          style:
-                              Theme.of(context).textTheme.titleMedium!.copyWith(
-                                    fontWeight: FontWeight.w600,
-                                    shadows: <Shadow>[
-                                      Shadow(
-                                        offset: Offset(0.0, 0.0),
-                                        blurRadius: 4.0,
-                                        color: Colors.black,
-                                      ),
-                                    ],
-                                    color: Colors.white,
-                                  ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
