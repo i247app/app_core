@@ -191,8 +191,8 @@
   "web_rtc_call_end": "End For All",
   "web_rtc_call_no": "No",
   "web_rtc_call_yes": "Leave",
-  "web_rtc_call_share_meeting_info": "Share Meeting Information",
-  "web_rtc_call_meeting_code": "Meeting Code",
-  "web_rtc_call_meeting_pass": "Password",
+  "web_rtc_call_share_meeting_info": "Meeting Information",
+  "web_rtc_call_meeting_code": "Code",
+  "web_rtc_call_meeting_pass": "Pass",
   "copied": "Copied"
 }
