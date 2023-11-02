@@ -176,8 +176,9 @@ class _KPeerCallState extends State<KPeerCall> {
           _remotePeer['remoteRenderer'] = _remoteRenderer;
         }
 
-        _remoteRenderers.add(_remotePeer);
-        this.setState(() {});
+        this.setState(() {
+          _remoteRenderers.add(_remotePeer);
+        });
       } else {
         final _remotePeer = {
           ...remotePeer,
@@ -195,8 +196,9 @@ class _KPeerCallState extends State<KPeerCall> {
           _remotePeer['remoteRenderer'] = _remoteRenderer;
         }
 
-        _remoteRenderers[index] = _remotePeer;
-        this.setState(() {});
+        this.setState(() {
+          _remoteRenderers[index] = _remotePeer;
+        });
       }
 
       sendMetadata([remotePeer['peer']]);
