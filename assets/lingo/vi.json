@@ -195,5 +195,6 @@
   "web_rtc_meeting": "Cuộc Họp",
   "web_rtc_code": "Mã",
   "web_rtc_pass": "Pass",
-  "copied": "Copied"
+  "copied": "Copied",
+  "web_rtc_connecting": "Đang Kết Nối..."
 }

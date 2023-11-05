@@ -25,25 +25,25 @@ abstract class KPeerWebRTCHelper {
   static bool isAutoCall = false;
 
   static final StreamController<KPeerWebRTCStatus>
-  _connectionStatusStreamController = StreamController.broadcast();
+      _connectionStatusStreamController = StreamController.broadcast();
 
   static Stream<KPeerWebRTCStatus> get connectionStatusStream =>
       _connectionStatusStreamController.stream.asBroadcastStream();
 
   static final StreamController<MediaStream> _localPlayerStreamController =
-  StreamController.broadcast();
+      StreamController.broadcast();
 
   static Stream<MediaStream> get localPlayerStream =>
       _localPlayerStreamController.stream.asBroadcastStream();
 
   static final StreamController<Map<String, dynamic>>
-  _remotePlayerStreamStreamController = StreamController.broadcast();
+      _remotePlayerStreamStreamController = StreamController.broadcast();
 
   static Stream<Map<String, dynamic>> get remotePlayerStream =>
       _remotePlayerStreamStreamController.stream.asBroadcastStream();
 
   static final StreamController<Map<String, dynamic>> _dataStreamController =
-  StreamController.broadcast();
+      StreamController.broadcast();
 
   static Stream<Map<String, dynamic>> get dataStream =>
       _dataStreamController.stream.asBroadcastStream();
@@ -65,7 +65,8 @@ abstract class KPeerWebRTCHelper {
     KPeerWebRTCHelper.isAutoCall = false;
   }
 
-  static Future init(MediaStream localStream, {
+  static Future init(
+    MediaStream localStream, {
     String? localPeerID,
     bool? auto,
     String? displayName,
@@ -168,6 +169,26 @@ abstract class KPeerWebRTCHelper {
             'data': data,
           });
         });
+
+        conn.on('close').listen((event) {
+          print("- - - A DATA CONNECTION CLOSED - - -");
+          final remotePeerIndex = getIndexOfRemotePeer(remotePeer);
+          KPeerWebRTCHelper.remotePeers[remotePeerIndex] = KRemotePeer()
+            ..peerID = KPeerWebRTCHelper.remotePeers[remotePeerIndex].peerID;
+          _remotePlayerStreamStreamController.add({
+            'peerID': KPeerWebRTCHelper.remotePeers[remotePeerIndex].peerID,
+            'peer': KPeerWebRTCHelper.remotePeers[remotePeerIndex],
+            'stream': null,
+          });
+
+          if (KPeerWebRTCHelper.remotePeers
+                  .where((element) =>
+                      element.mediaConnection != null &&
+                      element.peerID != KPeerWebRTCHelper.localPeerId)
+                  .length ==
+              0)
+            _connectionStatusStreamController.add(KPeerWebRTCStatus.CONNECTION);
+        });
       });
 
       _localPlayerStreamController.add(localStream);
@@ -182,8 +203,7 @@ abstract class KPeerWebRTCHelper {
 
     call.on<MediaStream>("stream").listen((remoteStream) {
       print(
-          "Setting up remote video... ${remoteStream.id} ${new DateTime.now()
-              .toIso8601String()}");
+          "Setting up remote video... ${remoteStream.id} ${new DateTime.now().toIso8601String()}");
       _connectionStatusStreamController.add(KPeerWebRTCStatus.CONNECTED);
 
       final remotePeer = getOrCreatePeer(call.peer);
@@ -206,12 +226,8 @@ abstract class KPeerWebRTCHelper {
     KPeerWebRTCHelper.remotePeers[remotePeerIndex].status =
         KRemotePeer.STATUS_CONNECTED;
 
-    final isActive = int.parse(remotePeer.peerID
-        ?.split('-')
-        .last ?? '0') <
-        int.parse(localPeerID
-            ?.split('-')
-            .last ?? '0') &&
+    final isActive = int.parse(remotePeer.peerID?.split('-').last ?? '0') <
+            int.parse(localPeerID?.split('-').last ?? '0') &&
         localPeerID != remotePeerID;
     print("localPeerID ${isActive}");
 
@@ -260,19 +276,20 @@ abstract class KPeerWebRTCHelper {
       return results.first;
     } else {
       print(
-          'new peerId ${peerID} ${KPeerWebRTCHelper.remotePeers.map((e) =>
-          e.peerID)}');
-      final remotePeer = KRemotePeer()
-        ..peerID = peerID;
+          'new peerId ${peerID} ${KPeerWebRTCHelper.remotePeers.map((e) => e.peerID)}');
+      final remotePeer = KRemotePeer()..peerID = peerID;
       KPeerWebRTCHelper.remotePeers.add(remotePeer);
       return remotePeer;
     }
   }
 
   static removePeer(String peerID) {
-    final index = KPeerWebRTCHelper.remotePeers.indexWhere((remotePeer) => remotePeer.peerID == peerID);
+    final index = KPeerWebRTCHelper.remotePeers
+        .indexWhere((remotePeer) => remotePeer.peerID == peerID);
     if (index > -1) {
-      KPeerWebRTCHelper.remotePeers = KPeerWebRTCHelper.remotePeers.where((remotePeer) => remotePeer.peerID != peerID).toList();
+      KPeerWebRTCHelper.remotePeers = KPeerWebRTCHelper.remotePeers
+          .where((remotePeer) => remotePeer.peerID != peerID)
+          .toList();
     }
   }
 
@@ -292,7 +309,7 @@ abstract class KPeerWebRTCHelper {
     };
 
     final localStream =
-    await navigator.mediaDevices.getUserMedia(mediaConstraints);
+        await navigator.mediaDevices.getUserMedia(mediaConstraints);
 
     return localStream;
   }
@@ -328,12 +345,12 @@ abstract class KPeerWebRTCHelper {
 
     KPeerWebRTCHelper.remotePeers[remotePeerIndex].dataConnection = peer!
         .connect(remotePeer.peerID!,
-        options: PeerConnectOption(
-            serialization: SerializationType.JSON,
-            metadata: {
-              'peerID': KPeerWebRTCHelper.localPeerId,
-              'displayName': KPeerWebRTCHelper.localDisplayName,
-            }));
+            options: PeerConnectOption(
+                serialization: SerializationType.JSON,
+                metadata: {
+                  'peerID': KPeerWebRTCHelper.localPeerId,
+                  'displayName': KPeerWebRTCHelper.localDisplayName,
+                }));
 
     KPeerWebRTCHelper.remotePeers[remotePeerIndex].dataConnection!
         .on('error')
@@ -353,16 +370,15 @@ abstract class KPeerWebRTCHelper {
 
     KPeerWebRTCHelper.remotePeers[remotePeerIndex].dataConnection!
         .on('data')
-        .listen((data) =>
-        _dataStreamController.add({
-          'remotePeer': remotePeer,
-          'data': data,
-        }));
+        .listen((data) => _dataStreamController.add({
+              'remotePeer': remotePeer,
+              'data': data,
+            }));
 
     KPeerWebRTCHelper.remotePeers[remotePeerIndex].dataConnection!
         .on('binary')
         .listen((data) {
-          print('binary dâta');
+      print('binary dâta');
       _dataStreamController.add({
         'remotePeer': remotePeer,
         'data': jsonDecode(utf8.decode(data)),
@@ -380,6 +396,14 @@ abstract class KPeerWebRTCHelper {
         'peer': KPeerWebRTCHelper.remotePeers[remotePeerIndex],
         'stream': null,
       });
+
+      if (KPeerWebRTCHelper.remotePeers
+              .where((element) =>
+                  element.mediaConnection != null &&
+                  element.peerID != KPeerWebRTCHelper.localPeerId)
+              .length ==
+          0)
+        _connectionStatusStreamController.add(KPeerWebRTCStatus.CONNECTION);
 
       Future.delayed(Duration(milliseconds: 1000), () {
         sendCall(KPeerWebRTCHelper.remotePeers[remotePeerIndex]);

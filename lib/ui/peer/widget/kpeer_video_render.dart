@@ -14,6 +14,7 @@ class KPeerVideoRender extends StatelessWidget {
   final bool isVideoEnable;
   final String displayName;
   final bool isLocal;
+  final bool? isOnConnection;
 
   KPeerVideoRender({
     Key? key,
@@ -25,16 +26,19 @@ class KPeerVideoRender extends StatelessWidget {
     required this.isVideoEnable,
     required this.displayName,
     required this.isLocal,
+    this.isOnConnection,
   }) : super(key: key);
 
   MediaStreamTrack? get videoTrack =>
-      (videoRenderer.srcObject
-          ?.getVideoTracks()
-          .length ?? 0) > 0 ? videoRenderer.srcObject
-          ?.getVideoTracks()
-          .first : null;
+      (videoRenderer.srcObject?.getVideoTracks().length ?? 0) > 0
+          ? videoRenderer.srcObject?.getVideoTracks().first
+          : null;
 
   double get calculatedHeight {
+    if (isLocal && (isOnConnection ?? false)) {
+      return containerHeight / 2;
+    }
+
     double height = containerHeight;
 
     if (peerCount >= 2) {
@@ -77,25 +81,25 @@ class KPeerVideoRender extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       child: isVideoEnable
                           ? RTCVideoView(
-                        videoRenderer,
-                        key: Key('${videoRenderer.srcObject!.id}'),
-                        mirror: isLocal,
-                        objectFit: RTCVideoViewObjectFit
-                            .RTCVideoViewObjectFitCover,
-                      )
+                              videoRenderer,
+                              key: Key('${videoRenderer.srcObject!.id}'),
+                              mirror: isLocal,
+                              objectFit: RTCVideoViewObjectFit
+                                  .RTCVideoViewObjectFitCover,
+                            )
                           : Container(
-                        color: Colors.black,
-                        child: Center(
-                          child: KUserAvatar(
-                            initial: displayName
-                                .split(' ')
-                                .map((e) => "${e}".capitalizeFirst)
-                                .join(''),
-                            size: calculatedWidth / 3,
-                            backgroundColor: Colors.grey,
-                          ),
-                        ),
-                      ),
+                              color: Colors.black,
+                              child: Center(
+                                child: KUserAvatar(
+                                  initial: displayName
+                                      .split(' ')
+                                      .map((e) => "${e}".capitalizeFirst)
+                                      .join(''),
+                                  size: calculatedWidth / 3,
+                                  backgroundColor: Colors.grey,
+                                ),
+                              ),
+                            ),
                     ),
                   ),
                   if (!isAudioEnable)
@@ -117,21 +121,17 @@ class KPeerVideoRender extends StatelessWidget {
                         child: Text(
                           displayName,
                           style:
-                          Theme
-                              .of(context)
-                              .textTheme
-                              .titleMedium!
-                              .copyWith(
-                            fontWeight: FontWeight.w600,
-                            shadows: <Shadow>[
-                              Shadow(
-                                offset: Offset(0.0, 0.0),
-                                blurRadius: 4.0,
-                                color: Colors.black,
-                              ),
-                            ],
-                            color: Colors.white,
-                          ),
+                              Theme.of(context).textTheme.titleMedium!.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    shadows: <Shadow>[
+                                      Shadow(
+                                        offset: Offset(0.0, 0.0),
+                                        blurRadius: 4.0,
+                                        color: Colors.black,
+                                      ),
+                                    ],
+                                    color: Colors.white,
+                                  ),
                         ),
                       ),
                     ),

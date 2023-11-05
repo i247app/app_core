@@ -194,5 +194,6 @@
   "web_rtc_meeting": "Meeting",
   "web_rtc_code": "Code",
   "web_rtc_pass": "Pass",
-  "copied": "Copied"
+  "copied": "Copied",
+  "web_rtc_connecting": "Connecting..."
 }

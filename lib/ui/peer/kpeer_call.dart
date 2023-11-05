@@ -77,6 +77,16 @@ class _KPeerCallState extends State<KPeerCall> {
       ? currentMeetingMember!.role == KWebRTCMember.MEMBER_ROLE_ADMIN
       : null;
 
+  bool get isOnConnection =>
+      _remoteRenderers
+              .where((e) => e['remoteRenderer']?.srcObject != null)
+              .length ==
+          0 &&
+      KPeerWebRTCHelper.remotePeers
+              .where((e) => e.peerID != currentMeetingMember?.memberKey)
+              .length >
+          0;
+
   @override
   void initState() {
     super.initState();
@@ -130,11 +140,17 @@ class _KPeerCallState extends State<KPeerCall> {
 
   void handleConnectionStatusUpdate(KPeerWebRTCStatus status) {
     if (mounted) {
-      if (status == KPeerWebRTCStatus.CONNECTION && isCallSetting) {
-        setState(() {
-          isCallSetting = false;
-          isCalled = true;
-        });
+      if (status == KPeerWebRTCStatus.CONNECTION) {
+        if (isCallSetting) {
+          setState(() {
+            isCallSetting = false;
+            isCalled = true;
+          });
+        } else if (inCall) {
+          setState(() {
+            inCall = false;
+          });
+        }
       } else if (status == KPeerWebRTCStatus.CONNECTED) {
         setState(() {
           inCall = true;
@@ -147,7 +163,9 @@ class _KPeerCallState extends State<KPeerCall> {
     if (mounted) {
       print('handleLocalPlayerUpdate');
       await _localRenderer.initialize();
-      _localRenderer.srcObject = mediaStream;
+      setState(() {
+        _localRenderer.srcObject = mediaStream;
+      });
     }
   }
 
@@ -622,6 +640,26 @@ class _KPeerCallState extends State<KPeerCall> {
     final deviceHeight = MediaQuery.of(context).size.height -
         MediaQuery.of(context).padding.top -
         MediaQuery.of(context).padding.bottom;
+
+    final connectionBox = Container(
+      width: deviceWidth,
+      height: deviceHeight / 2,
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              KPhrases.webRTCConnecting,
+              textAlign: TextAlign.center,
+              style: KStyles.normalText.copyWith(color: KStyles.lightGrey),
+            ),
+          ],
+        ),
+      ),
+    );
+
     final callView = SafeArea(
       child: Stack(
         fit: StackFit.expand,
@@ -640,27 +678,26 @@ class _KPeerCallState extends State<KPeerCall> {
                       isVideoEnable: isMyCameraEnabled,
                       displayName: KSessionData.me?.fullName ?? '',
                       isLocal: true,
+                      isOnConnection: isOnConnection,
                     ),
                   ],
-                  if (_remoteRenderers.length > 0)
+                  if (isOnConnection)
+                    connectionBox
+                  else
                     ...List.generate(_remoteRenderers.length, (index) {
                       final metadata = _remoteRenderers[index]['metadata'];
                       final _remoteRenderer =
                           _remoteRenderers[index]['remoteRenderer'];
-                      print(metadata);
-                      if (_remoteRenderer?.srcObject != null) {
-                        return KPeerVideoRender(
-                          videoRenderer: _remoteRenderer,
-                          containerHeight: deviceHeight,
-                          containerWidth: deviceWidth,
-                          peerCount: peerCount,
-                          isAudioEnable: metadata['isAudioEnable'],
-                          isVideoEnable: metadata['isVideoEnable'],
-                          displayName: metadata['displayName'] ?? '',
-                          isLocal: false,
-                        );
-                      }
-                      return Container();
+                      return KPeerVideoRender(
+                        videoRenderer: _remoteRenderer,
+                        containerHeight: deviceHeight,
+                        containerWidth: deviceWidth,
+                        peerCount: peerCount,
+                        isAudioEnable: metadata['isAudioEnable'],
+                        isVideoEnable: metadata['isVideoEnable'],
+                        displayName: metadata['displayName'] ?? '',
+                        isLocal: false,
+                      );
                     }).toList(),
                 ],
               ),
@@ -884,14 +921,12 @@ class _KPeerCallState extends State<KPeerCall> {
 
     final voipView;
 
-    if (this.inCall) {
-      voipView = callView;
-    } else if (KStringHelper.isExist(errorMsg)) {
+    if (KStringHelper.isExist(errorMsg)) {
       voipView = errorView;
     } else if (!isCalled) {
       voipView = initView;
     } else {
-      voipView = connectView;
+      voipView = callView;
     }
 
     final body = voipView;
