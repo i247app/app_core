@@ -41,6 +41,7 @@ class _KPeerCallState extends State<KPeerCall> {
   StreamSubscription? dataStreamSubscription;
   StreamSubscription? localPlayerStreamSubscription;
   StreamSubscription? remotePlayerStreamSubscription;
+  StreamSubscription? remotePeerLeaveStreamSubscription;
 
   final _localRenderer = RTCVideoRenderer();
   List<Map<String, dynamic>> _remoteRenderers = [];
@@ -102,6 +103,7 @@ class _KPeerCallState extends State<KPeerCall> {
     dataStreamSubscription?.cancel();
     localPlayerStreamSubscription?.cancel();
     remotePlayerStreamSubscription?.cancel();
+    remotePeerLeaveStreamSubscription?.cancel();
     queue.dispose();
     super.dispose();
   }
@@ -159,6 +161,22 @@ class _KPeerCallState extends State<KPeerCall> {
     }
   }
 
+  void handleRemotePeerLeaveUpdate(KRemotePeer remotePeer) {
+    if (mounted) {
+      try {
+        final index = _remoteRenderers
+            .indexWhere((e) => e['peerID'] == remotePeer.peerID);
+        if (index > -1) {
+          setState(() {
+            _remoteRenderers = _remoteRenderers
+                .where((e) => e['peerID'] != remotePeer.peerID)
+                .toList();
+          });
+        }
+      } catch (ex) {}
+    }
+  }
+
   void handleLocalPlayerUpdate(mediaStream) async {
     if (mounted) {
       print('handleLocalPlayerUpdate');
@@ -213,7 +231,12 @@ class _KPeerCallState extends State<KPeerCall> {
           final _remoteRenderer = RTCVideoRenderer();
           await _remoteRenderer.initialize();
           _remoteRenderer.srcObject = remotePeer['stream'];
-          _remotePeer['remoteRenderer'] = _remoteRenderer;
+
+          if (_remoteRenderer.srcObject?.id != null &&
+              _remoteRenderer.srcObject?.id !=
+                  _remotePeer['remoteRenderer']?.id) {
+            _remotePeer['remoteRenderer'] = _remoteRenderer;
+          }
         }
 
         this.setState(() {
@@ -392,6 +415,8 @@ class _KPeerCallState extends State<KPeerCall> {
             KPeerWebRTCHelper.dataStream.listen(handleDataUpdate);
         localPlayerStreamSubscription =
             KPeerWebRTCHelper.localPlayerStream.listen(handleLocalPlayerUpdate);
+        remotePeerLeaveStreamSubscription =
+            KPeerWebRTCHelper.remotePeerLeaveStream.listen(handleRemotePeerLeaveUpdate);
         remotePlayerStreamSubscription = KPeerWebRTCHelper.remotePlayerStream
             .listen((data) async =>
                 await queue.add(() => handleRemotePlayerUpdate(data)));
