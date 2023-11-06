@@ -186,5 +186,13 @@
   "enter_passcode": "Enter Passcode",
   "re_enter_passcode": "Re-Enter Passcode",
   "passcode_not_match": "Passcode Do Not Match",
-  "enter_current_passcode": "Enter Current Passcode"
+  "enter_current_passcode": "Enter Current Passcode",
+  "web_rtc_call_leave": "Leave The Meeting?",
+  "web_rtc_call_end": "End For All",
+  "web_rtc_call_no": "No",
+  "web_rtc_call_yes": "Leave",
+  "web_rtc_meeting": "Meeting",
+  "web_rtc_code": "Code",
+  "web_rtc_pass": "Pass",
+  "copied": "Copied"
 }

@@ -13,6 +13,7 @@ import 'package:app_core/model/kgame_score.dart';
 import 'package:app_core/model/khero.dart';
 import 'package:app_core/model/klead.dart';
 import 'package:app_core/model/kquestion.dart';
+import 'package:app_core/model/kwebrtc_conference.dart';
 import 'package:app_core/model/lop_schedule.dart';
 import 'package:app_core/model/response/chat_add_members_response.dart';
 import 'package:app_core/model/response/chat_remove_members_response.dart';
@@ -40,6 +41,7 @@ import 'package:app_core/model/response/send_2fa_response.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
 import 'package:app_core/model/live_share.dart';
 import 'package:app_core/model/response/video_action_response.dart';
+import 'package:app_core/model/response/webrtc_conference_action_response.dart';
 import 'package:app_core/model/share.dart';
 import 'package:app_core/model/textbook.dart';
 import 'package:app_core/model/xfr_proxy.dart';
@@ -817,7 +819,8 @@ abstract class KServerHandler {
         ..role = role
         ..kaction = kaction,
     };
-    return TLSHelper.send(params).then((data) => LiveShareResponse.fromJson(data));
+    return TLSHelper.send(params)
+        .then((data) => LiveShareResponse.fromJson(data));
   }
 
   static Future<VideoActionResponse> videoAction(KFoo foo) async {
@@ -827,7 +830,8 @@ abstract class KServerHandler {
       "kaction": foo.kaction,
       "kvalue": foo.kvalue,
     };
-    return TLSHelper.send(params).then((data) => VideoActionResponse.fromJson(data));
+    return TLSHelper.send(params)
+        .then((data) => VideoActionResponse.fromJson(data));
   }
 
   static Future<ShareResponse> shareAction({
@@ -892,12 +896,21 @@ abstract class KServerHandler {
   }
 
   static Future<KGetSalesLeadsResponse> leadAction(KLead lead) async {
-    final params = {
-      "svc": "biz",
-      "req": "lead.action",
-      "lead": lead
-    };
+    final params = {"svc": "biz", "req": "lead.action", "lead": lead};
     return TLSHelper.send(params)
         .then((data) => KGetSalesLeadsResponse.fromJson(data));
+  }
+
+  // requires shareID or (refID, refApp)
+  static Future<WebRTCConferenceActionResponse> webRTCConferenceAction({
+    KWebRTCConference? kWebRTCConference,
+  }) async {
+    final params = {
+      "svc": "webrtc",
+      "req": "webrtc.conference.action",
+      "webRTCConference": kWebRTCConference,
+    };
+    return TLSHelper.send(params)
+        .then((data) => WebRTCConferenceActionResponse.fromJson(data));
   }
 }

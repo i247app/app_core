@@ -30,4 +30,7 @@ abstract class KAction {
   static const String LATEST = "latest";
   static const String NEWEST = "newest";
   static const String OLDEST = "oldest";
+
+  static const String END = "end";
+  static const String STOP = "stop";
 }
