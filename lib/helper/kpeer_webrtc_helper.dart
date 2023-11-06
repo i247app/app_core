@@ -23,6 +23,7 @@ abstract class KPeerWebRTCHelper {
   static MediaStream? mediaStream = null;
   static List<KRemotePeer> remotePeers = [];
   static bool isAutoCall = false;
+  static int videoStreamCheckDelay = 15;
 
   static final StreamController<KPeerWebRTCStatus>
       _connectionStatusStreamController = StreamController.broadcast();
@@ -242,7 +243,7 @@ abstract class KPeerWebRTCHelper {
   }
 
   static dataStreamDelayedCheck(KRemotePeer remotePeer) {
-    Future.delayed(Duration(seconds: 50), () {
+    Future.delayed(Duration(seconds: KPeerWebRTCHelper.videoStreamCheckDelay), () {
       print("Check if media stream established or not");
       final remotePeerIndex = getIndexOfRemotePeer(remotePeer);
       if (remotePeerIndex > -1) {
