@@ -617,8 +617,8 @@ class _KPeerCallState extends State<KPeerCall> {
             children: [
               Row(
                 children: [
-                  Text(
-                      "${KPhrases.webRTCCode}: ${currentMeeting?.conferenceCode}"),
+                  Expanded(child: Text("${KPhrases.webRTCCode}:")),
+                  Expanded(child: Text("${currentMeeting?.conferenceCode}")),
                   Spacer(),
                   IconButton(
                     onPressed:
@@ -635,8 +635,8 @@ class _KPeerCallState extends State<KPeerCall> {
               ),
               Row(
                 children: [
-                  Text(
-                      "${KPhrases.webRTCPass}: ${currentMeeting?.conferencePass}"),
+                  Expanded(child: Text("${KPhrases.webRTCPass}:")),
+                  Expanded(child: Text("${currentMeeting?.conferencePass}")),
                   Spacer(),
                   IconButton(
                     onPressed:
@@ -690,7 +690,7 @@ class _KPeerCallState extends State<KPeerCall> {
     final meetingInfoButton = CircleAvatar(
       minRadius: 25,
       maxRadius: 25,
-      backgroundColor: KStyles.white.withOpacity(0.2),
+      backgroundColor: KStyles.darkGrey.withOpacity(1),
       child: IconButton(
         onPressed: showMeetingInfo,
         icon: Icon(
