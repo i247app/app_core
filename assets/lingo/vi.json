@@ -188,7 +188,7 @@
   "re_enter_passcode": "Nhập Lại Pin",
   "passcode_not_match": "Pin Không Khớp",
   "enter_current_passcode": "Nhập Mã Khóa Hiện Tại",
-  "web_rtc_call_leave": "Rời Cuộc Họp?",
+  "web_rtc_call_leave": "Cuộc Họp",
   "web_rtc_call_end": "Kết Thúc",
   "web_rtc_call_no": "Hủy",
   "web_rtc_call_yes": "Rời",
