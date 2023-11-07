@@ -102,26 +102,27 @@ class KPeerVideoRender extends StatelessWidget {
                             ),
                     ),
                   ),
-                  if (!isAudioEnable)
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Icon(
-                          Icons.mic_off_outlined,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
                   if (KStringHelper.isExist(displayName))
                     Align(
-                      alignment: Alignment.bottomLeft,
+                      alignment: Alignment.topLeft,
                       child: Padding(
                         padding: EdgeInsets.all(8),
-                        child: Text(
-                          displayName,
-                          style:
-                              Theme.of(context).textTheme.titleMedium!.copyWith(
+                        child: Row(
+                          children: [
+                            if (!isAudioEnable) ...[
+                              Icon(
+                                Icons.mic_off,
+                                color: Colors.red,
+                                size: 25,
+                              ),
+                              SizedBox(width: 8,),
+                            ],
+                            Text(
+                              displayName,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(
                                     fontWeight: FontWeight.w600,
                                     shadows: <Shadow>[
                                       Shadow(
@@ -132,6 +133,8 @@ class KPeerVideoRender extends StatelessWidget {
                                     ],
                                     color: Colors.white,
                                   ),
+                            ),
+                          ],
                         ),
                       ),
                     ),

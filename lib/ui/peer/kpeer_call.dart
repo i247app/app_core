@@ -687,6 +687,20 @@ class _KPeerCallState extends State<KPeerCall> {
       ),
     );
 
+    final meetingInfoButton = CircleAvatar(
+      minRadius: 25,
+      maxRadius: 25,
+      backgroundColor: KStyles.white.withOpacity(0.2),
+      child: IconButton(
+        onPressed: showMeetingInfo,
+        icon: Icon(
+          Icons.share,
+          color: KStyles.white,
+        ),
+        iconSize: 30,
+      ),
+    );
+
     final callView = SafeArea(
       child: Stack(
         fit: StackFit.expand,
@@ -730,12 +744,32 @@ class _KPeerCallState extends State<KPeerCall> {
               ),
             ),
           ),
+          if ((isMeetingAdmin ?? false) &&
+              KStringHelper.isExist(currentMeeting?.conferenceCode) &&
+              KStringHelper.isExist(currentMeeting?.conferencePass))
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    meetingInfoButton,
+                    SizedBox(
+                      height: 120,
+                    ),
+                  ],
+                ),
+              ),
+            ),
           Positioned(
             bottom: 20.0,
-            left: 10.0,
-            right: 10.0,
+            left: 20.0,
+            right: 20.0,
             child: Container(
-              width: 200.0,
               child: KPeerButtonView(
                 isSpeakerEnabled: isSpeakerEnabled,
                 isMicEnabled: this.isMySoundEnabled,
@@ -745,11 +779,6 @@ class _KPeerCallState extends State<KPeerCall> {
                 onCameraToggled: onCameraToggled,
                 onSpeakerToggled: onSpeakerToggled,
                 onHangUp: hangUp,
-                onShowMeetingInfo: (isMeetingAdmin ?? false) &&
-                        KStringHelper.isExist(currentMeeting?.conferenceCode) &&
-                        KStringHelper.isExist(currentMeeting?.conferencePass)
-                    ? showMeetingInfo
-                    : null,
               ),
             ),
           ),

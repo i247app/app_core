@@ -31,28 +31,30 @@ class KPeerButtonView extends StatelessWidget {
     final switchSpeakerBtn = KP2PButton(
       onClick: () => this.onSpeakerToggled?.call(!this.isSpeakerEnabled),
       backgroundColor:
-          KStyles.darkGrey.withOpacity(this.isSpeakerEnabled ? 1 : 0.5),
-      icon: Icon(this.isSpeakerEnabled ? Icons.volume_up : Icons.volume_off,
-          color: KStyles.colorButtonText),
+          KStyles.darkGrey.withOpacity(this.isSpeakerEnabled ? 0.4 : 1),
+      icon: Icon(
+        this.isSpeakerEnabled ? Icons.volume_up : Icons.volume_off,
+        color: KStyles.colorButtonText,
+      ),
     );
 
     final toggleMicBtn = KP2PButton(
       onClick: () => this.onMicToggled?.call(!this.isMicEnabled),
       backgroundColor:
-          KStyles.darkGrey.withOpacity(this.isMicEnabled ? 1 : 0.5),
+          KStyles.darkGrey.withOpacity(this.isMicEnabled ? 0.4 : 1),
       icon: Icon(
         this.isMicEnabled ? Icons.mic : Icons.mic_off,
-        color: KStyles.white,
+        color: KStyles.colorButtonText,
       ),
     );
 
     final toggleCameraBtn = KP2PButton(
       onClick: () => this.onCameraToggled?.call(!this.isCameraEnabled),
       backgroundColor:
-          KStyles.darkGrey.withOpacity(this.isCameraEnabled ? 1 : 0.5),
+          KStyles.darkGrey.withOpacity(this.isCameraEnabled ? 0.4 : 1),
       icon: Icon(
         this.isCameraEnabled ? Icons.videocam : Icons.videocam_off,
-        color: KStyles.white,
+        color: KStyles.colorButtonText,
       ),
     );
 
@@ -72,7 +74,7 @@ class KPeerButtonView extends StatelessWidget {
     );
 
     final body = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         if (this.onShowMeetingInfo != null) showMeetingInfoBtn,
         switchSpeakerBtn,
@@ -112,7 +114,7 @@ class KP2PButton extends StatelessWidget {
       ),
     );
 
-    return Expanded(
+    return Flexible(
       child: FittedBox(
         fit: BoxFit.scaleDown,
         child: Padding(
