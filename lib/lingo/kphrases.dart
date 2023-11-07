@@ -179,5 +179,7 @@ abstract class KPhrases {
 
   static String get webRTCConnecting => _klingo.yak("web_rtc_connecting");
 
+  static String get webRTCCallEnded => _klingo.yak("web_rtc_call_ended");
+
   static String get copied => _klingo.yak("copied");
 }

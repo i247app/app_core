@@ -196,5 +196,6 @@
   "web_rtc_code": "Mã",
   "web_rtc_pass": "Pass",
   "copied": "Copied",
-  "web_rtc_connecting": "Đang Kết Nối..."
+  "web_rtc_connecting": "Đang Kết Nối...",
+  "web_rtc_call_ended": "Cuộc Họp Đã Kết Thúc!"
 }

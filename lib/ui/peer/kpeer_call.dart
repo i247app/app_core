@@ -325,7 +325,7 @@ class _KPeerCallState extends State<KPeerCall> {
           }
           break;
         case KPeerWebRTCHelper.CONTROL_SIGNAL_LEAVE:
-          if (remotePeerData['payload']['peerID'] &&
+          if (KStringHelper.isExist(remotePeerData['payload']['peerID']) &&
               remotePeerData['payload']['peerID'] !=
                   currentMeetingMember?.memberKey) {
             KPeerWebRTCHelper.removePeer(remotePeerData['payload']['peerID']);
@@ -344,22 +344,23 @@ class _KPeerCallState extends State<KPeerCall> {
           }
           break;
         case KPeerWebRTCHelper.CONTROL_SIGNAL_END:
-          if (remotePeerData['payload']['peerID'] &&
+          if (KStringHelper.isExist(remotePeerData['payload']['peerID']) &&
               remotePeerData['payload']['peerID'] !=
                   currentMeetingMember?.memberKey) {
             await showDialog(
               context: context,
               barrierDismissible: false,
               builder: (context) => new AlertDialog(
-                title: new Text('Call ended!'),
+                title: new Text(KPhrases.webRTCCallEnded),
                 actions: <Widget>[
                   TextButton(
-                    onPressed: () => safePop(true),
+                    onPressed: () => Navigator.of(context).pop(),
                     child: new Text('Ok'),
                   ),
                 ],
               ),
             );
+            safePop(true);
           }
           print("[END] data packet received ${remotePeerData['payload']}");
           break;
@@ -415,8 +416,9 @@ class _KPeerCallState extends State<KPeerCall> {
             KPeerWebRTCHelper.dataStream.listen(handleDataUpdate);
         localPlayerStreamSubscription =
             KPeerWebRTCHelper.localPlayerStream.listen(handleLocalPlayerUpdate);
-        remotePeerLeaveStreamSubscription =
-            KPeerWebRTCHelper.remotePeerLeaveStream.listen(handleRemotePeerLeaveUpdate);
+        remotePeerLeaveStreamSubscription = KPeerWebRTCHelper
+            .remotePeerLeaveStream
+            .listen(handleRemotePeerLeaveUpdate);
         remotePlayerStreamSubscription = KPeerWebRTCHelper.remotePlayerStream
             .listen((data) async =>
                 await queue.add(() => handleRemotePlayerUpdate(data)));
