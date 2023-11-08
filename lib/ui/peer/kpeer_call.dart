@@ -41,6 +41,7 @@ class _KPeerCallState extends State<KPeerCall> {
   StreamSubscription? dataStreamSubscription;
   StreamSubscription? localPlayerStreamSubscription;
   StreamSubscription? remotePlayerStreamSubscription;
+  StreamSubscription? remotePeerLeaveStreamSubscription;
 
   final _localRenderer = RTCVideoRenderer();
   List<Map<String, dynamic>> _remoteRenderers = [];
@@ -77,6 +78,16 @@ class _KPeerCallState extends State<KPeerCall> {
       ? currentMeetingMember!.role == KWebRTCMember.MEMBER_ROLE_ADMIN
       : null;
 
+  bool get isOnConnection =>
+      _remoteRenderers
+              .where((e) => e['remoteRenderer']?.srcObject != null)
+              .length ==
+          0 &&
+      KPeerWebRTCHelper.remotePeers
+              .where((e) => e.peerID != currentMeetingMember?.memberKey)
+              .length >
+          0;
+
   @override
   void initState() {
     super.initState();
@@ -92,6 +103,7 @@ class _KPeerCallState extends State<KPeerCall> {
     dataStreamSubscription?.cancel();
     localPlayerStreamSubscription?.cancel();
     remotePlayerStreamSubscription?.cancel();
+    remotePeerLeaveStreamSubscription?.cancel();
     queue.dispose();
     super.dispose();
   }
@@ -130,11 +142,17 @@ class _KPeerCallState extends State<KPeerCall> {
 
   void handleConnectionStatusUpdate(KPeerWebRTCStatus status) {
     if (mounted) {
-      if (status == KPeerWebRTCStatus.CONNECTION && isCallSetting) {
-        setState(() {
-          isCallSetting = false;
-          isCalled = true;
-        });
+      if (status == KPeerWebRTCStatus.CONNECTION) {
+        if (isCallSetting) {
+          setState(() {
+            isCallSetting = false;
+            isCalled = true;
+          });
+        } else if (inCall) {
+          setState(() {
+            inCall = false;
+          });
+        }
       } else if (status == KPeerWebRTCStatus.CONNECTED) {
         setState(() {
           inCall = true;
@@ -143,11 +161,29 @@ class _KPeerCallState extends State<KPeerCall> {
     }
   }
 
+  void handleRemotePeerLeaveUpdate(KRemotePeer remotePeer) {
+    if (mounted) {
+      try {
+        final index = _remoteRenderers
+            .indexWhere((e) => e['peerID'] == remotePeer.peerID);
+        if (index > -1) {
+          setState(() {
+            _remoteRenderers = _remoteRenderers
+                .where((e) => e['peerID'] != remotePeer.peerID)
+                .toList();
+          });
+        }
+      } catch (ex) {}
+    }
+  }
+
   void handleLocalPlayerUpdate(mediaStream) async {
     if (mounted) {
       print('handleLocalPlayerUpdate');
       await _localRenderer.initialize();
-      _localRenderer.srcObject = mediaStream;
+      setState(() {
+        _localRenderer.srcObject = mediaStream;
+      });
     }
   }
 
@@ -195,7 +231,12 @@ class _KPeerCallState extends State<KPeerCall> {
           final _remoteRenderer = RTCVideoRenderer();
           await _remoteRenderer.initialize();
           _remoteRenderer.srcObject = remotePeer['stream'];
-          _remotePeer['remoteRenderer'] = _remoteRenderer;
+
+          if (_remoteRenderer.srcObject?.id != null &&
+              _remoteRenderer.srcObject?.id !=
+                  _remotePeer['remoteRenderer']?.id) {
+            _remotePeer['remoteRenderer'] = _remoteRenderer;
+          }
         }
 
         this.setState(() {
@@ -284,7 +325,7 @@ class _KPeerCallState extends State<KPeerCall> {
           }
           break;
         case KPeerWebRTCHelper.CONTROL_SIGNAL_LEAVE:
-          if (remotePeerData['payload']['peerID'] &&
+          if (KStringHelper.isExist(remotePeerData['payload']['peerID']) &&
               remotePeerData['payload']['peerID'] !=
                   currentMeetingMember?.memberKey) {
             KPeerWebRTCHelper.removePeer(remotePeerData['payload']['peerID']);
@@ -303,22 +344,23 @@ class _KPeerCallState extends State<KPeerCall> {
           }
           break;
         case KPeerWebRTCHelper.CONTROL_SIGNAL_END:
-          if (remotePeerData['payload']['peerID'] &&
+          if (KStringHelper.isExist(remotePeerData['payload']['peerID']) &&
               remotePeerData['payload']['peerID'] !=
                   currentMeetingMember?.memberKey) {
             await showDialog(
               context: context,
               barrierDismissible: false,
               builder: (context) => new AlertDialog(
-                title: new Text('Call ended!'),
+                title: new Text(KPhrases.webRTCCallEnded),
                 actions: <Widget>[
                   TextButton(
-                    onPressed: () => safePop(true),
+                    onPressed: () => Navigator.of(context).pop(),
                     child: new Text('Ok'),
                   ),
                 ],
               ),
             );
+            safePop(true);
           }
           print("[END] data packet received ${remotePeerData['payload']}");
           break;
@@ -374,6 +416,9 @@ class _KPeerCallState extends State<KPeerCall> {
             KPeerWebRTCHelper.dataStream.listen(handleDataUpdate);
         localPlayerStreamSubscription =
             KPeerWebRTCHelper.localPlayerStream.listen(handleLocalPlayerUpdate);
+        remotePeerLeaveStreamSubscription = KPeerWebRTCHelper
+            .remotePeerLeaveStream
+            .listen(handleRemotePeerLeaveUpdate);
         remotePlayerStreamSubscription = KPeerWebRTCHelper.remotePlayerStream
             .listen((data) async =>
                 await queue.add(() => handleRemotePlayerUpdate(data)));
@@ -572,8 +617,8 @@ class _KPeerCallState extends State<KPeerCall> {
             children: [
               Row(
                 children: [
-                  Text(
-                      "${KPhrases.webRTCCode}: ${currentMeeting?.conferenceCode}"),
+                  Expanded(child: Text("${KPhrases.webRTCCode}:")),
+                  Expanded(child: Text("${currentMeeting?.conferenceCode}")),
                   Spacer(),
                   IconButton(
                     onPressed:
@@ -590,8 +635,8 @@ class _KPeerCallState extends State<KPeerCall> {
               ),
               Row(
                 children: [
-                  Text(
-                      "${KPhrases.webRTCPass}: ${currentMeeting?.conferencePass}"),
+                  Expanded(child: Text("${KPhrases.webRTCPass}:")),
+                  Expanded(child: Text("${currentMeeting?.conferencePass}")),
                   Spacer(),
                   IconButton(
                     onPressed:
@@ -622,6 +667,40 @@ class _KPeerCallState extends State<KPeerCall> {
     final deviceHeight = MediaQuery.of(context).size.height -
         MediaQuery.of(context).padding.top -
         MediaQuery.of(context).padding.bottom;
+
+    final connectionBox = Container(
+      width: deviceWidth,
+      height: deviceHeight / 2,
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              KPhrases.webRTCConnecting,
+              textAlign: TextAlign.center,
+              style: KStyles.normalText.copyWith(color: KStyles.lightGrey),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    final meetingInfoButton = CircleAvatar(
+      minRadius: 25,
+      maxRadius: 25,
+      backgroundColor: KStyles.darkGrey.withOpacity(1),
+      child: IconButton(
+        onPressed: showMeetingInfo,
+        icon: Icon(
+          Icons.share,
+          color: KStyles.white,
+        ),
+        iconSize: 30,
+      ),
+    );
+
     final callView = SafeArea(
       child: Stack(
         fit: StackFit.expand,
@@ -640,38 +719,57 @@ class _KPeerCallState extends State<KPeerCall> {
                       isVideoEnable: isMyCameraEnabled,
                       displayName: KSessionData.me?.fullName ?? '',
                       isLocal: true,
+                      isOnConnection: isOnConnection,
                     ),
                   ],
-                  if (_remoteRenderers.length > 0)
+                  if (isOnConnection)
+                    connectionBox
+                  else
                     ...List.generate(_remoteRenderers.length, (index) {
                       final metadata = _remoteRenderers[index]['metadata'];
                       final _remoteRenderer =
                           _remoteRenderers[index]['remoteRenderer'];
-                      print(metadata);
-                      if (_remoteRenderer?.srcObject != null) {
-                        return KPeerVideoRender(
-                          videoRenderer: _remoteRenderer,
-                          containerHeight: deviceHeight,
-                          containerWidth: deviceWidth,
-                          peerCount: peerCount,
-                          isAudioEnable: metadata['isAudioEnable'],
-                          isVideoEnable: metadata['isVideoEnable'],
-                          displayName: metadata['displayName'] ?? '',
-                          isLocal: false,
-                        );
-                      }
-                      return Container();
+                      return KPeerVideoRender(
+                        videoRenderer: _remoteRenderer,
+                        containerHeight: deviceHeight,
+                        containerWidth: deviceWidth,
+                        peerCount: peerCount,
+                        isAudioEnable: metadata['isAudioEnable'],
+                        isVideoEnable: metadata['isVideoEnable'],
+                        displayName: metadata['displayName'] ?? '',
+                        isLocal: false,
+                      );
                     }).toList(),
                 ],
               ),
             ),
           ),
+          if ((isMeetingAdmin ?? false) &&
+              KStringHelper.isExist(currentMeeting?.conferenceCode) &&
+              KStringHelper.isExist(currentMeeting?.conferencePass))
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 10,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    meetingInfoButton,
+                    SizedBox(
+                      height: 120,
+                    ),
+                  ],
+                ),
+              ),
+            ),
           Positioned(
             bottom: 20.0,
-            left: 10.0,
-            right: 10.0,
+            left: 20.0,
+            right: 20.0,
             child: Container(
-              width: 200.0,
               child: KPeerButtonView(
                 isSpeakerEnabled: isSpeakerEnabled,
                 isMicEnabled: this.isMySoundEnabled,
@@ -681,11 +779,6 @@ class _KPeerCallState extends State<KPeerCall> {
                 onCameraToggled: onCameraToggled,
                 onSpeakerToggled: onSpeakerToggled,
                 onHangUp: hangUp,
-                onShowMeetingInfo: (isMeetingAdmin ?? false) &&
-                        KStringHelper.isExist(currentMeeting?.conferenceCode) &&
-                        KStringHelper.isExist(currentMeeting?.conferencePass)
-                    ? showMeetingInfo
-                    : null,
               ),
             ),
           ),
@@ -884,14 +977,12 @@ class _KPeerCallState extends State<KPeerCall> {
 
     final voipView;
 
-    if (this.inCall) {
-      voipView = callView;
-    } else if (KStringHelper.isExist(errorMsg)) {
+    if (KStringHelper.isExist(errorMsg)) {
       voipView = errorView;
     } else if (!isCalled) {
       voipView = initView;
     } else {
-      voipView = connectView;
+      voipView = callView;
     }
 
     final body = voipView;

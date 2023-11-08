@@ -1,3 +1,4 @@
+import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:sb_peerdart/sb_peerdart.dart';
 
@@ -18,6 +19,9 @@ class KRemotePeer {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   MediaConnection? mediaConnection;
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  MediaStream? mediaStream;
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   String? status = STATUS_PENDING;
