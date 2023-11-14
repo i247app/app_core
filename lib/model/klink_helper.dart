@@ -3,11 +3,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 abstract class KLinkHelper {
   /// Open link
-  static Future<bool> openLink(String url) async {
+  static Future<bool> openLink(String urlString) async {
     bool boo = false;
     try {
-      if ((await canLaunch(url))) {
-        return launch(url);
+      final url = Uri.parse(urlString);
+      if ((await canLaunchUrl(url))) {
+        return launchUrl(url);
       } else {
         return false;
       }
@@ -21,11 +22,12 @@ abstract class KLinkHelper {
   static Future<bool> openEmail(String email) async {
     if (!KStringHelper.isEmail(email)) return false;
 
-    final url = "mailto:$email";
+    final urlString = "mailto:$email";
     bool boo = false;
     try {
-      if ((await canLaunch(url))) {
-        return launch(url);
+      final url = Uri.parse(urlString);
+      if ((await canLaunchUrl(url))) {
+        return launchUrl(url);
       } else {
         return false;
       }
@@ -40,8 +42,11 @@ abstract class KLinkHelper {
     bool? boo;
     try {
       //  TODO - clean up phone number +84 0909100050 will break
-      final url = "sms:$phoneNumber".trim();
-      if (await canLaunch(url)) boo = await launch(url);
+      final urlString = "sms:$phoneNumber".trim();
+      final url = Uri.parse(urlString);
+      if ((await canLaunchUrl(url))) {
+        boo = await launchUrl(url);
+      }
     } catch (e) {}
     return boo ?? false;
   }
@@ -51,21 +56,27 @@ abstract class KLinkHelper {
     bool? boo;
     try {
       //  TODO - clean up phone number +84 0909100050 will break
-      final url = "tel:$phoneNumber".trim();
-      if (await canLaunch(url)) boo = await launch(url);
+      final urlString = "tel:$phoneNumber".trim();
+      final url = Uri.parse(urlString);
+      if ((await canLaunchUrl(url))) {
+        boo = await launchUrl(url);
+      }
     } catch (e) {}
     return boo ?? false;
   }
 
   /// Open the maps app to view a search
   static Future<bool> openMap({String? address, KLatLng? latLng}) async {
-    String url = "https://www.google.com/maps/search/?api=1&query=";
-    if (latLng != null)
-      url += Uri.encodeFull(latLng.toString());
-    else if (address != null) url += Uri.encodeFull(address);
+    String urlString = "https://www.google.com/maps/search/?api=1&query=";
+    if (latLng != null) {
+      urlString += Uri.encodeFull(latLng.toString());
+    } else if (address != null) {
+      urlString += Uri.encodeFull(address);
+    }
 
+    final url = Uri.parse(urlString);
     print("LinkHelper.openMap URL - $url");
-    return (await canLaunch(url)) ? launch(url) : Future.value(false);
+    return (await canLaunchUrl(url)) ? launchUrl(url) : Future.value(false);
   }
 
   /// Open the maps app for directions
@@ -73,12 +84,15 @@ abstract class KLinkHelper {
     String? address,
     KLatLng? latLng,
   }) async {
-    String url = "https://www.google.com/maps/dir/?api=1";
-    if (latLng != null)
-      url += "&destination=${Uri.encodeFull(latLng.toString())}";
-    else if (address != null) url += "&destination=${Uri.encodeFull(address)}";
+    String urlString = "https://www.google.com/maps/dir/?api=1";
+    if (latLng != null) {
+      urlString += "&destination=${Uri.encodeFull(latLng.toString())}";
+    } else if (address != null) {
+      urlString += "&destination=${Uri.encodeFull(address)}";
+    }
 
+    final url = Uri.parse(urlString);
     print("LinkHelper.openDirections URL - $url");
-    return (await canLaunch(url)) ? launch(url) : Future.value(false);
+    return (await canLaunchUrl(url)) ? launchUrl(url) : Future.value(false);
   }
 }
