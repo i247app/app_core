@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:http/http.dart' as HTTP;
 import 'package:gallery_saver/gallery_saver.dart';
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 abstract class KFileHelper {
@@ -20,7 +20,7 @@ abstract class KFileHelper {
 
     final file = File(filePathAndName);
 
-    HTTP.Response response = await HTTP.get(Uri.parse(url));
+    final response = await http.get(Uri.parse(url));
     await file.writeAsBytes(response.bodyBytes);
 
     return file;

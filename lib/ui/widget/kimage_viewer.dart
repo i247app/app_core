@@ -25,12 +25,13 @@ class _KImageViewerState extends State<KImageViewer> {
   ImageProvider? imageProvider;
 
   _ImageViewerType get imageType {
-    if (widget.imageURL != null)
+    if (widget.imageURL != null) {
       return _ImageViewerType.url;
-    else if (widget.imageFile != null)
+    } else if (widget.imageFile != null) {
       return _ImageViewerType.file;
-    else
+    } else {
       return _ImageViewerType.none;
+    }
   }
 
   @override
@@ -53,10 +54,11 @@ class _KImageViewerState extends State<KImageViewer> {
     if (widget.imageURL != null) {
       final isSuccess =
           await KFileHelper.downloadImageFromURL(widget.imageURL!);
-      if (isSuccess)
+      if (isSuccess) {
         KToastHelper.success("Image saved!");
-      else
+      } else {
         KToastHelper.error("Failed to save image.");
+      }
     }
   }
 
