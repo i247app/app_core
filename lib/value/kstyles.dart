@@ -335,28 +335,28 @@ abstract class KStyles {
           return null;
         }),
       ),
-      switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith<Color?>(
-            (Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) {
-            return null;
-          }
-          if (states.contains(MaterialState.selected)) {
-            return palette.active;
-          }
-          return null;
-        }),
-        trackColor: MaterialStateProperty.resolveWith<Color?>(
-            (Set<MaterialState> states) {
-          if (states.contains(MaterialState.disabled)) {
-            return null;
-          }
-          if (states.contains(MaterialState.selected)) {
-            return palette.active;
-          }
-          return null;
-        }),
-      ),
+      // switchTheme: SwitchThemeData(
+      //   thumbColor: MaterialStateProperty.resolveWith<Color?>(
+      //       (Set<MaterialState> states) {
+      //     if (states.contains(MaterialState.disabled)) {
+      //       return null;
+      //     }
+      //     if (states.contains(MaterialState.selected)) {
+      //       return palette.active;
+      //     }
+      //     return null;
+      //   }),
+      //   trackColor: MaterialStateProperty.resolveWith<Color?>(
+      //       (Set<MaterialState> states) {
+      //     if (states.contains(MaterialState.disabled)) {
+      //       return null;
+      //     }
+      //     if (states.contains(MaterialState.selected)) {
+      //       return palette.active;
+      //     }
+      //     return null;
+      //   }),
+      // ),
       colorScheme: brightness == Brightness.dark
           ? ColorScheme.dark(
               primary: palette.schemePrimary,
