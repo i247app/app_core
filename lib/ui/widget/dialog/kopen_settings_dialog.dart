@@ -28,8 +28,8 @@ class KOpenSettingsDialog extends StatelessWidget {
           onPressed: () => openAppSettings()
               .whenComplete(() => Navigator.of(context).pop(true)),
           style: ElevatedButton.styleFrom(
-            primary: KStyles.colorBGYes,
-            onPrimary: KStyles.colorButtonText,
+            backgroundColor: KStyles.colorBGYes,
+            foregroundColor: KStyles.colorButtonText,
           ),
           child: Text(
             "Open Settings",

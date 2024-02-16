@@ -88,8 +88,8 @@ class _KGameHomeState extends State<KGameHome> {
                       elevation: 0,
                       padding:
                           EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                      primary: Colors.transparent,
-                      onPrimary: Colors.transparent,
+                      backgroundColor: Colors.transparent,
+                      foregroundColor: Colors.transparent,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4),
                         side: BorderSide(color: Colors.transparent),

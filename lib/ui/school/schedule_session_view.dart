@@ -424,7 +424,7 @@ class _AnswerButton extends StatelessWidget {
         onPressed: () => onClick(answer),
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.all(6),
-          primary: isCorrect
+          backgroundColor: isCorrect
               ? KStyles.colorSuccess
               : isWrong
                   ? KStyles.colorError
