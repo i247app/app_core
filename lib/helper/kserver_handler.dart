@@ -906,8 +906,8 @@ abstract class KServerHandler {
     KWebRTCConference? kWebRTCConference,
   }) async {
     final params = {
-      "svc": "webrtc",
-      "req": "webrtc.conference.action",
+      "svc": "wrtc",
+      "req": "wrtc.conference.action",
       "webRTCConference": kWebRTCConference,
     };
     return TLSHelper.send(params)
