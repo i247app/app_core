@@ -131,7 +131,7 @@ class _KPeerCallState extends State<KPeerCall> {
               .where((webRTCConference) =>
                   (KStringHelper.isExist(webRTCConference.refApp) &&
                       KStringHelper.isExist(webRTCConference.refID)) ||
-                  (KStringHelper.isExist(webRTCConference.conferenceCode) &&
+                  (KStringHelper.isExist(webRTCConference.conferenceSlug) &&
                       KStringHelper.isExist(webRTCConference.conferencePass)))
               .toList();
         });
@@ -382,14 +382,12 @@ class _KPeerCallState extends State<KPeerCall> {
   }
 
   Future handleJoinWithCode({
-    String? conferenceCode,
     String? conferenceSlug,
     required String conferencePass,
   }) async {
     try {
       await setupCall(
         KWebRTCConference()
-          ..conferenceCode = conferenceCode
           ..conferenceSlug = conferenceSlug
           ..conferencePass = conferencePass,
       );
@@ -410,7 +408,7 @@ class _KPeerCallState extends State<KPeerCall> {
             ..puid = KSessionData.me?.puid
             ..conferenceID = meeting.conferenceID
             ..conferenceKey = meeting.conferenceKey
-            ..conferenceCode = meeting.conferenceCode
+            ..conferenceSlug = meeting.conferenceSlug
             ..conferencePass = meeting.conferencePass);
 
       if (joinResponse.isSuccess &&
@@ -631,14 +629,14 @@ class _KPeerCallState extends State<KPeerCall> {
               Row(
                 children: [
                   Expanded(child: Text("${KPhrases.webRTCCode}:")),
-                  Expanded(child: Text("${currentMeeting?.conferenceCode}")),
+                  Expanded(child: Text("${currentMeeting?.conferenceSlug}")),
                   Spacer(),
                   IconButton(
                     onPressed:
-                        !KStringHelper.isExist(currentMeeting?.conferenceCode)
+                        !KStringHelper.isExist(currentMeeting?.conferenceSlug)
                             ? null
                             : () => copyTextToClipboard(
-                                currentMeeting!.conferenceCode!),
+                                currentMeeting!.conferenceSlug!),
                     icon: Icon(Icons.copy_outlined),
                   ),
                 ],
@@ -775,7 +773,7 @@ class _KPeerCallState extends State<KPeerCall> {
             ),
           ),
           if ((isMeetingAdmin ?? false) &&
-              KStringHelper.isExist(currentMeeting?.conferenceCode) &&
+              KStringHelper.isExist(currentMeeting?.conferenceSlug) &&
               KStringHelper.isExist(currentMeeting?.conferencePass))
             Align(
               alignment: Alignment.bottomLeft,
@@ -1051,7 +1049,6 @@ class _KPeerCallState extends State<KPeerCall> {
 
 class _KPeerCallForm extends StatefulWidget {
   final Future<dynamic> Function({
-    String? conferenceCode,
     String? conferenceSlug,
     required String conferencePass,
   }) onSubmit;
@@ -1068,20 +1065,15 @@ class _KPeerCallForm extends StatefulWidget {
 
 class _KPeerCallFormState extends State<_KPeerCallForm> {
   final GlobalKey<FormState> formKey = GlobalKey();
-  final TextEditingController conferenceCodeController =
-      TextEditingController();
   final TextEditingController conferencePassController =
       TextEditingController();
   final FocusNode conferencePassFocusNode = FocusNode();
-  final FocusNode conferenceCodeFocusNode = FocusNode();
 
   bool isLoading = false;
   bool isConferencePassTouched = false;
-  bool isConferenceCodeTouched = false;
 
   bool get isFormValid =>
       isConferencePassTouched &&
-      isConferenceCodeTouched &&
       formKey.currentState != null &&
       formKey.currentState!.validate();
 
@@ -1101,20 +1093,11 @@ class _KPeerCallFormState extends State<_KPeerCallForm> {
         });
       }
     });
-    conferenceCodeFocusNode.addListener(() {
-      if (formKey.currentState != null) formKey.currentState!.validate();
-      if (!isConferenceCodeTouched && !conferenceCodeFocusNode.hasFocus) {
-        setState(() {
-          isConferenceCodeTouched = true;
-        });
-      }
-    });
   }
 
   @override
   void dispose() {
     conferencePassFocusNode.dispose();
-    conferenceCodeFocusNode.dispose();
     super.dispose();
   }
 
@@ -1124,17 +1107,10 @@ class _KPeerCallFormState extends State<_KPeerCallForm> {
     });
     try {
       if (isFormValid) {
-        if (isJoinWithSlug) {
-          widget.onSubmit(
-            conferenceSlug: widget.conferenceSlug,
-            conferencePass: conferencePassController.text,
-          );
-        } else {
-          widget.onSubmit(
-            conferenceCode: conferenceCodeController.text,
-            conferencePass: conferencePassController.text,
-          );
-        }
+        widget.onSubmit(
+          conferenceSlug: widget.conferenceSlug,
+          conferencePass: conferencePassController.text,
+        );
       }
     } catch (ex) {
       print(ex);
@@ -1163,26 +1139,6 @@ class _KPeerCallFormState extends State<_KPeerCallForm> {
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            if (!isJoinWithSlug) ...[
-              TextFormField(
-                validator: (value) {
-                  if ((value == null || value.isEmpty) &&
-                      isConferenceCodeTouched) {
-                    return 'Field required!';
-                  }
-                  return null;
-                },
-                style: Theme.of(context).textTheme.subtitle1,
-                controller: conferenceCodeController,
-                focusNode: conferenceCodeFocusNode,
-                decoration: InputDecoration(
-                  hintText: 'Meeting Code',
-                  hintStyle: Theme.of(context).textTheme.subtitle1,
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 12),
-            ],
             TextFormField(
               validator: (value) {
                 if ((value == null || value.isEmpty) &&
