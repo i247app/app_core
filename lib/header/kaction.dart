@@ -33,4 +33,5 @@ abstract class KAction {
 
   static const String END = "end";
   static const String STOP = "stop";
+  static const String CALL = "call";
 }
