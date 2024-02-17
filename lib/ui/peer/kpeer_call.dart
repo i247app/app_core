@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/utils.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:queue/queue.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -42,6 +43,7 @@ class _KPeerCallState extends State<KPeerCall> {
   StreamSubscription? localPlayerStreamSubscription;
   StreamSubscription? remotePlayerStreamSubscription;
   StreamSubscription? remotePeerLeaveStreamSubscription;
+  StreamSubscription? internetConnectionStatusSubscription;
 
   final _localRenderer = RTCVideoRenderer();
   List<Map<String, dynamic>> _remoteRenderers = [];
@@ -104,6 +106,7 @@ class _KPeerCallState extends State<KPeerCall> {
     localPlayerStreamSubscription?.cancel();
     remotePlayerStreamSubscription?.cancel();
     remotePeerLeaveStreamSubscription?.cancel();
+    internetConnectionStatusSubscription?.cancel();
     queue.dispose();
     super.dispose();
   }
@@ -328,7 +331,14 @@ class _KPeerCallState extends State<KPeerCall> {
           if (KStringHelper.isExist(remotePeerData['payload']['peerID']) &&
               remotePeerData['payload']['peerID'] !=
                   currentMeetingMember?.memberKey) {
-            KPeerWebRTCHelper.removePeer(remotePeerData['payload']['peerID']);
+            final remotePeerIndex = KPeerWebRTCHelper.getIndexOfRemotePeerId(
+                remotePeerData['payload']['peerID']);
+            if (remotePeerIndex > -1) {
+              KPeerWebRTCHelper.onPeerDisconnect(
+                  KPeerWebRTCHelper.remotePeers[remotePeerIndex],
+                  isLeave: true);
+            }
+
             final index = _remoteRenderers.indexWhere(
                 (e) => e['peerID'] == remotePeerData['payload']['peerID']);
             if (index > -1) {
@@ -422,6 +432,9 @@ class _KPeerCallState extends State<KPeerCall> {
         remotePlayerStreamSubscription = KPeerWebRTCHelper.remotePlayerStream
             .listen((data) async =>
                 await queue.add(() => handleRemotePlayerUpdate(data)));
+        internetConnectionStatusSubscription = KPeerWebRTCHelper
+            .internetConnectionStatusStream
+            .listen((data) async => setState(() {}));
 
         final _localStream = await KPeerWebRTCHelper.retrieveLocalStream();
         print("_localStream, ${_localStream.id}");
@@ -663,6 +676,7 @@ class _KPeerCallState extends State<KPeerCall> {
 
   @override
   Widget build(BuildContext context) {
+    // print(KPeerWebRTCHelper.remotePeers.where((e) => e.peerID != currentMeetingMember?.memberKey).first.mediaConnection?.peerConnection?.connectionState);
     final deviceWidth = MediaQuery.of(context).size.width;
     final deviceHeight = MediaQuery.of(context).size.height -
         MediaQuery.of(context).padding.top -
@@ -699,6 +713,22 @@ class _KPeerCallState extends State<KPeerCall> {
         ),
         iconSize: 30,
       ),
+    );
+
+    final lostInternetConnectionBar = Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 6),
+            color: Colors.red,
+            child: Text(
+              "Lost internet connection...",
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ],
     );
 
     final callView = SafeArea(
@@ -782,6 +812,12 @@ class _KPeerCallState extends State<KPeerCall> {
               ),
             ),
           ),
+          if (KPeerWebRTCHelper.internetConnectionStatus ==
+              InternetConnectionStatus.disconnected)
+            Align(
+              alignment: Alignment.topCenter,
+              child: lostInternetConnectionBar,
+            ),
         ],
       ),
     );

@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:app_core/model/kremote_peer.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:sb_peerdart/sb_peerdart.dart';
 
 import 'khost_config.dart';
@@ -24,6 +25,9 @@ abstract class KPeerWebRTCHelper {
   static List<KRemotePeer> remotePeers = [];
   static bool isAutoCall = false;
   static int videoStreamCheckDelay = 15;
+  static InternetConnectionStatus? internetConnectionStatus = null;
+  static StreamSubscription<InternetConnectionStatus>?
+      internetConnectionListener = null;
 
   static final StreamController<KPeerWebRTCStatus>
       _connectionStatusStreamController = StreamController.broadcast();
@@ -55,6 +59,12 @@ abstract class KPeerWebRTCHelper {
   static Stream<KRemotePeer> get remotePeerLeaveStream =>
       _remotePeerLeaveController.stream.asBroadcastStream();
 
+  static final StreamController<InternetConnectionStatus>
+      _internetConnectionStatusController = StreamController.broadcast();
+
+  static Stream<InternetConnectionStatus> get internetConnectionStatusStream =>
+      _internetConnectionStatusController.stream.asBroadcastStream();
+
   static Future dispose() async {
     try {
       KPeerWebRTCHelper.mediaStream?.dispose();
@@ -63,6 +73,7 @@ abstract class KPeerWebRTCHelper {
         remotePeer.dataConnection?.dispose();
       });
       KPeerWebRTCHelper.peer?.dispose();
+      KPeerWebRTCHelper.internetConnectionListener?.cancel();
     } catch (ex) {}
     KPeerWebRTCHelper.peer = null;
     KPeerWebRTCHelper.mediaStream = null;
@@ -70,6 +81,8 @@ abstract class KPeerWebRTCHelper {
     KPeerWebRTCHelper.localDisplayName = null;
     KPeerWebRTCHelper.localPeerId = null;
     KPeerWebRTCHelper.isAutoCall = false;
+    KPeerWebRTCHelper.internetConnectionStatus = null;
+    KPeerWebRTCHelper.internetConnectionListener = null;
   }
 
   static Future init(
@@ -85,111 +98,144 @@ abstract class KPeerWebRTCHelper {
     KPeerWebRTCHelper.localPeerId = localPeerID;
     KPeerWebRTCHelper.mediaStream = localStream;
     KPeerWebRTCHelper.isAutoCall = auto ?? true;
+    KPeerWebRTCHelper.internetConnectionStatus =
+        await InternetConnectionChecker().connectionStatus;
+    KPeerWebRTCHelper.internetConnectionListener = InternetConnectionChecker()
+        .onStatusChange
+        .listen((InternetConnectionStatus status) async {
+      final previousStatus = KPeerWebRTCHelper.internetConnectionStatus;
+      KPeerWebRTCHelper.internetConnectionStatus = status;
+      _internetConnectionStatusController.add(status);
+      print("Connection status changed ${status}");
+
+      if (previousStatus == InternetConnectionStatus.disconnected &&
+          status == InternetConnectionStatus.connected) {
+        print("Try to reconnect");
+        try {
+          print("Try to reconnect peerjs");
+          KPeerWebRTCHelper.peer!.reconnect();
+
+          KPeerWebRTCHelper.callAllPending();
+        } catch (ex) {
+          print("Try to re-init connection");
+          KPeerWebRTCHelper.peer!.once('disconnected').then((value) async {
+            print("Try to re-init connection [disconnected]");
+            await initPeerConnection();
+
+            KPeerWebRTCHelper.callAllPending();
+          });
+          KPeerWebRTCHelper.peer!.dispose();
+        }
+      }
+    });
 
     if (KPeerWebRTCHelper.mediaStream != null) {
-      KPeerWebRTCHelper.mediaStream!.onRemoveTrack = (_) {
-        print("asdasads");
-      };
-      KPeerWebRTCHelper.peer = Peer(
-        id: KPeerWebRTCHelper.localPeerId,
-        options: PeerOptions(
-          debug: LogLevel.All,
-          // secure: false,
-          // host: KHostConfig.peerjs.hostname,
-          // port: KHostConfig.peerjs.port,
-          // path: '/sb-peer',
-          config: {
-            'iceServers': [
-              {
-                'urls': [
-                  'stun:stun.l.google.com:19302',
-                  'stun:stun1.l.google.com:19302',
-                  'stun:stun2.l.google.com:19302',
-                  'stun:stun3.l.google.com:19302',
-                  'stun:stun4.l.google.com:19302',
-                ]
-              },
-              {
-                "urls": [
-                  "turn:eu-0.turn.peerjs.com:3478",
-                  "turn:us-0.turn.peerjs.com:3478",
-                ],
-                "username": "peerjs",
-                "credential": "peerjsp",
-              },
-            ],
-            'sdpSemantics': "unified-plan",
-            // 'iceServers': [
-            //   {
-            //     'url': "stun:stun.l.google.com:19302",
-            //   },
-            // ],
-          },
-        ),
-      );
+      KPeerWebRTCHelper.mediaStream!.onRemoveTrack = (_) {};
 
-      peer!.on<Exception>('error').listen((error) {
-        print("PEER ERROR ${error}");
-      });
-
-      peer!.on('open').listen((id) {
-        print("On [open] ${id}");
-        _connectionStatusStreamController.add(KPeerWebRTCStatus.OPEN);
-      });
-
-      peer!.on('close').listen((id) {
-        print("On [close] ${id}");
-        _connectionStatusStreamController.add(KPeerWebRTCStatus.CLOSE);
-      });
-
-      peer!.on<MediaConnection>('call').listen((call) {
-        print("On [call] - remote call... ${call}");
-        _connectionStatusStreamController.add(KPeerWebRTCStatus.CALL);
-
-        final remotePeer = getOrCreatePeer(call.peer);
-        remotePeer.mediaConnection = call;
-        final remotePeerIndex = getIndexOfRemotePeer(remotePeer);
-        if (remotePeerIndex > -1)
-          KPeerWebRTCHelper.remotePeers[remotePeerIndex].mediaConnection =
-              remotePeer.mediaConnection;
-
-        call.answer(KPeerWebRTCHelper.mediaStream!);
-        handleRemoteStreamCall(call);
-      });
-
-      peer!.on<DataConnection>('connection').listen((conn) {
-        print("On [connection] - remote data connection... ${conn}");
-        _connectionStatusStreamController.add(KPeerWebRTCStatus.CONNECTION);
-
-        final remotePeer = getOrCreatePeer(conn.peer);
-        remotePeer.dataConnection = conn;
-        final remotePeerIndex = getIndexOfRemotePeer(remotePeer);
-        if (remotePeerIndex > -1)
-          KPeerWebRTCHelper.remotePeers[remotePeerIndex].dataConnection =
-              remotePeer.dataConnection;
-
-        onPeerDiscovery(remotePeer);
-
-        conn.on('open').listen((event) {
-          print("Data on [open] - Connection opened!");
-          dataStreamDelayedCheck(remotePeer);
-        });
-
-        conn.on('data').listen((data) {
-          _dataStreamController.add({
-            'remotePeer': remotePeer,
-            'data': data,
-          });
-        });
-
-        conn.on('close').listen((event) {
-          print("- - - A DATA CONNECTION CLOSED - - -");
-          onPeerDisconnect(remotePeer);
-        });
-      });
+      initPeerConnection();
 
       _localPlayerStreamController.add(localStream);
     }
+  }
+
+  static initPeerConnection() async {
+    KPeerWebRTCHelper.peer = Peer(
+      id: KPeerWebRTCHelper.localPeerId,
+      options: PeerOptions(
+        debug: LogLevel.All,
+        // secure: false,
+        // host: KHostConfig.peerjs.hostname,
+        // port: KHostConfig.peerjs.port,
+        // path: '/sb-peer',
+        config: {
+          'iceServers': [
+            {
+              'urls': [
+                'stun:stun.l.google.com:19302',
+                'stun:stun1.l.google.com:19302',
+                'stun:stun2.l.google.com:19302',
+                'stun:stun3.l.google.com:19302',
+                'stun:stun4.l.google.com:19302',
+              ]
+            },
+            {
+              "urls": [
+                "turn:eu-0.turn.peerjs.com:3478",
+                "turn:us-0.turn.peerjs.com:3478",
+              ],
+              "username": "peerjs",
+              "credential": "peerjsp",
+            },
+          ],
+          'sdpSemantics': "unified-plan",
+          // 'iceServers': [
+          //   {
+          //     'url': "stun:stun.l.google.com:19302",
+          //   },
+          // ],
+        },
+      ),
+    );
+
+    peer!.on<Exception>('error').listen((error) {
+      print("PEER ERROR ${error}");
+    });
+
+    peer!.on('open').listen((id) {
+      print("On [open] ${id}");
+      _connectionStatusStreamController.add(KPeerWebRTCStatus.OPEN);
+    });
+
+    peer!.on('close').listen((id) {
+      print("On [close] ${id}");
+      _connectionStatusStreamController.add(KPeerWebRTCStatus.CLOSE);
+    });
+
+    peer!.on<MediaConnection>('call').listen((call) {
+      print("On [call] - remote call... ${call}");
+      _connectionStatusStreamController.add(KPeerWebRTCStatus.CALL);
+
+      final remotePeer = getOrCreatePeer(call.peer);
+      remotePeer.mediaConnection = call;
+      final remotePeerIndex = getIndexOfRemotePeer(remotePeer);
+      if (remotePeerIndex > -1)
+        KPeerWebRTCHelper.remotePeers[remotePeerIndex].mediaConnection =
+            remotePeer.mediaConnection;
+
+      call.answer(KPeerWebRTCHelper.mediaStream!);
+      handleRemoteStreamCall(call);
+    });
+
+    peer!.on<DataConnection>('connection').listen((conn) {
+      print("On [connection] - remote data connection... ${conn}");
+      _connectionStatusStreamController.add(KPeerWebRTCStatus.CONNECTION);
+
+      final remotePeer = getOrCreatePeer(conn.peer);
+      remotePeer.dataConnection = conn;
+      final remotePeerIndex = getIndexOfRemotePeer(remotePeer);
+      if (remotePeerIndex > -1)
+        KPeerWebRTCHelper.remotePeers[remotePeerIndex].dataConnection =
+            remotePeer.dataConnection;
+
+      onPeerDiscovery(remotePeer);
+
+      conn.on('open').listen((event) {
+        print("Data on [open] - Connection opened!");
+        dataStreamDelayedCheck(remotePeer);
+      });
+
+      conn.on('data').listen((data) {
+        _dataStreamController.add({
+          'remotePeer': remotePeer,
+          'data': data,
+        });
+      });
+
+      conn.on('close').listen((event) {
+        print("- - - A DATA CONNECTION CLOSED - - -");
+        // onPeerDisconnect(remotePeer);
+      });
+    });
   }
 
   static handleRemoteStreamCall(MediaConnection call) {
@@ -206,14 +252,14 @@ abstract class KPeerWebRTCHelper {
       final remotePeer = getOrCreatePeer(call.peer);
 
       // Video/audio track error handlers
-      remoteStream.getTracks().forEach((track) {
-        track.onEnded = () {
-          print("[${track.kind}Track.ended] ${track.id} ${remotePeer.peerID}");
-
-          final peer = getOrCreatePeer(remotePeer.peerID!);
-          onPeerDisconnect(peer);
-        };
-      });
+      // remoteStream.getTracks().forEach((track) {
+      //   track.onEnded = () {
+      //     print("[${track.kind}Track.ended] ${track.id} ${remotePeer.peerID}");
+      //
+      //     final peer = getOrCreatePeer(remotePeer.peerID!);
+      //     onPeerDisconnect(peer);
+      //   };
+      // });
 
       _remotePlayerStreamStreamController.add({
         'peerID': remotePeer.peerID,
@@ -227,28 +273,64 @@ abstract class KPeerWebRTCHelper {
         KPeerWebRTCHelper.remotePeers[remotePeerIndex].mediaStream =
             remotePeer.mediaStream;
     });
+
+    call.on<RTCIceConnectionState?>('iceStateChanged').listen((state) {
+      print("On [state] - connection state change... ${state?.toString()}");
+      final peer = getOrCreatePeer(call.peer);
+      final peerIndex = getIndexOfRemotePeer(peer);
+      final previousState = KPeerWebRTCHelper.remotePeers[peerIndex].status;
+      KPeerWebRTCHelper.remotePeers[peerIndex].status = state?.toString();
+
+      if (previousState != state &&
+          state == RTCIceConnectionState.RTCIceConnectionStateDisconnected) {
+        onPeerDisconnect(peer);
+      } else if (state ==
+          RTCIceConnectionState.RTCIceConnectionStateConnected) {}
+    });
   }
 
-  static onPeerDisconnect(KRemotePeer remotePeer) {
+  static onPeerDisconnect(KRemotePeer remotePeer, {bool? isLeave}) {
     try {
-      KPeerWebRTCHelper.remotePeers = KPeerWebRTCHelper.remotePeers
-          .where((e) => e.peerID != remotePeer.peerID)
-          .toList();
+      if (isLeave ?? false) {
+        KPeerWebRTCHelper.remotePeers = KPeerWebRTCHelper.remotePeers
+            .where((e) => e.peerID != remotePeer.peerID)
+            .toList();
+        remotePeer.dataConnection?.dispose();
+        remotePeer.mediaConnection?.dispose();
+      } else {
+        final remotePeerIndex = getIndexOfRemotePeerId(remotePeer.peerID!);
+        if (remotePeerIndex > -1) {
+          KPeerWebRTCHelper.remotePeers[remotePeerIndex].dataConnection
+              ?.dispose();
+          KPeerWebRTCHelper.remotePeers[remotePeerIndex].mediaConnection
+              ?.dispose();
+          KPeerWebRTCHelper.remotePeers[remotePeerIndex].dataConnection = null;
+          KPeerWebRTCHelper.remotePeers[remotePeerIndex].mediaConnection = null;
+          KPeerWebRTCHelper.remotePeers[remotePeerIndex].status =
+              KRemotePeer.STATUS_PENDING;
+        }
+      }
 
       _remotePeerLeaveController.add(remotePeer);
-      remotePeer.dataConnection?.close();
     } catch (ex) {
       print("onPeerDisconnect err ${ex}");
     }
   }
 
   static dataStreamDelayedCheck(KRemotePeer remotePeer) {
-    Future.delayed(Duration(seconds: KPeerWebRTCHelper.videoStreamCheckDelay), () {
+    Future.delayed(Duration(seconds: KPeerWebRTCHelper.videoStreamCheckDelay),
+        () {
       print("Check if media stream established or not");
       final remotePeerIndex = getIndexOfRemotePeer(remotePeer);
       if (remotePeerIndex > -1) {
-        final _remotePeerVideoTracks = KPeerWebRTCHelper.remotePeers[remotePeerIndex].mediaStream?.getVideoTracks() ?? [];
-        final _remotePeerAudioTracks = KPeerWebRTCHelper.remotePeers[remotePeerIndex].mediaStream?.getAudioTracks() ?? [];
+        final _remotePeerVideoTracks = KPeerWebRTCHelper
+                .remotePeers[remotePeerIndex].mediaStream
+                ?.getVideoTracks() ??
+            [];
+        final _remotePeerAudioTracks = KPeerWebRTCHelper
+                .remotePeers[remotePeerIndex].mediaStream
+                ?.getAudioTracks() ??
+            [];
 
         if (_remotePeerAudioTracks.isEmpty || _remotePeerVideoTracks.isEmpty) {
           sendCall(remotePeer);
@@ -296,6 +378,11 @@ abstract class KPeerWebRTCHelper {
       KPeerWebRTCHelper.remotePeers[remotePeerIndex].role =
           KRemotePeer.ROLE_CALLER;
     }
+  }
+
+  static int getIndexOfRemotePeerId(String remotePeerId) {
+    return KPeerWebRTCHelper.remotePeers
+        .indexWhere((_remotePeer) => remotePeerId == _remotePeer.peerID);
   }
 
   static int getIndexOfRemotePeer(KRemotePeer remotePeer) {
@@ -433,11 +520,11 @@ abstract class KPeerWebRTCHelper {
         .on('close')
         .listen((event) {
       print("- - - A DATA CONNECTION CLOSED - - -");
-      onPeerDisconnect(remotePeer);
-
-      Future.delayed(Duration(milliseconds: 1000), () {
-        sendCall(remotePeer);
-      });
+      // onPeerDisconnect(remotePeer);
+      //
+      // Future.delayed(Duration(milliseconds: 1000), () {
+      //   sendCall(remotePeer);
+      // });
     });
 
     KPeerWebRTCHelper.remotePeers[remotePeerIndex].retryCount++;

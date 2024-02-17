@@ -25,6 +25,7 @@ abstract class KWebRTCHelper {
     bool autoPickup = false,
     String? videoLogo,
   }) {
+    print("displayCallScreen");
     Future fut;
     if (KStringHelper.isExist(callID)) {
       fut = (() async {
@@ -42,7 +43,7 @@ abstract class KWebRTCHelper {
                   videoLogo: videoLogo,
                 );
 
-                KCallStreamHelper.broadcast(screen);
+                // KCallStreamHelper.broadcast(screen);
                 KCallControlStreamHelper.broadcast(KCallType.foreground);
               });
             } else {
@@ -52,7 +53,7 @@ abstract class KWebRTCHelper {
                 autoPickup: autoPickup,
                 videoLogo: videoLogo,
               );
-              KCallStreamHelper.broadcast(screen);
+              // KCallStreamHelper.broadcast(screen);
               KCallControlStreamHelper.broadcast(KCallType.foreground);
             }
           },

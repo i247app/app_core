@@ -116,6 +116,8 @@ dependencies:
   queue: ^3.1.0+2
   socket_io_client: ^2.0.3+1
 
+  internet_connection_checker: ^1.0.0+1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
