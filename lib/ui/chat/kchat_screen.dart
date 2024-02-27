@@ -149,12 +149,12 @@ class _KChatScreenState extends State<KChatScreen> {
   }
 
   void onCallUser() async {
-    // if (this.chatroomCtrl.value.chatID == null) {
-    //   // if no chat ID, we should wait until first message created
-    //   await this.chatroomCtrl.sendVideoCallEvent();
-    // } else {
-    //   this.chatroomCtrl.sendVideoCallEvent();
-    // }
+    if (this.chatroomCtrl.value.chatID == null) {
+      // if no chat ID, we should wait until first message created
+      await this.chatroomCtrl.sendVideoCallEvent();
+    } else {
+      this.chatroomCtrl.sendVideoCallEvent();
+    }
     startVoipCall();
   }
 
