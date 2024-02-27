@@ -8,6 +8,7 @@ import 'package:app_core/provider/kmessage_notifier.dart';
 import 'package:app_core/style/kpalette_group.dart';
 import 'package:app_core/style/ktheme.dart';
 import 'package:app_core/ui/kicon/kicon_manager.dart';
+import 'package:app_core/ui/peer/kpeer_voip_call.dart';
 import 'package:draggable_widget/draggable_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -57,7 +58,7 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
 
   ThemeMode get themeMode => KThemeService.getThemeMode();
 
-  KVOIPCall? voipCall;
+  KPeerVoipCall? voipCall;
   KCallType callType = KCallType.kill;
 
   @override
@@ -73,7 +74,7 @@ class _KAppState extends State<KApp> with WidgetsBindingObserver {
         KCallControlStreamHelper.stream.listen(callControlNotifListener);
   }
 
-  void callNotifListener(KVOIPCall? call) {
+  void callNotifListener(KPeerVoipCall? call) {
     setState(() {
       voipCall = call;
     });

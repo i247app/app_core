@@ -1,11 +1,16 @@
 import 'dart:async';
 
 import 'package:app_core/app_core.dart';
+import 'package:app_core/header/kaction.dart';
 import 'package:app_core/helper/kcall_control_stream_helper.dart';
 import 'package:app_core/helper/kcall_stream_helper.dart';
+import 'package:app_core/model/kwebrtc_conference.dart';
+import 'package:app_core/model/kwebrtc_member.dart';
 import 'package:app_core/model/response/send_chat_message_response.dart';
 import 'package:app_core/helper/kserver_handler.dart';
+import 'package:app_core/ui/peer/kpeer_voip_call.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 class KChatScreen extends StatefulWidget {
   final List<KChatMember>? members;
@@ -48,15 +53,16 @@ class _KChatScreenState extends State<KChatScreen> {
           ? "Support"
           : (members.isNotEmpty ? members.first.firstName ?? "" : "Chat"));
 
-  bool get isHideAddButton => chatroomCtrl.value.refApp == KChat.APP_CONTENT_CUSUP && !KSessionData.isSomeKindOfAdmin;
+  bool get isHideAddButton =>
+      chatroomCtrl.value.refApp == KChat.APP_CONTENT_CUSUP &&
+      !KSessionData.isSomeKindOfAdmin;
 
   @override
   void initState() {
     super.initState();
 
     this.chatroomCtrl = KChatroomController(
-      refApp:
-          widget.isCUSUP ? KChat.APP_CONTENT_CUSUP : KChat.APP_CONTENT_CHAT,
+      refApp: widget.isCUSUP ? KChat.APP_CONTENT_CUSUP : KChat.APP_CONTENT_CHAT,
       chatID: widget.chatID,
       members: widget.members,
     );
@@ -143,12 +149,12 @@ class _KChatScreenState extends State<KChatScreen> {
   }
 
   void onCallUser() async {
-    if (this.chatroomCtrl.value.chatID == null) {
-      // if no chat ID, we should wait until first message created
-      await this.chatroomCtrl.sendVideoCallEvent();
-    } else {
-      this.chatroomCtrl.sendVideoCallEvent();
-    }
+    // if (this.chatroomCtrl.value.chatID == null) {
+    //   // if no chat ID, we should wait until first message created
+    //   await this.chatroomCtrl.sendVideoCallEvent();
+    // } else {
+    //   this.chatroomCtrl.sendVideoCallEvent();
+    // }
     startVoipCall();
   }
 
@@ -160,17 +166,40 @@ class _KChatScreenState extends State<KChatScreen> {
 
     print("MEMBERS - ${this.members.length}");
 
-    final KUser? theRefUser = this
-        .members
-        .where((m) => m.puid != KSessionData.me?.puid)
-        .first
-        .toUser();
-    final screen = KVOIPCall.asSender(theRefUser!,
-        invitePUIDs: invitePUIDs,
-        chatroomCtrl: this.chatroomCtrl,
-        videoLogo: KAssets.IMG_TRANSPARENCY);
-    KCallStreamHelper.broadcast(screen);
-    KCallControlStreamHelper.broadcast(KCallType.foreground);
+    final response = await KServerHandler.webRTCConferenceAction(
+      kWebRTCConference: KWebRTCConference()
+        ..kaction = KAction.CALL
+        ..webRTCMembers =
+            others.map((other) => KWebRTCMember()..puid = other.puid).toList()
+        ..refApp = KWebRTCConference.APP_CHAT
+        ..refID = widget.chatID,
+      uuid: Uuid().v4(),
+    );
+
+    if (response.isSuccess &&
+        (response.webRTCConferences?.isNotEmpty ?? false) &&
+        KStringHelper.isExist(
+            response.webRTCConferences?.first.conferenceSlug)) {
+      final screen = KPeerVoipCall(
+          conferenceSlug: response.webRTCConferences?.first.conferenceSlug,
+          conferencePass: response.webRTCConferences?.first.conferencePass);
+      KCallStreamHelper.broadcast(screen);
+      KCallControlStreamHelper.broadcast(KCallType.foreground);
+    }
+
+    // await KServerHandler.notifyWebRTCCall(
+    //     refPUIDs: refPUIDs, callID: roomID, uuid: uuid);
+    // final KUser? theRefUser = this
+    //     .members
+    //     .where((m) => m.puid != KSessionData.me?.puid)
+    //     .first
+    //     .toUser();
+    // final screen = KVOIPCall.asSender(theRefUser!,
+    //     invitePUIDs: invitePUIDs,
+    //     chatroomCtrl: this.chatroomCtrl,
+    //     videoLogo: KAssets.IMG_TRANSPARENCY);
+    // KCallStreamHelper.broadcast(screen);
+    // KCallControlStreamHelper.broadcast(KCallType.foreground);
     // Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
   }
 

@@ -904,11 +904,13 @@ abstract class KServerHandler {
   // requires shareID or (refID, refApp)
   static Future<WebRTCConferenceActionResponse> webRTCConferenceAction({
     KWebRTCConference? kWebRTCConference,
+    String? uuid,
   }) async {
     final params = {
       "svc": "wrtc",
       "req": "wrtc.conference.action",
       "webRTCConference": kWebRTCConference,
+      "uuid": uuid,
     };
     return TLSHelper.send(params)
         .then((data) => WebRTCConferenceActionResponse.fromJson(data));

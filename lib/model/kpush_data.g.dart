@@ -19,6 +19,7 @@ KPushData _$KPushDataFromJson(Map<String, dynamic> json) => KPushData()
   ..callerId = json['caller_id'] as int?
   ..callType = json['call_type'] as int?
   ..sessionId = json['session_id'] as String?
+  ..conferenceSlug = json['conference_slug'] as String?
   ..callerName = json['caller_name'] as String?
   ..callOpponents = json['call_opponents'] as String?
   ..userInfo = json['user_info'] as String?
@@ -46,6 +47,7 @@ Map<String, dynamic> _$KPushDataToJson(KPushData instance) {
   writeNotNull('caller_id', instance.callerId);
   writeNotNull('call_type', instance.callType);
   writeNotNull('session_id', instance.sessionId);
+  writeNotNull('conference_slug', instance.conferenceSlug);
   writeNotNull('caller_name', instance.callerName);
   writeNotNull('call_opponents', instance.callOpponents);
   writeNotNull('user_info', instance.userInfo);

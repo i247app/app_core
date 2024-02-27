@@ -72,6 +72,9 @@ class KPushData {
   @JsonKey(name: "session_id")
   String? sessionId;
 
+  @JsonKey(name: "conference_slug")
+  String? conferenceSlug;
+
   @JsonKey(name: CALLER_NAME)
   String? callerName;
 

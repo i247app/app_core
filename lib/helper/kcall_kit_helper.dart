@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_core/app_core.dart';
 import 'package:app_core/helper/kcall_control_stream_helper.dart';
 import 'package:app_core/helper/kcall_stream_helper.dart';
+import 'package:app_core/ui/peer/kpeer_voip_call.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:connectycube_flutter_call_kit/connectycube_flutter_call_kit.dart';
@@ -55,16 +57,35 @@ class KCallKitHelper {
     Future.delayed(Duration(seconds: 3), commManager?.close);
   }
 
-  Future onCallAccepted(String uuid, String callID) async {
+  Future onCallAccepted(
+      String uuid, String conferenceSlug, String refApp, String refID) async {
+    print("onCallAccepted");
     if (this.isInit) {
-      KWebRTCHelper.displayCallScreen(
-        uuid,
-        callID,
-        autoPickup: true,
-        videoLogo: this.videoLogo,
-      );
+      if (KCallKitHelper.instance.isCalling) {
+        KCallStreamHelper.broadcast(null);
+        KCallKitHelper.instance.isCalling = false;
+        KCallControlStreamHelper.broadcast(KCallType.kill);
+        Timer(Duration(seconds: 2), () {
+          final screen = KPeerVoipCall(
+            conferenceSlug: conferenceSlug,
+            refApp: KStringHelper.isExist(refApp) ? refApp : null,
+            refID: KStringHelper.isExist(refID) ? refID : null,
+          );
+
+          KCallStreamHelper.broadcast(screen);
+          KCallControlStreamHelper.broadcast(KCallType.foreground);
+        });
+      } else {
+        final screen = KPeerVoipCall(
+          conferenceSlug: conferenceSlug,
+          refApp: KStringHelper.isExist(refApp) ? refApp : null,
+          refID: KStringHelper.isExist(refID) ? refID : null,
+        );
+        KCallStreamHelper.broadcast(screen);
+        KCallControlStreamHelper.broadcast(KCallType.foreground);
+      }
     } else
-      saveCallInfo(uuid, callID);
+      saveCallInfo(uuid, conferenceSlug);
   }
 
   Future onCallEnded(String uuid, String callID) async {
@@ -72,9 +93,24 @@ class KCallKitHelper {
     sendEndCallSocket(callID);
   }
 
-  void showNotificationCallAndroid(String sessionId, int callType, int callId,
-      String callerName, Set<int> opponentsIds, String userInfo) {
-    final userInfoMap = Map<String, String>.from(jsonDecode(userInfo));
+  void showNotificationCallAndroid(
+    String sessionId,
+    int callType,
+    int callId,
+    String callerName,
+    Set<int> opponentsIds,
+    String userInfo,
+    String conferenceSlug,
+    String refApp,
+    String refID,
+  ) {
+    final userInfoMap = KStringHelper.isExist(userInfo)
+        ? Map<String, String>.from(jsonDecode(userInfo))
+        : Map<String, String>();
+
+    userInfoMap['conferenceSlug'] = conferenceSlug;
+    userInfoMap['refApp'] = refApp;
+    userInfoMap['refID'] = refID;
 
     CallEvent callEvent = CallEvent(
         sessionId: sessionId,
@@ -87,16 +123,14 @@ class KCallKitHelper {
   }
 
   Future<dynamic> openVoipCallIfNeeded(BuildContext context) async {
+    print("openVoipCallIfNeeded");
     KVoipCallInfo? callInfo = await consumeCallInfo();
     if (callInfo != null) {
       await KPrefHelper.remove("callID");
 
-      final screen = KVOIPCall.asReceiver(
-        callInfo.callID!,
-        callInfo.uuid!,
-        autoPickup: true,
-        videoLogo: this.videoLogo,
-        chatroomCtrl: KChatroomController(),
+      final screen = KPeerVoipCall(
+        conferenceSlug:
+            KStringHelper.isExist(callInfo.callID) ? callInfo.callID : null,
       );
       KCallControlStreamHelper.broadcast(KCallType.foreground);
       KCallStreamHelper.broadcast(screen);
@@ -156,7 +190,10 @@ class KCallKitHelper {
               .split(",")
               .map((item) => int.tryParse(item) ?? 0)
               .toSet(),
-          data.userInfo ?? "");
+          data.userInfo ?? "",
+          data.conferenceSlug ?? "",
+          data.refApp ?? "",
+          data.refID ?? "");
     }
   }
 
@@ -214,7 +251,13 @@ class KCallKitHelper {
 
   /// Event Listener Callbacks for 'connectycube_flutter_call_kit'
   Future _onCallAccepted(CallEvent event) {
-    return onCallAccepted(event.sessionId, event.userInfo!["callID"] as String);
+    print(event.userInfo);
+    return onCallAccepted(
+      event.sessionId,
+      event.userInfo!["conferenceSlug"] as String,
+      event.userInfo!["refApp"] as String,
+      event.userInfo!["refID"] as String,
+    );
   }
 
   Future _onCallRejected(CallEvent event) {

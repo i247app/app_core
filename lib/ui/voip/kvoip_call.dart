@@ -329,6 +329,7 @@ class _KVOIPCallState extends State<KVOIPCall>
   }
 
   void notifListener(KFullNotification notification) {
+    print("notification.app ${notification.app}");
     switch (notification.app) {
       case KPushData.APP_P2P_CALL_NOTIFY:
         // final bool isDifferentCall =
@@ -340,7 +341,7 @@ class _KVOIPCallState extends State<KVOIPCall>
           final screen = KVOIPCall.asReceiver(
               notification.data!.id!, notification.data!.uuid!,
               autoPickup: true, videoLogo: widget.videoLogo);
-          KCallStreamHelper.broadcast(screen);
+          // KCallStreamHelper.broadcast(screen);
           KCallControlStreamHelper.broadcast(KCallType.foreground);
           Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (ctx) => KVOIPCall.asReceiver(

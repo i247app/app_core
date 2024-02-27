@@ -9,6 +9,7 @@ part 'kwebrtc_conference.g.dart';
 @JsonSerializable()
 class KWebRTCConference extends KObject {
   static const String APP_GIG = "gig";
+  static const String APP_CHAT = "chat";
 
   @JsonKey(name: "conferenceID")
   String? conferenceID;
