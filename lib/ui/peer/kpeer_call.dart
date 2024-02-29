@@ -904,7 +904,7 @@ class _KPeerCallState extends State<KPeerCall> {
 
     final initView = Container(
       padding: EdgeInsets.symmetric(horizontal: 25),
-      color: KStyles.black.withOpacity(0.8),
+      // color: KStyles.black.withOpacity(0.8),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
