@@ -39,7 +39,7 @@ KCheckIn _$KCheckInFromJson(Map<String, dynamic> json) => KCheckIn()
   ..latLng = json['latLng'] == null
       ? null
       : KLatLng.fromJson(json['latLng'] as Map<String, dynamic>)
-  ..minutePerSession = json['minutePerSession'] as int?
+  ..minutePerSession = (json['minutePerSession'] as num?)?.toInt()
   ..checkInDate = zzz_str2Date(json['checkInDate'] as String?)
   ..checkInStatus = json['checkInStatus'] as String?
   ..address = json['address'] == null
