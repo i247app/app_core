@@ -124,118 +124,126 @@ Tutor _$TutorFromJson(Map<String, dynamic> json) => Tutor()
   ..subjects =
       (json['subjects'] as List<dynamic>?)?.map((e) => e as String).toList();
 
-Map<String, dynamic> _$TutorToJson(Tutor instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('domain', instance.kdomain);
-  writeNotNull('reportFlag', instance.kreportFlag);
-  writeNotNull('note', instance.knote);
-  writeNotNull('statusCode', instance.kstatusCode);
-  writeNotNull('createID', instance.kcreateID);
-  writeNotNull('createDate', zzz_date2Str(instance.kcreateDate));
-  writeNotNull('modifyID', instance.kmodifyID);
-  writeNotNull('modifyDate', zzz_date2Str(instance.kmodifyDate));
-  writeNotNull('isValid', instance.kisValid);
-  writeNotNull('kaction', instance.kaction);
-  writeNotNull('kattribute', instance.kattribute);
-  writeNotNull('kvalue', instance.kvalue);
-  writeNotNull('ktags', instance.ktags);
-  writeNotNull('kfts', instance.kfts);
-  writeNotNull('kranking', instance.kranking);
-  writeNotNull('krange', instance.krange);
-  writeNotNull('statuses', instance.statuses);
-  writeNotNull('korderBy', instance.korderBy);
-  writeNotNull('klimit', instance.klimit);
-  writeNotNull('koffset', instance.koffset);
-  writeNotNull('kstatus', instance.kstatus);
-  writeNotNull('kmessage', instance.kmessage);
-  writeNotNull('kcount', instance.kcount);
-  writeNotNull('kname', instance.kname);
-  writeNotNull('isWorking', zzz_bool2Str(instance.isWorking));
-  writeNotNull('gigCount', instance.gigCount);
-  writeNotNull('puid', instance.puid);
-  writeNotNull('kunm', instance.kunm);
-  writeNotNull('fone', instance.phone);
-  writeNotNull('foneCode', instance.phoneCode);
-  writeNotNull('email', instance.email);
-  writeNotNull('firstName', instance.firstName);
-  writeNotNull('middleName', instance.middleName);
-  writeNotNull('lastName', instance.lastName);
-  writeNotNull('dob', zzz_date2Str(instance.dob));
-  writeNotNull('ppuid', instance.ppuid);
-  writeNotNull('parentName', instance.parentName);
-  writeNotNull('parentEmail', instance.parentEmail);
-  writeNotNull('parentPhone', instance.parentPhone);
-  writeNotNull('addressLine', instance.addressLine);
-  writeNotNull('addressLine1', instance.addressLine1);
-  writeNotNull('addressLine2', instance.addressLine2);
-  writeNotNull('city', instance.city);
-  writeNotNull('stateCode', instance.stateCode);
-  writeNotNull('zipCode', instance.zipCode);
-  writeNotNull('ward', instance.ward);
-  writeNotNull('district', instance.district);
-  writeNotNull('countryCode', instance.countryCode);
-  writeNotNull('displayImg', instance.displayImg);
-  writeNotNull('avatar', instance.avatarURL);
-  writeNotNull('vurl', instance.videoURL);
-  writeNotNull('avatarData', instance.avatarImageData);
-  writeNotNull('heroAvatar', instance.heroAvatarURL);
-  writeNotNull('gradeLevel', instance.gradeLevel);
-  writeNotNull('schoolName', instance.schoolName);
-  writeNotNull('businessName', instance.businessName);
-  writeNotNull('userRating', instance.userRating);
-  writeNotNull('userStatus', instance.userStatus);
-  writeNotNull('userRatingCount', instance.userRatingCount);
-  writeNotNull('bankID', instance.bankID);
-  writeNotNull('bankName', instance.bankName);
-  writeNotNull('bankAccName', instance.bankAccName);
-  writeNotNull('bankAccNumber', instance.bankAccNumber);
-  writeNotNull(
-      'educations', instance.educations?.map((e) => e.toJson()).toList());
-  writeNotNull(
-      'addresses', instance.addresses?.map((e) => e.toJson()).toList());
-  writeNotNull('notes', instance.notes?.map((e) => e.toJson()).toList());
-  writeNotNull('officialIDNumber', instance.officialIDNumber);
-  writeNotNull('officialIDURL', instance.officialIDURL);
-  writeNotNull('officialIDData', instance.officialIDData);
-  writeNotNull('studentIDNumber', instance.studentIDNumber);
-  writeNotNull('studentIDURL', instance.studentIDURL);
-  writeNotNull('studentIDData', instance.studentIDData);
-  writeNotNull('joinDate', zzz_date2Str(instance.joinDate));
-  writeNotNull('latLng', instance.currentLatLng?.toJson());
-  writeNotNull('linkStatus', instance.linkStatus);
-  writeNotNull('distance', zzz_dtoa(instance.distance));
-  writeNotNull('cvText', instance.cvText);
-  writeNotNull('rating', instance.review?.toJson());
-  writeNotNull('tutorID', instance.tutorID);
-  writeNotNull('canInPerson', zzz_bool2Str(instance.canInPerson));
-  writeNotNull('canHeadstart', zzz_bool2Str(instance.canHeadstart));
-  writeNotNull('canEnglish', zzz_bool2Str(instance.canEnglish));
-  writeNotNull('canViet', zzz_bool2Str(instance.canViet));
-  writeNotNull('canSpeakEnglish', zzz_bool2Str(instance.canSpeakEnglish));
-  writeNotNull('canPreschool', zzz_bool2Str(instance.canPreSchool));
-  writeNotNull('isSkill', zzz_bool2Str(instance.isSkill));
-  writeNotNull('isGenius', zzz_bool2Str(instance.isGenius));
-  writeNotNull('isKeepWorker', zzz_bool2Str(instance.isKeepWorker));
-  writeNotNull('isBlockWorker', zzz_bool2Str(instance.isBlockWorker));
-  writeNotNull('tutorStatus', instance.tutorStatus);
-  writeNotNull('userType', instance.userType);
-  writeNotNull('userTags', instance.userTags?.map((e) => e.toJson()).toList());
-  writeNotNull('activeDate', zzz_date2Str(instance.activeDate));
-  writeNotNull('tutorJoinDate', zzz_date2Str(instance.tutorJoinDate));
-  writeNotNull('mathLevelMin', instance.mathLevelMin);
-  writeNotNull('mathLevelMax', instance.mathLevelMax);
-  writeNotNull('vietLevelMin', instance.vietLevelMin);
-  writeNotNull('vietLevelMax', instance.vietLevelMax);
-  writeNotNull('englishLevelMin', instance.englishLevelMin);
-  writeNotNull('englishLevelMax', instance.englishLevelMax);
-  writeNotNull('canOnline', zzz_bool2Str(instance.canOnline));
-  writeNotNull('subjects', instance.subjects);
-  return val;
-}
+Map<String, dynamic> _$TutorToJson(Tutor instance) => <String, dynamic>{
+      if (instance.kdomain case final value?) 'domain': value,
+      if (instance.kreportFlag case final value?) 'reportFlag': value,
+      if (instance.knote case final value?) 'note': value,
+      if (instance.kstatusCode case final value?) 'statusCode': value,
+      if (instance.kcreateID case final value?) 'createID': value,
+      if (zzz_date2Str(instance.kcreateDate) case final value?)
+        'createDate': value,
+      if (instance.kmodifyID case final value?) 'modifyID': value,
+      if (zzz_date2Str(instance.kmodifyDate) case final value?)
+        'modifyDate': value,
+      if (instance.kisValid case final value?) 'isValid': value,
+      if (instance.kaction case final value?) 'kaction': value,
+      if (instance.kattribute case final value?) 'kattribute': value,
+      if (instance.kvalue case final value?) 'kvalue': value,
+      if (instance.ktags case final value?) 'ktags': value,
+      if (instance.kfts case final value?) 'kfts': value,
+      if (instance.kranking case final value?) 'kranking': value,
+      if (instance.krange case final value?) 'krange': value,
+      if (instance.statuses case final value?) 'statuses': value,
+      if (instance.korderBy case final value?) 'korderBy': value,
+      if (instance.klimit case final value?) 'klimit': value,
+      if (instance.koffset case final value?) 'koffset': value,
+      if (instance.kstatus case final value?) 'kstatus': value,
+      if (instance.kmessage case final value?) 'kmessage': value,
+      if (instance.kcount case final value?) 'kcount': value,
+      if (instance.kname case final value?) 'kname': value,
+      if (zzz_bool2Str(instance.isWorking) case final value?)
+        'isWorking': value,
+      if (instance.gigCount case final value?) 'gigCount': value,
+      if (instance.puid case final value?) 'puid': value,
+      if (instance.kunm case final value?) 'kunm': value,
+      if (instance.phone case final value?) 'fone': value,
+      if (instance.phoneCode case final value?) 'foneCode': value,
+      if (instance.email case final value?) 'email': value,
+      if (instance.firstName case final value?) 'firstName': value,
+      if (instance.middleName case final value?) 'middleName': value,
+      if (instance.lastName case final value?) 'lastName': value,
+      if (zzz_date2Str(instance.dob) case final value?) 'dob': value,
+      if (instance.ppuid case final value?) 'ppuid': value,
+      if (instance.parentName case final value?) 'parentName': value,
+      if (instance.parentEmail case final value?) 'parentEmail': value,
+      if (instance.parentPhone case final value?) 'parentPhone': value,
+      if (instance.addressLine case final value?) 'addressLine': value,
+      if (instance.addressLine1 case final value?) 'addressLine1': value,
+      if (instance.addressLine2 case final value?) 'addressLine2': value,
+      if (instance.city case final value?) 'city': value,
+      if (instance.stateCode case final value?) 'stateCode': value,
+      if (instance.zipCode case final value?) 'zipCode': value,
+      if (instance.ward case final value?) 'ward': value,
+      if (instance.district case final value?) 'district': value,
+      if (instance.countryCode case final value?) 'countryCode': value,
+      if (instance.displayImg case final value?) 'displayImg': value,
+      if (instance.avatarURL case final value?) 'avatar': value,
+      if (instance.videoURL case final value?) 'vurl': value,
+      if (instance.avatarImageData case final value?) 'avatarData': value,
+      if (instance.heroAvatarURL case final value?) 'heroAvatar': value,
+      if (instance.gradeLevel case final value?) 'gradeLevel': value,
+      if (instance.schoolName case final value?) 'schoolName': value,
+      if (instance.businessName case final value?) 'businessName': value,
+      if (instance.userRating case final value?) 'userRating': value,
+      if (instance.userStatus case final value?) 'userStatus': value,
+      if (instance.userRatingCount case final value?) 'userRatingCount': value,
+      if (instance.bankID case final value?) 'bankID': value,
+      if (instance.bankName case final value?) 'bankName': value,
+      if (instance.bankAccName case final value?) 'bankAccName': value,
+      if (instance.bankAccNumber case final value?) 'bankAccNumber': value,
+      if (instance.educations?.map((e) => e.toJson()).toList()
+          case final value?)
+        'educations': value,
+      if (instance.addresses?.map((e) => e.toJson()).toList() case final value?)
+        'addresses': value,
+      if (instance.notes?.map((e) => e.toJson()).toList() case final value?)
+        'notes': value,
+      if (instance.officialIDNumber case final value?)
+        'officialIDNumber': value,
+      if (instance.officialIDURL case final value?) 'officialIDURL': value,
+      if (instance.officialIDData case final value?) 'officialIDData': value,
+      if (instance.studentIDNumber case final value?) 'studentIDNumber': value,
+      if (instance.studentIDURL case final value?) 'studentIDURL': value,
+      if (instance.studentIDData case final value?) 'studentIDData': value,
+      if (zzz_date2Str(instance.joinDate) case final value?) 'joinDate': value,
+      if (instance.currentLatLng?.toJson() case final value?) 'latLng': value,
+      if (instance.linkStatus case final value?) 'linkStatus': value,
+      if (zzz_dtoa(instance.distance) case final value?) 'distance': value,
+      if (instance.cvText case final value?) 'cvText': value,
+      if (instance.review?.toJson() case final value?) 'rating': value,
+      if (instance.tutorID case final value?) 'tutorID': value,
+      if (zzz_bool2Str(instance.canInPerson) case final value?)
+        'canInPerson': value,
+      if (zzz_bool2Str(instance.canHeadstart) case final value?)
+        'canHeadstart': value,
+      if (zzz_bool2Str(instance.canEnglish) case final value?)
+        'canEnglish': value,
+      if (zzz_bool2Str(instance.canViet) case final value?) 'canViet': value,
+      if (zzz_bool2Str(instance.canSpeakEnglish) case final value?)
+        'canSpeakEnglish': value,
+      if (zzz_bool2Str(instance.canPreSchool) case final value?)
+        'canPreschool': value,
+      if (zzz_bool2Str(instance.isSkill) case final value?) 'isSkill': value,
+      if (zzz_bool2Str(instance.isGenius) case final value?) 'isGenius': value,
+      if (zzz_bool2Str(instance.isKeepWorker) case final value?)
+        'isKeepWorker': value,
+      if (zzz_bool2Str(instance.isBlockWorker) case final value?)
+        'isBlockWorker': value,
+      if (instance.tutorStatus case final value?) 'tutorStatus': value,
+      if (instance.userType case final value?) 'userType': value,
+      if (instance.userTags?.map((e) => e.toJson()).toList() case final value?)
+        'userTags': value,
+      if (zzz_date2Str(instance.activeDate) case final value?)
+        'activeDate': value,
+      if (zzz_date2Str(instance.tutorJoinDate) case final value?)
+        'tutorJoinDate': value,
+      if (instance.mathLevelMin case final value?) 'mathLevelMin': value,
+      if (instance.mathLevelMax case final value?) 'mathLevelMax': value,
+      if (instance.vietLevelMin case final value?) 'vietLevelMin': value,
+      if (instance.vietLevelMax case final value?) 'vietLevelMax': value,
+      if (instance.englishLevelMin case final value?) 'englishLevelMin': value,
+      if (instance.englishLevelMax case final value?) 'englishLevelMax': value,
+      if (zzz_bool2Str(instance.canOnline) case final value?)
+        'canOnline': value,
+      if (instance.subjects case final value?) 'subjects': value,
+    };

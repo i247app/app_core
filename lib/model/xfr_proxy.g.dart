@@ -12,18 +12,9 @@ XFRProxy _$XFRProxyFromJson(Map<String, dynamic> json) => XFRProxy()
   ..tokenName = json['tokenName'] as String?
   ..proxyStatus = json['proxyStatus'] as String?;
 
-Map<String, dynamic> _$XFRProxyToJson(XFRProxy instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('puid', instance.puid);
-  writeNotNull('buid', instance.buid);
-  writeNotNull('tokenName', instance.tokenName);
-  writeNotNull('proxyStatus', instance.proxyStatus);
-  return val;
-}
+Map<String, dynamic> _$XFRProxyToJson(XFRProxy instance) => <String, dynamic>{
+      if (instance.puid case final value?) 'puid': value,
+      if (instance.buid case final value?) 'buid': value,
+      if (instance.tokenName case final value?) 'tokenName': value,
+      if (instance.proxyStatus case final value?) 'proxyStatus': value,
+    };

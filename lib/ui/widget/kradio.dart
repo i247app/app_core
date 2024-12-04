@@ -134,7 +134,7 @@ class _KRadioItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final styleText = Theme.of(context).textTheme.subtitle1!;
+    final styleText = Theme.of(context).textTheme.titleMedium!;
     final textView = Text(
       text,
       style: this.isSelected

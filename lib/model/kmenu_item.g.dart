@@ -25,30 +25,21 @@ KMenuItem _$KMenuItemFromJson(Map<String, dynamic> json) => KMenuItem()
       ?.map((e) => MenuSubitem.fromJson(e as Map<String, dynamic>))
       .toList();
 
-Map<String, dynamic> _$KMenuItemToJson(KMenuItem instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('menuID', instance.menuID);
-  writeNotNull('menuItemID', instance.menuItemID);
-  writeNotNull('name', instance.name);
-  writeNotNull('text', instance.text);
-  writeNotNull('code', instance.code);
-  writeNotNull('price', instance.price);
-  writeNotNull('imgURL', instance.imageURL);
-  writeNotNull('imgData', instance.imageData);
-  writeNotNull('itemStatus', instance.status);
-  writeNotNull('catID', instance.categoryID);
-  writeNotNull('catName', instance.categoryName);
-  writeNotNull('smallPrice', instance.smallPrice);
-  writeNotNull('mediumPrice', instance.mediumPrice);
-  writeNotNull('largePrice', instance.largePrice);
-  writeNotNull(
-      'menuSubitems', instance.subitems?.map((e) => e.toJson()).toList());
-  return val;
-}
+Map<String, dynamic> _$KMenuItemToJson(KMenuItem instance) => <String, dynamic>{
+      if (instance.menuID case final value?) 'menuID': value,
+      if (instance.menuItemID case final value?) 'menuItemID': value,
+      if (instance.name case final value?) 'name': value,
+      if (instance.text case final value?) 'text': value,
+      if (instance.code case final value?) 'code': value,
+      if (instance.price case final value?) 'price': value,
+      if (instance.imageURL case final value?) 'imgURL': value,
+      if (instance.imageData case final value?) 'imgData': value,
+      if (instance.status case final value?) 'itemStatus': value,
+      if (instance.categoryID case final value?) 'catID': value,
+      if (instance.categoryName case final value?) 'catName': value,
+      if (instance.smallPrice case final value?) 'smallPrice': value,
+      if (instance.mediumPrice case final value?) 'mediumPrice': value,
+      if (instance.largePrice case final value?) 'largePrice': value,
+      if (instance.subitems?.map((e) => e.toJson()).toList() case final value?)
+        'menuSubitems': value,
+    };

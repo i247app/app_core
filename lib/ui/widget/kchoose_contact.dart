@@ -139,7 +139,7 @@ class _KChooseContactState extends State<KChooseContact> {
         child: Text(
           KPhrases.noContactFound,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyText1,
+          style: Theme.of(context).textTheme.bodyLarge,
         ),
       );
     } else {
@@ -227,7 +227,7 @@ class _SearchField extends StatelessWidget {
         showCursor: true,
         onTap: onTap,
         readOnly: readOnly,
-        style: Theme.of(context).textTheme.headline6,
+        style: Theme.of(context).textTheme.titleLarge,
         decoration: InputDecoration(
           hintText: "name or phone",
           hintStyle: TextStyle(color: Theme.of(context).primaryColorLight),
@@ -253,7 +253,7 @@ class _SearchField extends StatelessWidget {
                   children: [
                     Text(
                       su.fullName ?? su.contactName,
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                     SizedBox(width: 6),
                     Icon(Icons.close, size: 20),
@@ -324,14 +324,14 @@ class _ResultItem extends StatelessWidget {
 
     final contactHandle = Text(
       user.kunm == null ? user.prettyFone : "@${user.kunm}",
-      style: Theme.of(context).textTheme.subtitle1?.copyWith(
+      style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: Theme.of(context).primaryColorLight,
           ),
     );
 
     final idText = Text(
       "ID: ${user.puid}",
-      style: Theme.of(context).textTheme.subtitle1?.copyWith(
+      style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: Theme.of(context).primaryColorLight,
           ),
     );
@@ -345,7 +345,7 @@ class _ResultItem extends StatelessWidget {
       children: <Widget>[
         Text(
           user.fullName ?? "",
-          style: Theme.of(context).textTheme.subtitle1,
+          style: Theme.of(context).textTheme.titleMedium,
         ),
         SizedBox(height: 6),
         contactRow,

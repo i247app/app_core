@@ -67,7 +67,7 @@ abstract class KLocalNotifHelper {
       flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin>()
-          ?.requestPermission();
+          ?.requestNotificationsPermission();
     }
 
     _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();

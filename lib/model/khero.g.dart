@@ -28,34 +28,27 @@ KHero _$KHeroFromJson(Map<String, dynamic> json) => KHero()
   ..keo = json['keo'] as String?
   ..heroStatus = json['heroStatus'] as String?;
 
-Map<String, dynamic> _$KHeroToJson(KHero instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('id', instance.id);
-  writeNotNull('puid', instance.puid);
-  writeNotNull('heroID', instance.heroID);
-  writeNotNull('eggDate', zzz_date2Str(instance.eggDate));
-  writeNotNull('hatchDate', zzz_date2Str(instance.hatchDate));
-  writeNotNull('eggDuration', zzz_dur2Str(instance.eggDuration));
-  writeNotNull('eggImage', instance.eggImage);
-  writeNotNull('eggURL', instance.eggImageURL);
-  writeNotNull('heroName', instance.name);
-  writeNotNull('heroBio', instance.bio);
-  writeNotNull('heroImage', instance.heroImage);
-  writeNotNull('heroURL', instance.imageURL);
-  writeNotNull('ownDate', zzz_date2Str(instance.ownDate));
-  writeNotNull('evolution', instance.evolution);
-  writeNotNull('power', instance.power);
-  writeNotNull('energy', instance.energy);
-  writeNotNull('bua', instance.bua);
-  writeNotNull('bao', instance.bao);
-  writeNotNull('keo', instance.keo);
-  writeNotNull('heroStatus', instance.heroStatus);
-  return val;
-}
+Map<String, dynamic> _$KHeroToJson(KHero instance) => <String, dynamic>{
+      if (instance.id case final value?) 'id': value,
+      if (instance.puid case final value?) 'puid': value,
+      if (instance.heroID case final value?) 'heroID': value,
+      if (zzz_date2Str(instance.eggDate) case final value?) 'eggDate': value,
+      if (zzz_date2Str(instance.hatchDate) case final value?)
+        'hatchDate': value,
+      if (zzz_dur2Str(instance.eggDuration) case final value?)
+        'eggDuration': value,
+      if (instance.eggImage case final value?) 'eggImage': value,
+      if (instance.eggImageURL case final value?) 'eggURL': value,
+      if (instance.name case final value?) 'heroName': value,
+      if (instance.bio case final value?) 'heroBio': value,
+      if (instance.heroImage case final value?) 'heroImage': value,
+      if (instance.imageURL case final value?) 'heroURL': value,
+      if (zzz_date2Str(instance.ownDate) case final value?) 'ownDate': value,
+      if (instance.evolution case final value?) 'evolution': value,
+      if (instance.power case final value?) 'power': value,
+      if (instance.energy case final value?) 'energy': value,
+      if (instance.bua case final value?) 'bua': value,
+      if (instance.bao case final value?) 'bao': value,
+      if (instance.keo case final value?) 'keo': value,
+      if (instance.heroStatus case final value?) 'heroStatus': value,
+    };

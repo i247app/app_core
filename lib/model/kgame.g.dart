@@ -23,27 +23,19 @@ KGame _$KGameFromJson(Map<String, dynamic> json) => KGame()
       ?.map((e) => KQNA.fromJson(e as Map<String, dynamic>))
       .toList();
 
-Map<String, dynamic> _$KGameToJson(KGame instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('gameID', instance.gameID);
-  writeNotNull('maxLevel', zzz_itoa(instance.maxLevel));
-  writeNotNull('gameAppID', instance.gameAppID);
-  writeNotNull('gameCode', instance.gameCode);
-  writeNotNull('title', instance.title);
-  writeNotNull('subtitle', instance.subtitle);
-  writeNotNull('text', instance.text);
-  writeNotNull('cat', instance.cat);
-  writeNotNull('topic', instance.topic);
-  writeNotNull('language', instance.language);
-  writeNotNull('level', instance.level);
-  writeNotNull('mimeType', instance.mimeType);
-  writeNotNull('qnas', instance.qnas?.map((e) => e.toJson()).toList());
-  return val;
-}
+Map<String, dynamic> _$KGameToJson(KGame instance) => <String, dynamic>{
+      if (instance.gameID case final value?) 'gameID': value,
+      if (zzz_itoa(instance.maxLevel) case final value?) 'maxLevel': value,
+      if (instance.gameAppID case final value?) 'gameAppID': value,
+      if (instance.gameCode case final value?) 'gameCode': value,
+      if (instance.title case final value?) 'title': value,
+      if (instance.subtitle case final value?) 'subtitle': value,
+      if (instance.text case final value?) 'text': value,
+      if (instance.cat case final value?) 'cat': value,
+      if (instance.topic case final value?) 'topic': value,
+      if (instance.language case final value?) 'language': value,
+      if (instance.level case final value?) 'level': value,
+      if (instance.mimeType case final value?) 'mimeType': value,
+      if (instance.qnas?.map((e) => e.toJson()).toList() case final value?)
+        'qnas': value,
+    };

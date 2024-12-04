@@ -937,7 +937,7 @@ class _KPeerCallState extends State<KPeerCall> {
                                 "Join Call ${meeting.meetingName}",
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyText1!
+                                    .bodyLarge!
                                     .copyWith(
                                       color: Colors.white,
                                       fontSize: 24,
@@ -1129,7 +1129,7 @@ class _KPeerCallFormState extends State<_KPeerCallForm> {
       style: KStyles.roundedButton(Theme.of(context).colorScheme.primary),
       child: Text(
         "Join",
-        style: Theme.of(context).textTheme.subtitle1,
+        style: Theme.of(context).textTheme.titleMedium,
       ),
     );
 
@@ -1147,12 +1147,12 @@ class _KPeerCallFormState extends State<_KPeerCallForm> {
                 }
                 return null;
               },
-              style: Theme.of(context).textTheme.subtitle1,
+              style: Theme.of(context).textTheme.titleMedium,
               controller: conferencePassController,
               focusNode: conferencePassFocusNode,
               decoration: InputDecoration(
                 hintText: 'Meeting Pass',
-                hintStyle: Theme.of(context).textTheme.subtitle1,
+                hintStyle: Theme.of(context).textTheme.titleMedium,
                 border: OutlineInputBorder(),
               ),
             ),

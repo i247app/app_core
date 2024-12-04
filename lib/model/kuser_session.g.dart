@@ -43,34 +43,34 @@ KUserSession _$KUserSessionFromJson(Map<String, dynamic> json) => KUserSession()
       : KAWSInfo.fromJson(json['awsInfo'] as Map<String, dynamic>)
   ..isSecure = zzz_str2Bool(json['isSecure'] as String?);
 
-Map<String, dynamic> _$KUserSessionToJson(KUserSession instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('ktoken', instance.ktoken);
-  writeNotNull('puid', instance.puid);
-  writeNotNull('googleMapAPIKey', instance.googleMapAPIKey);
-  writeNotNull('appNav', instance.appNav?.toJson());
-  writeNotNull('gigNav', instance.gigNav?.toJson());
-  writeNotNull('user', instance.user?.toJson());
-  writeNotNull('tutor', instance.tutor?.toJson());
-  writeNotNull('hostData', instance.hostData?.toJson());
-  writeNotNull('isTutorReady', zzz_bool2Str(instance.isTutorReady));
-  writeNotNull('isBizReady', zzz_bool2Str(instance.isBizReady));
-  writeNotNull('isCUSUPReady', zzz_bool2Str(instance.isCusupReady));
-  writeNotNull('isDomainAdminReady', zzz_bool2Str(instance.isDomainAdminReady));
-  writeNotNull('isAdminReady', zzz_bool2Str(instance.isAdminReady));
-  writeNotNull('isSuperAdmin', zzz_bool2Str(instance.isSuperAdmin));
-  writeNotNull('isForceUpdate', zzz_bool2Str(instance.isForceUpdate));
-  writeNotNull('business', instance.business?.toJson());
-  writeNotNull('businessMembers',
-      instance.businessMembers?.map((e) => e.toJson()).toList());
-  writeNotNull('awsInfo', instance.awsInfo?.toJson());
-  writeNotNull('isSecure', zzz_bool2Str(instance.isSecure));
-  return val;
-}
+Map<String, dynamic> _$KUserSessionToJson(KUserSession instance) =>
+    <String, dynamic>{
+      if (instance.ktoken case final value?) 'ktoken': value,
+      if (instance.puid case final value?) 'puid': value,
+      if (instance.googleMapAPIKey case final value?) 'googleMapAPIKey': value,
+      if (instance.appNav?.toJson() case final value?) 'appNav': value,
+      if (instance.gigNav?.toJson() case final value?) 'gigNav': value,
+      if (instance.user?.toJson() case final value?) 'user': value,
+      if (instance.tutor?.toJson() case final value?) 'tutor': value,
+      if (instance.hostData?.toJson() case final value?) 'hostData': value,
+      if (zzz_bool2Str(instance.isTutorReady) case final value?)
+        'isTutorReady': value,
+      if (zzz_bool2Str(instance.isBizReady) case final value?)
+        'isBizReady': value,
+      if (zzz_bool2Str(instance.isCusupReady) case final value?)
+        'isCUSUPReady': value,
+      if (zzz_bool2Str(instance.isDomainAdminReady) case final value?)
+        'isDomainAdminReady': value,
+      if (zzz_bool2Str(instance.isAdminReady) case final value?)
+        'isAdminReady': value,
+      if (zzz_bool2Str(instance.isSuperAdmin) case final value?)
+        'isSuperAdmin': value,
+      if (zzz_bool2Str(instance.isForceUpdate) case final value?)
+        'isForceUpdate': value,
+      if (instance.business?.toJson() case final value?) 'business': value,
+      if (instance.businessMembers?.map((e) => e.toJson()).toList()
+          case final value?)
+        'businessMembers': value,
+      if (instance.awsInfo?.toJson() case final value?) 'awsInfo': value,
+      if (zzz_bool2Str(instance.isSecure) case final value?) 'isSecure': value,
+    };

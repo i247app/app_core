@@ -19,24 +19,15 @@ KQNA _$KQNAFromJson(Map<String, dynamic> json) => KQNA()
       ?.map((e) => KQuestion.fromJson(e as Map<String, dynamic>))
       .toList();
 
-Map<String, dynamic> _$KQNAToJson(KQNA instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('qnaID', instance.qnaID);
-  writeNotNull('qnaType', instance.qnaType);
-  writeNotNull('title', instance.title);
-  writeNotNull('subtitle', instance.subtitle);
-  writeNotNull('text', instance.text);
-  writeNotNull('mediaURL', instance.mediaURL);
-  writeNotNull('mediaType', instance.mediaType);
-  writeNotNull('qnaStatus', instance.qnaStatus);
-  writeNotNull(
-      'questions', instance.questions?.map((e) => e.toJson()).toList());
-  return val;
-}
+Map<String, dynamic> _$KQNAToJson(KQNA instance) => <String, dynamic>{
+      if (instance.qnaID case final value?) 'qnaID': value,
+      if (instance.qnaType case final value?) 'qnaType': value,
+      if (instance.title case final value?) 'title': value,
+      if (instance.subtitle case final value?) 'subtitle': value,
+      if (instance.text case final value?) 'text': value,
+      if (instance.mediaURL case final value?) 'mediaURL': value,
+      if (instance.mediaType case final value?) 'mediaType': value,
+      if (instance.qnaStatus case final value?) 'qnaStatus': value,
+      if (instance.questions?.map((e) => e.toJson()).toList() case final value?)
+        'questions': value,
+    };

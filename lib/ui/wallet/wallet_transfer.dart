@@ -215,13 +215,13 @@ class _WalletTransferState extends State<WalletTransfer> {
             "Balance",
             style: Theme.of(context)
                 .textTheme
-                .headline6!
+                .titleLarge!
                 .copyWith(color: Theme.of(context).primaryColorLight),
           ),
           SizedBox(
             width: 32,
           ),
-          Text(amt, style: Theme.of(context).textTheme.headline6)
+          Text(amt, style: Theme.of(context).textTheme.titleLarge)
         ],
       );
       return balanceAmount == null ? Text("") : balanceText;
@@ -292,7 +292,7 @@ class _WalletTransferState extends State<WalletTransfer> {
               height: 30,
               child: FittedBox(
                 child: Text(selectedUser?.fullName ?? "",
-                    style: Theme.of(context).textTheme.headline6),
+                    style: Theme.of(context).textTheme.titleLarge),
               ),
             ),
             SizedBox(width: 12),
@@ -349,7 +349,7 @@ class _CreditInput extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = Text(
       this.label,
-      style: Theme.of(context).textTheme.subtitle1,
+      style: Theme.of(context).textTheme.titleMedium,
     );
 
     final icon = this.asset == null

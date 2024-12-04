@@ -1251,7 +1251,7 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
                           textScaleFactor: 1.0,
                           textAlign: TextAlign.center,
                           style:
-                              Theme.of(context).textTheme.bodyText1!.copyWith(
+                              Theme.of(context).textTheme.bodyLarge!.copyWith(
                                     color: Color(0xfffdcd3a),
                                     fontSize: 28,
                                     fontWeight: FontWeight.bold,
@@ -1309,7 +1309,7 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
         //         "${this.rightAnswerCount}",
         //         textScaleFactor: 1.0,
         //         textAlign: TextAlign.center,
-        //         style: Theme.of(context).textTheme.bodyText1!.copyWith(
+        //         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
         //               color: Colors.white,
         //               fontSize: 35,
         //               fontWeight: FontWeight.bold,
@@ -1333,7 +1333,7 @@ class KJumpMultiRowGameScreenState extends State<KJumpMultiRowGameScreen>
         //       child: Text(
         //         "${this.points}",
         //         textAlign: TextAlign.center,
-        //         style: Theme.of(context).textTheme.bodyText1!.copyWith(
+        //         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
         //               fontSize: 35,
         //               fontWeight: FontWeight.bold,
         //             ),

@@ -15,21 +15,13 @@ OrderSubitem _$OrderSubitemFromJson(Map<String, dynamic> json) => OrderSubitem()
   ..text = json['text'] as String?
   ..subItemStatus = json['subitemStatus'] as String?;
 
-Map<String, dynamic> _$OrderSubitemToJson(OrderSubitem instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('menuID', instance.menuID);
-  writeNotNull('menuItemID', instance.menuItemID);
-  writeNotNull('menuSubitemID', instance.menuSubItemID);
-  writeNotNull('name', instance.name);
-  writeNotNull('price', instance.price);
-  writeNotNull('text', instance.text);
-  writeNotNull('subitemStatus', instance.subItemStatus);
-  return val;
-}
+Map<String, dynamic> _$OrderSubitemToJson(OrderSubitem instance) =>
+    <String, dynamic>{
+      if (instance.menuID case final value?) 'menuID': value,
+      if (instance.menuItemID case final value?) 'menuItemID': value,
+      if (instance.menuSubItemID case final value?) 'menuSubitemID': value,
+      if (instance.name case final value?) 'name': value,
+      if (instance.price case final value?) 'price': value,
+      if (instance.text case final value?) 'text': value,
+      if (instance.subItemStatus case final value?) 'subitemStatus': value,
+    };

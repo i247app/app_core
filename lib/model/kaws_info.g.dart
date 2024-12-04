@@ -36,41 +36,34 @@ KAWSInfo _$KAWSInfoFromJson(Map<String, dynamic> json) => KAWSInfo()
   ..secretKey = json['secretKey'] as String?
   ..bucketName = json['bucketName'] as String?;
 
-Map<String, dynamic> _$KAWSInfoToJson(KAWSInfo instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('domain', instance.kdomain);
-  writeNotNull('reportFlag', instance.kreportFlag);
-  writeNotNull('note', instance.knote);
-  writeNotNull('statusCode', instance.kstatusCode);
-  writeNotNull('createID', instance.kcreateID);
-  writeNotNull('createDate', zzz_date2Str(instance.kcreateDate));
-  writeNotNull('modifyID', instance.kmodifyID);
-  writeNotNull('modifyDate', zzz_date2Str(instance.kmodifyDate));
-  writeNotNull('isValid', instance.kisValid);
-  writeNotNull('kaction', instance.kaction);
-  writeNotNull('kattribute', instance.kattribute);
-  writeNotNull('kvalue', instance.kvalue);
-  writeNotNull('ktags', instance.ktags);
-  writeNotNull('kfts', instance.kfts);
-  writeNotNull('kranking', instance.kranking);
-  writeNotNull('krange', instance.krange);
-  writeNotNull('statuses', instance.statuses);
-  writeNotNull('korderBy', instance.korderBy);
-  writeNotNull('klimit', instance.klimit);
-  writeNotNull('koffset', instance.koffset);
-  writeNotNull('kstatus', instance.kstatus);
-  writeNotNull('kmessage', instance.kmessage);
-  writeNotNull('kcount', instance.kcount);
-  writeNotNull('kname', instance.kname);
-  writeNotNull('accessKey', instance.accessKey);
-  writeNotNull('secretKey', instance.secretKey);
-  writeNotNull('bucketName', instance.bucketName);
-  return val;
-}
+Map<String, dynamic> _$KAWSInfoToJson(KAWSInfo instance) => <String, dynamic>{
+      if (instance.kdomain case final value?) 'domain': value,
+      if (instance.kreportFlag case final value?) 'reportFlag': value,
+      if (instance.knote case final value?) 'note': value,
+      if (instance.kstatusCode case final value?) 'statusCode': value,
+      if (instance.kcreateID case final value?) 'createID': value,
+      if (zzz_date2Str(instance.kcreateDate) case final value?)
+        'createDate': value,
+      if (instance.kmodifyID case final value?) 'modifyID': value,
+      if (zzz_date2Str(instance.kmodifyDate) case final value?)
+        'modifyDate': value,
+      if (instance.kisValid case final value?) 'isValid': value,
+      if (instance.kaction case final value?) 'kaction': value,
+      if (instance.kattribute case final value?) 'kattribute': value,
+      if (instance.kvalue case final value?) 'kvalue': value,
+      if (instance.ktags case final value?) 'ktags': value,
+      if (instance.kfts case final value?) 'kfts': value,
+      if (instance.kranking case final value?) 'kranking': value,
+      if (instance.krange case final value?) 'krange': value,
+      if (instance.statuses case final value?) 'statuses': value,
+      if (instance.korderBy case final value?) 'korderBy': value,
+      if (instance.klimit case final value?) 'klimit': value,
+      if (instance.koffset case final value?) 'koffset': value,
+      if (instance.kstatus case final value?) 'kstatus': value,
+      if (instance.kmessage case final value?) 'kmessage': value,
+      if (instance.kcount case final value?) 'kcount': value,
+      if (instance.kname case final value?) 'kname': value,
+      if (instance.accessKey case final value?) 'accessKey': value,
+      if (instance.secretKey case final value?) 'secretKey': value,
+      if (instance.bucketName case final value?) 'bucketName': value,
+    };

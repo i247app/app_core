@@ -49,52 +49,44 @@ Store _$StoreFromJson(Map<String, dynamic> json) => Store()
   ..rawIsPrepay = json['isPrepay'] as String?
   ..currencyCode = json['currencyCode'] as String?;
 
-Map<String, dynamic> _$StoreToJson(Store instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('buid', instance.buid);
-  writeNotNull('storeID', instance.storeID);
-  writeNotNull('storeNO', instance.storeNO);
-  writeNotNull('storeName', instance.storeName);
-  writeNotNull('email', instance.email);
-  writeNotNull('fone', instance.fone);
-  writeNotNull('foneCode', instance.foneCode);
-  writeNotNull('dba', instance.dba);
-  writeNotNull('taxID', instance.taxID);
-  writeNotNull('menuID', instance.menuID);
-  writeNotNull('addressLine1', instance.addressLine1);
-  writeNotNull('addressLine2', instance.addressLine2);
-  writeNotNull('city', instance.city);
-  writeNotNull('stateCode', instance.stateCode);
-  writeNotNull('zipCode', instance.zipCode);
-  writeNotNull('countryCode', instance.countryCode);
-  writeNotNull('lat', instance.lat);
-  writeNotNull('lng', instance.lng);
-  writeNotNull('url', instance.url);
-  writeNotNull('slogan', instance.slogan);
-  writeNotNull('shortDesc', instance.description);
-  writeNotNull('info', instance.info);
-  writeNotNull('imgURL', instance.imageURL);
-  writeNotNull('imgData', instance.imageData);
-  writeNotNull('ftsWords', instance.keywords);
-  writeNotNull('estYear', instance.estYear);
-  writeNotNull('deliveryOpt', instance.deliveryOpt);
-  writeNotNull('pickupOpt', instance.pickupOpt);
-  writeNotNull('tableOpt', instance.tableOpt);
-  writeNotNull('catCode', instance.categoryCode);
-  writeNotNull('latLng', instance.latLng?.toJson());
-  writeNotNull('isOpen', instance.rawIsOpen);
-  writeNotNull(
-      'storeHours', instance.storeHours?.map((e) => e.toJson()).toList());
-  writeNotNull('leadTime', instance.leadTime);
-  writeNotNull('minimumTotal', instance.minimumTotal);
-  writeNotNull('isPrepay', instance.rawIsPrepay);
-  writeNotNull('currencyCode', instance.currencyCode);
-  return val;
-}
+Map<String, dynamic> _$StoreToJson(Store instance) => <String, dynamic>{
+      if (instance.buid case final value?) 'buid': value,
+      if (instance.storeID case final value?) 'storeID': value,
+      if (instance.storeNO case final value?) 'storeNO': value,
+      if (instance.storeName case final value?) 'storeName': value,
+      if (instance.email case final value?) 'email': value,
+      if (instance.fone case final value?) 'fone': value,
+      if (instance.foneCode case final value?) 'foneCode': value,
+      if (instance.dba case final value?) 'dba': value,
+      if (instance.taxID case final value?) 'taxID': value,
+      if (instance.menuID case final value?) 'menuID': value,
+      if (instance.addressLine1 case final value?) 'addressLine1': value,
+      if (instance.addressLine2 case final value?) 'addressLine2': value,
+      if (instance.city case final value?) 'city': value,
+      if (instance.stateCode case final value?) 'stateCode': value,
+      if (instance.zipCode case final value?) 'zipCode': value,
+      if (instance.countryCode case final value?) 'countryCode': value,
+      if (instance.lat case final value?) 'lat': value,
+      if (instance.lng case final value?) 'lng': value,
+      if (instance.url case final value?) 'url': value,
+      if (instance.slogan case final value?) 'slogan': value,
+      if (instance.description case final value?) 'shortDesc': value,
+      if (instance.info case final value?) 'info': value,
+      if (instance.imageURL case final value?) 'imgURL': value,
+      if (instance.imageData case final value?) 'imgData': value,
+      if (instance.keywords case final value?) 'ftsWords': value,
+      if (instance.estYear case final value?) 'estYear': value,
+      if (instance.deliveryOpt case final value?) 'deliveryOpt': value,
+      if (instance.pickupOpt case final value?) 'pickupOpt': value,
+      if (instance.tableOpt case final value?) 'tableOpt': value,
+      if (instance.categoryCode case final value?) 'catCode': value,
+      if (instance.latLng?.toJson() case final value?) 'latLng': value,
+      if (instance.rawIsOpen case final value?) 'isOpen': value,
+      if (instance.storeHours?.map((e) => e.toJson()).toList()
+          case final value?)
+        'storeHours': value,
+      if (instance.leadTime case final value?) 'leadTime': value,
+      if (instance.minimumTotal case final value?) 'minimumTotal': value,
+      if (instance.rawIsPrepay case final value?) 'isPrepay': value,
+      if (instance.currencyCode case final value?) 'currencyCode': value,
+    };

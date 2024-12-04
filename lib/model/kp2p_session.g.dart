@@ -15,21 +15,13 @@ KP2PSession _$KP2PSessionFromJson(Map<String, dynamic> json) => KP2PSession()
   ..adminName = json['adminName'] as String?
   ..adminAvatarURL = json['adminAvatarURL'] as String?;
 
-Map<String, dynamic> _$KP2PSessionToJson(KP2PSession instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('id', instance.id);
-  writeNotNull('chatID', instance.chatID);
-  writeNotNull('refApp', instance.refApp);
-  writeNotNull('refID', instance.refID);
-  writeNotNull('adminPUID', instance.adminPUID);
-  writeNotNull('adminName', instance.adminName);
-  writeNotNull('adminAvatarURL', instance.adminAvatarURL);
-  return val;
-}
+Map<String, dynamic> _$KP2PSessionToJson(KP2PSession instance) =>
+    <String, dynamic>{
+      if (instance.id case final value?) 'id': value,
+      if (instance.chatID case final value?) 'chatID': value,
+      if (instance.refApp case final value?) 'refApp': value,
+      if (instance.refID case final value?) 'refID': value,
+      if (instance.adminPUID case final value?) 'adminPUID': value,
+      if (instance.adminName case final value?) 'adminName': value,
+      if (instance.adminAvatarURL case final value?) 'adminAvatarURL': value,
+    };

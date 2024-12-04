@@ -56,7 +56,7 @@ class _TransferReceiptState extends State<TransferReceipt> {
       padding: EdgeInsets.all(12.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(100),
-        color: this.isSuccess ? Colors.green : Theme.of(context).errorColor,
+        color: this.isSuccess ? Colors.green : Theme.of(context).colorScheme.error,
       ),
       child: Icon(
         this.isSuccess ? Icons.check : Icons.close,
@@ -81,7 +81,7 @@ class _TransferReceiptState extends State<TransferReceipt> {
                       currency: KMoney.VND,
                       showSymbol: false,
                     ),
-                    style: Theme.of(context).textTheme.headline2,
+                    style: Theme.of(context).textTheme.displayMedium,
                   ),
                 ),
                 Row(
@@ -97,7 +97,7 @@ class _TransferReceiptState extends State<TransferReceipt> {
                                 : ""),
                         style: Theme.of(context)
                             .textTheme
-                            .subtitle1!
+                            .titleMedium!
                             .copyWith(fontSize: 18),
                         textAlign: TextAlign.right,
                       ),
@@ -120,19 +120,19 @@ class _TransferReceiptState extends State<TransferReceipt> {
                           KCreditTransaction.LINE_TYPE_CREDIT
                       ? "TRANSFER FROM"
                       : "TRANSFER TO",
-                  style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         color: Theme.of(context).primaryColorLight,
                       ),
                 ),
                 SizedBox(height: 8),
                 Text(
                   this.transaction!.prettyName,
-                  style: Theme.of(context).textTheme.headline6,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
                 SizedBox(height: 8),
                 Text(
                     "${this.transaction!.poiPUID}   @${this.transaction!.poiKUNM}",
-                    style: Theme.of(context).textTheme.subtitle1),
+                    style: Theme.of(context).textTheme.titleMedium),
               ],
             ),
           );
@@ -145,18 +145,18 @@ class _TransferReceiptState extends State<TransferReceipt> {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(KUtil.prettyDate(this.transaction!.lineDate, showTime: true),
                   textAlign: TextAlign.left,
-                  style: Theme.of(context).textTheme.subtitle1!),
+                  style: Theme.of(context).textTheme.titleMedium!),
               SizedBox(height: 8),
               Row(
                 children: [
                   Text(
                     "ID",
-                    style: Theme.of(context).textTheme.subtitle1!,
+                    style: Theme.of(context).textTheme.titleMedium!,
                   ),
                   SizedBox(width: 8),
                   Text(
                     "${this.transaction!.txID}",
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ],
               ),
@@ -165,7 +165,7 @@ class _TransferReceiptState extends State<TransferReceipt> {
                 children: [
                   Text(
                     this.transaction!.prettyXFRDescription,
-                    style: Theme.of(context).textTheme.subtitle2,
+                    style: Theme.of(context).textTheme.titleSmall,
                   ),
                 ],
               ),
@@ -183,7 +183,7 @@ class _TransferReceiptState extends State<TransferReceipt> {
                     "MEMO",
                     style: Theme.of(context)
                         .textTheme
-                        .subtitle1!
+                        .titleMedium!
                         .copyWith(color: Theme.of(context).primaryColorLight),
                   ),
                 ],
@@ -193,7 +193,7 @@ class _TransferReceiptState extends State<TransferReceipt> {
                 children: [
                   Text(
                     this.transaction?.memo ?? "",
-                    style: Theme.of(context).textTheme.subtitle1,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ],
               ),

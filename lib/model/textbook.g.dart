@@ -25,29 +25,21 @@ Textbook _$TextbookFromJson(Map<String, dynamic> json) => Textbook()
       ?.map((e) => Chapter.fromJson(e as Map<String, dynamic>))
       .toList();
 
-Map<String, dynamic> _$TextbookToJson(Textbook instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('textbookID', instance.textbookID);
-  writeNotNull('courseID', instance.courseID);
-  writeNotNull('title', instance.title);
-  writeNotNull('subject', instance.subject);
-  writeNotNull('category', instance.category);
-  writeNotNull('chapterNumber', instance.chapterNumber);
-  writeNotNull('subtitle', instance.subtitle);
-  writeNotNull('text', instance.text);
-  writeNotNull('mediaURL', instance.mediaURL);
-  writeNotNull('mediaType', instance.mediaType);
-  writeNotNull('textbookStatus', instance.textbookStatus);
-  writeNotNull('level', instance.level);
-  writeNotNull('grade', instance.grade);
-  writeNotNull('tags', instance.tags);
-  writeNotNull('chapters', instance.chapters?.map((e) => e.toJson()).toList());
-  return val;
-}
+Map<String, dynamic> _$TextbookToJson(Textbook instance) => <String, dynamic>{
+      if (instance.textbookID case final value?) 'textbookID': value,
+      if (instance.courseID case final value?) 'courseID': value,
+      if (instance.title case final value?) 'title': value,
+      if (instance.subject case final value?) 'subject': value,
+      if (instance.category case final value?) 'category': value,
+      if (instance.chapterNumber case final value?) 'chapterNumber': value,
+      if (instance.subtitle case final value?) 'subtitle': value,
+      if (instance.text case final value?) 'text': value,
+      if (instance.mediaURL case final value?) 'mediaURL': value,
+      if (instance.mediaType case final value?) 'mediaType': value,
+      if (instance.textbookStatus case final value?) 'textbookStatus': value,
+      if (instance.level case final value?) 'level': value,
+      if (instance.grade case final value?) 'grade': value,
+      if (instance.tags case final value?) 'tags': value,
+      if (instance.chapters?.map((e) => e.toJson()).toList() case final value?)
+        'chapters': value,
+    };

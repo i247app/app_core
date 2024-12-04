@@ -1076,7 +1076,7 @@ class _KGameJumpMultiRowState extends State<KGameJumpMultiRow>
         //         "${this.rightAnswerCount}",
         //         textScaleFactor: 1.0,
         //         textAlign: TextAlign.center,
-        //         style: Theme.of(context).textTheme.bodyText1!.copyWith(
+        //         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
         //               color: Colors.white,
         //               fontSize: 35,
         //               fontWeight: FontWeight.bold,
@@ -1100,7 +1100,7 @@ class _KGameJumpMultiRowState extends State<KGameJumpMultiRow>
         //       child: Text(
         //         "${this.points}",
         //         textAlign: TextAlign.center,
-        //         style: Theme.of(context).textTheme.bodyText1!.copyWith(
+        //         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
         //               fontSize: 35,
         //               fontWeight: FontWeight.bold,
         //             ),

@@ -65,62 +65,60 @@ Order _$OrderFromJson(Map<String, dynamic> json) => Order()
   ..rawIsCheckIn = json['isCheckIn'] as String?
   ..checkInDate = json['checkInDate'] as String?;
 
-Map<String, dynamic> _$OrderToJson(Order instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('orderID', instance.orderID);
-  writeNotNull('buid', instance.buid);
-  writeNotNull('storeID', instance.storeID);
-  writeNotNull('storeNO', instance.storeNO);
-  writeNotNull('cuid', instance.cuid);
-  writeNotNull('menuID', instance.menuID);
-  writeNotNull('currencyCode', instance.currencyCode);
-  writeNotNull('orderDate', instance.orderDate);
-  writeNotNull('orderType', instance.orderType);
-  writeNotNull('tableID', instance.tableID);
-  writeNotNull('orderNote', instance.orderNote);
-  writeNotNull('orderStatus', instance.orderStatus);
-  writeNotNull('orderStatusDate', instance.orderStatusDate);
-  writeNotNull('leadTime', instance.leadTime);
-  writeNotNull('minimumTotal', instance.minimumTotal);
-  writeNotNull('reserveDate', zzz_date2Str(instance.reserveDate));
-  writeNotNull('subtotal', instance.subtotal);
-  writeNotNull('tax', instance.tax);
-  writeNotNull('deliveryFee', instance.deliveryFee);
-  writeNotNull('serviceFee', instance.serviceFee);
-  writeNotNull('promoCode', instance.promoCode);
-  writeNotNull('promoValue', instance.promoValue);
-  writeNotNull('adjustAmount', instance.adjustAmount);
-  writeNotNull('total', instance.total);
-  writeNotNull('payType', instance.payType);
-  writeNotNull('payAccount', instance.payAccount);
-  writeNotNull('payStatus', instance.payStatus);
-  writeNotNull('payNote', instance.payNote);
-  writeNotNull('sharedToSocial', instance.sharedToSocialMedia);
-  writeNotNull('businessName', instance.businessName);
-  writeNotNull('businessFoneCode', instance.businessFoneCode);
-  writeNotNull('businessFone', instance.businessFone);
-  writeNotNull('businessAddress', instance.businessAddress);
-  writeNotNull('orderName', instance.orderName);
-  writeNotNull('orderFoneCode', instance.orderFoneCode);
-  writeNotNull('orderFone', instance.orderFone);
-  writeNotNull('orderAddress', instance.orderAddress);
-  writeNotNull('orderAddress2', instance.orderAddress2);
-  writeNotNull('orderLatLng', instance.orderLatLng?.toJson());
-  writeNotNull('orderItems', instance.items?.map((e) => e.toJson()).toList());
-  writeNotNull('business', instance.business?.toJson());
-  writeNotNull('user', instance.user?.toJson());
-  writeNotNull('promoStatusMessage', instance.promoStatusMessage);
-  writeNotNull('costSummary',
-      instance.costSummaryItems?.map((e) => e.toJson()).toList());
-  writeNotNull('isPrepay', instance.rawIsPrepay);
-  writeNotNull('isCheckIn', instance.rawIsCheckIn);
-  writeNotNull('checkInDate', instance.checkInDate);
-  return val;
-}
+Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
+      if (instance.orderID case final value?) 'orderID': value,
+      if (instance.buid case final value?) 'buid': value,
+      if (instance.storeID case final value?) 'storeID': value,
+      if (instance.storeNO case final value?) 'storeNO': value,
+      if (instance.cuid case final value?) 'cuid': value,
+      if (instance.menuID case final value?) 'menuID': value,
+      if (instance.currencyCode case final value?) 'currencyCode': value,
+      if (instance.orderDate case final value?) 'orderDate': value,
+      if (instance.orderType case final value?) 'orderType': value,
+      if (instance.tableID case final value?) 'tableID': value,
+      if (instance.orderNote case final value?) 'orderNote': value,
+      if (instance.orderStatus case final value?) 'orderStatus': value,
+      if (instance.orderStatusDate case final value?) 'orderStatusDate': value,
+      if (instance.leadTime case final value?) 'leadTime': value,
+      if (instance.minimumTotal case final value?) 'minimumTotal': value,
+      if (zzz_date2Str(instance.reserveDate) case final value?)
+        'reserveDate': value,
+      if (instance.subtotal case final value?) 'subtotal': value,
+      if (instance.tax case final value?) 'tax': value,
+      if (instance.deliveryFee case final value?) 'deliveryFee': value,
+      if (instance.serviceFee case final value?) 'serviceFee': value,
+      if (instance.promoCode case final value?) 'promoCode': value,
+      if (instance.promoValue case final value?) 'promoValue': value,
+      if (instance.adjustAmount case final value?) 'adjustAmount': value,
+      if (instance.total case final value?) 'total': value,
+      if (instance.payType case final value?) 'payType': value,
+      if (instance.payAccount case final value?) 'payAccount': value,
+      if (instance.payStatus case final value?) 'payStatus': value,
+      if (instance.payNote case final value?) 'payNote': value,
+      if (instance.sharedToSocialMedia case final value?)
+        'sharedToSocial': value,
+      if (instance.businessName case final value?) 'businessName': value,
+      if (instance.businessFoneCode case final value?)
+        'businessFoneCode': value,
+      if (instance.businessFone case final value?) 'businessFone': value,
+      if (instance.businessAddress case final value?) 'businessAddress': value,
+      if (instance.orderName case final value?) 'orderName': value,
+      if (instance.orderFoneCode case final value?) 'orderFoneCode': value,
+      if (instance.orderFone case final value?) 'orderFone': value,
+      if (instance.orderAddress case final value?) 'orderAddress': value,
+      if (instance.orderAddress2 case final value?) 'orderAddress2': value,
+      if (instance.orderLatLng?.toJson() case final value?)
+        'orderLatLng': value,
+      if (instance.items?.map((e) => e.toJson()).toList() case final value?)
+        'orderItems': value,
+      if (instance.business?.toJson() case final value?) 'business': value,
+      if (instance.user?.toJson() case final value?) 'user': value,
+      if (instance.promoStatusMessage case final value?)
+        'promoStatusMessage': value,
+      if (instance.costSummaryItems?.map((e) => e.toJson()).toList()
+          case final value?)
+        'costSummary': value,
+      if (instance.rawIsPrepay case final value?) 'isPrepay': value,
+      if (instance.rawIsCheckIn case final value?) 'isCheckIn': value,
+      if (instance.checkInDate case final value?) 'checkInDate': value,
+    };

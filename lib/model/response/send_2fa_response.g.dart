@@ -13,18 +13,10 @@ KSend2faResponse _$KSend2faResponseFromJson(Map<String, dynamic> json) =>
       ..ktoken = json['ktoken'] as String?
       ..kpin = json['kpin'] as String?;
 
-Map<String, dynamic> _$KSend2faResponseToJson(KSend2faResponse instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('kstatus', zzz_itoa(instance.kstatus));
-  writeNotNull('kmessage', instance.kmessage);
-  writeNotNull('ktoken', instance.ktoken);
-  writeNotNull('kpin', instance.kpin);
-  return val;
-}
+Map<String, dynamic> _$KSend2faResponseToJson(KSend2faResponse instance) =>
+    <String, dynamic>{
+      if (zzz_itoa(instance.kstatus) case final value?) 'kstatus': value,
+      if (instance.kmessage case final value?) 'kmessage': value,
+      if (instance.ktoken case final value?) 'ktoken': value,
+      if (instance.kpin case final value?) 'kpin': value,
+    };

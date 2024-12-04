@@ -12,17 +12,9 @@ SimpleResponse _$SimpleResponseFromJson(Map<String, dynamic> json) =>
       ..kmessage = json['kmessage'] as String?
       ..ktoken = json['ktoken'] as String?;
 
-Map<String, dynamic> _$SimpleResponseToJson(SimpleResponse instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('kstatus', zzz_itoa(instance.kstatus));
-  writeNotNull('kmessage', instance.kmessage);
-  writeNotNull('ktoken', instance.ktoken);
-  return val;
-}
+Map<String, dynamic> _$SimpleResponseToJson(SimpleResponse instance) =>
+    <String, dynamic>{
+      if (zzz_itoa(instance.kstatus) case final value?) 'kstatus': value,
+      if (instance.kmessage case final value?) 'kmessage': value,
+      if (instance.ktoken case final value?) 'ktoken': value,
+    };

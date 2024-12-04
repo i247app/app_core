@@ -1269,7 +1269,7 @@ class KMovingTapGameScreenState extends State<KMovingTapGameScreen>
                           textScaleFactor: 1.0,
                           textAlign: TextAlign.center,
                           style:
-                              Theme.of(context).textTheme.bodyText1!.copyWith(
+                              Theme.of(context).textTheme.bodyLarge!.copyWith(
                                     color: Color(0xfffdcd3a),
                                     fontSize: 28,
                                     fontWeight: FontWeight.bold,

@@ -250,7 +250,7 @@ class _KHeroTrainingState extends State<KHeroTraining>
                               textAlign: TextAlign.center,
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText1!
+                                  .bodyLarge!
                                   .copyWith(
                                     fontSize: 35,
                                     fontWeight: FontWeight.bold,
@@ -265,7 +265,7 @@ class _KHeroTrainingState extends State<KHeroTraining>
                                 MediaQuery.of(context).size.height,
                             height: ((bottomTarget - topTarget) / 2) *
                                 MediaQuery.of(context).size.height,
-                            color: Theme.of(context).backgroundColor,
+                            color: Theme.of(context).colorScheme.surface,
                             child: Transform.scale(
                               scale: 1.0,
                               child: Image.asset(

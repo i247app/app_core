@@ -26,31 +26,23 @@ KCreditTransaction _$KCreditTransactionFromJson(Map<String, dynamic> json) =>
       ..poiBusinessName = json['poiBusinessName'] as String?
       ..memo = json['memo'] as String?;
 
-Map<String, dynamic> _$KCreditTransactionToJson(KCreditTransaction instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('assPUID', instance.assPUID);
-  writeNotNull('txID', instance.txID);
-  writeNotNull('lineID', instance.lineID);
-  writeNotNull('lineDate', instance.lineDate);
-  writeNotNull('lineType', instance.lineType);
-  writeNotNull('xfrType', instance.xfrType);
-  writeNotNull('amount', instance.amount);
-  writeNotNull('tokenName', instance.tokenName);
-  writeNotNull('puid', instance.puid);
-  writeNotNull('poiPUID', instance.poiPUID);
-  writeNotNull('poiKUNM', instance.poiKUNM);
-  writeNotNull('poiFirstName', instance.poiFirstName);
-  writeNotNull('poiMiddleName', instance.poiMiddleName);
-  writeNotNull('poiLastName', instance.poiLastName);
-  writeNotNull('poiFone', instance.poiFone);
-  writeNotNull('poiBusinessName', instance.poiBusinessName);
-  writeNotNull('memo', instance.memo);
-  return val;
-}
+Map<String, dynamic> _$KCreditTransactionToJson(KCreditTransaction instance) =>
+    <String, dynamic>{
+      if (instance.assPUID case final value?) 'assPUID': value,
+      if (instance.txID case final value?) 'txID': value,
+      if (instance.lineID case final value?) 'lineID': value,
+      if (instance.lineDate case final value?) 'lineDate': value,
+      if (instance.lineType case final value?) 'lineType': value,
+      if (instance.xfrType case final value?) 'xfrType': value,
+      if (instance.amount case final value?) 'amount': value,
+      if (instance.tokenName case final value?) 'tokenName': value,
+      if (instance.puid case final value?) 'puid': value,
+      if (instance.poiPUID case final value?) 'poiPUID': value,
+      if (instance.poiKUNM case final value?) 'poiKUNM': value,
+      if (instance.poiFirstName case final value?) 'poiFirstName': value,
+      if (instance.poiMiddleName case final value?) 'poiMiddleName': value,
+      if (instance.poiLastName case final value?) 'poiLastName': value,
+      if (instance.poiFone case final value?) 'poiFone': value,
+      if (instance.poiBusinessName case final value?) 'poiBusinessName': value,
+      if (instance.memo case final value?) 'memo': value,
+    };

@@ -23,29 +23,22 @@ KGameScore _$KGameScoreFromJson(Map<String, dynamic> json) => KGameScore()
   ..language = json['language'] as String?
   ..topic = json['topic'] as String?;
 
-Map<String, dynamic> _$KGameScoreToJson(KGameScore instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('puid', instance.puid);
-  writeNotNull('kunm', instance.kunm);
-  writeNotNull('avatar', instance.avatarURL);
-  writeNotNull('gameID', instance.game);
-  writeNotNull('level', instance.level);
-  writeNotNull('ranking', instance.ranking);
-  writeNotNull('rankDate', zzz_date2Str(instance.rankDate));
-  writeNotNull('score', instance.score);
-  writeNotNull('scoreType', instance.scoreType);
-  writeNotNull('time', instance.time);
-  writeNotNull('point', instance.point);
-  writeNotNull('scoreDate', zzz_date2Str(instance.scoreDate));
-  writeNotNull('gameAppID', instance.gameAppID);
-  writeNotNull('language', instance.language);
-  writeNotNull('topic', instance.topic);
-  return val;
-}
+Map<String, dynamic> _$KGameScoreToJson(KGameScore instance) =>
+    <String, dynamic>{
+      if (instance.puid case final value?) 'puid': value,
+      if (instance.kunm case final value?) 'kunm': value,
+      if (instance.avatarURL case final value?) 'avatar': value,
+      if (instance.game case final value?) 'gameID': value,
+      if (instance.level case final value?) 'level': value,
+      if (instance.ranking case final value?) 'ranking': value,
+      if (zzz_date2Str(instance.rankDate) case final value?) 'rankDate': value,
+      if (instance.score case final value?) 'score': value,
+      if (instance.scoreType case final value?) 'scoreType': value,
+      if (instance.time case final value?) 'time': value,
+      if (instance.point case final value?) 'point': value,
+      if (zzz_date2Str(instance.scoreDate) case final value?)
+        'scoreDate': value,
+      if (instance.gameAppID case final value?) 'gameAppID': value,
+      if (instance.language case final value?) 'language': value,
+      if (instance.topic case final value?) 'topic': value,
+    };

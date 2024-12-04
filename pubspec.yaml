@@ -7,7 +7,7 @@ version: 1.1.306
 homepage: none
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
   flutter: ">=1.17.0"
 
 publish_to: none
@@ -26,11 +26,11 @@ dependencies:
   timeago: ^3.1.0
   intl: ^0.18.1
   flutter_secure_storage: ^8.0.0
-  json_annotation: ^4.8.1 # ^4.5.0
+  json_annotation: ^4.9.0 #^4.8.1 # ^4.5.0
   fluttertoast: ^8.2.1
   local_auth: ^2.1.6
   new_version_plus: ^0.0.9 # new_version deprecated
-  flutter_local_notifications: ^15.1.1
+  flutter_local_notifications: ^18.0.1  #^15.1.1
   flutter_slidable: ^3.0.0
   draggable_widget: ^2.0.0
 
@@ -98,7 +98,8 @@ dependencies:
   flutter_cache_manager: ^3.3.0
   cached_network_image: ^3.2.2
 
-  flutter_picker: ^2.1.0
+#  flutter_picker: ^2.1.0
+  flutter_picker_plus: ^1.3.0
   wheel_chooser: ^1.1.2 # ^1.1.0 is buggy
 
   xml: ^6.3.0
@@ -126,7 +127,7 @@ dev_dependencies:
   lints: any
   build_resolvers: ^2.3.1
   build_runner: ^2.4.6 #^2.1.5 # ^1.11.5 # ^1.0.0
-  json_serializable: ^6.6.2 # 6.2.0 6.1.2 ^3.5.1 # ^3.0.0
+  json_serializable: ^6.9.0 #^6.6.2 # 6.2.0 6.1.2 ^3.5.1 # ^3.0.0
   analyzer: ^6.2.0
 
 # For information on the generic Dart part of this file, see the

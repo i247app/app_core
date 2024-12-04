@@ -15,18 +15,11 @@ GetBanksResponse _$GetBanksResponseFromJson(Map<String, dynamic> json) =>
           ?.map((e) => KBank.fromJson(e as Map<String, dynamic>))
           .toList();
 
-Map<String, dynamic> _$GetBanksResponseToJson(GetBanksResponse instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('kstatus', zzz_itoa(instance.kstatus));
-  writeNotNull('kmessage', instance.kmessage);
-  writeNotNull('ktoken', instance.ktoken);
-  writeNotNull('banks', instance.banks?.map((e) => e.toJson()).toList());
-  return val;
-}
+Map<String, dynamic> _$GetBanksResponseToJson(GetBanksResponse instance) =>
+    <String, dynamic>{
+      if (zzz_itoa(instance.kstatus) case final value?) 'kstatus': value,
+      if (instance.kmessage case final value?) 'kmessage': value,
+      if (instance.ktoken case final value?) 'ktoken': value,
+      if (instance.banks?.map((e) => e.toJson()).toList() case final value?)
+        'banks': value,
+    };

@@ -51,7 +51,7 @@ class _KBankPickerState extends State<KBankPicker> {
         key: Key("${100 + i}"),
         child: Text(
           "${banks![i].shortName}",
-          style: Theme.of(context).textTheme.bodyText1,
+          style: Theme.of(context).textTheme.bodyLarge,
         ),
         value: "${100 + i}",
       );

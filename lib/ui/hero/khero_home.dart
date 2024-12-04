@@ -146,7 +146,7 @@ class _KHeroHomeState extends State<KHeroHome> {
               padding: EdgeInsets.all(16),
               child: Container(
                 padding: EdgeInsets.all(16),
-                color: Theme.of(context).backgroundColor.withOpacity(1),
+                color: Theme.of(context).colorScheme.surface.withOpacity(1),
                 child: heroDetailView,
               ),
             ),
@@ -247,7 +247,7 @@ class _KHeroHomeState extends State<KHeroHome> {
     final overlay = Stack(
       fit: StackFit.expand,
       children: [
-        Container(color: Theme.of(context).backgroundColor.withOpacity(1)),
+        Container(color: Theme.of(context).colorScheme.surface.withOpacity(1)),
         Align(
           alignment: Alignment.topCenter,
           child: view,
@@ -278,7 +278,7 @@ class _KHeroHomeState extends State<KHeroHome> {
 
     final nothingHere = Text(
       "No heroes found",
-      style: Theme.of(context).textTheme.bodyText1,
+      style: Theme.of(context).textTheme.bodyLarge,
     );
 
     final heroListing = ListView(
@@ -355,7 +355,7 @@ class _KHeroHomeState extends State<KHeroHome> {
       children: [
         content,
         if (this.isShowIntro) ...[
-          Container(color: Theme.of(context).backgroundColor.withOpacity(1)),
+          Container(color: Theme.of(context).colorScheme.surface.withOpacity(1)),
           KEggHatchNewShortIntro(
             onFinish: () => setState(() => this.isShowIntro = false),
           ),
@@ -437,7 +437,7 @@ class _HeroDetailState extends State<_HeroDetail> {
               child: Text(
                 "Select a Hero",
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline5,
+                style: Theme.of(context).textTheme.headlineSmall,
               ),
             ),
           )
@@ -479,11 +479,11 @@ class _HeroDetailState extends State<_HeroDetail> {
       this.displayName ?? "",
       style: Theme.of(context)
           .textTheme
-          .headline6!
+          .titleLarge!
           .copyWith(fontWeight: FontWeight.w600),
     );
 
-    final bioStyle = Theme.of(context).textTheme.bodyText1;
+    final bioStyle = Theme.of(context).textTheme.bodyLarge;
     final bio = widget.hero?.isEgg ?? false
         ? KStopwatchLabel(
             widget.hero!.eggDate!.add(widget.hero!.eggDuration!),
@@ -529,7 +529,7 @@ class _HeroDetailState extends State<_HeroDetail> {
                 //   child: Text("Set Avatar",
                 //       style: Theme.of(context)
                 //           .textTheme
-                //           .bodyText1!
+                //           .bodyLarge!
                 //           .copyWith(color: Colors.white)),
                 // ),
                 ElevatedButton(
@@ -541,7 +541,7 @@ class _HeroDetailState extends State<_HeroDetail> {
                   child: Text("Training",
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText1!
+                          .bodyLarge!
                           .copyWith(color: Colors.white)),
                 ),
               ],

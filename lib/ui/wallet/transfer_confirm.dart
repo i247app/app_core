@@ -78,13 +78,13 @@ class _TransferConfirmState extends State<TransferConfirm> {
             "New Balance",
             style: Theme.of(context)
                 .textTheme
-                .subtitle1!
+                .titleMedium!
                 .copyWith(color: Theme.of(context).primaryColorLight),
           ),
           SizedBox(
             width: 20,
           ),
-          Text(amt, style: Theme.of(context).textTheme.subtitle1)
+          Text(amt, style: Theme.of(context).textTheme.titleMedium)
         ],
       );
       return balanceText;
@@ -103,7 +103,7 @@ class _TransferConfirmState extends State<TransferConfirm> {
         SizedBox(width: 8),
         Text(
           user.fullName ?? "",
-          style: Theme.of(context).textTheme.headline6,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
       ],
     );
@@ -113,7 +113,7 @@ class _TransferConfirmState extends State<TransferConfirm> {
       children: [
         Text(
           "${user.puid} @${user.kunm}",
-          style: Theme.of(context).textTheme.subtitle1,
+          style: Theme.of(context).textTheme.titleMedium,
         ),
       ],
     );
@@ -121,7 +121,7 @@ class _TransferConfirmState extends State<TransferConfirm> {
     final titleMemo = Text("Memo",
         style: Theme.of(context)
             .textTheme
-            .headline6!
+            .titleLarge!
             .copyWith(color: Theme.of(context).primaryColorLight),
         textAlign: TextAlign.left);
 
@@ -136,7 +136,7 @@ class _TransferConfirmState extends State<TransferConfirm> {
       decoration: InputDecoration(
         border: InputBorder.none,
         hintText: KPhrases.memoHintText,
-        hintStyle: Theme.of(context).textTheme.caption,
+        hintStyle: Theme.of(context).textTheme.bodySmall,
       ),
     );
 

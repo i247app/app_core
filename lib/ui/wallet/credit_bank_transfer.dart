@@ -203,8 +203,8 @@ class _CreditBankTransferState extends State<CreditBankTransfer> {
                       "${KPhrases.amountMustLowerThanBalance} ${KUtil.prettyMoney(amount: widget.total, tokenName: widget.tokenName)}",
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText1!
-                          .copyWith(color: Theme.of(context).errorColor),
+                          .bodyLarge!
+                          .copyWith(color: Theme.of(context).colorScheme.error),
                     ),
                   ),
             // SizedBox(height: 20),

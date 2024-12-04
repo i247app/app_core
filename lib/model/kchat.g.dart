@@ -23,26 +23,21 @@ KChat _$KChatFromJson(Map<String, dynamic> json) => KChat()
   ..refApp = json['refApp'] as String?
   ..domain = json['domain'] as String?;
 
-Map<String, dynamic> _$KChatToJson(KChat instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('chatID', instance.chatID);
-  writeNotNull('chatName', instance.chatName);
-  writeNotNull('previewMessageID', instance.previewMessageID);
-  writeNotNull('previewMessagePUID', instance.previewMessagePUID);
-  writeNotNull('previewMessage', instance.previewMessage);
-  writeNotNull(
-      'chatMessages', instance.kMessages?.map((e) => e.toJson()).toList());
-  writeNotNull('members', instance.kMembers?.map((e) => e.toJson()).toList());
-  writeNotNull('activeDate', zzz_date2Str(instance.activeDate));
-  writeNotNull('refID', instance.refID);
-  writeNotNull('refApp', instance.refApp);
-  writeNotNull('domain', instance.domain);
-  return val;
-}
+Map<String, dynamic> _$KChatToJson(KChat instance) => <String, dynamic>{
+      if (instance.chatID case final value?) 'chatID': value,
+      if (instance.chatName case final value?) 'chatName': value,
+      if (instance.previewMessageID case final value?)
+        'previewMessageID': value,
+      if (instance.previewMessagePUID case final value?)
+        'previewMessagePUID': value,
+      if (instance.previewMessage case final value?) 'previewMessage': value,
+      if (instance.kMessages?.map((e) => e.toJson()).toList() case final value?)
+        'chatMessages': value,
+      if (instance.kMembers?.map((e) => e.toJson()).toList() case final value?)
+        'members': value,
+      if (zzz_date2Str(instance.activeDate) case final value?)
+        'activeDate': value,
+      if (instance.refID case final value?) 'refID': value,
+      if (instance.refApp case final value?) 'refApp': value,
+      if (instance.domain case final value?) 'domain': value,
+    };

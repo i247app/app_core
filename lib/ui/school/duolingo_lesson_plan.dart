@@ -113,7 +113,7 @@ class _DuolingoListItem extends StatelessWidget {
           child: this.data.icon,
         ),
         SizedBox(height: 10),
-        Text(this.data.label, style: Theme.of(context).textTheme.headline5),
+        Text(this.data.label, style: Theme.of(context).textTheme.headlineSmall),
       ],
     );
 

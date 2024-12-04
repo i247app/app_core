@@ -11,16 +11,8 @@ CostSummaryItem _$CostSummaryItemFromJson(Map<String, dynamic> json) =>
       ..label = json['label'] as String?
       ..value = json['value'] as String?;
 
-Map<String, dynamic> _$CostSummaryItemToJson(CostSummaryItem instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('label', instance.label);
-  writeNotNull('value', instance.value);
-  return val;
-}
+Map<String, dynamic> _$CostSummaryItemToJson(CostSummaryItem instance) =>
+    <String, dynamic>{
+      if (instance.label case final value?) 'label': value,
+      if (instance.value case final value?) 'value': value,
+    };

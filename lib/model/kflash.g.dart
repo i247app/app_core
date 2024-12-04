@@ -12,18 +12,9 @@ KFlash _$KFlashFromJson(Map<String, dynamic> json) => KFlash()
   ..media = json['media'] as String?
   ..nickName = json['nickName'] as String?;
 
-Map<String, dynamic> _$KFlashToJson(KFlash instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('flashType', instance.flashType);
-  writeNotNull('mediaType', instance.mediaType);
-  writeNotNull('media', instance.media);
-  writeNotNull('nickName', instance.nickName);
-  return val;
-}
+Map<String, dynamic> _$KFlashToJson(KFlash instance) => <String, dynamic>{
+      if (instance.flashType case final value?) 'flashType': value,
+      if (instance.mediaType case final value?) 'mediaType': value,
+      if (instance.media case final value?) 'media': value,
+      if (instance.nickName case final value?) 'nickName': value,
+    };

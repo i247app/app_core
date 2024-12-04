@@ -13,19 +13,11 @@ KStoreHour _$KStoreHourFromJson(Map<String, dynamic> json) => KStoreHour()
   ..close = json['closeTime'] as String?
   ..dayIndex = json['day'] as String?;
 
-Map<String, dynamic> _$KStoreHourToJson(KStoreHour instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('buid', instance.buid);
-  writeNotNull('storeID', instance.storeID);
-  writeNotNull('openTime', instance.open);
-  writeNotNull('closeTime', instance.close);
-  writeNotNull('day', instance.dayIndex);
-  return val;
-}
+Map<String, dynamic> _$KStoreHourToJson(KStoreHour instance) =>
+    <String, dynamic>{
+      if (instance.buid case final value?) 'buid': value,
+      if (instance.storeID case final value?) 'storeID': value,
+      if (instance.open case final value?) 'openTime': value,
+      if (instance.close case final value?) 'closeTime': value,
+      if (instance.dayIndex case final value?) 'day': value,
+    };

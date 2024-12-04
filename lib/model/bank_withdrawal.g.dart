@@ -22,27 +22,22 @@ BankWithdrawal _$BankWithdrawalFromJson(Map<String, dynamic> json) =>
       ..txID = json['txID'] as String?
       ..withdrawalStatus = json['withdrawalStatus'] as String?;
 
-Map<String, dynamic> _$BankWithdrawalToJson(BankWithdrawal instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('id', instance.id);
-  writeNotNull('puid', instance.puid);
-  writeNotNull('withdrawalDate', zzz_date2Str(instance.withdrawalDate));
-  writeNotNull('kunm', instance.kunm);
-  writeNotNull('name', instance.name);
-  writeNotNull('bankID', instance.bankID);
-  writeNotNull('bankName', instance.bankName);
-  writeNotNull('bankAccountName', instance.bankAccountName);
-  writeNotNull('bankAccountNumber', instance.bankAccountNumber);
-  writeNotNull('amount', instance.amount);
-  writeNotNull('tokenName', instance.tokenName);
-  writeNotNull('txID', instance.txID);
-  writeNotNull('withdrawalStatus', instance.withdrawalStatus);
-  return val;
-}
+Map<String, dynamic> _$BankWithdrawalToJson(BankWithdrawal instance) =>
+    <String, dynamic>{
+      if (instance.id case final value?) 'id': value,
+      if (instance.puid case final value?) 'puid': value,
+      if (zzz_date2Str(instance.withdrawalDate) case final value?)
+        'withdrawalDate': value,
+      if (instance.kunm case final value?) 'kunm': value,
+      if (instance.name case final value?) 'name': value,
+      if (instance.bankID case final value?) 'bankID': value,
+      if (instance.bankName case final value?) 'bankName': value,
+      if (instance.bankAccountName case final value?) 'bankAccountName': value,
+      if (instance.bankAccountNumber case final value?)
+        'bankAccountNumber': value,
+      if (instance.amount case final value?) 'amount': value,
+      if (instance.tokenName case final value?) 'tokenName': value,
+      if (instance.txID case final value?) 'txID': value,
+      if (instance.withdrawalStatus case final value?)
+        'withdrawalStatus': value,
+    };

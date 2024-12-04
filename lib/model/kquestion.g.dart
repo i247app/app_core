@@ -19,23 +19,16 @@ KQuestion _$KQuestionFromJson(Map<String, dynamic> json) => KQuestion()
       .toList()
   ..isGenAnswer = zzz_str2Bool(json['isGenAnswer'] as String?);
 
-Map<String, dynamic> _$KQuestionToJson(KQuestion instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('qaID', instance.qaID);
-  writeNotNull('questionID', instance.questionID);
-  writeNotNull('questionType', instance.questionType);
-  writeNotNull('text', instance.text);
-  writeNotNull('mediaURL', instance.mediaURL);
-  writeNotNull('mediaType', instance.mediaType);
-  writeNotNull('tags', instance.tags);
-  writeNotNull('answers', instance.answers?.map((e) => e.toJson()).toList());
-  writeNotNull('isGenAnswer', zzz_bool2Str(instance.isGenAnswer));
-  return val;
-}
+Map<String, dynamic> _$KQuestionToJson(KQuestion instance) => <String, dynamic>{
+      if (instance.qaID case final value?) 'qaID': value,
+      if (instance.questionID case final value?) 'questionID': value,
+      if (instance.questionType case final value?) 'questionType': value,
+      if (instance.text case final value?) 'text': value,
+      if (instance.mediaURL case final value?) 'mediaURL': value,
+      if (instance.mediaType case final value?) 'mediaType': value,
+      if (instance.tags case final value?) 'tags': value,
+      if (instance.answers?.map((e) => e.toJson()).toList() case final value?)
+        'answers': value,
+      if (zzz_bool2Str(instance.isGenAnswer) case final value?)
+        'isGenAnswer': value,
+    };

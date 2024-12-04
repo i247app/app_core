@@ -16,22 +16,14 @@ Review _$ReviewFromJson(Map<String, dynamic> json) => Review()
   ..comment = json['reviewText'] as String?
   ..reviewDate = zzz_str2Date(json['reviewDate'] as String?);
 
-Map<String, dynamic> _$ReviewToJson(Review instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('reviewID', instance.reviewID);
-  writeNotNull('refApp', instance.refApp);
-  writeNotNull('refID', instance.refID);
-  writeNotNull('reviewee', instance.reviewee);
-  writeNotNull('reviewer', instance.reviewer);
-  writeNotNull('rating', instance.ratingValue);
-  writeNotNull('reviewText', instance.comment);
-  writeNotNull('reviewDate', zzz_date2Str(instance.reviewDate));
-  return val;
-}
+Map<String, dynamic> _$ReviewToJson(Review instance) => <String, dynamic>{
+      if (instance.reviewID case final value?) 'reviewID': value,
+      if (instance.refApp case final value?) 'refApp': value,
+      if (instance.refID case final value?) 'refID': value,
+      if (instance.reviewee case final value?) 'reviewee': value,
+      if (instance.reviewer case final value?) 'reviewer': value,
+      if (instance.ratingValue case final value?) 'rating': value,
+      if (instance.comment case final value?) 'reviewText': value,
+      if (zzz_date2Str(instance.reviewDate) case final value?)
+        'reviewDate': value,
+    };

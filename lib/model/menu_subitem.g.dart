@@ -19,25 +19,17 @@ MenuSubitem _$MenuSubitemFromJson(Map<String, dynamic> json) => MenuSubitem()
   ..subCategoryID = json['subcatID'] as String?
   ..subCategoryName = json['subcatName'] as String?;
 
-Map<String, dynamic> _$MenuSubitemToJson(MenuSubitem instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('menuID', instance.menuID);
-  writeNotNull('menuItemID', instance.menuItemID);
-  writeNotNull('menuSubitemID', instance.menuSubitemID);
-  writeNotNull('buid', instance.buid);
-  writeNotNull('code', instance.code);
-  writeNotNull('name', instance.name);
-  writeNotNull('text', instance.text);
-  writeNotNull('price', instance.price);
-  writeNotNull('subitemStatus', instance.subitemStatus);
-  writeNotNull('subcatID', instance.subCategoryID);
-  writeNotNull('subcatName', instance.subCategoryName);
-  return val;
-}
+Map<String, dynamic> _$MenuSubitemToJson(MenuSubitem instance) =>
+    <String, dynamic>{
+      if (instance.menuID case final value?) 'menuID': value,
+      if (instance.menuItemID case final value?) 'menuItemID': value,
+      if (instance.menuSubitemID case final value?) 'menuSubitemID': value,
+      if (instance.buid case final value?) 'buid': value,
+      if (instance.code case final value?) 'code': value,
+      if (instance.name case final value?) 'name': value,
+      if (instance.text case final value?) 'text': value,
+      if (instance.price case final value?) 'price': value,
+      if (instance.subitemStatus case final value?) 'subitemStatus': value,
+      if (instance.subCategoryID case final value?) 'subcatID': value,
+      if (instance.subCategoryName case final value?) 'subcatName': value,
+    };

@@ -34,36 +34,28 @@ Business _$BusinessFromJson(Map<String, dynamic> json) => Business()
   ..pickupOpt = json['pickupOpt'] as String?
   ..tableOpt = json['tableOpt'] as String?;
 
-Map<String, dynamic> _$BusinessToJson(Business instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('puid', instance.puid);
-  writeNotNull('kuid', instance.kuid);
-  writeNotNull('buid', instance.buid);
-  writeNotNull('tokenName', instance.tokenName);
-  writeNotNull('businessName', instance.bnm);
-  writeNotNull('fone', instance.fone);
-  writeNotNull('foneCode', instance.foneCode);
-  writeNotNull('addressLine1', instance.addressLine1);
-  writeNotNull('city', instance.city);
-  writeNotNull('countryCode', instance.countryCode);
-  writeNotNull('url', instance.url);
-  writeNotNull('shortDesc', instance.description);
-  writeNotNull('lat', instance.lat);
-  writeNotNull('lng', instance.lng);
-  writeNotNull('imageURL', instance.imageURL);
-  writeNotNull('imageData', instance.imageData);
-  writeNotNull('catCode', instance.categoryCode);
-  writeNotNull('stores', instance.stores?.map((e) => e.toJson()).toList());
-  writeNotNull('latLng', instance.latLng?.toJson());
-  writeNotNull('deliveryOpt', instance.deliveryOpt);
-  writeNotNull('pickupOpt', instance.pickupOpt);
-  writeNotNull('tableOpt', instance.tableOpt);
-  return val;
-}
+Map<String, dynamic> _$BusinessToJson(Business instance) => <String, dynamic>{
+      if (instance.puid case final value?) 'puid': value,
+      if (instance.kuid case final value?) 'kuid': value,
+      if (instance.buid case final value?) 'buid': value,
+      if (instance.tokenName case final value?) 'tokenName': value,
+      if (instance.bnm case final value?) 'businessName': value,
+      if (instance.fone case final value?) 'fone': value,
+      if (instance.foneCode case final value?) 'foneCode': value,
+      if (instance.addressLine1 case final value?) 'addressLine1': value,
+      if (instance.city case final value?) 'city': value,
+      if (instance.countryCode case final value?) 'countryCode': value,
+      if (instance.url case final value?) 'url': value,
+      if (instance.description case final value?) 'shortDesc': value,
+      if (instance.lat case final value?) 'lat': value,
+      if (instance.lng case final value?) 'lng': value,
+      if (instance.imageURL case final value?) 'imageURL': value,
+      if (instance.imageData case final value?) 'imageData': value,
+      if (instance.categoryCode case final value?) 'catCode': value,
+      if (instance.stores?.map((e) => e.toJson()).toList() case final value?)
+        'stores': value,
+      if (instance.latLng?.toJson() case final value?) 'latLng': value,
+      if (instance.deliveryOpt case final value?) 'deliveryOpt': value,
+      if (instance.pickupOpt case final value?) 'pickupOpt': value,
+      if (instance.tableOpt case final value?) 'tableOpt': value,
+    };

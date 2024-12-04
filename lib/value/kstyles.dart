@@ -367,7 +367,7 @@ abstract class KStyles {
               secondary: palette.schemeSecondary,
             )
               .copyWith(error: palette.error)
-              .copyWith(background: palette.contrasting),
+              .copyWith(surface: palette.contrasting),
     );
   }
 }

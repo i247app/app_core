@@ -372,7 +372,7 @@ class _WalletHomeState extends State<WalletHome> {
             currentBalance?.tokenName ?? "    ",
             style: Theme.of(context)
                 .textTheme
-                .headline6!
+                .titleLarge!
                 .copyWith(color: Colors.blue),
           ),
         ],
@@ -508,25 +508,25 @@ class _WalletItem extends StatelessWidget {
 
   Widget transactorPrettyName(ctx, String name) => Text(
         name,
-        style: Theme.of(ctx).textTheme.subtitle1,
+        style: Theme.of(ctx).textTheme.titleMedium,
       );
 
   Widget transactionID(ctx, String txID) => Align(
         alignment: Alignment.bottomLeft,
         child: Text(
           "ID $txID",
-          style: Theme.of(ctx).textTheme.subtitle2,
+          style: Theme.of(ctx).textTheme.titleSmall,
         ),
       );
 
   Text transactionMethod(ctx, String txMethod) => Text(
         txMethod,
-        style: Theme.of(ctx).textTheme.subtitle2,
+        style: Theme.of(ctx).textTheme.titleSmall,
       );
 
   Widget transactionDate(ctx, String date) => Text(
         KUtil.prettyDate(date, abbreviate: true),
-        style: Theme.of(ctx).textTheme.subtitle2,
+        style: Theme.of(ctx).textTheme.titleSmall,
       );
 
   Widget amountChange(ctx, String amount, String tokenName) => Align(
@@ -536,7 +536,7 @@ class _WalletItem extends StatelessWidget {
             RichText(
               text: TextSpan(
                 text: KUtil.prettyMoney(amount: amount, tokenName: tokenName),
-                style: Theme.of(ctx).textTheme.subtitle1,
+                style: Theme.of(ctx).textTheme.titleMedium,
                 // style: TextStyle(
                 //   fontWeight: FontWeight.w600,
                 //   color: amount.contains('-') ? Colors.red : Colors.green,
@@ -568,7 +568,7 @@ class _WalletItem extends StatelessWidget {
         z = KStringHelper.isEmpty(name) ? "" : "@$name";
         break;
     }
-    return Text(z, style: Theme.of(ctx).textTheme.subtitle1);
+    return Text(z, style: Theme.of(ctx).textTheme.titleMedium);
   }
 
   @override
@@ -591,7 +591,7 @@ class _WalletItem extends StatelessWidget {
               if (KStringHelper.isExist(transaction.prettyName)) ...[
                 Text(
                   transaction.prettyName,
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 SizedBox(height: 5),
               ],
@@ -599,7 +599,7 @@ class _WalletItem extends StatelessWidget {
                   KStringHelper.isExist(transaction.poiKUNM)) ...[
                 Text(
                   "${transaction.poiPUID}   @${transaction.poiKUNM}",
-                  style: Theme.of(context).textTheme.subtitle1,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 SizedBox(height: 5),
               ],

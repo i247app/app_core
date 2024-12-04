@@ -1,7 +1,7 @@
 import 'package:app_core/app_core.dart';
 import 'package:app_core/lingo/kphrases.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_picker/Picker.dart';
+import 'package:flutter_picker_plus/flutter_picker_plus.dart';
 
 class KGameSettingDialog extends StatefulWidget {
   final Function onClose;

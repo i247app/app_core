@@ -8,7 +8,7 @@ import 'package:app_core/ui/school/widget/kdoc_screen.dart';
 import 'package:app_core/ui/school/widget/kdoc_view.dart';
 import 'package:app_core/lingo/kphrases.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_picker/flutter_picker.dart';
+import 'package:flutter_picker_plus/flutter_picker_plus.dart';
 
 enum KDocType { headstart, classes }
 
@@ -100,7 +100,7 @@ class _KDocPickerState extends State<KDocPicker> {
         height: 120,
         title: Text(KPhrases.grade),
         textStyle:
-            Theme.of(context).textTheme.subtitle1!.copyWith(fontSize: 24),
+            Theme.of(context).textTheme.titleMedium!.copyWith(fontSize: 24),
         selectedTextStyle:
             TextStyle(color: Theme.of(context).colorScheme.primary),
         onSelect: (Picker picker, int index, List<int> values) {
@@ -247,14 +247,14 @@ class _ChapterItem extends StatelessWidget {
                           chapter.title ?? "",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.subtitle1!,
+                          style: Theme.of(context).textTheme.titleMedium!,
                         ),
                         SizedBox(
                           height: 8,
                         ),
                         Text(
                           chapter.subtitle ?? "",
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: Theme.of(context).textTheme.bodyLarge,
                         )
                       ],
                     ),

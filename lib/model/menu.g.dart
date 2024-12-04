@@ -24,25 +24,17 @@ Menu _$MenuFromJson(Map<String, dynamic> json) => Menu()
       ? null
       : Business.fromJson(json['business'] as Map<String, dynamic>);
 
-Map<String, dynamic> _$MenuToJson(Menu instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('menuID', instance.menuID);
-  writeNotNull('buid', instance.buid);
-  writeNotNull('storeID', instance.storeID);
-  writeNotNull('imgURL', instance.imageURL);
-  writeNotNull('note', instance.note);
-  writeNotNull('menuStatus', instance.menuStatus);
-  writeNotNull('currencyCode', instance.currencyCode);
-  writeNotNull('menuItems', instance.items?.map((e) => e.toJson()).toList());
-  writeNotNull(
-      'featureItems', instance.featured?.map((e) => e.toJson()).toList());
-  writeNotNull('business', instance.business?.toJson());
-  return val;
-}
+Map<String, dynamic> _$MenuToJson(Menu instance) => <String, dynamic>{
+      if (instance.menuID case final value?) 'menuID': value,
+      if (instance.buid case final value?) 'buid': value,
+      if (instance.storeID case final value?) 'storeID': value,
+      if (instance.imageURL case final value?) 'imgURL': value,
+      if (instance.note case final value?) 'note': value,
+      if (instance.menuStatus case final value?) 'menuStatus': value,
+      if (instance.currencyCode case final value?) 'currencyCode': value,
+      if (instance.items?.map((e) => e.toJson()).toList() case final value?)
+        'menuItems': value,
+      if (instance.featured?.map((e) => e.toJson()).toList() case final value?)
+        'featureItems': value,
+      if (instance.business?.toJson() case final value?) 'business': value,
+    };

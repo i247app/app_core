@@ -15,16 +15,9 @@ KFullNotification _$KFullNotificationFromJson(Map<String, dynamic> json) =>
           ? null
           : KPushData.fromJson(json['data'] as Map<String, dynamic>);
 
-Map<String, dynamic> _$KFullNotificationToJson(KFullNotification instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('notification', instance.notification?.toJson());
-  writeNotNull('data', instance.data?.toJson());
-  return val;
-}
+Map<String, dynamic> _$KFullNotificationToJson(KFullNotification instance) =>
+    <String, dynamic>{
+      if (instance.notification?.toJson() case final value?)
+        'notification': value,
+      if (instance.data?.toJson() case final value?) 'data': value,
+    };

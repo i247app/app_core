@@ -16,22 +16,13 @@ KTag _$KTagFromJson(Map<String, dynamic> json) => KTag()
   ..tagIcon = json['tagIcon'] as String?
   ..tagStatus = json['tagStatus'] as String?;
 
-Map<String, dynamic> _$KTagToJson(KTag instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('tagID', instance.tagID);
-  writeNotNull('groupIndex', instance.groupIndex);
-  writeNotNull('groupName', instance.groupName);
-  writeNotNull('groupIcon', instance.groupIcon);
-  writeNotNull('tagIndex', instance.tagIndex);
-  writeNotNull('tagName', instance.tagName);
-  writeNotNull('tagIcon', instance.tagIcon);
-  writeNotNull('tagStatus', instance.tagStatus);
-  return val;
-}
+Map<String, dynamic> _$KTagToJson(KTag instance) => <String, dynamic>{
+      if (instance.tagID case final value?) 'tagID': value,
+      if (instance.groupIndex case final value?) 'groupIndex': value,
+      if (instance.groupName case final value?) 'groupName': value,
+      if (instance.groupIcon case final value?) 'groupIcon': value,
+      if (instance.tagIndex case final value?) 'tagIndex': value,
+      if (instance.tagName case final value?) 'tagName': value,
+      if (instance.tagIcon case final value?) 'tagIcon': value,
+      if (instance.tagStatus case final value?) 'tagStatus': value,
+    };

@@ -31,36 +31,28 @@ XFRTicket _$XFRTicketFromJson(Map<String, dynamic> json) => XFRTicket(
       ..rcvKAID = json['rcvKAID'] as String?
       ..isAutoCreate = zzz_str2Bool(json['isAutoCreate'] as String?);
 
-Map<String, dynamic> _$XFRTicketToJson(XFRTicket instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('byPUID', instance.byPUID);
-  writeNotNull('sndPUID', instance.sndPUID);
-  writeNotNull('rcvPUID', instance.rcvPUID);
-  writeNotNull('rcvKUNM', instance.rcvKUNM);
-  writeNotNull('rcvEmail', instance.rcvEmail);
-  writeNotNull('rcvFone', instance.rcvFone);
-  writeNotNull('amount', instance.amount);
-  writeNotNull('tokenName', instance.tokenName);
-  writeNotNull('memo', instance.memo);
-  writeNotNull('xfrID', instance.xfrID);
-  writeNotNull('xfrType', instance.xfrType);
-  writeNotNull('xfrDate', instance.xfrDate);
-  writeNotNull('message', instance.message);
-  writeNotNull('promoCode', instance.promoCode);
-  writeNotNull('feeRate', instance.feeRate);
-  writeNotNull('feeAmount', instance.feeAmount);
-  writeNotNull('byKUID', instance.byKUID);
-  writeNotNull('sndKAID', instance.sndKAID);
-  writeNotNull('rcvKUID', instance.rcvKUID);
-  writeNotNull('rcvKAID', instance.rcvKAID);
-  writeNotNull('isAutoCreate', zzz_bool2Str(instance.isAutoCreate));
-  writeNotNull('promotionType', instance.promotionType);
-  return val;
-}
+Map<String, dynamic> _$XFRTicketToJson(XFRTicket instance) => <String, dynamic>{
+      if (instance.byPUID case final value?) 'byPUID': value,
+      if (instance.sndPUID case final value?) 'sndPUID': value,
+      if (instance.rcvPUID case final value?) 'rcvPUID': value,
+      if (instance.rcvKUNM case final value?) 'rcvKUNM': value,
+      if (instance.rcvEmail case final value?) 'rcvEmail': value,
+      if (instance.rcvFone case final value?) 'rcvFone': value,
+      if (instance.amount case final value?) 'amount': value,
+      if (instance.tokenName case final value?) 'tokenName': value,
+      if (instance.memo case final value?) 'memo': value,
+      if (instance.xfrID case final value?) 'xfrID': value,
+      if (instance.xfrType case final value?) 'xfrType': value,
+      if (instance.xfrDate case final value?) 'xfrDate': value,
+      if (instance.message case final value?) 'message': value,
+      if (instance.promoCode case final value?) 'promoCode': value,
+      if (instance.feeRate case final value?) 'feeRate': value,
+      if (instance.feeAmount case final value?) 'feeAmount': value,
+      if (instance.byKUID case final value?) 'byKUID': value,
+      if (instance.sndKAID case final value?) 'sndKAID': value,
+      if (instance.rcvKUID case final value?) 'rcvKUID': value,
+      if (instance.rcvKAID case final value?) 'rcvKAID': value,
+      if (zzz_bool2Str(instance.isAutoCreate) case final value?)
+        'isAutoCreate': value,
+      if (instance.promotionType case final value?) 'promotionType': value,
+    };

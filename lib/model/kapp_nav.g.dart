@@ -23,29 +23,31 @@ KAppNav _$KAppNavFromJson(Map<String, dynamic> json) => KAppNav()
   ..profileAppMode = zzz_appNavTryAtoi(json['profileAppMode'])
   ..seekProducerAppMode = zzz_appNavTryAtoi(json['seekProducerAppMode']);
 
-Map<String, dynamic> _$KAppNavToJson(KAppNav instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('chatAppMode', zzz_itoa(instance.chatAppMode));
-  writeNotNull('payAppMode', zzz_itoa(instance.payAppMode));
-  writeNotNull('feedAppMode', zzz_itoa(instance.feedAppMode));
-  writeNotNull('rewardAppMode', zzz_itoa(instance.rewardAppMode));
-  writeNotNull('ampAppMode', zzz_itoa(instance.ampAppMode));
-  writeNotNull('splashMode', zzz_itoa(instance.splashMode));
-  writeNotNull('studyAppMode', zzz_itoa(instance.studyAppMode));
-  writeNotNull('classAppMode', zzz_itoa(instance.classAppMode));
-  writeNotNull('uniAppMode', zzz_itoa(instance.universityAppMode));
-  writeNotNull('gigAppMode', zzz_itoa(instance.gigAppMode));
-  writeNotNull('heroAppMode', zzz_itoa(instance.heroAppMode));
-  writeNotNull('headstartAppMode', zzz_itoa(instance.headstartAppMode));
-  writeNotNull('googleAppMode', zzz_itoa(instance.googleAppMode));
-  writeNotNull('profileAppMode', zzz_itoa(instance.profileAppMode));
-  writeNotNull('seekProducerAppMode', zzz_itoa(instance.seekProducerAppMode));
-  return val;
-}
+Map<String, dynamic> _$KAppNavToJson(KAppNav instance) => <String, dynamic>{
+      if (zzz_itoa(instance.chatAppMode) case final value?)
+        'chatAppMode': value,
+      if (zzz_itoa(instance.payAppMode) case final value?) 'payAppMode': value,
+      if (zzz_itoa(instance.feedAppMode) case final value?)
+        'feedAppMode': value,
+      if (zzz_itoa(instance.rewardAppMode) case final value?)
+        'rewardAppMode': value,
+      if (zzz_itoa(instance.ampAppMode) case final value?) 'ampAppMode': value,
+      if (zzz_itoa(instance.splashMode) case final value?) 'splashMode': value,
+      if (zzz_itoa(instance.studyAppMode) case final value?)
+        'studyAppMode': value,
+      if (zzz_itoa(instance.classAppMode) case final value?)
+        'classAppMode': value,
+      if (zzz_itoa(instance.universityAppMode) case final value?)
+        'uniAppMode': value,
+      if (zzz_itoa(instance.gigAppMode) case final value?) 'gigAppMode': value,
+      if (zzz_itoa(instance.heroAppMode) case final value?)
+        'heroAppMode': value,
+      if (zzz_itoa(instance.headstartAppMode) case final value?)
+        'headstartAppMode': value,
+      if (zzz_itoa(instance.googleAppMode) case final value?)
+        'googleAppMode': value,
+      if (zzz_itoa(instance.profileAppMode) case final value?)
+        'profileAppMode': value,
+      if (zzz_itoa(instance.seekProducerAppMode) case final value?)
+        'seekProducerAppMode': value,
+    };

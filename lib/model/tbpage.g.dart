@@ -22,27 +22,18 @@ TBPage _$TBPageFromJson(Map<String, dynamic> json) => TBPage()
       ?.map((e) => KQuestion.fromJson(e as Map<String, dynamic>))
       .toList();
 
-Map<String, dynamic> _$TBPageToJson(TBPage instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('pageID', instance.pageID);
-  writeNotNull('chapterID', instance.chapterID);
-  writeNotNull('textbookID', instance.textbookID);
-  writeNotNull('index', instance.index);
-  writeNotNull('title', instance.title);
-  writeNotNull('subtitle', instance.subtitle);
-  writeNotNull('text', instance.text);
-  writeNotNull('mediaURL', instance.mediaURL);
-  writeNotNull('mediaType', instance.mediaType);
-  writeNotNull('pageStatus', instance.pageStatus);
-  writeNotNull('questionID', instance.questionID);
-  writeNotNull(
-      'questions', instance.questions?.map((e) => e.toJson()).toList());
-  return val;
-}
+Map<String, dynamic> _$TBPageToJson(TBPage instance) => <String, dynamic>{
+      if (instance.pageID case final value?) 'pageID': value,
+      if (instance.chapterID case final value?) 'chapterID': value,
+      if (instance.textbookID case final value?) 'textbookID': value,
+      if (instance.index case final value?) 'index': value,
+      if (instance.title case final value?) 'title': value,
+      if (instance.subtitle case final value?) 'subtitle': value,
+      if (instance.text case final value?) 'text': value,
+      if (instance.mediaURL case final value?) 'mediaURL': value,
+      if (instance.mediaType case final value?) 'mediaType': value,
+      if (instance.pageStatus case final value?) 'pageStatus': value,
+      if (instance.questionID case final value?) 'questionID': value,
+      if (instance.questions?.map((e) => e.toJson()).toList() case final value?)
+        'questions': value,
+    };

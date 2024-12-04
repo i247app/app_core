@@ -13,19 +13,10 @@ KRole _$KRoleFromJson(Map<String, dynamic> json) => KRole()
   ..bnm = json['bnm'] as String?
   ..avatarURL = json['avatar'] as String?;
 
-Map<String, dynamic> _$KRoleToJson(KRole instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('puid', instance.puid);
-  writeNotNull('buid', instance.buid);
-  writeNotNull('role', instance.role);
-  writeNotNull('bnm', instance.bnm);
-  writeNotNull('avatar', instance.avatarURL);
-  return val;
-}
+Map<String, dynamic> _$KRoleToJson(KRole instance) => <String, dynamic>{
+      if (instance.puid case final value?) 'puid': value,
+      if (instance.buid case final value?) 'buid': value,
+      if (instance.role case final value?) 'role': value,
+      if (instance.bnm case final value?) 'bnm': value,
+      if (instance.avatarURL case final value?) 'avatar': value,
+    };

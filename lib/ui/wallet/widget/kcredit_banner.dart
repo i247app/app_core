@@ -22,7 +22,7 @@ class KCreditBanner extends StatelessWidget {
           duration: Duration(milliseconds: 500),
           // separator: this.tokenName == KMoney.USD ? "," : ".",
           // precision: this.tokenName == KMoney.VND ? 0 : 2,
-          style: Theme.of(context).textTheme.headline1,
+          style: Theme.of(context).textTheme.displayLarge,
           formatter: (double d) => KUtil.prettyMoney(
             amount: "${d}",
             tokenName: tokenName,

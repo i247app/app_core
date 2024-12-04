@@ -24,7 +24,7 @@ class KQRViewer extends StatelessWidget {
                   KSessionData.me?.businessName ??
                       KSessionData.me?.fullName ??
                       "",
-                  style: Theme.of(context).textTheme.headline5,
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
               SizedBox(height: 16),

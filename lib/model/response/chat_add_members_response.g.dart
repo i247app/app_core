@@ -17,18 +17,11 @@ ChatAddMembersResponse _$ChatAddMembersResponseFromJson(
           .toList();
 
 Map<String, dynamic> _$ChatAddMembersResponseToJson(
-    ChatAddMembersResponse instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('kstatus', zzz_itoa(instance.kstatus));
-  writeNotNull('kmessage', instance.kmessage);
-  writeNotNull('ktoken', instance.ktoken);
-  writeNotNull('members', instance.members?.map((e) => e.toJson()).toList());
-  return val;
-}
+        ChatAddMembersResponse instance) =>
+    <String, dynamic>{
+      if (zzz_itoa(instance.kstatus) case final value?) 'kstatus': value,
+      if (instance.kmessage case final value?) 'kmessage': value,
+      if (instance.ktoken case final value?) 'ktoken': value,
+      if (instance.members?.map((e) => e.toJson()).toList() case final value?)
+        'members': value,
+    };

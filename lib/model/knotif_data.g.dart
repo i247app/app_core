@@ -10,16 +10,8 @@ KNotifData _$KNotifDataFromJson(Map<String, dynamic> json) => KNotifData()
   ..title = json['title'] as String?
   ..body = json['body'] as String?;
 
-Map<String, dynamic> _$KNotifDataToJson(KNotifData instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('title', instance.title);
-  writeNotNull('body', instance.body);
-  return val;
-}
+Map<String, dynamic> _$KNotifDataToJson(KNotifData instance) =>
+    <String, dynamic>{
+      if (instance.title case final value?) 'title': value,
+      if (instance.body case final value?) 'body': value,
+    };

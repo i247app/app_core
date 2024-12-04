@@ -26,30 +26,21 @@ KAddress _$KAddressFromJson(Map<String, dynamic> json) => KAddress()
       ? null
       : KLatLng.fromJson(json['latLng'] as Map<String, dynamic>);
 
-Map<String, dynamic> _$KAddressToJson(KAddress instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('addressID', instance.addressID);
-  writeNotNull('puid', instance.puid);
-  writeNotNull('placeID', instance.placeID);
-  writeNotNull('addressType', instance.addressType);
-  writeNotNull('addressLine1', instance.addressLine1);
-  writeNotNull('addressLine2', instance.addressLine2);
-  writeNotNull('addressLine', instance.addressLine);
-  writeNotNull('placeName', instance.placeName);
-  writeNotNull('ward', instance.ward);
-  writeNotNull('district', instance.district);
-  writeNotNull('city', instance.city);
-  writeNotNull('stateCode', instance.stateCode);
-  writeNotNull('zipCode', instance.zipCode);
-  writeNotNull('countryCode', instance.countryCode);
-  writeNotNull('addressStatus', instance.addressStatus);
-  writeNotNull('latLng', instance.latLng?.toJson());
-  return val;
-}
+Map<String, dynamic> _$KAddressToJson(KAddress instance) => <String, dynamic>{
+      if (instance.addressID case final value?) 'addressID': value,
+      if (instance.puid case final value?) 'puid': value,
+      if (instance.placeID case final value?) 'placeID': value,
+      if (instance.addressType case final value?) 'addressType': value,
+      if (instance.addressLine1 case final value?) 'addressLine1': value,
+      if (instance.addressLine2 case final value?) 'addressLine2': value,
+      if (instance.addressLine case final value?) 'addressLine': value,
+      if (instance.placeName case final value?) 'placeName': value,
+      if (instance.ward case final value?) 'ward': value,
+      if (instance.district case final value?) 'district': value,
+      if (instance.city case final value?) 'city': value,
+      if (instance.stateCode case final value?) 'stateCode': value,
+      if (instance.zipCode case final value?) 'zipCode': value,
+      if (instance.countryCode case final value?) 'countryCode': value,
+      if (instance.addressStatus case final value?) 'addressStatus': value,
+      if (instance.latLng?.toJson() case final value?) 'latLng': value,
+    };

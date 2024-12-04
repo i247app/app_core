@@ -20,26 +20,18 @@ KChatMember _$KChatMemberFromJson(Map<String, dynamic> json) => KChatMember()
   ..refID = json['refID'] as String?
   ..refApp = json['refApp'] as String?;
 
-Map<String, dynamic> _$KChatMemberToJson(KChatMember instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('chatID', instance.chatID);
-  writeNotNull('puid', instance.puid);
-  writeNotNull('kunm', instance.kunm);
-  writeNotNull('fone', instance.phone);
-  writeNotNull('firstName', instance.firstName);
-  writeNotNull('middleName', instance.middleName);
-  writeNotNull('lastName', instance.lastName);
-  writeNotNull('avatar', instance.avatar);
-  writeNotNull('memberStatus', instance.memberStatus);
-  writeNotNull('domain', instance.domain);
-  writeNotNull('refID', instance.refID);
-  writeNotNull('refApp', instance.refApp);
-  return val;
-}
+Map<String, dynamic> _$KChatMemberToJson(KChatMember instance) =>
+    <String, dynamic>{
+      if (instance.chatID case final value?) 'chatID': value,
+      if (instance.puid case final value?) 'puid': value,
+      if (instance.kunm case final value?) 'kunm': value,
+      if (instance.phone case final value?) 'fone': value,
+      if (instance.firstName case final value?) 'firstName': value,
+      if (instance.middleName case final value?) 'middleName': value,
+      if (instance.lastName case final value?) 'lastName': value,
+      if (instance.avatar case final value?) 'avatar': value,
+      if (instance.memberStatus case final value?) 'memberStatus': value,
+      if (instance.domain case final value?) 'domain': value,
+      if (instance.refID case final value?) 'refID': value,
+      if (instance.refApp case final value?) 'refApp': value,
+    };

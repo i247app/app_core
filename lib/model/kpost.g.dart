@@ -24,26 +24,19 @@ KPost _$KPostFromJson(Map<String, dynamic> json) => KPost()
       ?.map((e) => KUser.fromJson(e as Map<String, dynamic>))
       .toList();
 
-Map<String, dynamic> _$KPostToJson(KPost instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('postID', instance.postID);
-  writeNotNull('postStatus', instance.postStatus);
-  writeNotNull('price', instance.price);
-  writeNotNull('title', instance.title);
-  writeNotNull('subtitle', instance.subtitle);
-  writeNotNull('text', instance.text);
-  writeNotNull('postType', instance.postType);
-  writeNotNull('contentType', instance.contentType);
-  writeNotNull('mediaURL', instance.mediaURL);
-  writeNotNull('mediaType', instance.mediaType);
-  writeNotNull('reviews', instance.reviews?.map((e) => e.toJson()).toList());
-  writeNotNull('users', instance.users?.map((e) => e.toJson()).toList());
-  return val;
-}
+Map<String, dynamic> _$KPostToJson(KPost instance) => <String, dynamic>{
+      if (instance.postID case final value?) 'postID': value,
+      if (instance.postStatus case final value?) 'postStatus': value,
+      if (instance.price case final value?) 'price': value,
+      if (instance.title case final value?) 'title': value,
+      if (instance.subtitle case final value?) 'subtitle': value,
+      if (instance.text case final value?) 'text': value,
+      if (instance.postType case final value?) 'postType': value,
+      if (instance.contentType case final value?) 'contentType': value,
+      if (instance.mediaURL case final value?) 'mediaURL': value,
+      if (instance.mediaType case final value?) 'mediaType': value,
+      if (instance.reviews?.map((e) => e.toJson()).toList() case final value?)
+        'reviews': value,
+      if (instance.users?.map((e) => e.toJson()).toList() case final value?)
+        'users': value,
+    };

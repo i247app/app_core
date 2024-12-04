@@ -391,12 +391,12 @@ class _TextKey extends StatelessWidget {
     if (_NumpadStyleManager.of(context).style == KNumberPadStyle.ORIGINAL) {
       theText = Text(
         this.text,
-        style: Theme.of(context).textTheme.headline6?.copyWith(fontSize: 18),
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 18),
       );
     } else {
       theText = Text(
         this.text,
-        style: Theme.of(context).textTheme.headline6?.copyWith(
+        style: Theme.of(context).textTheme.titleLarge?.copyWith(
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),

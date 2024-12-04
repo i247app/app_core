@@ -18,24 +18,16 @@ KAnswer _$KAnswerFromJson(Map<String, dynamic> json) => KAnswer()
   ..buttonColor = json['buttonColor'] as String?
   ..buttonStyle = json['buttonStyle'] as String?;
 
-Map<String, dynamic> _$KAnswerToJson(KAnswer instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('qaID', instance.qaID);
-  writeNotNull('questionID', instance.questionID);
-  writeNotNull('answerID', instance.answerID);
-  writeNotNull('text', instance.text);
-  writeNotNull('isCorrect', zzz_bool2Str(instance.isCorrect));
-  writeNotNull('mediaURL', instance.mediaURL);
-  writeNotNull('mediaType', instance.mediaType);
-  writeNotNull('correctAnswer', instance.correctAnswer);
-  writeNotNull('buttonColor', instance.buttonColor);
-  writeNotNull('buttonStyle', instance.buttonStyle);
-  return val;
-}
+Map<String, dynamic> _$KAnswerToJson(KAnswer instance) => <String, dynamic>{
+      if (instance.qaID case final value?) 'qaID': value,
+      if (instance.questionID case final value?) 'questionID': value,
+      if (instance.answerID case final value?) 'answerID': value,
+      if (instance.text case final value?) 'text': value,
+      if (zzz_bool2Str(instance.isCorrect) case final value?)
+        'isCorrect': value,
+      if (instance.mediaURL case final value?) 'mediaURL': value,
+      if (instance.mediaType case final value?) 'mediaType': value,
+      if (instance.correctAnswer case final value?) 'correctAnswer': value,
+      if (instance.buttonColor case final value?) 'buttonColor': value,
+      if (instance.buttonStyle case final value?) 'buttonStyle': value,
+    };

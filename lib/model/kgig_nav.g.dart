@@ -22,28 +22,19 @@ KGigNav _$KGigNavFromJson(Map<String, dynamic> json) => KGigNav()
   ..english = zzz_gigNavTryAtoi(json['chitEN'])
   ..viet = zzz_gigNavTryAtoi(json['chitVN']);
 
-Map<String, dynamic> _$KGigNavToJson(KGigNav instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('homework', zzz_itoa(instance.homework));
-  writeNotNull('headstart', zzz_itoa(instance.headstart));
-  writeNotNull('monEnglish', zzz_itoa(instance.monEnglish));
-  writeNotNull('monViet', zzz_itoa(instance.monViet));
-  writeNotNull('monMath', zzz_itoa(instance.monMath));
-  writeNotNull('buddy', zzz_itoa(instance.buddy));
-  writeNotNull('teacher', zzz_itoa(instance.teacher));
-  writeNotNull('expert', zzz_itoa(instance.expert));
-  writeNotNull('online', zzz_itoa(instance.online));
-  writeNotNull('inPerson', zzz_itoa(instance.inPerson));
-  writeNotNull('tutoring', zzz_itoa(instance.tutoring));
-  writeNotNull('exam', zzz_itoa(instance.exam));
-  writeNotNull('chitEN', zzz_itoa(instance.english));
-  writeNotNull('chitVN', zzz_itoa(instance.viet));
-  return val;
-}
+Map<String, dynamic> _$KGigNavToJson(KGigNav instance) => <String, dynamic>{
+      if (zzz_itoa(instance.homework) case final value?) 'homework': value,
+      if (zzz_itoa(instance.headstart) case final value?) 'headstart': value,
+      if (zzz_itoa(instance.monEnglish) case final value?) 'monEnglish': value,
+      if (zzz_itoa(instance.monViet) case final value?) 'monViet': value,
+      if (zzz_itoa(instance.monMath) case final value?) 'monMath': value,
+      if (zzz_itoa(instance.buddy) case final value?) 'buddy': value,
+      if (zzz_itoa(instance.teacher) case final value?) 'teacher': value,
+      if (zzz_itoa(instance.expert) case final value?) 'expert': value,
+      if (zzz_itoa(instance.online) case final value?) 'online': value,
+      if (zzz_itoa(instance.inPerson) case final value?) 'inPerson': value,
+      if (zzz_itoa(instance.tutoring) case final value?) 'tutoring': value,
+      if (zzz_itoa(instance.exam) case final value?) 'exam': value,
+      if (zzz_itoa(instance.english) case final value?) 'chitEN': value,
+      if (zzz_itoa(instance.viet) case final value?) 'chitVN': value,
+    };

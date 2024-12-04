@@ -127,7 +127,7 @@ class KHeroGridItemState extends State<KHeroGridItem>
               ? "Egg"
               : widget.hero.name ?? "?",
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyText1,
+          style: Theme.of(context).textTheme.bodyLarge,
         ),
       ],
     );

@@ -17,19 +17,12 @@ KGetGameScoresResponse _$KGetGameScoresResponseFromJson(
           .toList();
 
 Map<String, dynamic> _$KGetGameScoresResponseToJson(
-    KGetGameScoresResponse instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('kstatus', zzz_itoa(instance.kstatus));
-  writeNotNull('kmessage', instance.kmessage);
-  writeNotNull('ktoken', instance.ktoken);
-  writeNotNull(
-      'gameScores', instance.gameScores?.map((e) => e.toJson()).toList());
-  return val;
-}
+        KGetGameScoresResponse instance) =>
+    <String, dynamic>{
+      if (zzz_itoa(instance.kstatus) case final value?) 'kstatus': value,
+      if (instance.kmessage case final value?) 'kmessage': value,
+      if (instance.ktoken case final value?) 'ktoken': value,
+      if (instance.gameScores?.map((e) => e.toJson()).toList()
+          case final value?)
+        'gameScores': value,
+    };

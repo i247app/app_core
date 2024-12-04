@@ -1302,7 +1302,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
                           textScaleFactor: 1.0,
                           textAlign: TextAlign.center,
                           style:
-                              Theme.of(context).textTheme.bodyText1!.copyWith(
+                              Theme.of(context).textTheme.bodyLarge!.copyWith(
                                     color: Color(0xfffdcd3a),
                                     fontSize: 28,
                                     fontWeight: FontWeight.bold,
@@ -1360,7 +1360,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
         //         "${this.rightAnswerCount}",
         //         textScaleFactor: 1.0,
         //         textAlign: TextAlign.center,
-        //         style: Theme.of(context).textTheme.bodyText1!.copyWith(
+        //         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
         //               color: Colors.white,
         //               fontSize: 35,
         //               fontWeight: FontWeight.bold,
@@ -1384,7 +1384,7 @@ class _KJumpGameScreenState extends State<_KJumpGameScreen>
         //       child: Text(
         //         "${this.points}",
         //         textAlign: TextAlign.center,
-        //         style: Theme.of(context).textTheme.bodyText1!.copyWith(
+        //         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
         //               fontSize: 35,
         //               fontWeight: FontWeight.bold,
         //             ),

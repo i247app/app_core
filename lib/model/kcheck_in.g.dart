@@ -46,47 +46,42 @@ KCheckIn _$KCheckInFromJson(Map<String, dynamic> json) => KCheckIn()
       ? null
       : KGigAddress.fromJson(json['address'] as Map<String, dynamic>);
 
-Map<String, dynamic> _$KCheckInToJson(KCheckIn instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('domain', instance.kdomain);
-  writeNotNull('reportFlag', instance.kreportFlag);
-  writeNotNull('note', instance.knote);
-  writeNotNull('statusCode', instance.kstatusCode);
-  writeNotNull('createID', instance.kcreateID);
-  writeNotNull('createDate', zzz_date2Str(instance.kcreateDate));
-  writeNotNull('modifyID', instance.kmodifyID);
-  writeNotNull('modifyDate', zzz_date2Str(instance.kmodifyDate));
-  writeNotNull('isValid', instance.kisValid);
-  writeNotNull('kaction', instance.kaction);
-  writeNotNull('kattribute', instance.kattribute);
-  writeNotNull('kvalue', instance.kvalue);
-  writeNotNull('ktags', instance.ktags);
-  writeNotNull('kfts', instance.kfts);
-  writeNotNull('kranking', instance.kranking);
-  writeNotNull('krange', instance.krange);
-  writeNotNull('statuses', instance.statuses);
-  writeNotNull('korderBy', instance.korderBy);
-  writeNotNull('klimit', instance.klimit);
-  writeNotNull('koffset', instance.koffset);
-  writeNotNull('kstatus', instance.kstatus);
-  writeNotNull('kmessage', instance.kmessage);
-  writeNotNull('kcount', instance.kcount);
-  writeNotNull('kname', instance.kname);
-  writeNotNull('id', instance.id);
-  writeNotNull('puid', instance.puid);
-  writeNotNull('placeID', instance.placeID);
-  writeNotNull('addressLine', instance.addressLine);
-  writeNotNull('latLng', instance.latLng?.toJson());
-  writeNotNull('minutePerSession', instance.minutePerSession);
-  writeNotNull('checkInDate', zzz_date2Str(instance.checkInDate));
-  writeNotNull('checkInStatus', instance.checkInStatus);
-  writeNotNull('address', instance.address?.toJson());
-  return val;
-}
+Map<String, dynamic> _$KCheckInToJson(KCheckIn instance) => <String, dynamic>{
+      if (instance.kdomain case final value?) 'domain': value,
+      if (instance.kreportFlag case final value?) 'reportFlag': value,
+      if (instance.knote case final value?) 'note': value,
+      if (instance.kstatusCode case final value?) 'statusCode': value,
+      if (instance.kcreateID case final value?) 'createID': value,
+      if (zzz_date2Str(instance.kcreateDate) case final value?)
+        'createDate': value,
+      if (instance.kmodifyID case final value?) 'modifyID': value,
+      if (zzz_date2Str(instance.kmodifyDate) case final value?)
+        'modifyDate': value,
+      if (instance.kisValid case final value?) 'isValid': value,
+      if (instance.kaction case final value?) 'kaction': value,
+      if (instance.kattribute case final value?) 'kattribute': value,
+      if (instance.kvalue case final value?) 'kvalue': value,
+      if (instance.ktags case final value?) 'ktags': value,
+      if (instance.kfts case final value?) 'kfts': value,
+      if (instance.kranking case final value?) 'kranking': value,
+      if (instance.krange case final value?) 'krange': value,
+      if (instance.statuses case final value?) 'statuses': value,
+      if (instance.korderBy case final value?) 'korderBy': value,
+      if (instance.klimit case final value?) 'klimit': value,
+      if (instance.koffset case final value?) 'koffset': value,
+      if (instance.kstatus case final value?) 'kstatus': value,
+      if (instance.kmessage case final value?) 'kmessage': value,
+      if (instance.kcount case final value?) 'kcount': value,
+      if (instance.kname case final value?) 'kname': value,
+      if (instance.id case final value?) 'id': value,
+      if (instance.puid case final value?) 'puid': value,
+      if (instance.placeID case final value?) 'placeID': value,
+      if (instance.addressLine case final value?) 'addressLine': value,
+      if (instance.latLng?.toJson() case final value?) 'latLng': value,
+      if (instance.minutePerSession case final value?)
+        'minutePerSession': value,
+      if (zzz_date2Str(instance.checkInDate) case final value?)
+        'checkInDate': value,
+      if (instance.checkInStatus case final value?) 'checkInStatus': value,
+      if (instance.address?.toJson() case final value?) 'address': value,
+    };

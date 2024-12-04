@@ -26,32 +26,24 @@ KPushData _$KPushDataFromJson(Map<String, dynamic> json) => KPushData()
   ..confettiCount = zzz_atoi(json['confettiCount'] as String?)
   ..message = json['message'] as String?;
 
-Map<String, dynamic> _$KPushDataToJson(KPushData instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('pushType', instance.pushType);
-  writeNotNull('app', instance.app);
-  writeNotNull('id', instance.id);
-  writeNotNull('index', instance.index);
-  writeNotNull('refApp', instance.refApp);
-  writeNotNull('refID', instance.refID);
-  writeNotNull('rem', instance.rem);
-  writeNotNull('other_id', instance.otherId);
-  writeNotNull('uuid', instance.uuid);
-  writeNotNull('caller_id', instance.callerId);
-  writeNotNull('call_type', instance.callType);
-  writeNotNull('session_id', instance.sessionId);
-  writeNotNull('conference_slug', instance.conferenceSlug);
-  writeNotNull('caller_name', instance.callerName);
-  writeNotNull('call_opponents', instance.callOpponents);
-  writeNotNull('user_info', instance.userInfo);
-  writeNotNull('confettiCount', zzz_itoa(instance.confettiCount));
-  writeNotNull('message', instance.message);
-  return val;
-}
+Map<String, dynamic> _$KPushDataToJson(KPushData instance) => <String, dynamic>{
+      if (instance.pushType case final value?) 'pushType': value,
+      if (instance.app case final value?) 'app': value,
+      if (instance.id case final value?) 'id': value,
+      if (instance.index case final value?) 'index': value,
+      if (instance.refApp case final value?) 'refApp': value,
+      if (instance.refID case final value?) 'refID': value,
+      if (instance.rem case final value?) 'rem': value,
+      if (instance.otherId case final value?) 'other_id': value,
+      if (instance.uuid case final value?) 'uuid': value,
+      if (instance.callerId case final value?) 'caller_id': value,
+      if (instance.callType case final value?) 'call_type': value,
+      if (instance.sessionId case final value?) 'session_id': value,
+      if (instance.conferenceSlug case final value?) 'conference_slug': value,
+      if (instance.callerName case final value?) 'caller_name': value,
+      if (instance.callOpponents case final value?) 'call_opponents': value,
+      if (instance.userInfo case final value?) 'user_info': value,
+      if (zzz_itoa(instance.confettiCount) case final value?)
+        'confettiCount': value,
+      if (instance.message case final value?) 'message': value,
+    };

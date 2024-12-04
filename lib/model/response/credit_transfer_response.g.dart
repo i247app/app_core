@@ -20,22 +20,15 @@ CreditTransferResponse _$CreditTransferResponseFromJson(
           .toList();
 
 Map<String, dynamic> _$CreditTransferResponseToJson(
-    CreditTransferResponse instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('kstatus', zzz_itoa(instance.kstatus));
-  writeNotNull('kmessage', instance.kmessage);
-  writeNotNull('ktoken', instance.ktoken);
-  writeNotNull('amount', instance.amount);
-  writeNotNull('refKUID', instance.refPUID);
-  writeNotNull('txID', instance.transactionID);
-  writeNotNull(
-      'transactions', instance.transactions?.map((e) => e.toJson()).toList());
-  return val;
-}
+        CreditTransferResponse instance) =>
+    <String, dynamic>{
+      if (zzz_itoa(instance.kstatus) case final value?) 'kstatus': value,
+      if (instance.kmessage case final value?) 'kmessage': value,
+      if (instance.ktoken case final value?) 'ktoken': value,
+      if (instance.amount case final value?) 'amount': value,
+      if (instance.refPUID case final value?) 'refKUID': value,
+      if (instance.transactionID case final value?) 'txID': value,
+      if (instance.transactions?.map((e) => e.toJson()).toList()
+          case final value?)
+        'transactions': value,
+    };
