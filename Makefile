@@ -5,7 +5,7 @@ models:
 
 pub: clean
 	rm -f pubspec.lock
-	# flutter pub upgrade
+	flutter pub upgrade
 	flutter pub get
 
 clean:
