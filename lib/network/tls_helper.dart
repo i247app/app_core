@@ -181,6 +181,7 @@ abstract class TLSHelper {
       "locale": () async => KUtil.localeName(),
       "language": () async => KUtil.localeName().split("_")[0],
       "domain": () async => await KUtil.getPackageName(),
+      "packageName": () async => await KUtil.getPackageName(),
       "countryCode": () async => await KSessionData.getCountryCode(),
     };
 
