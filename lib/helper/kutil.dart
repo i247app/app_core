@@ -16,6 +16,7 @@ abstract class KUtil {
   static Random? _random = Random();
   static String? _buildVersion;
   static String? _buildNumber;
+  static String? _appDomain;
   static List<String> ignoreAddressWords = [
     "ward",
     "district",
@@ -446,6 +447,8 @@ abstract class KUtil {
     return z;
   }
 
+  static Future<String> getAppDomain() async => _appDomain ?? await getPackageName();
+
   static Future<String> getPackageName() =>
       PackageInfo.fromPlatform().then((p) => p.packageName);
 
@@ -728,6 +731,14 @@ abstract class KUtil {
       Platform.operatingSystem; //Platform.isIOS ? "ios" : "android";
 
   static String getPushTokenMode() => isDebug ? "dvl" : "prd";
+
+  static void setAppDomain(String? appDomain) {
+    if (KStringHelper.isExist(appDomain ?? "")) {
+      KUtil._appDomain = appDomain;
+    } else {
+      KUtil._appDomain = null;
+    }
+  }
 
   static Future<String?> getBuildVersion() async {
     String? _buildVersion = KUtil._buildVersion;

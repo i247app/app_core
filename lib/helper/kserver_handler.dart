@@ -88,7 +88,7 @@ abstract class KServerHandler {
       "svc": "chat",
       "req": "chat.get",
       "chat": KChat()
-        ..domain = await KUtil.getPackageName()
+        ..domain = await KUtil.getAppDomain()
         ..refApp = refApp
         ..refID = refID
         ..chatID = chatID,
@@ -153,7 +153,7 @@ abstract class KServerHandler {
     String? refApp,
     String? refID,
   ) async {
-    final domain = await KUtil.getPackageName();
+    final domain = await KUtil.getAppDomain();
     final params = {
       "svc": "chat",
       "req": "chat.member.remove",
@@ -846,7 +846,7 @@ abstract class KServerHandler {
   }
 
   static Future<SimpleResponse> salesLeadsCheckin(KCheckIn checkIn) async {
-    final domain = await KUtil.getPackageName();
+    final domain = await KUtil.getAppDomain();
     final params = {
       "svc": "auth",
       "req": "check.in",
@@ -857,7 +857,7 @@ abstract class KServerHandler {
 
   static Future<SimpleResponse> salesLeadsCheckinStatus(
       KCheckIn checkIn) async {
-    final domain = await KUtil.getPackageName();
+    final domain = await KUtil.getAppDomain();
     final params = {
       "svc": "auth",
       "req": "check.in.status",
