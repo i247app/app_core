@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:app_core/app_core.dart';
 import 'package:app_core/model/kaws_info.dart';
-import 'package:aws_s3_upload/aws_s3_upload.dart';
+import 'package:aws_s3_upload_plus/aws_s3_upload.dart';
 
 abstract class KAWSHelper {
   static Future<String?> uploadFile(

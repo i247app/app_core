@@ -640,13 +640,13 @@ class _KVOIPCallState extends State<KVOIPCall>
       if (Platform.isIOS) {
         this.ringtoneTimer = Timer.periodic(
           Duration(seconds: 3),
-          (_) => FlutterRingtonePlayer.playRingtone(
+          (_) => FlutterRingtonePlayer().playRingtone(
             looping: true,
             volume: volume,
           ),
         );
       } else {
-        FlutterRingtonePlayer.playRingtone(looping: true, volume: volume);
+        FlutterRingtonePlayer().playRingtone(looping: true, volume: volume);
       }
     } catch (e) {}
   }
@@ -654,14 +654,14 @@ class _KVOIPCallState extends State<KVOIPCall>
   void stopRingtone() {
     try {
       this.ringtoneTimer?.cancel();
-      FlutterRingtonePlayer.stop();
+      FlutterRingtonePlayer().stop();
     } catch (e) {}
   }
 
   void hangUp() {
     print("tutoring_p2p_call.hangUp am clicking hangup.........");
     this.ringtoneTimer?.cancel();
-    FlutterRingtonePlayer.stop();
+    FlutterRingtonePlayer().stop();
     try {
       // stopCallerTune();
       this.commManager?.sayGoodbye();
@@ -710,7 +710,7 @@ class _KVOIPCallState extends State<KVOIPCall>
   void rejectCall() {
     print("tutoring_p2p_call.rejectCall am clicking hangup.........");
     this.ringtoneTimer?.cancel();
-    FlutterRingtonePlayer.stop();
+    FlutterRingtonePlayer().stop();
     try {
       this.commManager?.sayGoodbye();
     } catch (e) {}

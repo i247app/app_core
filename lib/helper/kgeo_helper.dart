@@ -6,10 +6,12 @@ import 'package:app_core/model/kaddress.dart';
 import 'package:app_core/model/kgig_address.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_webservice/places.dart';
-import 'package:google_maps_webservice/geocoding.dart';
+import 'package:flutter_google_maps_webservices/places.dart';
+import 'package:flutter_google_maps_webservices/geocoding.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart'
+    as GoogleMapsWebservicePlaces;
 
 /// Helpful links for tracking API usage and cost
 /// Places: https://developers.google.com/places/web-service/usage-and-billing
@@ -161,7 +163,7 @@ abstract class KGeoHelper {
   }
 
   static KAddress getKAddressPrediction(
-      Prediction place, PlaceDetails? placeDetails) {
+      GoogleMapsWebservicePlaces.Prediction place, PlaceDetails? placeDetails) {
     // debugPrint("PLACE: ${KUtil.prettyJSON(place.toJson())}", wrapWidth: 10000);
 
     final address = KAddress();
@@ -260,7 +262,8 @@ abstract class KGeoHelper {
         final List<KGigAddress> addresses = [];
 
         for (int i = 0; i < results.length; i++) {
-          print("[${_gcnt}] geo_helper.getGigAddressesFromLatLng lookupPlaceID");
+          print(
+              "[${_gcnt}] geo_helper.getGigAddressesFromLatLng lookupPlaceID");
 
           final GeocodingResult geocodingResult = results[i];
           final KGigAddress? address = geocodingToGigAddress(geocodingResult);

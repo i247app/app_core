@@ -20,16 +20,16 @@ dependencies:
   async: ^2.6.1
   url_launcher: ^6.0.4 # ^5.0.2
   device_info_plus: ^9.0.3
-  package_info_plus: ^4.1.0
+  package_info_plus: ^8.3.0 # ^4.1.0
   android_id: ^0.3.4
-  permission_handler: ^10.4.3
+  permission_handler: ^12.0.0+1 # ^10.4.3
   timeago: ^3.1.0
   intl: ^0.18.1
   flutter_secure_storage: ^8.0.0
   json_annotation: ^4.9.0 #^4.8.1 # ^4.5.0
-  fluttertoast: ^8.2.1
+  fluttertoast: ^8.2.12 # ^8.2.1
   local_auth: ^2.1.6
-  new_version_plus: ^0.0.9 # new_version deprecated
+  new_version_plus: ^0.1.0 # ^0.0.9 # new_version deprecated
   flutter_local_notifications: ^18.0.1  #^15.1.1
   flutter_slidable: ^3.0.0
   draggable_widget: ^2.0.0
@@ -38,9 +38,10 @@ dependencies:
   geolocator: 9.0.2
   geocoding: ^2.1.0
   google_maps_flutter: ^2.4.0
-  google_maps_webservice: ^0.0.20-nullsafety.5
+#  google_maps_webservice: ^0.0.20-nullsafety.5
+  flutter_google_maps_webservices: ^1.1.1
 #  flutter_google_places: ^0.3.0
-  flutter_google_places_hoc081098: ^1.2.0
+  flutter_google_places_hoc081098: ^2.0.0 #^1.2.0
 
   lottie: ^2.6.0
 
@@ -51,27 +52,28 @@ dependencies:
   barcode_scan2: ^4.2.4
 
   # Firebase
-  firebase_core_platform_interface: ^4.8.0
-  firebase_core: ^2.15.1
-  firebase_messaging: ^14.6.6 # ^11.4.4
+  firebase_core_platform_interface: ^5.4.0 # ^4.8.0
+  firebase_core: ^3.13.0 # ^2.15.1
+  firebase_messaging: ^15.2.5 # ^14.6.6 # ^11.4.4
 
-  gallery_saver: 2.3.2 #2.1.0 # +2.1.1 broken so far
+#  gallery_saver: 2.3.2 #2.1.0 # +2.1.1 broken so far
+  gallery_saver_plus: ^3.2.4
   path_provider: ^2.0.1
   provider: ^6.0.2
 
-  google_fonts: 4.0.3
+  google_fonts: ^6.2.1 # 4.0.3
 
   # VoIP
   connectycube_flutter_call_kit: 2.3.0
 
   # Flutter WebRTC
-  flutter_webrtc: 0.9.45 #0.6.3 # 0.5.8
+  flutter_webrtc: 0.13.1+hotfix.1 #0.9.45 #0.6.3 # 0.5.8
 
-  flutter_ringtone_player: ^3.2.0
+  flutter_ringtone_player: ^4.0.0+4 # ^3.2.0
 
 #  wakelock: ^0.6.2 # 0.5.6 # ^0.5.1
-  wakelock_plus: ^1.1.1
-  uuid: ^3.0.4
+  wakelock_plus: ^1.3.2 #^1.1.1
+  uuid: ^4.1.0
 
   # Vietnamese language parsing
   tiengviet: ^0.5.0
@@ -89,7 +91,7 @@ dependencies:
 
   audioplayers: ^5.1.0
 
-  sb_peerdart: ^0.1.3
+  sb_peerdart: ^0.2.0
 
   # Text-to-speech
   flutter_tts: ^3.7.0 # ^3.3.3
@@ -113,7 +115,8 @@ dependencies:
   slider_captcha: ^1.0.0
 
   light_compressor: ^2.1.0
-  aws_s3_upload: ^1.5.0
+#  aws_s3_upload: ^1.5.0
+  aws_s3_upload_plus: ^1.0.0
 
   queue: ^3.1.0+2
   socket_io_client: ^2.0.3+1

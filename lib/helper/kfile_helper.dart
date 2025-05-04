@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:gallery_saver/gallery_saver.dart';
+import 'package:gallery_saver_plus/gallery_saver.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 

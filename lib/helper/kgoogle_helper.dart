@@ -4,18 +4,23 @@ import 'package:app_core/helper/kserver_handler.dart';
 import 'package:app_core/model/kaddress.dart';
 import 'package:app_core/value/kconstants.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:google_maps_webservice/directions.dart';
-import 'package:google_maps_webservice/places.dart';
-import 'package:google_maps_webservice/geocoding.dart';
+import 'package:flutter_google_maps_webservices/directions.dart';
+import 'package:flutter_google_maps_webservices/places.dart';
+import 'package:flutter_google_maps_webservices/geocoding.dart';
 import 'package:flutter_google_places_hoc081098/flutter_google_places_hoc081098.dart';
+import 'package:flutter_google_places_hoc081098/google_maps_webservice_places.dart'
+    as GoogleMapsWebservicePlaces;
 
 /// Helpful links for tracking API usage and cost
 /// Places: https://developers.google.com/places/web-service/usage-and-billing
 /// Geocoding: https://developers.google.com/maps/documentation/geocoding/usage-and-billing
 abstract class KGoogleHelper {
-  static Location hcmcLocation = Location(lat: 10.762963, lng: 106.682383);
-  static Location hanoiCity = Location(lat: 21.027764, lng: 105.834160);
-  static Location sanfracisco = Location(lat: 37.7749, lng: -122.4194);
+  static GoogleMapsWebservicePlaces.Location hcmcLocation =
+      GoogleMapsWebservicePlaces.Location(lat: 10.762963, lng: 106.682383);
+  static GoogleMapsWebservicePlaces.Location hanoiCity =
+      GoogleMapsWebservicePlaces.Location(lat: 21.027764, lng: 105.834160);
+  static GoogleMapsWebservicePlaces.Location sanfracisco =
+      GoogleMapsWebservicePlaces.Location(lat: 37.7749, lng: -122.4194);
 
   static const String API_HIT_COUNT_PREF_KEY = "_google_api_hit_count";
   static const String CACHED_PLACE_HIT_COUNT_PREF_KEY =
@@ -180,11 +185,13 @@ abstract class KGoogleHelper {
     try {
       final position = KLocationHelper.cachedPosition;
       final location = deviceLocation != null
-          ? Location(lat: deviceLocation.lat!, lng: deviceLocation.lng!)
+          ? GoogleMapsWebservicePlaces.Location(
+              lat: deviceLocation.lat!, lng: deviceLocation.lng!)
           : position != null
-              ? Location(lat: position.latitude, lng: position.latitude)
+              ? GoogleMapsWebservicePlaces.Location(
+                  lat: position.latitude, lng: position.latitude)
               : hcmcLocation;
-      Prediction? p = await PlacesAutocomplete.show(
+      GoogleMapsWebservicePlaces.Prediction? p = await PlacesAutocomplete.show(
         context: ctx,
         apiKey: KConstants.googleMapsApiKey,
         logo: Image.asset(
@@ -198,8 +205,9 @@ abstract class KGoogleHelper {
         types: [],
         strictbounds: false,
         components: [],
-        onError: (PlacesAutocompleteResponse? r) => print(
-            "GeoHelper.showPlaceLookup ERROR - ${KUtil.prettyJSON(r?.toJson())}"),
+        onError: (GoogleMapsWebservicePlaces.PlacesAutocompleteResponse? r) =>
+            print(
+                "GeoHelper.showPlaceLookup ERROR - ${KUtil.prettyJSON(r?.toJson())}"),
       );
       _logAPIHit();
       if (p != null) {
