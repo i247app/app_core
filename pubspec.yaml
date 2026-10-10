@@ -1,16 +1,14 @@
 name: app_core
-
 description: App core package
 
 version: 1.1.308
 
 homepage: none
+publish_to: none
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=1.17.0"
-
-publish_to: none
+  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
@@ -18,19 +16,19 @@ dependencies:
 
   # Core
   async: ^2.6.1
-  url_launcher: ^6.0.4 # ^5.0.2
+  url_launcher: ^6.0.4
   device_info_plus: ^9.0.3
-  package_info_plus: ^8.3.0 # ^4.1.0
+  package_info_plus: ^8.3.0
   android_id: ^0.3.4
-  permission_handler: ^12.0.0+1 # ^10.4.3
+  permission_handler: ^12.0.0+1
   timeago: ^3.1.0
   intl: ^0.18.1
   flutter_secure_storage: ^8.0.0
-  json_annotation: ^4.9.0 #^4.8.1 # ^4.5.0
-  fluttertoast: ^8.2.12 # ^8.2.1
+  json_annotation: ^4.9.0
+  fluttertoast: ^8.2.12
   local_auth: ^2.1.6
-  new_version_plus: ^0.1.0 # ^0.0.9 # new_version deprecated
-  flutter_local_notifications: ^18.0.1  #^15.1.1
+  new_version_plus: ^0.1.0
+  flutter_local_notifications: ^18.0.1
   flutter_slidable: ^3.0.0
   draggable_widget: ^2.0.0
 
@@ -38,10 +36,8 @@ dependencies:
   geolocator: 9.0.2
   geocoding: ^2.1.0
   google_maps_flutter: ^2.4.0
-#  google_maps_webservice: ^0.0.20-nullsafety.5
   flutter_google_maps_webservices: ^1.1.1
-#  flutter_google_places: ^0.3.0
-  flutter_google_places_hoc081098: ^2.0.0 #^1.2.0
+  flutter_google_places_hoc081098: ^2.0.0
 
   lottie: ^2.6.0
 
@@ -52,34 +48,32 @@ dependencies:
   barcode_scan2: ^4.2.4
 
   # Firebase
-  firebase_core_platform_interface: ^5.4.0 # ^4.8.0
-  firebase_core: ^3.13.0 # ^2.15.1
-  firebase_messaging: ^15.2.5 # ^14.6.6 # ^11.4.4
+  firebase_core_platform_interface: ^5.4.0
+  firebase_core: ^3.13.0
+  firebase_messaging: ^15.2.5
 
-#  gallery_saver: 2.3.2 #2.1.0 # +2.1.1 broken so far
   gallery_saver_plus: ^3.2.4
   path_provider: ^2.0.1
   provider: ^6.0.2
 
-  google_fonts: ^6.2.1 # 4.0.3
+  google_fonts: ^6.2.1
 
   # VoIP
   connectycube_flutter_call_kit: 2.3.0
 
   # Flutter WebRTC
-  flutter_webrtc: 0.13.1+hotfix.1 #0.9.45 #0.6.3 # 0.5.8
+  flutter_webrtc: 0.13.1+hotfix.1
 
-  flutter_ringtone_player: ^4.0.0+4 # ^3.2.0
+  flutter_ringtone_player: ^4.0.0+4
 
-#  wakelock: ^0.6.2 # 0.5.6 # ^0.5.1
-  wakelock_plus: ^1.3.2 #^1.1.1
+  wakelock_plus: ^1.3.2
   uuid: ^4.1.0
 
   # Vietnamese language parsing
   tiengviet: ^0.5.0
 
   # QR code generation
-  qr_flutter: ^4.1.0 # ^4.0.0 ^3.2.0
+  qr_flutter: ^4.1.0
 
   sliding_up_panel: 2.0.0+1
 
@@ -94,15 +88,14 @@ dependencies:
   sb_peerdart: ^0.2.0
 
   # Text-to-speech
-  flutter_tts: ^3.7.0 # ^3.3.3
+  flutter_tts: ^3.7.0
 
   # Cache image
   flutter_cache_manager: ^3.3.0
   cached_network_image: ^3.2.2
 
-#  flutter_picker: ^2.1.0
   flutter_picker_plus: ^1.3.0
-  wheel_chooser: ^1.1.2 # ^1.1.0 is buggy
+  wheel_chooser: ^1.1.2
 
   xml: ^6.3.0
 
@@ -115,7 +108,6 @@ dependencies:
   slider_captcha: ^1.0.0
 
   light_compressor: ^2.1.0
-#  aws_s3_upload: ^1.5.0
   aws_s3_upload_plus: ^1.0.0
 
   queue: ^3.1.0+2
@@ -127,18 +119,13 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  lints: any
-  build_resolvers: ^2.3.1
-  build_runner: ^2.4.6 #^2.1.5 # ^1.11.5 # ^1.0.0
-  json_serializable: ^6.9.0 #^6.6.2 # 6.2.0 6.1.2 ^3.5.1 # ^3.0.0
-  analyzer: ^6.2.0
+  lints: ^3.0.0
+  source_gen: ^1.5.0
+  build_resolvers: ^2.4.2
+  build_runner: ^2.4.9
+  json_serializable: ^6.8.0
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter.
 flutter:
-  # To add assets to your package, add an assets section, like this:
   assets:
     - assets/
     - assets/img/
@@ -162,31 +149,3 @@ flutter:
       fonts:
         - asset: fonts/UberMoveMedium.otf
         - asset: fonts/UberMoveBold.otf
-
-
-#
-# For details regarding assets in packages, see
-# https://flutter.dev/assets-and-images/#from-packages
-#
-# An image asset can refer to one or more resolution-specific "variants", see
-# https://flutter.dev/assets-and-images/#resolution-aware.
-
-# To add custom fonts to your package, add a fonts section here,
-# in this "flutter" section. Each entry in this list should have a
-# "family" key with the font family name, and a "fonts" key with a
-# list giving the asset and other descriptors for the font. For
-# example:
-# fonts:
-#   - family: Schyler
-#     fonts:
-#       - asset: fonts/Schyler-Regular.ttf
-#       - asset: fonts/Schyler-Italic.ttf
-#         style: italic
-#   - family: Trajan Pro
-#     fonts:
-#       - asset: fonts/TrajanPro.ttf
-#       - asset: fonts/TrajanPro_Bold.ttf
-#         weight: 700
-#
-# For details regarding fonts in packages, see
-# https://flutter.dev/custom-fonts/#from-packages
