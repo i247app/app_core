@@ -11,8 +11,16 @@ KVoipCallInfo _$KVoipCallInfoFromJson(Map<String, dynamic> json) =>
       ..uuid = json['uuid'] as String?
       ..callID = json['callID'] as String?;
 
-Map<String, dynamic> _$KVoipCallInfoToJson(KVoipCallInfo instance) =>
-    <String, dynamic>{
-      if (instance.uuid case final value?) 'uuid': value,
-      if (instance.callID case final value?) 'callID': value,
-    };
+Map<String, dynamic> _$KVoipCallInfoToJson(KVoipCallInfo instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('uuid', instance.uuid);
+  writeNotNull('callID', instance.callID);
+  return val;
+}
